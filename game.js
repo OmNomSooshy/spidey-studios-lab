@@ -9,7 +9,7 @@
     enabled: false, x: 0, y: 0, restX: 0, restY: 0,
     initialized: false, lastSample: 0, noSampleTimer: 0,
   };
-  const web = { active: false, pointerId: null, anchorX: 0, anchorY: 0, length: 0 };
+  const web = { active: false, pointerId: null, anchorX: 0, anchorY: 0, deployedLength: 0, maxLength: 0 };
   function loadFrames(prefix, count) {
     return Promise.all(Array.from({ length: count }, (_, i) => new Promise((resolve) => {
       const img = new Image();
@@ -73,10 +73,10 @@
     let spool = spoolPosition();
     let dx = web.anchorX - spool.x, dy = web.anchorY - spool.y;
     let distance = Math.hypot(dx, dy);
-    if (distance <= web.length || distance < .001) return;
+    if (distance <= web.deployedLength || distance < .001) return;
 
     const nx = dx / distance, ny = dy / distance;
-    const excess = distance - web.length;
+    const excess = distance - web.deployedLength;
     // Project only the rope's excess length; a slack web has no physical effect.
     byte.x += nx * excess;
     byte.y += ny * excess;
@@ -106,7 +106,7 @@
     if (!web.active) return;
     const spool = spoolPosition();
     const distance = Math.hypot(web.anchorX - spool.x, web.anchorY - spool.y);
-    const slack = Math.max(0, web.length - distance);
+    const slack = Math.max(0, web.deployedLength - distance);
     const sag = Math.min(34, slack * .32);
     const midX = (spool.x + web.anchorX) * .5;
     const midY = (spool.y + web.anchorY) * .5 + sag;
@@ -208,7 +208,8 @@
       web.active = true;
       web.pointerId = e.pointerId;
       web.anchorX = px; web.anchorY = py;
-      web.length = Math.max(Math.hypot(px - spool.x, py - spool.y) + 18, spriteH);
+      web.maxLength = spriteH * 1.2;
+      web.deployedLength = Math.min(web.maxLength, Math.max(Math.hypot(px - spool.x, py - spool.y) + 18, spriteH * .12));
       byte.targetX = byte.targetY = null;
       byte.mode = 'air';
       canvas.setPointerCapture(e.pointerId);
@@ -234,7 +235,14 @@
     if (web.active && e.pointerId === web.pointerId) {
       e.preventDefault();
       const rect = canvas.getBoundingClientRect();
-      web.anchorX = e.clientX - rect.left; web.anchorY = e.clientY - rect.top;
+      const nextX = e.clientX - rect.left, nextY = e.clientY - rect.top;
+      const spool = spoolPosition();
+      const oldDistance = Math.hypot(web.anchorX - spool.x, web.anchorY - spool.y);
+      const nextDistance = Math.hypot(nextX - spool.x, nextY - spool.y);
+      // Outward finger travel pays strand off the spool; the same deployed length drives drawing and tension.
+      const payout = Math.max(0, nextDistance - oldDistance);
+      web.deployedLength = Math.min(web.maxLength, web.deployedLength + payout);
+      web.anchorX = nextX; web.anchorY = nextY;
       return;
     }
     if (!byte.grabbed) return;

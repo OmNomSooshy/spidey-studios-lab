@@ -9,6 +9,7 @@
     enabled: false, x: 0, y: 0, restX: 0, restY: 0,
     initialized: false, lastSample: 0, noSampleTimer: 0,
   };
+  const web = { active: false, pointerId: null, anchorX: 0, anchorY: 0, length: 0 };
   function loadFrames(prefix, count) {
     return Promise.all(Array.from({ length: count }, (_, i) => new Promise((resolve) => {
       const img = new Image();
@@ -53,6 +54,72 @@
   const halfW = () => spriteW * .5;
   const halfH = () => spriteH * .5;
   const now = () => performance.now();
+
+  function spoolPosition(t = now()) {
+    const moving = byte.mode === 'scuttle';
+    const list = moving ? assets.walk : assets.idle;
+    const frame = list[byte.frame] || list[0];
+    const frameW = frame ? spriteH * frame.width / frame.height : spriteW;
+    const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
+    const squeezeX = 1 + byte.squash * .42 - byte.stretch * .28;
+    const squeezeY = 1 - byte.squash * .45 + byte.stretch * .35;
+    const localX = frameW * .205 * byte.facing * squeezeX;
+    const localY = spriteH * .205 * squeezeY;
+    const c = Math.cos(byte.angle), s = Math.sin(byte.angle);
+    return { x: byte.x + c * localX - s * localY, y: byte.y + bob + s * localX + c * localY };
+  }
+  function solveWebTether() {
+    if (!web.active) return;
+    let spool = spoolPosition();
+    let dx = web.anchorX - spool.x, dy = web.anchorY - spool.y;
+    let distance = Math.hypot(dx, dy);
+    if (distance <= web.length || distance < .001) return;
+
+    const nx = dx / distance, ny = dy / distance;
+    const excess = distance - web.length;
+    // Project only the rope's excess length; a slack web has no physical effect.
+    byte.x += nx * excess;
+    byte.y += ny * excess;
+    byte.x = clamp(byte.x, halfW(), world.w - halfW());
+    byte.y = clamp(byte.y, halfH(), floorY());
+
+    spool = spoolPosition();
+    dx = web.anchorX - spool.x; dy = web.anchorY - spool.y;
+    distance = Math.hypot(dx, dy);
+    if (distance < .001) return;
+    const tx = dx / distance, ty = dy / distance;
+    const rx = spool.x - byte.x, ry = spool.y - byte.y;
+    const pointVx = byte.vx - byte.spin * ry;
+    const pointVy = byte.vy + byte.spin * rx;
+    const towardAnchor = pointVx * tx + pointVy * ty;
+    if (towardAnchor >= 0) return;
+
+    // A tension impulse cancels outward velocity at the spool and adds the matching swing torque.
+    const lever = rx * ty - ry * tx;
+    const inverseInertia = 1 / Math.max(1, (spriteW * spriteW + spriteH * spriteH) / 12);
+    const impulse = -towardAnchor / (1 + lever * lever * inverseInertia);
+    byte.vx += tx * impulse;
+    byte.vy += ty * impulse;
+    byte.spin += lever * impulse * inverseInertia;
+  }
+  function drawWeb() {
+    if (!web.active) return;
+    const spool = spoolPosition();
+    const distance = Math.hypot(web.anchorX - spool.x, web.anchorY - spool.y);
+    const slack = Math.max(0, web.length - distance);
+    const sag = Math.min(34, slack * .32);
+    const midX = (spool.x + web.anchorX) * .5;
+    const midY = (spool.y + web.anchorY) * .5 + sag;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(spool.x, spool.y); ctx.quadraticCurveTo(midX, midY, web.anchorX, web.anchorY);
+    ctx.strokeStyle = 'rgba(54, 69, 78, .72)'; ctx.lineWidth = 4; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(spool.x, spool.y); ctx.quadraticCurveTo(midX, midY, web.anchorX, web.anchorY);
+    ctx.strokeStyle = '#f8fbff'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(web.anchorX, web.anchorY, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = 'rgba(54,69,78,.8)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.restore();
+  }
 
   function setGravityButton(label, status, pressed) {
     gravityLabel.textContent = label;
@@ -133,8 +200,20 @@
 
   function beginDrag(e) {
     e.preventDefault();
+    if (web.active || e.isPrimary === false) return;
     const rect = canvas.getBoundingClientRect();
     const px = e.clientX - rect.left, py = e.clientY - rect.top;
+    const spool = spoolPosition();
+    if (Math.hypot(px - spool.x, py - spool.y) <= Math.max(30, spriteH * .13)) {
+      web.active = true;
+      web.pointerId = e.pointerId;
+      web.anchorX = px; web.anchorY = py;
+      web.length = Math.max(Math.hypot(px - spool.x, py - spool.y) + 18, spriteH * .12);
+      byte.targetX = byte.targetY = null;
+      byte.mode = 'air';
+      canvas.setPointerCapture(e.pointerId);
+      return;
+    }
     const dx = px - byte.x, dy = py - byte.y;
     const inByte = Math.abs(dx) < spriteW * .58 && Math.abs(dy) < spriteH * .59;
     if (inByte) {
@@ -152,6 +231,12 @@
     }
   }
   function moveDrag(e) {
+    if (web.active && e.pointerId === web.pointerId) {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      web.anchorX = e.clientX - rect.left; web.anchorY = e.clientY - rect.top;
+      return;
+    }
     if (!byte.grabbed) return;
     e.preventDefault();
     const rect = canvas.getBoundingClientRect();
@@ -168,6 +253,12 @@
     byte.lastSamples = byte.lastSamples.filter(p => t - p.t < 120).slice(-6);
   }
   function endDrag(e) {
+    if (web.active && e.pointerId === web.pointerId) {
+      if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
+      web.active = false;
+      web.pointerId = null;
+      return;
+    }
     if (!byte.grabbed) return;
     byte.grabbed = false;
     if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
@@ -198,6 +289,7 @@
     if (byte.grabbed) {
       return;
     }
+    if (web.active && byte.mode === 'idle') byte.mode = 'air';
     if (byte.mode === 'scuttle' && byte.targetX !== null) {
       const dx = byte.targetX - byte.x, dy = byte.targetY - byte.y;
       byte.facing = dx < 0 ? -1 : 1;
@@ -273,6 +365,8 @@
       byte.x = clamp(byte.x, halfW(), world.w - halfW());
     }
 
+    solveWebTether();
+
     if (byte.mode === 'scuttle') {
       byte.frameClock += dt;
       if (byte.frameClock > .095) { byte.frameClock = 0; byte.frame = (byte.frame + 1) % assets.walk.length; }
@@ -305,6 +399,7 @@
     // Barely-there play-space cues keep the creature as the only thing to play with.
     ctx.fillStyle = 'rgba(255,255,255,.37)';
     ctx.beginPath(); ctx.ellipse(w * .5, h * .88, w * .46, h * .08, 0, 0, Math.PI * 2); ctx.fill();
+    drawWeb();
     const shadowY = Math.min(floorY() + spriteH * .36, h - 12);
     const lift = Math.max(0, floorY() - byte.y);
     ctx.save();

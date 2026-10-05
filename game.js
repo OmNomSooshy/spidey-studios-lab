@@ -208,7 +208,7 @@
       web.active = true;
       web.pointerId = e.pointerId;
       web.anchorX = px; web.anchorY = py;
-      web.length = Math.max(Math.hypot(px - spool.x, py - spool.y) + 18, spriteH * .12);
+      web.length = Math.max(Math.hypot(px - spool.x, py - spool.y) + 18, spriteH * .36);
       byte.targetX = byte.targetY = null;
       byte.mode = 'air';
       canvas.setPointerCapture(e.pointerId);

@@ -245,18 +245,21 @@
       byte.mode = 'scuttle';
     }
   }
+  function moveWebAnchor(e) {
+    const rect = canvas.getBoundingClientRect();
+    const nextX = e.clientX - rect.left, nextY = e.clientY - rect.top;
+    const spool = spoolPosition();
+    const oldDistance = Math.hypot(web.anchorX - spool.x, web.anchorY - spool.y);
+    const nextDistance = Math.hypot(nextX - spool.x, nextY - spool.y);
+    // Outward finger travel pays strand off the spool; the same deployed length drives drawing and tension.
+    const payout = Math.max(0, nextDistance - oldDistance);
+    web.deployedLength = Math.min(web.maxLength, web.deployedLength + payout);
+    web.anchorX = nextX; web.anchorY = nextY;
+  }
   function moveDrag(e) {
     if (web.active && !web.planted && e.pointerId === web.pointerId) {
       e.preventDefault();
-      const rect = canvas.getBoundingClientRect();
-      const nextX = e.clientX - rect.left, nextY = e.clientY - rect.top;
-      const spool = spoolPosition();
-      const oldDistance = Math.hypot(web.anchorX - spool.x, web.anchorY - spool.y);
-      const nextDistance = Math.hypot(nextX - spool.x, nextY - spool.y);
-      // Outward finger travel pays strand off the spool; the same deployed length drives drawing and tension.
-      const payout = Math.max(0, nextDistance - oldDistance);
-      web.deployedLength = Math.min(web.maxLength, web.deployedLength + payout);
-      web.anchorX = nextX; web.anchorY = nextY;
+      moveWebAnchor(e);
       return;
     }
     if (!byte.grabbed) return;
@@ -276,7 +279,8 @@
   }
   function endDrag(e) {
     if (web.active && !web.planted && e.pointerId === web.pointerId) {
-      if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
+      // pointerup may be the only event with the finger's final mobile position.
+      if (Number.isFinite(e.clientX) && Number.isFinite(e.clientY)) moveWebAnchor(e);
       web.planted = true;
       web.pointerId = null;
       return;
@@ -298,9 +302,10 @@
   }
 
   canvas.addEventListener('pointerdown', beginDrag);
-  canvas.addEventListener('pointermove', moveDrag);
-  canvas.addEventListener('pointerup', endDrag);
-  canvas.addEventListener('pointercancel', endDrag);
+  // Captured events bubble here; these listeners also survive canvas capture loss on touch browsers.
+  window.addEventListener('pointermove', moveDrag, { passive: false });
+  window.addEventListener('pointerup', endDrag);
+  window.addEventListener('pointercancel', endDrag);
 
   function update(dt, t) {
     const g = 1650;
@@ -421,7 +426,6 @@
     // Barely-there play-space cues keep the creature as the only thing to play with.
     ctx.fillStyle = 'rgba(255,255,255,.37)';
     ctx.beginPath(); ctx.ellipse(w * .5, h * .88, w * .46, h * .08, 0, 0, Math.PI * 2); ctx.fill();
-    drawWeb();
     const shadowY = Math.min(floorY() + spriteH * .36, h - 12);
     const lift = Math.max(0, floorY() - byte.y);
     ctx.save();
@@ -446,6 +450,8 @@
       ctx.drawImage(frame, -frameW / 2, -spriteH / 2, frameW, spriteH);
       ctx.restore();
     }
+    // Keep a planted endpoint above Byte's opaque artwork so its hit target stays visible.
+    drawWeb();
   }
 
   function loop(t) {

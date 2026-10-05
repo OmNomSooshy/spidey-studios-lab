@@ -61,8 +61,8 @@
     const frame = list[byte.frame] || list[0];
     const frameW = frame ? spriteH * frame.width / frame.height : spriteW;
     const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
-    const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - byte.wallSquish * .72);
-    const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + byte.wallSquish * .46);
+    const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - byte.wallSquish * .9);
+    const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + byte.wallSquish * .55);
     const localX = frameW * .205 * byte.facing * squeezeX;
     const localY = spriteH * .205 * squeezeY;
     const c = Math.cos(byte.angle), s = Math.sin(byte.angle);
@@ -312,7 +312,7 @@
     byte.idlePhase += dt * 2.1;
     byte.squash *= Math.exp(-dt * 8);
     byte.stretch *= Math.exp(-dt * 5);
-    byte.wallSquish *= Math.exp(-dt * 5.5);
+    byte.wallSquish *= Math.exp(-dt * 4.5);
 
     if (byte.grabbed) {
       return;
@@ -416,7 +416,7 @@
     if (speed < 140) return;
     if (where === 'side') {
       // Horizontal impacts compress Byte across his width, then recover smoothly.
-      byte.wallSquish = Math.max(byte.wallSquish, clamp(speed / 2200, .08, .42));
+      byte.wallSquish = Math.max(byte.wallSquish, clamp(speed / 1800, .1, .55));
       return;
     }
     const kick = Math.min(.25, speed / 1800);
@@ -445,8 +445,8 @@
     const frame = list[byte.frame] || list[0];
     if (frame) {
       const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
-      const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - byte.wallSquish * .72);
-      const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + byte.wallSquish * .46);
+      const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - byte.wallSquish * .9);
+      const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + byte.wallSquish * .55);
       ctx.save();
       ctx.translate(byte.x, byte.y + bob);
       ctx.rotate(byte.angle);

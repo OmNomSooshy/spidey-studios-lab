@@ -9,7 +9,7 @@
     enabled: false, x: 0, y: 0, restX: 0, restY: 0,
     initialized: false, lastSample: 0, noSampleTimer: 0,
   };
-  const web = { active: false, pointerId: null, anchorX: 0, anchorY: 0, deployedLength: 0, maxLength: 0 };
+  const web = { active: false, planted: false, pointerId: null, anchorX: 0, anchorY: 0, deployedLength: 0, maxLength: 0 };
   function loadFrames(prefix, count) {
     return Promise.all(Array.from({ length: count }, (_, i) => new Promise((resolve) => {
       const img = new Image();
@@ -116,8 +116,13 @@
     ctx.strokeStyle = 'rgba(54, 69, 78, .72)'; ctx.lineWidth = 4; ctx.stroke();
     ctx.beginPath(); ctx.moveTo(spool.x, spool.y); ctx.quadraticCurveTo(midX, midY, web.anchorX, web.anchorY);
     ctx.strokeStyle = '#f8fbff'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.beginPath(); ctx.arc(web.anchorX, web.anchorY, 4, 0, Math.PI * 2);
-    ctx.fillStyle = '#fff'; ctx.fill(); ctx.strokeStyle = 'rgba(54,69,78,.8)'; ctx.lineWidth = 1.5; ctx.stroke();
+    ctx.beginPath(); ctx.arc(web.anchorX, web.anchorY, web.planted ? 8 : 4, 0, Math.PI * 2);
+    ctx.fillStyle = web.planted ? '#f58220' : '#fff'; ctx.fill();
+    ctx.strokeStyle = 'rgba(54,69,78,.9)'; ctx.lineWidth = web.planted ? 2 : 1.5; ctx.stroke();
+    if (web.planted) {
+      ctx.beginPath(); ctx.arc(web.anchorX, web.anchorY, 2.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff'; ctx.fill();
+    }
     ctx.restore();
   }
 
@@ -200,12 +205,21 @@
 
   function beginDrag(e) {
     e.preventDefault();
-    if (web.active || e.isPrimary === false) return;
+    if (e.isPrimary === false) return;
     const rect = canvas.getBoundingClientRect();
     const px = e.clientX - rect.left, py = e.clientY - rect.top;
+    if (web.active && web.planted && Math.hypot(px - web.anchorX, py - web.anchorY) <= 42) {
+      // Releasing the web leaves Byte's current linear and angular momentum untouched.
+      web.active = false;
+      web.planted = false;
+      web.pointerId = null;
+      return;
+    }
+    if (web.active && !web.planted) return;
     const spool = spoolPosition();
-    if (Math.hypot(px - spool.x, py - spool.y) <= Math.max(30, spriteH * .13)) {
+    if (!web.active && Math.hypot(px - spool.x, py - spool.y) <= Math.max(30, spriteH * .13)) {
       web.active = true;
+      web.planted = false;
       web.pointerId = e.pointerId;
       web.anchorX = px; web.anchorY = py;
       web.maxLength = spriteH * 1.2;
@@ -232,7 +246,7 @@
     }
   }
   function moveDrag(e) {
-    if (web.active && e.pointerId === web.pointerId) {
+    if (web.active && !web.planted && e.pointerId === web.pointerId) {
       e.preventDefault();
       const rect = canvas.getBoundingClientRect();
       const nextX = e.clientX - rect.left, nextY = e.clientY - rect.top;
@@ -261,9 +275,9 @@
     byte.lastSamples = byte.lastSamples.filter(p => t - p.t < 120).slice(-6);
   }
   function endDrag(e) {
-    if (web.active && e.pointerId === web.pointerId) {
+    if (web.active && !web.planted && e.pointerId === web.pointerId) {
       if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
-      web.active = false;
+      web.planted = true;
       web.pointerId = null;
       return;
     }

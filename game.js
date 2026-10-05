@@ -23,7 +23,7 @@
   let spriteW = 180, spriteH = 222;
   const byte = {
     x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0,
-    squash: 0, stretch: 0, mode: 'idle', facing: 1,
+    squash: 0, stretch: 0, wallSquish: 0, mode: 'idle', facing: 1,
     frame: 0, frameClock: 0, blinkAt: 0, blinking: false,
     targetX: null, targetY: null, grabbed: false,
     grabDX: 0, grabDY: 0, lastSamples: [],
@@ -38,8 +38,8 @@
     canvas.width = Math.round(world.w * world.dpr);
     canvas.height = Math.round(world.h * world.dpr);
     ctx.setTransform(world.dpr, 0, 0, world.dpr, 0, 0);
-    // A deliberate, generous mobile scale. The sprite always keeps its artwork ratio.
-    spriteH = Math.max(200, Math.min(292, world.w * 0.62));
+    // Keep the sprite and its proportional interaction geometry modestly smaller.
+    spriteH = Math.max(184, Math.min(269, world.w * 0.57));
     spriteW = spriteH * .81;
     byte.x = clamp(byte.x || world.w * 0.5, spriteW * .43, world.w - spriteW * .43);
     byte.y = byte.y || world.h * .68;
@@ -61,8 +61,8 @@
     const frame = list[byte.frame] || list[0];
     const frameW = frame ? spriteH * frame.width / frame.height : spriteW;
     const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
-    const squeezeX = 1 + byte.squash * .42 - byte.stretch * .28;
-    const squeezeY = 1 - byte.squash * .45 + byte.stretch * .35;
+    const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - byte.wallSquish * .72);
+    const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + byte.wallSquish * .46);
     const localX = frameW * .205 * byte.facing * squeezeX;
     const localY = spriteH * .205 * squeezeY;
     const c = Math.cos(byte.angle), s = Math.sin(byte.angle);
@@ -217,7 +217,7 @@
     }
     if (web.active && !web.planted) return;
     const spool = spoolPosition();
-    if (!web.active && Math.hypot(px - spool.x, py - spool.y) <= Math.max(30, spriteH * .13)) {
+    if (!web.active && Math.hypot(px - spool.x, py - spool.y) <= Math.max(24, spriteH * .13)) {
       web.active = true;
       web.planted = false;
       web.pointerId = e.pointerId;
@@ -312,6 +312,7 @@
     byte.idlePhase += dt * 2.1;
     byte.squash *= Math.exp(-dt * 8);
     byte.stretch *= Math.exp(-dt * 5);
+    byte.wallSquish *= Math.exp(-dt * 5.5);
 
     if (byte.grabbed) {
       return;
@@ -413,6 +414,11 @@
   }
   function impact(speed, where) {
     if (speed < 140) return;
+    if (where === 'side') {
+      // Horizontal impacts compress Byte across his width, then recover smoothly.
+      byte.wallSquish = Math.max(byte.wallSquish, clamp(speed / 2200, .08, .42));
+      return;
+    }
     const kick = Math.min(.25, speed / 1800);
     byte.squash = where === 'floor' ? kick : kick * .62;
     byte.stretch = Math.min(.16, speed / 2400);
@@ -439,8 +445,8 @@
     const frame = list[byte.frame] || list[0];
     if (frame) {
       const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
-      const squeezeX = 1 + byte.squash * .42 - byte.stretch * .28;
-      const squeezeY = 1 - byte.squash * .45 + byte.stretch * .35;
+      const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - byte.wallSquish * .72);
+      const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + byte.wallSquish * .46);
       ctx.save();
       ctx.translate(byte.x, byte.y + bob);
       ctx.rotate(byte.angle);

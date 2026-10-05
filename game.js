@@ -223,20 +223,26 @@
       let restingEdge = '';
       if (byte.x < minX) {
         byte.x = minX; byte.vx = Math.abs(byte.vx) * .48; byte.spin += .65; impact(Math.abs(byte.vx), 'side');
-        if (earth.x < -100 && byte.vx < 95) restingEdge = 'left';
+        if (earth.x < -100 && byte.vx < 95 && Math.abs(earth.y) < 200) restingEdge = 'left';
       }
       if (byte.x > maxX) {
         byte.x = maxX; byte.vx = -Math.abs(byte.vx) * .48; byte.spin -= .65; impact(Math.abs(byte.vx), 'side');
-        if (earth.x > 100 && byte.vx > -95) restingEdge = 'right';
+        if (earth.x > 100 && byte.vx > -95 && Math.abs(earth.y) < 200) restingEdge = 'right';
       }
       if (byte.y < halfH()) {
         byte.y = halfH(); byte.vy = Math.abs(byte.vy) * .42; impact(Math.abs(byte.vy), 'top');
-        if (earth.y < -100 && byte.vy < 95) restingEdge = 'top';
+        if (earth.y < -100 && byte.vy < 95 && Math.abs(earth.x) < 200) restingEdge = 'top';
       }
       if (byte.y >= floorY()) {
         byte.y = floorY(); byte.vy = -Math.abs(byte.vy) * .31; byte.vx *= .83; impact(Math.abs(byte.vy), 'floor');
-        if (earth.y > 100 && byte.vy > -95) restingEdge = 'floor';
+        if (earth.y > 100 && byte.vy > -95 && Math.abs(earth.x) < 200) restingEdge = 'floor';
       }
+      const atLeft = byte.x <= minX, atRight = byte.x >= maxX;
+      const atTop = byte.y <= halfH(), atFloor = byte.y >= floorY();
+      const pushedIntoCorner = (atLeft && earth.x < -100 || atRight && earth.x > 100)
+        && (atTop && earth.y < -100 || atFloor && earth.y > 100)
+        && Math.hypot(byte.vx, byte.vy) < 140;
+      if (pushedIntoCorner) restingEdge = 'corner';
       if (restingEdge) {
         byte.mode = 'idle'; byte.vx = byte.vy = 0; byte.angle *= .3;
         earth.restX = earth.x; earth.restY = earth.y;

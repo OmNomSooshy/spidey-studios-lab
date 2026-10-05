@@ -2,6 +2,13 @@
   const canvas = document.querySelector('#scene');
   const ctx = canvas.getContext('2d', { alpha: false });
   const assets = { idle: [], walk: [] };
+  const gravityButton = document.querySelector('#gravity-toggle');
+  const gravityLabel = document.querySelector('#gravity-label');
+  const gravityStatus = document.querySelector('#gravity-status');
+  const earth = {
+    enabled: false, x: 0, y: 0, restX: 0, restY: 0,
+    initialized: false, lastSample: 0, noSampleTimer: 0,
+  };
   function loadFrames(prefix, count) {
     return Promise.all(Array.from({ length: count }, (_, i) => new Promise((resolve) => {
       const img = new Image();
@@ -46,6 +53,83 @@
   const halfW = () => spriteW * .5;
   const halfH = () => spriteH * .5;
   const now = () => performance.now();
+
+  function setGravityButton(label, status, pressed) {
+    gravityLabel.textContent = label;
+    gravityStatus.textContent = status;
+    gravityButton.setAttribute('aria-pressed', String(pressed));
+    gravityButton.setAttribute('aria-label', pressed ? 'Return to screen-relative gravity' : 'Enable Earth-relative gravity');
+  }
+  function stopEarthGravity(message = '') {
+    window.removeEventListener('devicemotion', readEarthGravity);
+    clearTimeout(earth.noSampleTimer);
+    earth.enabled = false;
+    earth.initialized = false;
+    earth.x = 0; earth.y = 0;
+    setGravityButton('SCREEN OWNS DOWN', message, false);
+  }
+  function readEarthGravity(event) {
+    const reading = event.accelerationIncludingGravity;
+    if (!reading || !Number.isFinite(reading.x) || !Number.isFinite(reading.y)) return;
+    earth.lastSample = now();
+    clearTimeout(earth.noSampleTimer);
+
+    // Device axes stay attached to the hardware; rotate the projected vector into the page.
+    const angle = ((screen.orientation && screen.orientation.angle) ?? window.orientation ?? 0) * Math.PI / 180;
+    const deviceX = -reading.x / 9.81 * 1650;
+    const deviceY = reading.y / 9.81 * 1650;
+    const targetX = Math.cos(angle) * deviceX - Math.sin(angle) * deviceY;
+    const targetY = Math.sin(angle) * deviceX + Math.cos(angle) * deviceY;
+    const sampleDt = Number.isFinite(event.interval) && event.interval > 0 ? event.interval / 1000 : 1 / 60;
+    const blend = 1 - Math.exp(-sampleDt / .13);
+
+    if (!earth.initialized) {
+      earth.x = targetX; earth.y = targetY;
+      earth.initialized = true;
+    } else {
+      earth.x += (targetX - earth.x) * blend;
+      earth.y += (targetY - earth.y) * blend;
+    }
+    if (byte.mode === 'idle' && Math.hypot(earth.x - earth.restX, earth.y - earth.restY) > 95) {
+      byte.mode = 'air';
+      byte.vx = byte.vy = 0;
+    }
+  }
+  async function toggleGravity() {
+    if (earth.enabled) {
+      stopEarthGravity();
+      return;
+    }
+    if (!('DeviceMotionEvent' in window)) {
+      setGravityButton('SCREEN OWNS DOWN', 'MOTION SENSORS UNAVAILABLE', false);
+      return;
+    }
+    try {
+      if (typeof DeviceMotionEvent.requestPermission === 'function') {
+        const permission = await DeviceMotionEvent.requestPermission();
+        if (permission !== 'granted') {
+          setGravityButton('SCREEN OWNS DOWN', 'MOTION ACCESS DENIED', false);
+          return;
+        }
+      }
+      earth.enabled = true;
+      earth.initialized = false;
+      earth.lastSample = 0;
+      setGravityButton('EARTH OWNS DOWN', 'ROTATE YOUR PHONE', true);
+      window.addEventListener('devicemotion', readEarthGravity, { passive: true });
+      byte.targetX = byte.targetY = null;
+      if (!byte.grabbed && byte.mode === 'idle') {
+        byte.mode = 'air';
+        byte.vx = byte.vy = 0;
+      }
+      earth.noSampleTimer = setTimeout(() => {
+        if (earth.enabled && !earth.lastSample) stopEarthGravity('NO MOTION SENSOR DATA');
+      }, 2500);
+    } catch (_) {
+      setGravityButton('SCREEN OWNS DOWN', 'MOTION ACCESS DENIED', false);
+    }
+  }
+  gravityButton.addEventListener('click', toggleGravity);
 
   function beginDrag(e) {
     e.preventDefault();
@@ -121,12 +205,41 @@
       if (d < 15) {
         byte.x = byte.targetX; byte.y = byte.targetY;
         byte.targetX = byte.targetY = null;
-        byte.mode = 'idle'; byte.frame = 0; byte.frameClock = 0;
+        byte.mode = earth.enabled ? 'air' : 'idle'; byte.frame = 0; byte.frameClock = 0;
       } else {
         const speed = Math.min(530, Math.max(230, d * 2.7));
         const step = Math.min(d, speed * dt);
         byte.x += dx / d * step; byte.y += dy / d * step;
         byte.angle = clamp(dx * .00045, -.18, .18);
+      }
+    } else if (byte.mode === 'air' && earth.enabled) {
+      byte.vx += earth.x * dt;
+      byte.vy += earth.y * dt;
+      byte.x += byte.vx * dt; byte.y += byte.vy * dt;
+      byte.angle += byte.spin * dt;
+      byte.spin *= Math.exp(-dt * 1.5);
+      byte.angle *= Math.exp(-dt * .65);
+      const minX = halfW(), maxX = world.w - halfW();
+      let restingEdge = '';
+      if (byte.x < minX) {
+        byte.x = minX; byte.vx = Math.abs(byte.vx) * .48; byte.spin += .65; impact(Math.abs(byte.vx), 'side');
+        if (earth.x < -100 && byte.vx < 95) restingEdge = 'left';
+      }
+      if (byte.x > maxX) {
+        byte.x = maxX; byte.vx = -Math.abs(byte.vx) * .48; byte.spin -= .65; impact(Math.abs(byte.vx), 'side');
+        if (earth.x > 100 && byte.vx > -95) restingEdge = 'right';
+      }
+      if (byte.y < halfH()) {
+        byte.y = halfH(); byte.vy = Math.abs(byte.vy) * .42; impact(Math.abs(byte.vy), 'top');
+        if (earth.y < -100 && byte.vy < 95) restingEdge = 'top';
+      }
+      if (byte.y >= floorY()) {
+        byte.y = floorY(); byte.vy = -Math.abs(byte.vy) * .31; byte.vx *= .83; impact(Math.abs(byte.vy), 'floor');
+        if (earth.y > 100 && byte.vy > -95) restingEdge = 'floor';
+      }
+      if (restingEdge) {
+        byte.mode = 'idle'; byte.vx = byte.vy = 0; byte.angle *= .3;
+        earth.restX = earth.x; earth.restY = earth.y;
       }
     } else if (byte.mode === 'air') {
       byte.vy += g * dt;
@@ -145,9 +258,10 @@
       }
       if (byte.mode === 'air' && byte.y >= floorY() && Math.abs(byte.vy) < 95) byte.mode = 'idle';
     } else {
-      byte.y += (floorY() - byte.y) * (1 - Math.exp(-dt * 8));
+      if (!earth.enabled) byte.y += (floorY() - byte.y) * (1 - Math.exp(-dt * 8));
       byte.x += byte.vx * dt;
       byte.vx *= Math.exp(-dt * 4.2);
+      byte.vy *= Math.exp(-dt * 4.2);
       byte.angle *= Math.exp(-dt * 5);
       if (Math.abs(byte.vx) < 5) byte.vx = 0;
       byte.x = clamp(byte.x, halfW(), world.w - halfW());

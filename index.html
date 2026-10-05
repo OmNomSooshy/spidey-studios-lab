@@ -8,6 +8,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <button id="gravity-toggle" type="button" aria-pressed="false" aria-label="Switch between screen-relative and Earth-relative gravity">
+    <span class="gravity-arrow" aria-hidden="true">↓</span>
+    <span id="gravity-label">SCREEN OWNS DOWN</span>
+  </button>
+  <div id="gravity-status" role="status" aria-live="polite"></div>
   <main id="playground" aria-label="Spider Byte playground">
     <canvas id="scene" aria-label="Touch and play with Spider Byte"></canvas>
   </main>

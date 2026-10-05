@@ -26,6 +26,7 @@
     squash: 0, stretch: 0, wallSquish: 0, grabSquishX: 0, grabSquishY: 0, mode: 'idle', facing: 1,
     frame: 0, frameClock: 0, blinkAt: 0, blinking: false,
     targetX: null, targetY: null, grabbed: false,
+    grabDesiredX: 0, grabDesiredY: 0,
     grabDX: 0, grabDY: 0, lastSamples: [],
     settle: 0, idlePhase: Math.random() * Math.PI * 2,
   };
@@ -55,7 +56,7 @@
   const halfH = () => spriteH * .5;
   const now = () => performance.now();
 
-  function spoolPosition(t = now()) {
+  function bodyGeometry(t = now()) {
     const moving = byte.mode === 'scuttle';
     const list = moving ? assets.walk : assets.idle;
     const frame = list[byte.frame] || list[0];
@@ -64,6 +65,41 @@
     const horizontalSquish = Math.max(byte.wallSquish, byte.grabSquishX);
     const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - horizontalSquish * .9 + byte.grabSquishY * .45);
     const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + horizontalSquish * .55 - byte.grabSquishY * .9);
+    return { frame, frameW, bob, squeezeX, squeezeY };
+  }
+  function bodyHalfExtents() {
+    const { frameW, squeezeX, squeezeY } = bodyGeometry();
+    const rotatedW = Math.abs(frameW * squeezeX), rotatedH = Math.abs(spriteH * squeezeY);
+    const c = Math.abs(Math.cos(byte.angle)), s = Math.abs(Math.sin(byte.angle));
+    return {
+      x: (rotatedW * c + rotatedH * s) * .5,
+      y: (rotatedW * s + rotatedH * c) * .5,
+    };
+  }
+  function constrainGrabbedByte(desiredX, desiredY) {
+    byte.grabDesiredX = desiredX;
+    byte.grabDesiredY = desiredY;
+    let pressureX = byte.grabSquishX, pressureY = byte.grabSquishY;
+    for (let i = 0; i < 6; i++) {
+      byte.grabSquishX = pressureX;
+      byte.grabSquishY = pressureY;
+      const extent = bodyHalfExtents();
+      const minX = extent.x, maxX = world.w - extent.x;
+      const minY = extent.y, maxY = Math.min(floorY(), world.h - extent.y);
+      const pushX = Math.max(minX - desiredX, desiredX - maxX, 0);
+      const pushY = Math.max(minY - desiredY, desiredY - maxY, 0);
+      pressureX = clamp(pushX / halfW(), 0, .55);
+      pressureY = clamp(pushY / halfH(), 0, .55);
+    }
+    byte.grabSquishX = pressureX;
+    byte.grabSquishY = pressureY;
+    const extent = bodyHalfExtents();
+    byte.x = clamp(desiredX, extent.x, world.w - extent.x);
+    byte.y = clamp(desiredY, extent.y, Math.min(floorY(), world.h - extent.y));
+  }
+
+  function spoolPosition(t = now()) {
+    const { frameW, bob, squeezeX, squeezeY } = bodyGeometry(t);
     const localX = frameW * .205 * byte.facing * squeezeX;
     const localY = spriteH * .205 * squeezeY;
     const c = Math.cos(byte.angle), s = Math.sin(byte.angle);
@@ -238,6 +274,7 @@
       byte.mode = 'grab';
       byte.vx = byte.vy = 0;
       byte.grabDX = dx; byte.grabDY = dy;
+      constrainGrabbedByte(px - byte.grabDX, py - byte.grabDY);
       byte.lastSamples = [{ x: px, y: py, t: now() }];
       canvas.setPointerCapture(e.pointerId);
     } else {
@@ -267,15 +304,7 @@
     e.preventDefault();
     const rect = canvas.getBoundingClientRect();
     const t = now(), px = e.clientX - rect.left, py = e.clientY - rect.top;
-    const desiredX = px - byte.grabDX, desiredY = py - byte.grabDY;
-    const minX = halfW(), maxX = world.w - halfW();
-    const minY = halfH(), maxY = floorY();
-    byte.x = clamp(desiredX, minX, maxX);
-    byte.y = clamp(desiredY, minY, maxY);
-    const pushX = Math.max(minX - desiredX, desiredX - maxX, 0);
-    const pushY = Math.max(minY - desiredY, desiredY - maxY, 0);
-    byte.grabSquishX = clamp(pushX / (spriteW * .5), 0, .55);
-    byte.grabSquishY = clamp(pushY / (spriteH * .5), 0, .55);
+    constrainGrabbedByte(px - byte.grabDX, py - byte.grabDY);
     if (byte.lastSamples.length) {
       const prev = byte.lastSamples[byte.lastSamples.length - 1];
       const elapsed = Math.max(1, t - prev.t) / 1000;
@@ -328,6 +357,7 @@
     }
 
     if (byte.grabbed) {
+      constrainGrabbedByte(byte.grabDesiredX, byte.grabDesiredY);
       return;
     }
     if (web.active && byte.mode === 'idle') byte.mode = 'air';
@@ -453,20 +483,13 @@
     ctx.beginPath(); ctx.ellipse(byte.x, shadowY, spriteW * (.37 - Math.min(lift / 1000, .1)), spriteH * .065, 0, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
 
-    const moving = byte.mode === 'scuttle';
-    const list = moving ? assets.walk : assets.idle;
-    const frame = list[byte.frame] || list[0];
+    const { frame, frameW, bob, squeezeX, squeezeY } = bodyGeometry(t);
     if (frame) {
-      const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
-      const horizontalSquish = Math.max(byte.wallSquish, byte.grabSquishX);
-      const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - horizontalSquish * .9 + byte.grabSquishY * .45);
-      const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + horizontalSquish * .55 - byte.grabSquishY * .9);
       ctx.save();
       ctx.translate(byte.x, byte.y + bob);
       ctx.rotate(byte.angle);
       ctx.scale(byte.facing, 1);
       ctx.scale(squeezeX, squeezeY);
-      const frameW = spriteH * frame.width / frame.height;
       ctx.drawImage(frame, -frameW / 2, -spriteH / 2, frameW, spriteH);
       ctx.restore();
     }

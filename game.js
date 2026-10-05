@@ -23,7 +23,7 @@
   let spriteW = 180, spriteH = 222;
   const byte = {
     x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0,
-    squash: 0, stretch: 0, wallSquish: 0, mode: 'idle', facing: 1,
+    squash: 0, stretch: 0, wallSquish: 0, grabSquishX: 0, grabSquishY: 0, mode: 'idle', facing: 1,
     frame: 0, frameClock: 0, blinkAt: 0, blinking: false,
     targetX: null, targetY: null, grabbed: false,
     grabDX: 0, grabDY: 0, lastSamples: [],
@@ -61,8 +61,9 @@
     const frame = list[byte.frame] || list[0];
     const frameW = frame ? spriteH * frame.width / frame.height : spriteW;
     const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
-    const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - byte.wallSquish * .9);
-    const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + byte.wallSquish * .55);
+    const horizontalSquish = Math.max(byte.wallSquish, byte.grabSquishX);
+    const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - horizontalSquish * .9 + byte.grabSquishY * .45);
+    const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + horizontalSquish * .55 - byte.grabSquishY * .9);
     const localX = frameW * .205 * byte.facing * squeezeX;
     const localY = spriteH * .205 * squeezeY;
     const c = Math.cos(byte.angle), s = Math.sin(byte.angle);
@@ -266,7 +267,15 @@
     e.preventDefault();
     const rect = canvas.getBoundingClientRect();
     const t = now(), px = e.clientX - rect.left, py = e.clientY - rect.top;
-    byte.x = px - byte.grabDX; byte.y = py - byte.grabDY;
+    const desiredX = px - byte.grabDX, desiredY = py - byte.grabDY;
+    const minX = halfW(), maxX = world.w - halfW();
+    const minY = halfH(), maxY = floorY();
+    byte.x = clamp(desiredX, minX, maxX);
+    byte.y = clamp(desiredY, minY, maxY);
+    const pushX = Math.max(minX - desiredX, desiredX - maxX, 0);
+    const pushY = Math.max(minY - desiredY, desiredY - maxY, 0);
+    byte.grabSquishX = clamp(pushX / (spriteW * .5), 0, .55);
+    byte.grabSquishY = clamp(pushY / (spriteH * .5), 0, .55);
     if (byte.lastSamples.length) {
       const prev = byte.lastSamples[byte.lastSamples.length - 1];
       const elapsed = Math.max(1, t - prev.t) / 1000;
@@ -313,6 +322,10 @@
     byte.squash *= Math.exp(-dt * 8);
     byte.stretch *= Math.exp(-dt * 5);
     byte.wallSquish *= Math.exp(-dt * 4.5);
+    if (!byte.grabbed) {
+      byte.grabSquishX *= Math.exp(-dt * 4.5);
+      byte.grabSquishY *= Math.exp(-dt * 4.5);
+    }
 
     if (byte.grabbed) {
       return;
@@ -445,8 +458,9 @@
     const frame = list[byte.frame] || list[0];
     if (frame) {
       const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
-      const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - byte.wallSquish * .9);
-      const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + byte.wallSquish * .55);
+      const horizontalSquish = Math.max(byte.wallSquish, byte.grabSquishX);
+      const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - horizontalSquish * .9 + byte.grabSquishY * .45);
+      const squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + horizontalSquish * .55 - byte.grabSquishY * .9);
       ctx.save();
       ctx.translate(byte.x, byte.y + bob);
       ctx.rotate(byte.angle);

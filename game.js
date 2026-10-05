@@ -8,8 +8,11 @@
   const earth = {
     enabled: false, x: 0, y: 0, restX: 0, restY: 0,
     initialized: false, lastSample: 0, noSampleTimer: 0,
+    permissionRequested: false, permissionGranted: false,
   };
   const web = { active: false, planted: false, pointerId: null, anchorX: 0, anchorY: 0, deployedLength: 0, maxLength: 0 };
+  const buttonWeb = { phase: 'waiting', idleTime: 0, elapsed: 0, progress: 0 };
+  const buttonBody = { loose: false, stationary: false, x: 0, y: 0, width: 0, height: 0, vx: 0, vy: 0 };
   function loadFrames(prefix, count) {
     return Promise.all(Array.from({ length: count }, (_, i) => new Promise((resolve) => {
       const img = new Image();
@@ -162,6 +165,33 @@
     }
     ctx.restore();
   }
+  function buttonTargetInCanvas() {
+    const button = gravityButton.getBoundingClientRect();
+    const scene = canvas.getBoundingClientRect();
+    return { x: button.left + button.width * .5 - scene.left, y: button.top + button.height * .5 - scene.top };
+  }
+  function drawButtonWeb() {
+    if (buttonWeb.phase !== 'aim' && buttonWeb.phase !== 'firing' && buttonWeb.phase !== 'attached') return;
+    const spool = spoolPosition();
+    const target = buttonTargetInCanvas();
+    const endX = buttonWeb.phase === 'firing'
+      ? spool.x + (target.x - spool.x) * buttonWeb.progress : target.x;
+    const endY = buttonWeb.phase === 'firing'
+      ? spool.y + (target.y - spool.y) * buttonWeb.progress : target.y;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(spool.x, spool.y); ctx.lineTo(endX, endY);
+    if (buttonWeb.phase === 'aim') {
+      ctx.setLineDash([5, 8]);
+      ctx.strokeStyle = 'rgba(255,255,255,.65)'; ctx.lineWidth = 2;
+    } else {
+      ctx.strokeStyle = 'rgba(54,69,78,.82)'; ctx.lineWidth = 4; ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(spool.x, spool.y); ctx.lineTo(endX, endY);
+      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+    }
+    ctx.stroke();
+    ctx.restore();
+  }
 
   function setGravityButton(label, status, pressed) {
     gravityLabel.textContent = label;
@@ -176,6 +206,18 @@
     earth.initialized = false;
     earth.x = 0; earth.y = 0;
     setGravityButton('SCREEN OWNS DOWN', message, false);
+  }
+  async function requestEarthPermission() {
+    const Motion = window.DeviceMotionEvent;
+    if (!Motion || typeof Motion.requestPermission !== 'function') return !!Motion;
+    if (earth.permissionRequested) return earth.permissionGranted;
+    earth.permissionRequested = true;
+    try {
+      earth.permissionGranted = (await Motion.requestPermission()) === 'granted';
+    } catch (_) {
+      earth.permissionGranted = false;
+    }
+    return earth.permissionGranted;
   }
   function readEarthGravity(event) {
     const reading = event.accelerationIncludingGravity;
@@ -204,6 +246,28 @@
       byte.vx = byte.vy = 0;
     }
   }
+  function enableEarthGravity(fromByte = false) {
+    const alreadyEnabled = earth.enabled;
+    earth.enabled = true;
+    if (!alreadyEnabled) {
+      earth.initialized = fromByte;
+      earth.lastSample = 0;
+      earth.x = 0; earth.y = fromByte ? 1650 : 0;
+    }
+    setGravityButton('EARTH OWNS DOWN', fromByte ? 'BYTE DID THAT' : 'ROTATE YOUR PHONE', true);
+    window.addEventListener('devicemotion', readEarthGravity, { passive: true });
+    byte.targetX = byte.targetY = null;
+    if (!byte.grabbed && byte.mode === 'idle') {
+      byte.mode = 'air';
+      byte.vx = byte.vy = 0;
+    }
+    clearTimeout(earth.noSampleTimer);
+    if (!fromByte) {
+      earth.noSampleTimer = setTimeout(() => {
+        if (earth.enabled && !earth.lastSample) stopEarthGravity('NO MOTION SENSOR DATA');
+      }, 2500);
+    }
+  }
   async function toggleGravity() {
     if (earth.enabled) {
       stopEarthGravity();
@@ -213,34 +277,97 @@
       setGravityButton('SCREEN OWNS DOWN', 'MOTION SENSORS UNAVAILABLE', false);
       return;
     }
-    try {
-      if (typeof DeviceMotionEvent.requestPermission === 'function') {
-        const permission = await DeviceMotionEvent.requestPermission();
-        if (permission !== 'granted') {
-          setGravityButton('SCREEN OWNS DOWN', 'MOTION ACCESS DENIED', false);
-          return;
-        }
-      }
-      earth.enabled = true;
-      earth.initialized = false;
-      earth.lastSample = 0;
-      setGravityButton('EARTH OWNS DOWN', 'ROTATE YOUR PHONE', true);
-      window.addEventListener('devicemotion', readEarthGravity, { passive: true });
-      byte.targetX = byte.targetY = null;
-      if (!byte.grabbed && byte.mode === 'idle') {
-        byte.mode = 'air';
-        byte.vx = byte.vy = 0;
-      }
-      earth.noSampleTimer = setTimeout(() => {
-        if (earth.enabled && !earth.lastSample) stopEarthGravity('NO MOTION SENSOR DATA');
-      }, 2500);
-    } catch (_) {
+    if (!await requestEarthPermission()) {
       setGravityButton('SCREEN OWNS DOWN', 'MOTION ACCESS DENIED', false);
+      return;
     }
+    enableEarthGravity();
   }
   gravityButton.addEventListener('click', toggleGravity);
+  gravityButton.addEventListener('pointerdown', () => {
+    if (buttonBody.loose) {
+      buttonBody.stationary = true;
+      buttonBody.vx = buttonBody.vy = 0;
+    }
+  });
+
+  function dislodgeGravityButton() {
+    const rect = gravityButton.getBoundingClientRect();
+    buttonBody.loose = true;
+    buttonBody.stationary = false;
+    buttonBody.x = rect.left; buttonBody.y = rect.top;
+    buttonBody.width = rect.width; buttonBody.height = rect.height;
+    gravityButton.style.right = 'auto';
+    gravityButton.style.bottom = 'auto';
+    gravityButton.style.left = `${buttonBody.x}px`;
+    gravityButton.style.top = `${buttonBody.y}px`;
+    gravityButton.classList.add('gravity-loose');
+
+    const scene = canvas.getBoundingClientRect();
+    const dx = byte.x + scene.left - (buttonBody.x + buttonBody.width * .5);
+    const dy = byte.y + scene.top - (buttonBody.y + buttonBody.height * .5);
+    const distance = Math.max(1, Math.hypot(dx, dy));
+    buttonBody.vx = dx / distance * 330;
+    buttonBody.vy = dy / distance * 330;
+    enableEarthGravity(true);
+    buttonWeb.phase = 'attached';
+    buttonWeb.elapsed = 0;
+  }
+  function updateButtonPhysics(dt) {
+    if (!buttonBody.loose || buttonBody.stationary) return;
+    const gravityX = earth.enabled ? earth.x : 0;
+    const gravityY = earth.enabled ? earth.y : 1650;
+    buttonBody.vx = clamp(buttonBody.vx + gravityX * dt, -1500, 1500);
+    buttonBody.vy = clamp(buttonBody.vy + gravityY * dt, -1500, 1500);
+    buttonBody.x += buttonBody.vx * dt;
+    buttonBody.y += buttonBody.vy * dt;
+    const maxX = Math.max(0, window.innerWidth - buttonBody.width);
+    const maxY = Math.max(0, window.innerHeight - buttonBody.height);
+    if (buttonBody.x < 0) { buttonBody.x = 0; buttonBody.vx = Math.abs(buttonBody.vx) * .38; }
+    if (buttonBody.x > maxX) { buttonBody.x = maxX; buttonBody.vx = -Math.abs(buttonBody.vx) * .38; }
+    if (buttonBody.y < 0) { buttonBody.y = 0; buttonBody.vy = Math.abs(buttonBody.vy) * .38; }
+    if (buttonBody.y > maxY) {
+      buttonBody.y = maxY; buttonBody.vy = -Math.abs(buttonBody.vy) * .32; buttonBody.vx *= .86;
+      if (Math.abs(buttonBody.vy) < 42) buttonBody.vy = 0;
+    }
+    gravityButton.style.left = `${buttonBody.x}px`;
+    gravityButton.style.top = `${buttonBody.y}px`;
+  }
+  function updateButtonWeb(dt) {
+    if (buttonWeb.phase === 'waiting') {
+      if (byte.mode !== 'idle' || byte.grabbed || web.active || buttonBody.loose) {
+        buttonWeb.idleTime = 0;
+        return;
+      }
+      buttonWeb.idleTime += dt;
+      if (buttonWeb.idleTime >= 4.8) {
+        const target = buttonTargetInCanvas();
+        byte.facing = target.x < byte.x ? -1 : 1;
+        const spool = spoolPosition();
+        byte.angle = clamp(Math.atan2(target.y - spool.y, target.x - spool.x) * .35, -.28, .28);
+        buttonWeb.phase = 'aim'; buttonWeb.elapsed = 0;
+      }
+      return;
+    }
+    if (buttonWeb.phase === 'aim' || buttonWeb.phase === 'firing') {
+      const target = buttonTargetInCanvas();
+      byte.facing = target.x < byte.x ? -1 : 1;
+      const spool = spoolPosition();
+      byte.angle = clamp(Math.atan2(target.y - spool.y, target.x - spool.x) * .35, -.28, .28);
+    }
+    buttonWeb.elapsed += dt;
+    if (buttonWeb.phase === 'aim' && buttonWeb.elapsed >= .42) {
+      buttonWeb.phase = 'firing'; buttonWeb.elapsed = 0;
+    } else if (buttonWeb.phase === 'firing') {
+      buttonWeb.progress = clamp(buttonWeb.elapsed / .5, 0, 1);
+      if (buttonWeb.progress >= 1) dislodgeGravityButton();
+    } else if (buttonWeb.phase === 'attached' && buttonWeb.elapsed >= .62) {
+      buttonWeb.phase = 'released';
+    }
+  }
 
   function beginDrag(e) {
+    if (!earth.permissionRequested) void requestEarthPermission();
     e.preventDefault();
     if (e.isPrimary === false) return;
     const rect = canvas.getBoundingClientRect();
@@ -495,12 +622,16 @@
     }
     // Keep a planted endpoint above Byte's opaque artwork so its hit target stays visible.
     drawWeb();
+    drawButtonWeb();
   }
 
   function loop(t) {
     const dt = Math.min(.032, (t - (lastTime || t)) / 1000);
     lastTime = t;
-    update(dt, t); draw(t);
+    update(dt, t);
+    updateButtonWeb(dt);
+    updateButtonPhysics(dt);
+    draw(t);
     requestAnimationFrame(loop);
   }
   Promise.all([loadFrames('front', 6), loadFrames('diagonal', 8)]).then(([idle, walk]) => {

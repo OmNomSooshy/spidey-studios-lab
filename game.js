@@ -1,7 +1,7 @@
 (() => {
   const canvas = document.querySelector('#scene');
   const ctx = canvas.getContext('2d', { alpha: false });
-  const assets = { idle: [], walk: [], scheming: null };
+  const assets = { idle: null, blink: null, curious: null, walk: [], scheming: null };
   const gravityButton = document.querySelector('#gravity-toggle');
   const gravityLabel = document.querySelector('#gravity-label');
   const gravityStatus = document.querySelector('#gravity-status');
@@ -79,9 +79,12 @@
 
   function bodyGeometry(t = now()) {
     const moving = byte.mode === 'scuttle';
-    const list = moving ? assets.walk : assets.idle;
-    const frame = list[byte.frame] || list[0];
-    const frameW = frame ? bodyH() * frame.width / frame.height : bodyW();
+    const frame = moving
+      ? assets.walk[byte.frame] || assets.walk[0]
+      : byte.mode === 'scheming' ? assets.scheming
+        : byte.frame === 2 ? assets.blink
+          : byte.frame === 4 ? assets.curious : assets.idle;
+    const frameW = bodyW();
     const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
     const horizontalSquish = Math.max(byte.wallSquish, byte.grabSquishX);
     const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - horizontalSquish * .9 + byte.grabSquishY * .45);
@@ -920,23 +923,18 @@
       ctx.restore();
     }
 
-    const { frame: baseFrame, frameW: baseFrameW, bob, squeezeX, squeezeY } = bodyGeometry(t);
-    const scheming = byte.mode === 'scheming' && assets.scheming;
-    const frame = scheming || baseFrame;
-    const schemingScale = scheming ? Math.min(bodyW() / frame.width, bodyH() / frame.height) : 0;
-    const frameW = scheming ? frame.width * schemingScale : baseFrameW;
-    const frameH = scheming ? frame.height * schemingScale : bodyH();
+    const { frame, frameW, bob, squeezeX, squeezeY } = bodyGeometry(t);
+    const scheming = byte.mode === 'scheming';
     if (frame) {
       ctx.save();
       if (scheming) {
-        const feetY = byte.y - cameraY + bodyH() * .5 + bob;
-        ctx.drawImage(frame, byte.x - frameW / 2, feetY - frameH, frameW, frameH);
+        ctx.drawImage(frame, byte.x - frameW / 2, byte.y - cameraY - bodyH() / 2, frameW, bodyH());
       } else {
         ctx.translate(byte.x, byte.y - cameraY + bob);
         ctx.rotate(byte.angle);
         ctx.scale(byte.facing, 1);
         ctx.scale(squeezeX, squeezeY);
-        ctx.drawImage(frame, -frameW / 2, -frameH / 2, frameW, frameH);
+        ctx.drawImage(frame, -frameW / 2, -bodyH() / 2, frameW, bodyH());
       }
       ctx.restore();
     }
@@ -957,8 +955,14 @@
     draw(t);
     requestAnimationFrame(loop);
   }
-  Promise.all([loadFrames('front', 6), loadFrames('diagonal', 8), loadImage('assets/scheming-byte.png')]).then(([idle, walk, scheming]) => {
-    assets.idle = idle; assets.walk = walk;
+  Promise.all([
+    loadImage('assets/hq/idle.png'),
+    loadImage('assets/hq/blink.png'),
+    loadImage('assets/hq/curious.png'),
+    loadFrames('hq/scuttle', 4),
+    loadImage('assets/hq/scheming.png'),
+  ]).then(([idle, blink, curious, walk, scheming]) => {
+    assets.idle = idle; assets.blink = blink; assets.curious = curious; assets.walk = walk;
     assets.scheming = scheming;
     resize();
     byte.x = world.w * .5; byte.y = floorY(); byte.blinkAt = now() + 1400;

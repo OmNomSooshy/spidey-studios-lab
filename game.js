@@ -1021,8 +1021,9 @@
     const distance = Math.max(1, Math.hypot(dx, dy));
     buttonBody.vx = dx / distance * 330;
     buttonBody.vy = dy / distance * 330;
-    // Byte can steal the lamp without manufacturing sensor consent.
-    if (earth.permissionGranted || earth.lastSample && now() - earth.lastSample < 3000) enableEarthGravity(true);
+    // The theft's established consequence is Earth gravity; it is an authored prank,
+    // not a Human Fingers request to grant sensor permission.
+    enableEarthGravity(true);
     voice('crime', .8); tactile(.4);
     buttonWeb.phase = 'attached';
     buttonWeb.elapsed = 0;

@@ -82,12 +82,12 @@ const out=process.env.BYTE_QA_OUTPUT || require('node:path').join(require('node:
   assert(!waking.active);assert.equal(waking.phase,'awake');assert.equal(waking.vx,90);await touch('touchEnd');
  });
  await reset();
- await check('scheming precedes lamp theft, which needs no sensor consent',async()=>{
+ await check('scheming pulls the gravity control down and activates Earth gravity without sensor consent',async()=>{
   await page.evaluate(()=>{__byteProbe.autonomy.choice='button'});await advance(5.05);
   const a=await page.evaluate(()=>({phase:__byteProbe.buttonWeb.phase,mode:__byteProbe.byte.mode,src:__byteProbe.bodyGeometry().frame.src}));
   assert.equal(a.phase,'scheming');assert.equal(a.mode,'scheming');assert(a.src.endsWith('/scheming.png'));await shot('candidate-scheming');
-  await advance(2.5);let s=await page.evaluate(()=>({loose:__byteProbe.buttonBody.loose,y:__byteProbe.buttonBody.y,earth:__byteProbe.earth.enabled}));
-  assert(s.loose);assert(!s.earth);assert(s.y>100);await shot('candidate-crime');
+  await advance(2.5);let s=await page.evaluate(()=>({loose:__byteProbe.buttonBody.loose,y:__byteProbe.buttonBody.y,earth:__byteProbe.earth.enabled,label:document.querySelector('#gravity-label').textContent,phase:__byteProbe.buttonWeb.phase}));
+  assert(s.loose);assert(s.earth);assert.match(s.label,/EARTH OWNS DOWN/);assert.equal(s.phase,'released');assert(s.y>100);await shot('candidate-crime');
  });
  await reset();
  await check('continuous Earth vector supports non-bottom scuttle and corners',async()=>{

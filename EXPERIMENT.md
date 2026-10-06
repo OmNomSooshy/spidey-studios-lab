@@ -38,10 +38,11 @@ The player's planted room strand retains its ownership and pull-only law. Sensor
 - **Revised light/voice ground intent.** These initially approached only along the screen floor. They now project onto the current supported tangent, including side-wall scuttle. Support changes do not discretize gravity.
 - **Revised the climbing overlay.** The large room window initially intercepted a legitimate upstairs web point. Upstairs now keeps only a small close control in the bottom corner when sensing is open.
 - **Revised permission lifetime.** Late grants, video playback, and AudioContext resume all have cancellation checks. Empty motion events do not claim a functioning sensor. Backgrounding stops tracks and contexts; foregrounding does not silently reacquire anything.
+- **Kept the prank's established consequence.** Byte dislodging the gravity control activates Earth mode, regardless of prior sensor permission. The control still owns Human Fingers' explicit sensor request and ordinary on/off toggle.
 
 ## Self-QA
 
-The final suites exercise 38 focused scenarios (20 inherited creature/device checks plus 18 new room checks), along with a live browser capture run, trusted virtual sensor run, combined-input stress run, and the inherited endurance run.
+The final suites exercise 39 focused scenarios (21 inherited creature/device checks plus 18 new room checks), along with a live browser capture run, trusted virtual sensor run, combined-input stress run, and the inherited endurance run.
 
 - Real browser `getUserMedia`, video pixels, MediaStream audio, FFT/RMS, normal animation frames and physics were run with reproducible camera/audio fixture files. That complete pipeline produced voice attention, sound flight, breath lift, a sleeping strand after darkening, and waking when the view brightened.
 - Chromium's virtual hardware backend emitted **trusted DeviceMotion events** for gyroscope and linear acceleration. The listener converted those events into opposite-glass inertial forces and a pickup response with Screen gravity still selected.

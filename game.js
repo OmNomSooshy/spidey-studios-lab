@@ -83,6 +83,7 @@
     const stamp = performance.now();
     if (!p || !audio.enabled || !audio.ctx || audio.ctx.state !== 'running' || stamp - (audio.last[kind] || -10000) < (kind === 'land' ? 180 : kind === 'pet' ? 3000 : 850)) return;
     audio.last[kind] = stamp;
+    window.ByteRoom?.ignoreSound(p[2] * 1000 + 180);
     const start = audio.ctx.currentTime, duration = p[2];
     const osc = audio.ctx.createOscillator(), gain = audio.ctx.createGain();
     osc.type = kind === 'land' || kind === 'boing' ? 'sine' : 'triangle';
@@ -121,6 +122,7 @@
     }
   }
   function noticeTouch(x, y, id) {
+    outside.dozing = false; outside.dream = false; outside.powerInvite = false; outside.bask = 0;
     unlockAudio();
     wakeByte();
     life.lastTouch = now();
@@ -244,9 +246,11 @@
     const altitude = clamp(-camera / (h * 3), 0, 1);
     const mix = (a, b, v) => `rgb(${a.map((x, i) => Math.round(x + (b[i] - x) * v)).join(',')})`;
     const sky = ctx.createLinearGradient(0, 0, 0, h);
-    sky.addColorStop(0, mix([248,235,204], [39,71,74], altitude));
-    sky.addColorStop(.55, mix([247,239,224], [82,113,112], altitude));
-    sky.addColorStop(1, mix([221,231,212], [154,178,154], altitude));
+    const darkness = room.state.open && room.state.camera && room.state.lastFrame > 0 ? clamp((.2 - room.state.brightness) / .2, 0, 1) : 0;
+    const dim = (day, night) => day.map((v, i) => v + (night[i] - v) * darkness);
+    sky.addColorStop(0, mix(dim([248,235,204], [38,53,59]), [39,71,74], altitude));
+    sky.addColorStop(.55, mix(dim([247,239,224], [49,65,67]), [82,113,112], altitude));
+    sky.addColorStop(1, mix(dim([221,231,212], [67,83,77]), [154,178,154], altitude));
     ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
     const target = !obby.hasLaunched ? buttonTargetInCanvas() : { x: w * .72, y: -60 };
     const glow = ctx.createRadialGradient(target.x, target.y, 0, target.x, target.y, w * 1.25);
@@ -292,6 +296,189 @@
     ctx.strokeRect(0, 0, w, h);
   }
 
+
+  const room = window.ByteRoom;
+  const outside = { soundId: 0, shadowId: 0, joltId: 0, chargeId: 0, bask: 0, powerInvite: false, stimulusAt: 0, duck: 0, wind: 0, dream: false, dozing: false, seekTime: 0, lastMove: 0, reaction: '', reactionTime: 0 };
+  function openRoom(kind = 'both') {
+    if (room.state.open || room.state.pending) {
+      room.close(); stopMotionIfUnused();
+      if (outside.dream || outside.dozing) { outside.dream = false; outside.dozing = false; wakeByte(); }
+      return;
+    }
+    unlockAudio();
+    void room.open(kind, requestEarthPermission).then(result => { if (result?.motion) startMotionListener(); });
+  }
+  window.addEventListener('byte-room-closed', () => { stopMotionIfUnused(); outside.powerInvite = false; outside.bask = 0; outside.dozing = false; outside.wind = 0; });
+  document.querySelector('#room-window').addEventListener('click', () => openRoom());
+  document.querySelectorAll('[data-sense]').forEach(button => button.addEventListener('click', () => {
+    room.close(); openRoom(button.dataset.sense);
+  }));
+  function reactToRoom(source, power = 1) {
+    outside.reaction = source; outside.reactionTime = 1.5;
+    outside.dream = false; outside.dozing = false; outside.bask = 0; outside.powerInvite = false; outside.stimulusAt = now(); wakeByte();
+    life.curious = 2.4; life.gazeX = world.w * .5; life.gazeY = 63;
+    life.reactionBlink = .2;
+    if (byte.grabbed) { outside.duck = Math.max(outside.duck, .6); return; }
+    byte.targetX = byte.targetY = null; life.pendingFollow = false;
+    const down = earth.enabled && !obby.hasLaunched ? earthDown() : { x: 0, y: 1 };
+    byte.mode = 'air';
+    byte.vx += -down.x * 300 * power + (byte.x < world.w * .5 ? -1 : 1) * 65 * power;
+    byte.vy += -down.y * 300 * power;
+    byte.spin += (byte.x < world.w * .5 ? -.4 : .4) * power;
+    byte.squash = Math.max(byte.squash, .22);
+    tactile(.3);
+  }
+  function roomGroundPoint(x, y) {
+    const extent = bodyHalfExtents();
+    return { x: clamp(x, extent.x + 4, world.w - extent.x - 4),
+      y: earth.enabled ? clamp(y, extent.y + 4, world.h - extent.y - 4) : floorY() };
+  }
+  function groundDistance(point) {
+    const dx = point.x - byte.x, dy = point.y - byte.y;
+    return earth.enabled ? dx * earth.support.tangentX + dy * earth.support.tangentY : dx;
+  }
+  function seekRoomPoint(point) {
+    if (earth.enabled && !earth.support.active) return false;
+    if (Math.abs(groundDistance(point)) <= 15) return false;
+    byte.targetX = point.x; byte.targetY = point.y; byte.mode = 'scuttle';
+    autonomy.choice = null; autonomy.idleTime = 0;
+    return true;
+  }
+  function roomLightPoint() {
+    const sensed = room.state;
+    const point = roomGroundPoint(sensed.lightX * world.w, sensed.lightY * world.h);
+    // Project the patch onto an actual contact surface; this does not select or alter gravity.
+    switch (earth.enabled ? earth.support.edge : 'bottom') {
+      case 'left': return { x: 12, y: point.y };
+      case 'right': return { x: world.w - 12, y: point.y };
+      case 'top': return { x: point.x, y: 12 };
+      case 'bottom': return { x: point.x, y: world.h - 26 };
+      default: return point;
+    }
+  }
+  function roomPowerPoint() {
+    const sensed = room.state, dx = -(sensed.breathX || 0), dy = -(sensed.breathY ?? -1);
+    const reach = Math.min(Math.abs(dx) > .01 ? world.w * .5 / Math.abs(dx) : Infinity,
+      Math.abs(dy) > .01 ? world.h * .5 / Math.abs(dy) : Infinity);
+    return { x: world.w * .5 + dx * reach, y: world.h * .5 + dy * reach };
+  }
+  function updateOutside(dt, t = now()) {
+    const sensed = room.state;
+    outside.duck *= Math.exp(-dt * 3.6);
+    outside.reactionTime = Math.max(0, outside.reactionTime - dt);
+    outside.wind += ((sensed.open && sensed.mic ? sensed.breath : 0) - outside.wind) * (1 - Math.exp(-dt * 8));
+    if (!sensed.open || sensed.suspended) return;
+    if (sensed.listeningFor > .1 || sensed.breath > .04) outside.stimulusAt = t;
+    if (sensed.chargeId !== outside.chargeId) {
+      outside.chargeId = sensed.chargeId; outside.powerInvite = sensed.charging; outside.bask = 0;
+      outside.dream = false; outside.dozing = false; wakeByte();
+      outside.stimulusAt = t; life.curious = 2; outside.reaction = sensed.charging ? 'power' : 'unplug'; outside.reactionTime = 2;
+    }
+    if (sensed.soundId !== outside.soundId) { outside.soundId = sensed.soundId; reactToRoom('sound', clamp((sensed.level - .03) * 5 + .7, .6, 1.3)); }
+    if (sensed.joltId !== outside.joltId) { outside.joltId = sensed.joltId; reactToRoom('phone', .75); }
+    if (sensed.shadowId !== outside.shadowId) {
+      outside.shadowId = sensed.shadowId;
+      outside.duck = 1; life.reactionBlink = .25; life.curious = 2;
+      outside.reaction = 'shadow'; outside.reactionTime = 1.1;
+    }
+    if (outside.dream && ((sensed.camera && sensed.brightness > .19) || sensed.level > .018 || outside.wind > .08)) {
+      outside.dream = false; outside.dozing = false; wakeByte(); life.curious = 2;
+      outside.reaction = 'wake'; outside.reactionTime = 1.5;
+    }
+    if (outside.dozing) {
+      if (life.pointer.active || Math.hypot(byte.vx, byte.vy) > 180 || sensed.brightness > .19 || sensed.level > .018 || outside.wind > .04) outside.dozing = false;
+      else outside.duck = Math.max(outside.duck, .55);
+    }
+    const unoccupied = !byte.grabbed && !life.pointer.active && !web.active && !obby.active && (buttonWeb.phase === 'waiting' || buttonWeb.phase === 'released');
+    if (sensed.camera && sensed.darkFor > 3 && unoccupied && life.phase === 'awake' && !outside.dozing && byte.mode === 'idle' && t - Math.max(outside.stimulusAt, life.lastTouch) > 2200) {
+      autonomy.choice = null; autonomy.idleTime = 0;
+      outside.dream = true;
+      if (earth.enabled) { outside.dozing = true; outside.duck = .6; } else beginRest();
+      outside.reaction = 'dark'; outside.reactionTime = 2;
+    }
+    if (unoccupied && outside.powerInvite && sensed.charging && life.phase === 'awake' && byte.mode === 'idle' && (!earth.enabled || earth.support.active)) {
+      const power = roomPowerPoint(), target = roomGroundPoint(power.x, power.y);
+      if (!seekRoomPoint(target)) { outside.powerInvite = false; outside.bask = 5; voice('pet', .4); }
+    }
+    outside.bask = Math.max(0, outside.bask - dt);
+    if (outside.bask > 0 && (life.pointer.active || !sensed.charging || outside.wind > .04 || sensed.level > .025)) outside.bask = 0;
+    if (sensed.mic && sensed.listeningFor > .2 && life.phase === 'awake') {
+      life.curious = Math.max(life.curious, .6); life.gazeX = world.w * .5; life.gazeY = 63;
+    }
+    outside.seekTime += dt;
+    if (unoccupied && life.phase === 'awake' && byte.mode === 'idle' && outside.seekTime > 1.7 && outside.bask <= 0 && !outside.powerInvite && (!earth.enabled || earth.support.active) && outside.wind < .04) {
+      const hearing = sensed.mic && sensed.listeningFor > .6;
+      const lit = sensed.camera && sensed.lastFrame > 0 && sensed.contrast > .06 && sensed.brightness > .16;
+      if (hearing || lit) {
+        const target = hearing ? roomGroundPoint(world.w * .5, 63) : roomGroundPoint(sensed.lightX * world.w, sensed.lightY * world.h);
+        if (Math.abs(groundDistance(target)) > bodyW() * .3 && seekRoomPoint(target)) {
+          life.curious = 1.5;
+          outside.reaction = hearing ? 'listen' : 'light'; outside.reactionTime = 2;
+        }
+        outside.seekTime = 0;
+      }
+    }
+    if (sensed.camera && sensed.movement > .065 && t - outside.lastMove > 3000 && unoccupied && life.phase === 'awake' && byte.mode === 'idle') {
+      outside.lastMove = t; outside.duck = .6; life.curious = 2.5;
+      life.gazeX = sensed.movementX * world.w; life.gazeY = sensed.movementY * world.h;
+      outside.reaction = 'movement'; outside.reactionTime = 2;
+      const threat = roomGroundPoint(life.gazeX, life.gazeY), away = groundDistance(threat) > 0 ? -1 : 1;
+      const tx = earth.enabled ? earth.support.tangentX : 1, ty = earth.enabled ? earth.support.tangentY : 0;
+      seekRoomPoint(roomGroundPoint(byte.x + tx * away * bodyW() * .7, byte.y + ty * away * bodyW() * .7));
+    }
+    if (byte.grabbed) return;
+    const wind = outside.wind;
+    const freshMotion = sensed.motion && t - sensed.lastMotion < 180;
+    const rx = byte.x - world.w * .5, ry = (byte.y - (obby.hasLaunched ? obby.cameraY : 0)) - world.h * .5;
+    const turn = freshMotion ? sensed.turnA : 0;
+    const windX = sensed.breathX || 0, windY = sensed.breathY ?? -1;
+    // Device Y points up; canvas Y points down. The glass turns CCW for positive local-Z rate.
+    const fx = wind * (windX * 3600 + clamp(rx * .006, -.55, .55) * 900) + (freshMotion ? sensed.inertiaX - turn * ry * .15 : 0);
+    const fy = wind * windY * 3600 + (freshMotion ? sensed.inertiaY + turn * rx * .15 : 0);
+    if (wind > .04 || (freshMotion && Math.hypot(fx, fy) > 100)) {
+      if (life.phase !== 'awake') { outside.dream = false; wakeByte(); }
+      if (byte.mode === 'idle' || byte.mode === 'scuttle' || byte.mode === 'scheming') {
+        byte.mode = 'air'; byte.targetX = byte.targetY = null; life.pendingFollow = false;
+      }
+      byte.vx += clamp(fx, -5000, 5000) * dt;
+      byte.vy += clamp(fy, -5000, 5000) * dt;
+      byte.spin = clamp(byte.spin + turn * .22 * dt, -7, 7);
+    }
+  }
+  function drawOutside(t) {
+    const sensed = room.state;
+    if (!sensed.open) return;
+    if (sensed.battery && sensed.charging && !obby.hasLaunched) {
+      const power = roomPowerPoint(), dx = room.state.breathX || 0, dy = room.state.breathY ?? -1;
+      const heat = ctx.createRadialGradient(power.x, power.y, 0, power.x, power.y, world.w * .4);
+      heat.addColorStop(0, '#ffc76b55'); heat.addColorStop(1, '#ffc76b00');
+      ctx.fillStyle = heat; ctx.fillRect(0, 0, world.w, world.h);
+      ctx.strokeStyle = '#cb914b88'; ctx.lineWidth = 2; ctx.beginPath();
+      ctx.moveTo(power.x + dx * 5 - dy * 13, power.y + dy * 5 + dx * 13);
+      ctx.lineTo(power.x + dx * 5 + dy * 13, power.y + dy * 5 - dx * 13); ctx.stroke();
+    }
+    if (sensed.camera && sensed.lastFrame > 0 && !obby.hasLaunched) {
+      const pool = roomLightPoint();
+      const light = Math.max(.02, sensed.brightness);
+      const gradient = ctx.createRadialGradient(pool.x, pool.y, 0, pool.x, pool.y, world.w * .62);
+      const color = sensed.color.map(v => Math.round(Math.min(255, v + 45)));
+      gradient.addColorStop(0, `rgba(${color.join(',')},${light * .55})`); gradient.addColorStop(1, `rgba(${color.join(',')},0)`);
+      ctx.fillStyle = gradient; ctx.fillRect(0, 0, world.w, world.h);
+      ctx.save(); ctx.globalAlpha = sensed.brightness * .11; ctx.fillStyle = `rgb(${color.join(',')})`;
+      ctx.beginPath(); ctx.moveTo(world.w * .5 - 30, 89); ctx.lineTo(pool.x - bodyW() * .65, pool.y); ctx.lineTo(pool.x + bodyW() * .65, pool.y); ctx.lineTo(world.w * .5 + 30, 89); ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+    if (outside.wind > .04) {
+      ctx.save(); ctx.strokeStyle = '#fffcde'; ctx.globalAlpha = outside.wind * .5; ctx.lineWidth = 1.1;
+      const dx = sensed.breathX || 0, dy = sensed.breathY ?? -1;
+      for (let i = 0; i < 11; i++) {
+        const phase = ((t * .00065 + i * .163) % 1), sideways = ((i * .618) % 1 - .5) * world.w;
+        const x = world.w * .5 - dx * world.w * .48 + sideways * -dy + dx * phase * world.w;
+        const y = world.h * .5 - dy * world.h * .48 + sideways * dx + dy * phase * world.h;
+        ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + dx * 20 - dy * 6, y + dy * 20 + dx * 6, x + dx * 50, y + dy * 50); ctx.stroke();
+      }
+      ctx.restore();
+    }
+  }
 
   function resize() {
     const oldW = world.w, oldH = world.h, oldSpriteH = spriteH;
@@ -354,7 +541,7 @@
         : byte.frame === 2 ? assets.blink
           : byte.frame === 4 ? assets.curious : assets.idle;
     if (!moving && byte.mode !== 'scheming') {
-      if (life.phase === 'sleep' || life.pet > .45 || life.reactionBlink > 0) frame = assets.blink;
+      if (life.phase === 'sleep' || outside.dozing || outside.bask > 0 || life.pet > .45 || life.reactionBlink > 0) frame = assets.blink;
       else if (life.curious > 0 && !byte.blinking && (byte.mode === 'idle' || life.phase === 'nest-cast')) frame = assets.curious;
     }
     const frameW = bodyW();
@@ -362,10 +549,12 @@
     const horizontalSquish = Math.max(byte.wallSquish, byte.grabSquishX);
     let squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - horizontalSquish * .9 + byte.grabSquishY * .45);
     let squeezeY = (1 - byte.squash * .45 + byte.stretch * .35) * (1 + horizontalSquish * .55 - byte.grabSquishY * .9);
-    const breath = Math.sin(t * (life.phase === 'sleep' ? .0016 : .003)) * .007;
+    const breath = Math.sin(t * (life.phase === 'sleep' || outside.dozing ? .0016 : .003)) * .007;
     squeezeX *= 1 + breath + life.pet * .025;
     squeezeY *= 1 - breath - life.pet * .035;
     const lean = !earth.enabled && byte.mode === 'idle' && life.gazeX !== null && life.curious > 0 ? clamp((life.gazeX - byte.x) * .00028, -.07, .07) : 0;
+    squeezeX *= 1 + outside.duck * .22;
+    squeezeY *= 1 - outside.duck * .32;
     const angle = byte.angle + lean;
     return { frame, frameW, bob, squeezeX, squeezeY, angle };
   }
@@ -1357,6 +1546,7 @@
   function draw(t) {
     const cameraY = obby.hasLaunched ? obby.cameraY : 0;
     drawHabitat(t);
+    drawOutside(t);
     drawPlatforms();
     drawNest();
 
@@ -1391,7 +1581,7 @@
   });
   // Runtime handles are available only to an explicitly enabled local QA harness.
   if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probe')) {
-    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte };
+    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, room, outside, updateOutside, reactToRoom, roomPowerPoint };
   }
 
   function loop(t) {
@@ -1399,6 +1589,8 @@
     lastTime = t;
     if (document.hidden) { requestAnimationFrame(loop); return; }
     if (window.__byteProbe?.paused) { draw(t); requestAnimationFrame(loop); return; }
+    room.sample(t);
+    updateOutside(dt, t);
     update(dt, t);
     updateLife(dt);
     updateAutonomy(dt);

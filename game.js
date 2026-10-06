@@ -1,7 +1,7 @@
 (() => {
   const canvas = document.querySelector('#scene');
   const ctx = canvas.getContext('2d', { alpha: false });
-  const assets = { idle: [], walk: [] };
+  const assets = { idle: [], walk: [], scheming: null };
   const gravityButton = document.querySelector('#gravity-toggle');
   const gravityLabel = document.querySelector('#gravity-label');
   const gravityStatus = document.querySelector('#gravity-status');
@@ -27,6 +27,14 @@
       img.onerror = () => resolve(null);
       img.src = `assets/${prefix}-${i}.png`;
     })));
+  }
+  function loadImage(src) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(null);
+      img.src = src;
+    });
   }
 
   const world = { w: 0, h: 0, dpr: 1 };
@@ -426,11 +434,28 @@
       }
       buttonWeb.idleTime += dt;
       if (buttonWeb.idleTime >= 4.8) {
-        const target = buttonTargetInCanvas();
-        byte.facing = target.x < byte.x ? -1 : 1;
-        const spool = spoolPosition();
-        byte.angle = clamp(Math.atan2(target.y - spool.y, target.x - spool.x) * .35, -.28, .28);
-        buttonWeb.phase = 'aim'; buttonWeb.elapsed = 0;
+        buttonWeb.phase = 'scheming'; buttonWeb.elapsed = 0;
+        byte.mode = 'scheming';
+        byte.targetX = byte.targetY = null;
+        byte.blinking = false;
+        byte.frame = 0;
+      }
+      return;
+    }
+    if (buttonWeb.phase === 'scheming') {
+      if (byte.grabbed || byte.mode !== 'scheming') {
+        buttonWeb.phase = 'waiting';
+        buttonWeb.idleTime = buttonWeb.elapsed = 0;
+        autonomy.choice = null;
+        autonomy.idleTime = 0;
+        if (byte.mode === 'scheming') byte.mode = 'idle';
+        return;
+      }
+      buttonWeb.elapsed += dt;
+      if (buttonWeb.elapsed >= 1.15) {
+        byte.mode = 'idle';
+        buttonWeb.phase = 'aim';
+        buttonWeb.elapsed = 0;
       }
       return;
     }
@@ -895,14 +920,24 @@
       ctx.restore();
     }
 
-    const { frame, frameW, bob, squeezeX, squeezeY } = bodyGeometry(t);
+    const { frame: baseFrame, frameW: baseFrameW, bob, squeezeX, squeezeY } = bodyGeometry(t);
+    const scheming = byte.mode === 'scheming' && assets.scheming;
+    const frame = scheming || baseFrame;
+    const schemingScale = scheming ? Math.min(bodyW() / frame.width, bodyH() / frame.height) : 0;
+    const frameW = scheming ? frame.width * schemingScale : baseFrameW;
+    const frameH = scheming ? frame.height * schemingScale : bodyH();
     if (frame) {
       ctx.save();
-      ctx.translate(byte.x, byte.y - cameraY + bob);
-      ctx.rotate(byte.angle);
-      ctx.scale(byte.facing, 1);
-      ctx.scale(squeezeX, squeezeY);
-      ctx.drawImage(frame, -frameW / 2, -bodyH() / 2, frameW, bodyH());
+      if (scheming) {
+        const feetY = byte.y - cameraY + bodyH() * .5 + bob;
+        ctx.drawImage(frame, byte.x - frameW / 2, feetY - frameH, frameW, frameH);
+      } else {
+        ctx.translate(byte.x, byte.y - cameraY + bob);
+        ctx.rotate(byte.angle);
+        ctx.scale(byte.facing, 1);
+        ctx.scale(squeezeX, squeezeY);
+        ctx.drawImage(frame, -frameW / 2, -frameH / 2, frameW, frameH);
+      }
       ctx.restore();
     }
     // Keep a planted endpoint above Byte's opaque artwork so its hit target stays visible.
@@ -922,8 +957,9 @@
     draw(t);
     requestAnimationFrame(loop);
   }
-  Promise.all([loadFrames('front', 6), loadFrames('diagonal', 8)]).then(([idle, walk]) => {
+  Promise.all([loadFrames('front', 6), loadFrames('diagonal', 8), loadImage('assets/scheming-byte.png')]).then(([idle, walk, scheming]) => {
     assets.idle = idle; assets.walk = walk;
+    assets.scheming = scheming;
     resize();
     byte.x = world.w * .5; byte.y = floorY(); byte.blinkAt = now() + 1400;
     requestAnimationFrame(loop);

@@ -9,6 +9,7 @@
     enabled: false, x: 0, y: 0, restX: 0, restY: 0,
     initialized: false, lastSample: 0, noSampleTimer: 0,
     permissionRequested: false, permissionGranted: false, listening: false,
+    support: { active: false, edge: null, contacts: [], tangentX: 1, tangentY: 0 },
   };
   const web = { active: false, planted: false, pointerId: null, anchorX: 0, anchorY: 0, deployedLength: 0, maxLength: 0 };
   const buttonWeb = { phase: 'waiting', idleTime: 0, elapsed: 0, progress: 0 };
@@ -109,7 +110,7 @@
       byte.grabSquishY = pressureY;
       const extent = bodyHalfExtents();
       const minX = extent.x, maxX = world.w - extent.x;
-      const minY = extent.y, maxY = Math.min(floorY(), world.h - extent.y);
+      const minY = extent.y, maxY = earth.enabled ? world.h - extent.y : Math.min(floorY(), world.h - extent.y);
       const pushX = Math.max(minX - desiredX, desiredX - maxX, 0);
       const pushY = Math.max(minY - desiredY, desiredY - maxY, 0);
       pressureX = clamp(pushX / halfW(), 0, .55);
@@ -119,7 +120,149 @@
     byte.grabSquishY = pressureY;
     const extent = bodyHalfExtents();
     byte.x = clamp(desiredX, extent.x, world.w - extent.x);
-    byte.y = clamp(desiredY, extent.y, Math.min(floorY(), world.h - extent.y));
+    byte.y = clamp(desiredY, extent.y, earth.enabled ? world.h - extent.y : Math.min(floorY(), world.h - extent.y));
+  }
+
+  function earthDown() {
+    const magnitude = Math.hypot(earth.x, earth.y);
+    return magnitude > 1 ? { x: earth.x / magnitude, y: earth.y / magnitude } : { x: 0, y: 1 };
+  }
+  function resetEarthSupport() {
+    earth.support.active = false;
+    earth.support.edge = null;
+    earth.support.contacts = [];
+    earth.support.tangentX = 1;
+    earth.support.tangentY = 0;
+  }
+  function updateEarthBoundaryContacts() {
+    const extent = bodyHalfExtents();
+    const minX = extent.x, maxX = world.w - extent.x;
+    const minY = extent.y, maxY = world.h - extent.y;
+    const down = earthDown();
+    const candidates = [];
+    const margin = 3;
+    if (byte.x <= minX + margin) candidates.push({ edge: 'left', load: -down.x, nx: 1, ny: 0, tx: 0, ty: Math.sign(-down.x || 1) });
+    if (byte.x >= maxX - margin) candidates.push({ edge: 'right', load: down.x, nx: -1, ny: 0, tx: 0, ty: Math.sign(-down.x || 1) });
+    if (byte.y <= minY + margin) candidates.push({ edge: 'top', load: -down.y, nx: 0, ny: 1, tx: Math.sign(down.y || 1), ty: 0 });
+    if (byte.y >= maxY - margin) candidates.push({ edge: 'bottom', load: down.y, nx: 0, ny: -1, tx: Math.sign(down.y || 1), ty: 0 });
+    const contacts = candidates.filter(contact => contact.load > .08);
+    let selected = contacts.sort((a, b) => b.load - a.load)[0] || null;
+    const current = contacts.find(contact => contact.edge === earth.support.edge);
+    if (current && selected && selected.edge !== current.edge && selected.load < current.load + .14) selected = current;
+    earth.support.contacts = contacts;
+    earth.support.edge = selected?.edge || null;
+    earth.support.active = !!selected;
+    if (contacts.length > 1) {
+      let tx = 0, ty = 0;
+      for (const contact of contacts) { tx += contact.tx * contact.load; ty += contact.ty * contact.load; }
+      const length = Math.hypot(tx, ty) || 1;
+      earth.support.tangentX = tx / length;
+      earth.support.tangentY = ty / length;
+    } else if (selected) {
+      earth.support.tangentX = selected.tx;
+      earth.support.tangentY = selected.ty;
+    }
+  }
+  function resolveEarthBoundaries() {
+    const extent = bodyHalfExtents();
+    const minX = extent.x, maxX = world.w - extent.x;
+    const minY = extent.y, maxY = world.h - extent.y;
+    const contacts = [];
+    if (byte.x < minX) { byte.x = minX; contacts.push({ edge: 'left', nx: 1, ny: 0, where: 'side' }); }
+    if (byte.x > maxX) { byte.x = maxX; contacts.push({ edge: 'right', nx: -1, ny: 0, where: 'side' }); }
+    if (byte.y < minY) { byte.y = minY; contacts.push({ edge: 'top', nx: 0, ny: 1, where: 'top' }); }
+    if (byte.y > maxY) { byte.y = maxY; contacts.push({ edge: 'bottom', nx: 0, ny: -1, where: 'floor' }); }
+    for (const contact of contacts) {
+      const intoScreen = byte.vx * contact.nx + byte.vy * contact.ny;
+      if (intoScreen < 0) {
+        const speed = -intoScreen;
+        const restitution = speed > 135 ? .34 : 0;
+        byte.vx -= (1 + restitution) * intoScreen * contact.nx;
+        byte.vy -= (1 + restitution) * intoScreen * contact.ny;
+        if (speed > 135) {
+          byte.spin += contact.edge === 'left' || contact.edge === 'right' ? (contact.edge === 'left' ? .35 : -.35) : 0;
+          impact(speed, contact.where);
+        }
+      }
+    }
+    updateEarthBoundaryContacts();
+  }
+  function earthBodyAngle() {
+    const down = earthDown();
+    // Canvas' local +Y axis is Byte's feet direction.
+    return Math.atan2(-down.x, down.y);
+  }
+  function moveEarthScuttle(dt) {
+    const dx = byte.targetX - byte.x, dy = byte.targetY - byte.y;
+    if (earth.support.active) {
+      const tangent = earth.support;
+      const along = dx * tangent.tangentX + dy * tangent.tangentY;
+      if (Math.abs(along) < 15) {
+        byte.targetX = byte.targetY = null;
+        byte.mode = 'idle'; byte.frame = 0; byte.frameClock = 0;
+        return;
+      }
+      const direction = Math.sign(along);
+      byte.facing = direction;
+      const speed = Math.min(530, Math.max(230, Math.abs(along) * 2.7));
+      const step = Math.min(Math.abs(along), speed * dt) * direction;
+      byte.x += tangent.tangentX * step;
+      byte.y += tangent.tangentY * step;
+      resolveEarthBoundaries();
+      return;
+    }
+    const distance = Math.hypot(dx, dy);
+    if (distance < 15) {
+      byte.x = byte.targetX; byte.y = byte.targetY;
+      byte.targetX = byte.targetY = null;
+      byte.mode = 'air'; byte.frame = 0; byte.frameClock = 0;
+      return;
+    }
+    byte.facing = dx < 0 ? -1 : 1;
+    const speed = Math.min(530, Math.max(230, distance * 2.7));
+    const step = Math.min(distance, speed * dt);
+    byte.x += dx / distance * step; byte.y += dy / distance * step;
+    resolveEarthBoundaries();
+  }
+  function updateEarthMotion(dt) {
+    const groundedBefore = earth.support.active;
+    if (byte.mode === 'scuttle' && byte.targetX !== null) {
+      moveEarthScuttle(dt);
+    } else {
+      if (byte.mode === 'idle' && !groundedBefore) byte.mode = 'air';
+      const grounded = byte.mode === 'idle' && groundedBefore;
+      byte.vx += earth.x * dt;
+      byte.vy += earth.y * dt;
+      if (grounded && earth.support.contacts.length) {
+        const tangent = earth.support;
+        const tangentSpeed = byte.vx * tangent.tangentX + byte.vy * tangent.tangentY;
+        const normalX = byte.vx - tangent.tangentX * tangentSpeed;
+        const normalY = byte.vy - tangent.tangentY * tangentSpeed;
+        byte.vx = normalX + tangent.tangentX * tangentSpeed * Math.exp(-dt * 2.2);
+        byte.vy = normalY + tangent.tangentY * tangentSpeed * Math.exp(-dt * 2.2);
+      }
+      byte.x += byte.vx * dt;
+      byte.y += byte.vy * dt;
+      resolveEarthBoundaries();
+      if (earth.support.active) {
+        const contact = earth.support.contacts.find(item => item.edge === earth.support.edge);
+        const separating = contact ? byte.vx * contact.nx + byte.vy * contact.ny : 0;
+        if (separating < 100 && Math.hypot(byte.vx, byte.vy) < 42) {
+          byte.mode = 'idle';
+          earth.restX = earth.x; earth.restY = earth.y;
+        }
+      }
+    }
+    if (earth.support.active) {
+      const target = earthBodyAngle();
+      let delta = target - byte.angle;
+      delta = Math.atan2(Math.sin(delta), Math.cos(delta));
+      byte.angle += delta * (1 - Math.exp(-dt * 12));
+    } else {
+      byte.angle += byte.spin * dt;
+      byte.spin *= Math.exp(-dt * 1.5);
+      byte.angle *= Math.exp(-dt * .65);
+    }
   }
 
   function spoolPosition(t = now()) {
@@ -142,7 +285,7 @@
     byte.x += nx * excess;
     byte.y += ny * excess;
     byte.x = clamp(byte.x, halfW(), world.w - halfW());
-    byte.y = clamp(byte.y, halfH(), floorY());
+    byte.y = clamp(byte.y, halfH(), earth.enabled ? world.h - halfH() : floorY());
 
     spool = spoolPosition();
     dx = web.anchorX - spool.x; dy = web.anchorY - spool.y;
@@ -290,6 +433,7 @@
     earth.enabled = false;
     earth.initialized = false;
     earth.x = 0; earth.y = 0;
+    resetEarthSupport();
     stopMotionIfUnused();
     setGravityButton('SCREEN OWNS DOWN', message, false);
   }
@@ -698,7 +842,9 @@
       canvas.setPointerCapture(e.pointerId);
     } else {
       byte.targetX = clamp(px, halfW(), world.w - halfW());
-      byte.targetY = clamp(py, floorY() - spriteH * .2, floorY());
+      byte.targetY = earth.enabled
+        ? clamp(py, halfH(), world.h - halfH())
+        : clamp(py, floorY() - spriteH * .2, floorY());
       byte.mode = 'scuttle';
     }
   }
@@ -790,7 +936,9 @@
       return;
     }
     if (web.active && byte.mode === 'idle') byte.mode = 'air';
-    if (byte.mode === 'scuttle' && byte.targetX !== null) {
+    if (earth.enabled && !obby.hasLaunched && ['air', 'idle', 'scuttle'].includes(byte.mode)) {
+      updateEarthMotion(dt);
+    } else if (byte.mode === 'scuttle' && byte.targetX !== null) {
       const dx = byte.targetX - byte.x, dy = byte.targetY - byte.y;
       byte.facing = dx < 0 ? -1 : 1;
       const d = Math.hypot(dx, dy);
@@ -867,6 +1015,7 @@
     }
 
     solveWebTether();
+    if (earth.enabled && !obby.hasLaunched) resolveEarthBoundaries();
     solveObbyWeb();
     landOnObbyPlatform(previousY);
     if (obby.hasLaunched && byte.y >= floorY() && byte.vy >= 0) landBackHome();
@@ -908,14 +1057,14 @@
     sky.addColorStop(0, '#e9f2f4'); sky.addColorStop(.66, '#f5f2e9'); sky.addColorStop(1, '#d8e6e3');
     ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
     // Barely-there play-space cues keep the creature as the only thing to play with.
-    if (floorScreenY > -bodyH() && floorScreenY < h + bodyH()) {
+    if (!earth.enabled && floorScreenY > -bodyH() && floorScreenY < h + bodyH()) {
       ctx.fillStyle = 'rgba(255,255,255,.37)';
       ctx.beginPath(); ctx.ellipse(w * .5, floorScreenY + bodyH() * .09, w * .46, h * .08, 0, 0, Math.PI * 2); ctx.fill();
     }
     drawPlatforms();
     const shadowY = Math.min(floorScreenY + bodyH() * .36, h - 12);
     const lift = Math.max(0, floorY() - byte.y);
-    if (floorScreenY > -bodyH() && floorScreenY < h + bodyH()) {
+    if (!earth.enabled && floorScreenY > -bodyH() && floorScreenY < h + bodyH()) {
       ctx.save();
       ctx.globalAlpha = clamp(.16 - lift / 1600, .045, .16);
       ctx.fillStyle = '#31413d';

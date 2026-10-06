@@ -8,11 +8,17 @@
   const earth = {
     enabled: false, x: 0, y: 0, restX: 0, restY: 0,
     initialized: false, lastSample: 0, noSampleTimer: 0,
-    permissionRequested: false, permissionGranted: false,
+    permissionRequested: false, permissionGranted: false, listening: false,
   };
   const web = { active: false, planted: false, pointerId: null, anchorX: 0, anchorY: 0, deployedLength: 0, maxLength: 0 };
   const buttonWeb = { phase: 'waiting', idleTime: 0, elapsed: 0, progress: 0 };
   const buttonBody = { loose: false, stationary: false, x: 0, y: 0, width: 0, height: 0, vx: 0, vy: 0 };
+  const obby = {
+    active: false, phase: 'room', idleTime: 0, cameraY: 0,
+    platforms: [], fallingPlatform: null, highestPlatformY: 0,
+    fallingTime: 0, hasLaunched: false,
+    web: { active: false, pointerId: null, anchorX: 0, anchorY: 0, length: 0 },
+  };
   function loadFrames(prefix, count) {
     return Promise.all(Array.from({ length: count }, (_, i) => new Promise((resolve) => {
       const img = new Image();
@@ -142,6 +148,37 @@
     byte.vy += ty * impulse;
     byte.spin += lever * impulse * inverseInertia;
   }
+  function solveObbyWeb() {
+    const tether = obby.web;
+    if (!obby.active || !tether.active) return;
+    let spool = spoolPosition();
+    let dx = tether.anchorX - spool.x, dy = tether.anchorY - spool.y;
+    let distance = Math.hypot(dx, dy);
+    if (distance <= tether.length || distance < .001) return;
+
+    const nx = dx / distance, ny = dy / distance;
+    byte.x += nx * (distance - tether.length);
+    byte.y += ny * (distance - tether.length);
+    byte.x = clamp(byte.x, halfW(), world.w - halfW());
+
+    spool = spoolPosition();
+    dx = tether.anchorX - spool.x; dy = tether.anchorY - spool.y;
+    distance = Math.hypot(dx, dy);
+    if (distance < .001) return;
+    const tx = dx / distance, ty = dy / distance;
+    const rx = spool.x - byte.x, ry = spool.y - byte.y;
+    const pointVx = byte.vx - byte.spin * ry;
+    const pointVy = byte.vy + byte.spin * rx;
+    const towardAnchor = pointVx * tx + pointVy * ty;
+    if (towardAnchor >= 0) return;
+
+    const lever = rx * ty - ry * tx;
+    const inverseInertia = 1 / Math.max(1, (spriteW * spriteW + spriteH * spriteH) / 12);
+    const impulse = -towardAnchor / (1 + lever * lever * inverseInertia);
+    byte.vx += tx * impulse;
+    byte.vy += ty * impulse;
+    byte.spin += lever * impulse * inverseInertia;
+  }
   function drawWeb() {
     if (!web.active) return;
     const spool = spoolPosition();
@@ -163,6 +200,40 @@
       ctx.beginPath(); ctx.arc(web.anchorX, web.anchorY, 2.5, 0, Math.PI * 2);
       ctx.fillStyle = '#fff'; ctx.fill();
     }
+    ctx.restore();
+  }
+  function drawPlatforms() {
+    if (!obby.active) return;
+    const cameraY = obby.cameraY;
+    const platforms = obby.platforms.slice();
+    if (obby.fallingPlatform) platforms.push(obby.fallingPlatform);
+    for (const platform of platforms) {
+      const y = platform.y - cameraY;
+      if (y < -platform.h || y > world.h + platform.h) continue;
+      ctx.fillStyle = '#43515a';
+      ctx.fillRect(platform.x, y, platform.w, platform.h);
+      ctx.fillStyle = '#e5ece7';
+      ctx.fillRect(platform.x, y, platform.w, 4);
+    }
+  }
+  function drawObbyWeb() {
+    const tether = obby.web;
+    if (!obby.active || !tether.active) return;
+    const spool = spoolPosition();
+    const x1 = spool.x, y1 = spool.y - obby.cameraY;
+    const x2 = tether.anchorX, y2 = tether.anchorY - obby.cameraY;
+    const distance = Math.hypot(x2 - x1, y2 - y1);
+    const slack = Math.max(0, tether.length - distance);
+    const midX = (x1 + x2) * .5;
+    const midY = (y1 + y2) * .5 + Math.min(32, slack * .28);
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.quadraticCurveTo(midX, midY, x2, y2);
+    ctx.strokeStyle = 'rgba(38,49,58,.88)'; ctx.lineWidth = 4; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.quadraticCurveTo(midX, midY, x2, y2);
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(x2, y2, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff'; ctx.fill();
     ctx.restore();
   }
   function buttonTargetInCanvas() {
@@ -200,12 +271,22 @@
     gravityButton.setAttribute('aria-label', pressed ? 'Return to screen-relative gravity' : 'Enable Earth-relative gravity');
   }
   function stopEarthGravity(message = '') {
-    window.removeEventListener('devicemotion', readEarthGravity);
     clearTimeout(earth.noSampleTimer);
     earth.enabled = false;
     earth.initialized = false;
     earth.x = 0; earth.y = 0;
+    stopMotionIfUnused();
     setGravityButton('SCREEN OWNS DOWN', message, false);
+  }
+  function startMotionListener() {
+    if (!('DeviceMotionEvent' in window) || earth.listening) return;
+    window.addEventListener('devicemotion', readEarthGravity, { passive: true });
+    earth.listening = true;
+  }
+  function stopMotionIfUnused() {
+    if (earth.enabled || obby.active || !earth.listening) return;
+    window.removeEventListener('devicemotion', readEarthGravity);
+    earth.listening = false;
   }
   async function requestEarthPermission() {
     const Motion = window.DeviceMotionEvent;
@@ -241,7 +322,7 @@
       earth.x += (targetX - earth.x) * blend;
       earth.y += (targetY - earth.y) * blend;
     }
-    if (byte.mode === 'idle' && Math.hypot(earth.x - earth.restX, earth.y - earth.restY) > 95) {
+    if (earth.enabled && byte.mode === 'idle' && Math.hypot(earth.x - earth.restX, earth.y - earth.restY) > 95) {
       byte.mode = 'air';
       byte.vx = byte.vy = 0;
     }
@@ -255,7 +336,7 @@
       earth.x = 0; earth.y = fromByte ? 1650 : 0;
     }
     setGravityButton('EARTH OWNS DOWN', fromByte ? 'BYTE DID THAT' : 'ROTATE YOUR PHONE', true);
-    window.addEventListener('devicemotion', readEarthGravity, { passive: true });
+    startMotionListener();
     byte.targetX = byte.targetY = null;
     if (!byte.grabbed && byte.mode === 'idle') {
       byte.mode = 'air';
@@ -335,7 +416,7 @@
   }
   function updateButtonWeb(dt) {
     if (buttonWeb.phase === 'waiting') {
-      if (byte.mode !== 'idle' || byte.grabbed || web.active || buttonBody.loose) {
+      if (byte.mode !== 'idle' || byte.grabbed || web.active || buttonBody.loose || obby.active) {
         buttonWeb.idleTime = 0;
         return;
       }
@@ -366,6 +447,142 @@
     }
   }
 
+  function finishObby() {
+    obby.active = false;
+    obby.phase = 'room';
+    obby.idleTime = 0;
+    obby.cameraY = 0;
+    obby.platforms = [];
+    obby.fallingPlatform = null;
+    obby.fallingTime = 0;
+    obby.hasLaunched = false;
+    obby.web.active = false;
+    obby.web.pointerId = null;
+    stopMotionIfUnused();
+  }
+  function spawnPlatformAbove() {
+    const previous = obby.platforms[obby.platforms.length - 1];
+    if (!previous) return;
+    const width = Math.min(Math.max(spriteW * .68, 82), Math.max(72, world.w - 24));
+    const previousCenter = previous.x + previous.w * .5;
+    const center = clamp(previousCenter + (Math.random() - .5) * world.w * .58,
+      width * .5 + 10, world.w - width * .5 - 10);
+    const y = previous.y - spriteH * (.88 + Math.random() * .14);
+    obby.platforms.push({ x: center - width * .5, y, w: width, h: 18 });
+    obby.highestPlatformY = y;
+  }
+  function fillPlatformsAhead() {
+    const targetY = obby.cameraY - world.h * 1.35;
+    let guard = 0;
+    while (obby.highestPlatformY > targetY && guard++ < 24) spawnPlatformAbove();
+  }
+  function beginObby() {
+    obby.active = true;
+    obby.phase = 'dropping';
+    obby.idleTime = 0;
+    obby.cameraY = 0;
+    obby.platforms = [];
+    obby.fallingTime = 0;
+    obby.hasLaunched = false;
+    obby.web.active = false;
+    startMotionListener();
+    const width = Math.min(Math.max(spriteW * .94, 116), Math.max(80, world.w - 24));
+    const x = clamp(byte.x - width * .5, 8, Math.max(8, world.w - width - 8));
+    obby.fallingPlatform = {
+      x, y: -24, targetY: floorY() + spriteH * .48,
+      w: width, h: 18, vy: 0,
+    };
+  }
+  function launchFromFirstPlatform(platform) {
+    const targetX = platform.x + platform.w * .5;
+    byte.y = platform.y - halfH();
+    byte.facing = targetX < byte.x ? -1 : 1;
+    byte.mode = 'air';
+    byte.targetX = byte.targetY = null;
+    byte.vx = clamp((targetX - byte.x) / .82, -330, 330);
+    byte.vy = -1080;
+    byte.squash = .12;
+    byte.stretch = .15;
+    obby.phase = 'climb';
+    obby.hasLaunched = true;
+    obby.fallingTime = 0;
+    fillPlatformsAhead();
+  }
+  function updateObby(dt) {
+    if (!obby.active) {
+      if (byte.mode === 'idle' && !byte.grabbed && !web.active && buttonWeb.phase === 'released') {
+        obby.idleTime += dt;
+        if (obby.idleTime >= 2.6) beginObby();
+      } else {
+        obby.idleTime = 0;
+      }
+      return;
+    }
+
+    if (obby.phase === 'dropping' && obby.fallingPlatform) {
+      const platform = obby.fallingPlatform;
+      platform.vy += 1750 * dt;
+      platform.y += platform.vy * dt;
+      if (platform.y >= platform.targetY) {
+        platform.y = platform.targetY;
+        const landed = { x: platform.x, y: platform.y, w: platform.w, h: platform.h };
+        obby.fallingPlatform = null;
+        obby.platforms.push(landed);
+        obby.highestPlatformY = landed.y;
+        launchFromFirstPlatform(landed);
+      }
+    }
+
+    if (obby.hasLaunched && byte.vy > 80) {
+      obby.fallingTime += dt;
+      if (obby.fallingTime > .82) obby.phase = 'fall';
+    } else {
+      obby.fallingTime = 0;
+    }
+    if (obby.phase === 'climb') fillPlatformsAhead();
+
+    const screenY = byte.y - obby.cameraY;
+    if (screenY < world.h * .38) obby.cameraY = byte.y - world.h * .38;
+    else if (screenY > world.h * .72 && obby.cameraY < 0) {
+      obby.cameraY = Math.min(0, byte.y - world.h * .72);
+    }
+    if (obby.phase === 'fall') {
+      obby.platforms = obby.platforms.filter(platform => platform.y - obby.cameraY > -world.h * .7);
+    }
+  }
+  function landOnObbyPlatform(previousY) {
+    if (!obby.active || !obby.hasLaunched || byte.vy <= 0) return;
+    const previousBottom = previousY + halfH();
+    const currentBottom = byte.y + halfH();
+    const platform = obby.platforms.find(item =>
+      previousBottom <= item.y && currentBottom >= item.y
+      && byte.x + halfW() > item.x && byte.x - halfW() < item.x + item.w);
+    if (!platform) return;
+    byte.y = platform.y - halfH();
+    byte.vy = -930;
+    byte.mode = 'air';
+    byte.squash = .12;
+    byte.stretch = .18;
+    obby.phase = 'climb';
+    obby.fallingTime = 0;
+    fillPlatformsAhead();
+  }
+  function landBackHome() {
+    const speed = Math.max(0, byte.vy);
+    byte.y = floorY();
+    finishObby();
+    if (speed > 135) {
+      byte.vy = -speed * .31;
+      byte.vx *= .83;
+      impact(speed, 'floor');
+    } else {
+      byte.vy = 0;
+      byte.mode = 'idle';
+      byte.angle *= .3;
+      byte.vx *= .82;
+    }
+  }
+
   function beginDrag(e) {
     if (!earth.permissionRequested) void requestEarthPermission();
     e.preventDefault();
@@ -377,6 +594,18 @@
       web.active = false;
       web.planted = false;
       web.pointerId = null;
+      return;
+    }
+    if (obby.active) {
+      if (obby.web.active) return;
+      const anchorX = px, anchorY = py + obby.cameraY;
+      const spool = spoolPosition();
+      obby.web.active = true;
+      obby.web.pointerId = e.pointerId;
+      obby.web.anchorX = anchorX;
+      obby.web.anchorY = anchorY;
+      obby.web.length = Math.hypot(anchorX - spool.x, anchorY - spool.y);
+      canvas.setPointerCapture(e.pointerId);
       return;
     }
     if (web.active && !web.planted) return;
@@ -422,6 +651,10 @@
     web.anchorX = nextX; web.anchorY = nextY;
   }
   function moveDrag(e) {
+    if (obby.web.active && e.pointerId === obby.web.pointerId) {
+      e.preventDefault();
+      return;
+    }
     if (web.active && !web.planted && e.pointerId === web.pointerId) {
       e.preventDefault();
       moveWebAnchor(e);
@@ -443,6 +676,11 @@
     byte.lastSamples = byte.lastSamples.filter(p => t - p.t < 120).slice(-6);
   }
   function endDrag(e) {
+    if (obby.web.active && e.pointerId === obby.web.pointerId) {
+      obby.web.active = false;
+      obby.web.pointerId = null;
+      return;
+    }
     if (web.active && !web.planted && e.pointerId === web.pointerId) {
       // pointerup may be the only event with the finger's final mobile position.
       if (Number.isFinite(e.clientX) && Number.isFinite(e.clientY)) moveWebAnchor(e);
@@ -474,6 +712,7 @@
 
   function update(dt, t) {
     const g = 1650;
+    const previousY = byte.y;
     byte.idlePhase += dt * 2.1;
     byte.squash *= Math.exp(-dt * 8);
     byte.stretch *= Math.exp(-dt * 5);
@@ -503,8 +742,8 @@
         byte.angle = clamp(dx * .00045, -.18, .18);
       }
     } else if (byte.mode === 'air' && earth.enabled) {
-      byte.vx += earth.x * dt;
-      byte.vy += earth.y * dt;
+      byte.vx += earth.x * (obby.active ? .72 : 1) * dt;
+      byte.vy += (obby.active ? g : earth.y) * dt;
       byte.x += byte.vx * dt; byte.y += byte.vy * dt;
       byte.angle += byte.spin * dt;
       byte.spin *= Math.exp(-dt * 1.5);
@@ -519,16 +758,16 @@
         byte.x = maxX; byte.vx = -Math.abs(byte.vx) * .48; byte.spin -= .65; impact(Math.abs(byte.vx), 'side');
         if (earth.x > 100 && byte.vx > -95 && Math.abs(earth.y) < 200) restingEdge = 'right';
       }
-      if (byte.y < halfH()) {
+      if (!obby.active && byte.y < halfH()) {
         byte.y = halfH(); byte.vy = Math.abs(byte.vy) * .42; impact(Math.abs(byte.vy), 'top');
         if (earth.y < -100 && byte.vy < 95 && Math.abs(earth.x) < 200) restingEdge = 'top';
       }
-      if (byte.y >= floorY()) {
+      if (!obby.active && byte.y >= floorY()) {
         byte.y = floorY(); byte.vy = -Math.abs(byte.vy) * .31; byte.vx *= .83; impact(Math.abs(byte.vy), 'floor');
         if (earth.y > 100 && byte.vy > -95 && Math.abs(earth.x) < 200) restingEdge = 'floor';
       }
       const atLeft = byte.x <= minX, atRight = byte.x >= maxX;
-      const atTop = byte.y <= halfH(), atFloor = byte.y >= floorY();
+      const atTop = !obby.active && byte.y <= halfH(), atFloor = !obby.active && byte.y >= floorY();
       const pushedIntoCorner = (atLeft && earth.x < -100 || atRight && earth.x > 100)
         && (atTop && earth.y < -100 || atFloor && earth.y > 100)
         && Math.hypot(byte.vx, byte.vy) < 140;
@@ -538,6 +777,7 @@
         earth.restX = earth.x; earth.restY = earth.y;
       }
     } else if (byte.mode === 'air') {
+      if (obby.active) byte.vx = clamp(byte.vx + earth.x * .72 * dt, -760, 760);
       byte.vy += g * dt;
       byte.x += byte.vx * dt; byte.y += byte.vy * dt;
       byte.angle += byte.spin * dt;
@@ -546,8 +786,8 @@
       const minX = halfW(), maxX = world.w - halfW();
       if (byte.x < minX) { byte.x = minX; byte.vx = Math.abs(byte.vx) * .48; byte.spin += .65; impact(Math.abs(byte.vx), 'side'); }
       if (byte.x > maxX) { byte.x = maxX; byte.vx = -Math.abs(byte.vx) * .48; byte.spin -= .65; impact(Math.abs(byte.vx), 'side'); }
-      if (byte.y < halfH()) { byte.y = halfH(); byte.vy = Math.abs(byte.vy) * .42; impact(Math.abs(byte.vy), 'top'); }
-      if (byte.y >= floorY()) {
+      if (!obby.active && byte.y < halfH()) { byte.y = halfH(); byte.vy = Math.abs(byte.vy) * .42; impact(Math.abs(byte.vy), 'top'); }
+      if (!obby.active && byte.y >= floorY()) {
         byte.y = floorY();
         if (byte.vy > 135) { byte.vy = -byte.vy * .31; byte.vx *= .83; impact(Math.abs(byte.vy), 'floor'); }
         else { byte.vy = 0; byte.mode = 'idle'; byte.angle *= .3; byte.vx *= .82; }
@@ -564,6 +804,9 @@
     }
 
     solveWebTether();
+    solveObbyWeb();
+    landOnObbyPlatform(previousY);
+    if (obby.active && obby.hasLaunched && byte.y >= floorY() && byte.vy >= 0) landBackHome();
 
     if (byte.mode === 'scuttle') {
       byte.frameClock += dt;
@@ -596,24 +839,31 @@
 
   function draw(t) {
     const w = world.w, h = world.h;
+    const cameraY = obby.active ? obby.cameraY : 0;
+    const floorScreenY = floorY() - cameraY;
     const sky = ctx.createLinearGradient(0, 0, 0, h);
     sky.addColorStop(0, '#e9f2f4'); sky.addColorStop(.66, '#f5f2e9'); sky.addColorStop(1, '#d8e6e3');
     ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
     // Barely-there play-space cues keep the creature as the only thing to play with.
-    ctx.fillStyle = 'rgba(255,255,255,.37)';
-    ctx.beginPath(); ctx.ellipse(w * .5, h * .88, w * .46, h * .08, 0, 0, Math.PI * 2); ctx.fill();
-    const shadowY = Math.min(floorY() + spriteH * .36, h - 12);
+    if (floorScreenY > -spriteH && floorScreenY < h + spriteH) {
+      ctx.fillStyle = 'rgba(255,255,255,.37)';
+      ctx.beginPath(); ctx.ellipse(w * .5, floorScreenY + spriteH * .09, w * .46, h * .08, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    drawPlatforms();
+    const shadowY = Math.min(floorScreenY + spriteH * .36, h - 12);
     const lift = Math.max(0, floorY() - byte.y);
-    ctx.save();
-    ctx.globalAlpha = clamp(.16 - lift / 1600, .045, .16);
-    ctx.fillStyle = '#31413d';
-    ctx.beginPath(); ctx.ellipse(byte.x, shadowY, spriteW * (.37 - Math.min(lift / 1000, .1)), spriteH * .065, 0, 0, Math.PI * 2); ctx.fill();
-    ctx.restore();
+    if (floorScreenY > -spriteH && floorScreenY < h + spriteH) {
+      ctx.save();
+      ctx.globalAlpha = clamp(.16 - lift / 1600, .045, .16);
+      ctx.fillStyle = '#31413d';
+      ctx.beginPath(); ctx.ellipse(byte.x, shadowY, spriteW * (.37 - Math.min(lift / 1000, .1)), spriteH * .065, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    }
 
     const { frame, frameW, bob, squeezeX, squeezeY } = bodyGeometry(t);
     if (frame) {
       ctx.save();
-      ctx.translate(byte.x, byte.y + bob);
+      ctx.translate(byte.x, byte.y - cameraY + bob);
       ctx.rotate(byte.angle);
       ctx.scale(byte.facing, 1);
       ctx.scale(squeezeX, squeezeY);
@@ -622,6 +872,7 @@
     }
     // Keep a planted endpoint above Byte's opaque artwork so its hit target stays visible.
     drawWeb();
+    drawObbyWeb();
     drawButtonWeb();
   }
 
@@ -630,6 +881,7 @@
     lastTime = t;
     update(dt, t);
     updateButtonWeb(dt);
+    updateObby(dt);
     updateButtonPhysics(dt);
     draw(t);
     requestAnimationFrame(loop);

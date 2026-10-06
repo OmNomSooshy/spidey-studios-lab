@@ -13,10 +13,11 @@
   const web = { active: false, planted: false, pointerId: null, anchorX: 0, anchorY: 0, deployedLength: 0, maxLength: 0 };
   const buttonWeb = { phase: 'waiting', idleTime: 0, elapsed: 0, progress: 0 };
   const buttonBody = { loose: false, stationary: false, x: 0, y: 0, width: 0, height: 0, vx: 0, vy: 0 };
+  const autonomy = { choice: null, idleTime: 0 };
   const obby = {
     active: false, phase: 'room', idleTime: 0, cameraY: 0,
     platforms: [], fallingPlatform: null, highestPlatformY: 0,
-    fallingTime: 0, hasLaunched: false,
+    fallingTime: 0, hasLaunched: false, scale: .6,
     web: { active: false, pointerId: null, anchorX: 0, anchorY: 0, length: 0 },
   };
   function loadFrames(prefix, count) {
@@ -61,15 +62,18 @@
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const ground = () => world.h - spriteH * .48 - 10;
   const floorY = () => ground();
-  const halfW = () => spriteW * .5;
-  const halfH = () => spriteH * .5;
+  const bodyScale = () => obby.hasLaunched ? obby.scale : 1;
+  const bodyW = () => spriteW * bodyScale();
+  const bodyH = () => spriteH * bodyScale();
+  const halfW = () => bodyW() * .5;
+  const halfH = () => bodyH() * .5;
   const now = () => performance.now();
 
   function bodyGeometry(t = now()) {
     const moving = byte.mode === 'scuttle';
     const list = moving ? assets.walk : assets.idle;
     const frame = list[byte.frame] || list[0];
-    const frameW = frame ? spriteH * frame.width / frame.height : spriteW;
+    const frameW = frame ? bodyH() * frame.width / frame.height : bodyW();
     const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
     const horizontalSquish = Math.max(byte.wallSquish, byte.grabSquishX);
     const squeezeX = (1 + byte.squash * .42 - byte.stretch * .28) * (1 - horizontalSquish * .9 + byte.grabSquishY * .45);
@@ -78,7 +82,7 @@
   }
   function bodyHalfExtents() {
     const { frameW, squeezeX, squeezeY } = bodyGeometry();
-    const rotatedW = Math.abs(frameW * squeezeX), rotatedH = Math.abs(spriteH * squeezeY);
+    const rotatedW = Math.abs(frameW * squeezeX), rotatedH = Math.abs(bodyH() * squeezeY);
     const c = Math.abs(Math.cos(byte.angle)), s = Math.abs(Math.sin(byte.angle));
     return {
       x: (rotatedW * c + rotatedH * s) * .5,
@@ -110,7 +114,7 @@
   function spoolPosition(t = now()) {
     const { frameW, bob, squeezeX, squeezeY } = bodyGeometry(t);
     const localX = frameW * .205 * byte.facing * squeezeX;
-    const localY = spriteH * .205 * squeezeY;
+    const localY = bodyH() * .205 * squeezeY;
     const c = Math.cos(byte.angle), s = Math.sin(byte.angle);
     return { x: byte.x + c * localX - s * localY, y: byte.y + bob + s * localX + c * localY };
   }
@@ -142,7 +146,7 @@
 
     // A tension impulse cancels outward velocity at the spool and adds the matching swing torque.
     const lever = rx * ty - ry * tx;
-    const inverseInertia = 1 / Math.max(1, (spriteW * spriteW + spriteH * spriteH) / 12);
+    const inverseInertia = 1 / Math.max(1, (bodyW() * bodyW() + bodyH() * bodyH()) / 12);
     const impulse = -towardAnchor / (1 + lever * lever * inverseInertia);
     byte.vx += tx * impulse;
     byte.vy += ty * impulse;
@@ -173,7 +177,7 @@
     if (towardAnchor >= 0) return;
 
     const lever = rx * ty - ry * tx;
-    const inverseInertia = 1 / Math.max(1, (spriteW * spriteW + spriteH * spriteH) / 12);
+    const inverseInertia = 1 / Math.max(1, (bodyW() * bodyW() + bodyH() * bodyH()) / 12);
     const impulse = -towardAnchor / (1 + lever * lever * inverseInertia);
     byte.vx += tx * impulse;
     byte.vy += ty * impulse;
@@ -416,7 +420,7 @@
   }
   function updateButtonWeb(dt) {
     if (buttonWeb.phase === 'waiting') {
-      if (byte.mode !== 'idle' || byte.grabbed || web.active || buttonBody.loose || obby.active) {
+      if (autonomy.choice !== 'button' || byte.mode !== 'idle' || byte.grabbed || web.active || buttonBody.loose || obby.active) {
         buttonWeb.idleTime = 0;
         return;
       }
@@ -458,6 +462,9 @@
     obby.hasLaunched = false;
     obby.web.active = false;
     obby.web.pointerId = null;
+    autonomy.choice = null;
+    autonomy.idleTime = 0;
+    document.body.classList.remove('obby-away');
     stopMotionIfUnused();
   }
   function spawnPlatformAbove() {
@@ -487,30 +494,53 @@
     obby.web.active = false;
     startMotionListener();
     const width = Math.min(Math.max(spriteW * .94, 116), Math.max(80, world.w - 24));
-    const x = clamp(byte.x - width * .5, 8, Math.max(8, world.w - width - 8));
+    const x = clamp(byte.x - width * .5 + world.w * .24, 8, Math.max(8, world.w - width - 8));
     obby.fallingPlatform = {
-      x, y: -24, targetY: floorY() + spriteH * .48,
+      x, y: -24, targetY: world.h * .62,
       w: width, h: 18, vy: 0,
     };
   }
   function launchFromFirstPlatform(platform) {
     const targetX = platform.x + platform.w * .5;
+    obby.hasLaunched = true;
+    obby.phase = 'climb';
     byte.y = platform.y - halfH();
     byte.facing = targetX < byte.x ? -1 : 1;
     byte.mode = 'air';
     byte.targetX = byte.targetY = null;
-    byte.vx = clamp((targetX - byte.x) / .82, -330, 330);
-    byte.vy = -1080;
+    byte.vx = clamp(byte.vx + (targetX - byte.x) * .45, -330, 330);
+    byte.vy = -930;
     byte.squash = .12;
     byte.stretch = .15;
-    obby.phase = 'climb';
-    obby.hasLaunched = true;
+    autonomy.choice = null;
+    autonomy.idleTime = 0;
+    document.body.classList.add('obby-away');
     obby.fallingTime = 0;
     fillPlatformsAhead();
   }
+  function updateAutonomy(dt) {
+    if (obby.active) return;
+    const idle = byte.mode === 'idle' && !byte.grabbed && !web.active;
+    if (!idle) {
+      if (autonomy.choice === 'obby' || (autonomy.choice === 'button' && buttonWeb.phase === 'waiting')) autonomy.choice = null;
+      autonomy.idleTime = 0;
+      return;
+    }
+    if (autonomy.choice === 'button' && buttonWeb.phase === 'released') autonomy.choice = null;
+    if (autonomy.choice) return;
+    autonomy.idleTime += dt;
+    if (autonomy.idleTime < 1.2) return;
+    autonomy.idleTime = 0;
+    const opportunities = [];
+    if (buttonWeb.phase === 'waiting' && !buttonBody.loose) opportunities.push('button');
+    opportunities.push('obby');
+    autonomy.choice = opportunities[Math.floor(Math.random() * opportunities.length)];
+    obby.idleTime = 0;
+    buttonWeb.idleTime = 0;
+  }
   function updateObby(dt) {
     if (!obby.active) {
-      if (byte.mode === 'idle' && !byte.grabbed && !web.active && buttonWeb.phase === 'released') {
+      if (autonomy.choice === 'obby' && byte.mode === 'idle' && !byte.grabbed && !web.active) {
         obby.idleTime += dt;
         if (obby.idleTime >= 2.6) beginObby();
       } else {
@@ -529,7 +559,7 @@
         obby.fallingPlatform = null;
         obby.platforms.push(landed);
         obby.highestPlatformY = landed.y;
-        launchFromFirstPlatform(landed);
+        obby.phase = 'waiting';
       }
     }
 
@@ -551,13 +581,18 @@
     }
   }
   function landOnObbyPlatform(previousY) {
-    if (!obby.active || !obby.hasLaunched || byte.vy <= 0) return;
+    if (!obby.active || byte.vy <= 0) return;
     const previousBottom = previousY + halfH();
     const currentBottom = byte.y + halfH();
+    const supportHalf = bodyW() * .18;
     const platform = obby.platforms.find(item =>
       previousBottom <= item.y && currentBottom >= item.y
-      && byte.x + halfW() > item.x && byte.x - halfW() < item.x + item.w);
+      && Math.min(byte.x + supportHalf, item.x + item.w) - Math.max(byte.x - supportHalf, item.x) >= supportHalf * .9);
     if (!platform) return;
+    if (!obby.hasLaunched) {
+      launchFromFirstPlatform(platform);
+      return;
+    }
     byte.y = platform.y - halfH();
     byte.vy = -930;
     byte.mode = 'air';
@@ -596,7 +631,7 @@
       web.pointerId = null;
       return;
     }
-    if (obby.active) {
+    if (obby.hasLaunched) {
       if (obby.web.active) return;
       const anchorX = px, anchorY = py + obby.cameraY;
       const spool = spoolPosition();
@@ -742,8 +777,8 @@
         byte.angle = clamp(dx * .00045, -.18, .18);
       }
     } else if (byte.mode === 'air' && earth.enabled) {
-      byte.vx += earth.x * (obby.active ? .72 : 1) * dt;
-      byte.vy += (obby.active ? g : earth.y) * dt;
+      byte.vx += earth.x * (obby.hasLaunched ? .72 : 1) * dt;
+      byte.vy += (obby.hasLaunched ? g : earth.y) * dt;
       byte.x += byte.vx * dt; byte.y += byte.vy * dt;
       byte.angle += byte.spin * dt;
       byte.spin *= Math.exp(-dt * 1.5);
@@ -758,16 +793,16 @@
         byte.x = maxX; byte.vx = -Math.abs(byte.vx) * .48; byte.spin -= .65; impact(Math.abs(byte.vx), 'side');
         if (earth.x > 100 && byte.vx > -95 && Math.abs(earth.y) < 200) restingEdge = 'right';
       }
-      if (!obby.active && byte.y < halfH()) {
+      if (!obby.hasLaunched && byte.y < halfH()) {
         byte.y = halfH(); byte.vy = Math.abs(byte.vy) * .42; impact(Math.abs(byte.vy), 'top');
         if (earth.y < -100 && byte.vy < 95 && Math.abs(earth.x) < 200) restingEdge = 'top';
       }
-      if (!obby.active && byte.y >= floorY()) {
+      if (!obby.hasLaunched && byte.y >= floorY()) {
         byte.y = floorY(); byte.vy = -Math.abs(byte.vy) * .31; byte.vx *= .83; impact(Math.abs(byte.vy), 'floor');
         if (earth.y > 100 && byte.vy > -95 && Math.abs(earth.x) < 200) restingEdge = 'floor';
       }
       const atLeft = byte.x <= minX, atRight = byte.x >= maxX;
-      const atTop = !obby.active && byte.y <= halfH(), atFloor = !obby.active && byte.y >= floorY();
+      const atTop = !obby.hasLaunched && byte.y <= halfH(), atFloor = !obby.hasLaunched && byte.y >= floorY();
       const pushedIntoCorner = (atLeft && earth.x < -100 || atRight && earth.x > 100)
         && (atTop && earth.y < -100 || atFloor && earth.y > 100)
         && Math.hypot(byte.vx, byte.vy) < 140;
@@ -777,7 +812,7 @@
         earth.restX = earth.x; earth.restY = earth.y;
       }
     } else if (byte.mode === 'air') {
-      if (obby.active) byte.vx = clamp(byte.vx + earth.x * .72 * dt, -760, 760);
+      if (obby.hasLaunched) byte.vx = clamp(byte.vx + earth.x * .72 * dt, -760, 760);
       byte.vy += g * dt;
       byte.x += byte.vx * dt; byte.y += byte.vy * dt;
       byte.angle += byte.spin * dt;
@@ -786,8 +821,8 @@
       const minX = halfW(), maxX = world.w - halfW();
       if (byte.x < minX) { byte.x = minX; byte.vx = Math.abs(byte.vx) * .48; byte.spin += .65; impact(Math.abs(byte.vx), 'side'); }
       if (byte.x > maxX) { byte.x = maxX; byte.vx = -Math.abs(byte.vx) * .48; byte.spin -= .65; impact(Math.abs(byte.vx), 'side'); }
-      if (!obby.active && byte.y < halfH()) { byte.y = halfH(); byte.vy = Math.abs(byte.vy) * .42; impact(Math.abs(byte.vy), 'top'); }
-      if (!obby.active && byte.y >= floorY()) {
+      if (!obby.hasLaunched && byte.y < halfH()) { byte.y = halfH(); byte.vy = Math.abs(byte.vy) * .42; impact(Math.abs(byte.vy), 'top'); }
+      if (!obby.hasLaunched && byte.y >= floorY()) {
         byte.y = floorY();
         if (byte.vy > 135) { byte.vy = -byte.vy * .31; byte.vx *= .83; impact(Math.abs(byte.vy), 'floor'); }
         else { byte.vy = 0; byte.mode = 'idle'; byte.angle *= .3; byte.vx *= .82; }
@@ -806,7 +841,7 @@
     solveWebTether();
     solveObbyWeb();
     landOnObbyPlatform(previousY);
-    if (obby.active && obby.hasLaunched && byte.y >= floorY() && byte.vy >= 0) landBackHome();
+    if (obby.hasLaunched && byte.y >= floorY() && byte.vy >= 0) landBackHome();
 
     if (byte.mode === 'scuttle') {
       byte.frameClock += dt;
@@ -839,24 +874,24 @@
 
   function draw(t) {
     const w = world.w, h = world.h;
-    const cameraY = obby.active ? obby.cameraY : 0;
+    const cameraY = obby.hasLaunched ? obby.cameraY : 0;
     const floorScreenY = floorY() - cameraY;
     const sky = ctx.createLinearGradient(0, 0, 0, h);
     sky.addColorStop(0, '#e9f2f4'); sky.addColorStop(.66, '#f5f2e9'); sky.addColorStop(1, '#d8e6e3');
     ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
     // Barely-there play-space cues keep the creature as the only thing to play with.
-    if (floorScreenY > -spriteH && floorScreenY < h + spriteH) {
+    if (floorScreenY > -bodyH() && floorScreenY < h + bodyH()) {
       ctx.fillStyle = 'rgba(255,255,255,.37)';
-      ctx.beginPath(); ctx.ellipse(w * .5, floorScreenY + spriteH * .09, w * .46, h * .08, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(w * .5, floorScreenY + bodyH() * .09, w * .46, h * .08, 0, 0, Math.PI * 2); ctx.fill();
     }
     drawPlatforms();
-    const shadowY = Math.min(floorScreenY + spriteH * .36, h - 12);
+    const shadowY = Math.min(floorScreenY + bodyH() * .36, h - 12);
     const lift = Math.max(0, floorY() - byte.y);
-    if (floorScreenY > -spriteH && floorScreenY < h + spriteH) {
+    if (floorScreenY > -bodyH() && floorScreenY < h + bodyH()) {
       ctx.save();
       ctx.globalAlpha = clamp(.16 - lift / 1600, .045, .16);
       ctx.fillStyle = '#31413d';
-      ctx.beginPath(); ctx.ellipse(byte.x, shadowY, spriteW * (.37 - Math.min(lift / 1000, .1)), spriteH * .065, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(byte.x, shadowY, bodyW() * (.37 - Math.min(lift / 1000, .1)), bodyH() * .065, 0, 0, Math.PI * 2); ctx.fill();
       ctx.restore();
     }
 
@@ -867,7 +902,7 @@
       ctx.rotate(byte.angle);
       ctx.scale(byte.facing, 1);
       ctx.scale(squeezeX, squeezeY);
-      ctx.drawImage(frame, -frameW / 2, -spriteH / 2, frameW, spriteH);
+      ctx.drawImage(frame, -frameW / 2, -bodyH() / 2, frameW, bodyH());
       ctx.restore();
     }
     // Keep a planted endpoint above Byte's opaque artwork so its hit target stays visible.
@@ -880,6 +915,7 @@
     const dt = Math.min(.032, (t - (lastTime || t)) / 1000);
     lastTime = t;
     update(dt, t);
+    updateAutonomy(dt);
     updateButtonWeb(dt);
     updateObby(dt);
     updateButtonPhysics(dt);

@@ -14,7 +14,8 @@ window.createBytePossessions=function(api){
   drawer.querySelector('.collection-close').onclick=()=>drawer.close();drawer.addEventListener('click',e=>{if(e.target===drawer&&backdropPress)drawer.close();backdropPress=false});
   const ownedToys=()=>['ball',...catalogue.filter(v=>economy.owned.includes(v.id)).map(v=>v.id)];
   const storable=()=>[...ownedToys(),'sponge',...(home.found?['stone']:[])];
-  const chest=()=>({x:world.w*.64,y:world.h-72,w:world.w*.34,h:54});
+  // Separate footprint from the left passage and the established ladder carry target.
+  const chest=()=>({x:world.w*.27,y:world.h-72,w:world.w*.24,h:54});
   const wardrobe=()=>({x:world.w*.76,y:Math.max(world.h*.4,world.h-api.roomH()*1.8),w:world.w*.22,h:api.roomH()*1.55});
   const cabinet=()=>({x:world.w*.18,y:world.h*.47,w:world.w*.27,h:Math.min(world.h*.26,170)});
   function save(){try{localStorage.setItem(key,JSON.stringify({serial:state.serial,turn:state.turn}))}catch(_){}api.save();}
@@ -49,6 +50,7 @@ window.createBytePossessions=function(api){
   function onRelease(v,hand,cancelled){if(cancelled){cancel();return;}
     // A deliberate doorway/hatch release is the established carrying grammar, not a toy throw.
     if(home.journey&&home.carried===v){if(state.act?.item===v){state.answered++;state.act=null;state.pose=null;home.activity=null;state.cooldown=18;}return;}
+    if(v.room===2&&storable().includes(v.id)){const c=chest();if(Math.abs(v.x-c.x)<c.w*.5&&Math.abs(v.y-c.y)<c.h*.6){state.lid=1;putAway(v);return;}}
     if(v.trophy&&v.room===2){const g=cabinet();if(Math.abs(v.x-g.x)<g.w*.62&&v.y>g.y-g.h*.55&&v.y<g.y+g.h*.7){deposit(v);return;}}
     if(v.id==='frog-toy'&&v.pressed>.12){v.vy=-Math.min(920,320+v.pressed*430);v.vx=hand.vx*.55;spark(v,'#b8d393');api.voice('land',.55);}
     if(v.id==='pinwheel')v.wheelSpin=clamp((v.wheelSpin||0)+Math.hypot(hand.vx,hand.vy)*.035,0,40);

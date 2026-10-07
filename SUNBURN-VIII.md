@@ -12,7 +12,7 @@ The physical wardrobe beside the nook opens owned wearable management. Shop purc
 
 Clothes retain the canonical jacket silhouette, zipper and shading. They have stripes, pockets, patchwork, stars, diamond knit, bones, buttons or bee bands rather than eight uniform tints. Contacts recolor existing iris pixels; pupils and highlights remain. Pose-specific eyewear alignment follows the eyes. Composed costumes are cached in the existing 214×264 body reference frame, coated by existing care presentation, and transformed by the existing body renderer. They have no physical authority.
 
-The trunk beneath the playroom ladder opens management for all five purchased toys, the original ball, portable bath sponge and first expedition stone. Stored means absent from rendering/physics, not unowned. Taking out introduces the same owned body from the chest; putting away retains ownership. A stored sponge can be taken out and carried back to the bathroom.
+The trunk on the lower-left side of the playroom, below the trophy cabinet and clear of the ladder, opens management for all five purchased toys, the original ball, portable bath sponge and first expedition stone. Stored means absent from rendering/physics, not unowned. Taking out introduces the same owned body from the chest; putting away retains ownership. A stored sponge can be taken out and carried back to the bathroom.
 
 ## Toys and reciprocal play
 
@@ -51,3 +51,9 @@ Known presentation compromises: wearables and toy assets are economical authored
 Storage is local to this browser/origin. Clearing browser data erases local history. Bulk history stays cheap, while objects deliberately withdrawn by Human Fingers remain genuine loose bodies and therefore cost linearly with deliberate physical clutter. Invitations can be interrupted or expire; responsive room play does not require obeying Byte. Mobile-equivalent software/CPU throttling is evidence of bounded cost, not certification on Management’s Samsung Galaxy A06 5G.
 
 Human Eyes/Fingers should evaluate catalogue taste, alignment in the new poses, whether the search and invitation read without help, the toy response comedy, physical collection affordance, and actual handset responsiveness. No further possession expansion is implied by this candidate.
+
+## Human Fingers correction — trunk placement
+
+The trunk originally shared the ladder’s centre. It now occupies a compact lower-left footprint, clear of both the doorway and ladder interaction bounds. Ladder/transition code and priority are unchanged. Releasing a storable possession inside the trunk now stores its existing owned body; the original VIII build only offered modal Put away. Taking out remains physical and ownership survives reload.
+
+Normal RAF/trusted-touch QA independently threw a toy through open floor with measured momentum, deposited it into the trunk, reloaded, retrieved it, deliberately carried it onto the ladder, reached the loft and reloaded there. Spatial separation passed five viewport sizes. The focused home/possession regressions passed 20/13 checks. Evidence: `qa/trunk-placement-evidence.json`. Physical-phone Human Fingers acceptance remains pending.

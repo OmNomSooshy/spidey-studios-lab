@@ -15,7 +15,7 @@ const out=process.env.BYTE_QA_OUTPUT || require('node:path').join(require('node:
   return {x:p.byte.x,y:p.byte.y,vx:p.byte.vx,vy:p.byte.vy,mode:p.byte.mode,phase:p.life.phase};
  },seconds)}
  async function reset(){await page.evaluate(()=>{
- const p=__byteProbe;p.home.cancel();p.home.travel=p.home.journey=p.home.activity=null;p.home.room=1;p.home.cameraX=p.world.w;p.home.cameraY=0;p.paused=true;p.stopEarthGravity();p.finishObby();p.wakeByte();p.life.scale=1;p.life.welcomed=true;p.life.pet=0;p.life.curious=0;p.life.pendingFollow=false;p.life.phase='awake';p.life.pointer.active=false;p.life.nest.active=false;p.life.nest.fade=0;
+ for(const d of document.querySelectorAll('dialog[open]'))d.close();const p=__byteProbe;p.home.cancel();p.home.travel=p.home.journey=p.home.activity=null;p.home.room=1;p.home.cameraX=p.world.w;p.home.cameraY=0;p.paused=true;p.stopEarthGravity();p.finishObby();p.wakeByte();p.life.scale=1;p.life.welcomed=true;p.life.pet=0;p.life.curious=0;p.life.pendingFollow=false;p.life.phase='awake';p.life.pointer.active=false;p.life.nest.active=false;p.life.nest.fade=0;
  Object.assign(p.byte,{x:p.world.w*.45,y:p.floorY(),vx:0,vy:0,angle:0,spin:0,mode:'idle',grabbed:false,squash:0,stretch:0,wallSquish:0,grabSquishX:0,grabSquishY:0,targetX:null,targetY:null});p.web.active=false;p.web.planted=false;p.autonomy.choice='qa-hold';p.buttonWeb.phase='waiting';p.buttonWeb.idleTime=0;p.buttonBody.loose=false;p.buttonBody.stationary=false;
  const b=document.querySelector('#gravity-toggle');b.classList.remove('gravity-loose');b.style.left='';b.style.top='';b.style.right='';b.style.bottom='';
  });await advance(.02)}

@@ -76,9 +76,9 @@ const url = (process.env.BYTE_QA_URL || 'http://127.0.0.1:4191/') + '?probe';
     await page.evaluate(()=>{__byteProbe.autonomy.choice=null});await step(page,8);
     const r=await page.evaluate(()=>({phase:__byteProbe.life.phase,nest:__byteProbe.life.nest.active,room:__byteProbe.home.room}));assert.equal(r.room,0);assert.equal(r.phase,'sleep');assert(r.nest);await context.close();
   });
-  await check('Byte autonomously approaches and kicks a physical ball in the play space',async()=>{
+  await check('Byte autonomously retrieves and offers the original physical ball in the play space',async()=>{
     const{context,page}=await open();await place(page,2,100);await page.evaluate(()=>{__byteProbe.autonomy.choice='play'});const trace=await step(page,9);
-    assert(trace.some(v=>v.ballVy<-250));assert(trace.some(v=>v.ballY<780));assert.equal(await page.evaluate(()=>__byteProbe.home.room),2);await context.close();
+    assert(trace.some(v=>v.ballY<780));assert.equal(await page.evaluate(()=>__byteProbe.home.possessions.act?.phase),'invite');assert.equal(await page.evaluate(()=>__byteProbe.bodyGeometry().pose),'expectant');assert.equal(await page.evaluate(()=>__byteProbe.home.room),2);await context.close();
   });
   await check('the upstairs opportunity takes Byte to the loft, waits, and requires physical platform contact',async()=>{
     const{context,page,touch}=await open();await page.evaluate(()=>__byteProbe.beginObby());await step(page,8);

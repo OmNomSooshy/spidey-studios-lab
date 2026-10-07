@@ -31,19 +31,22 @@ window.createByteHome = function createByteHome(api) {
   initial.push({id:'biscuit-vi',room:5,nx:.625,ny:.34,r:16,food:true,bites:4});
   initial.push({id:'broccoli',room:5,nx:.70,ny:.90,r:18,food:true,vegetable:true,bites:4});
   if (home.found) initial.push({ id: 'stone', room: 0, nx: .46, ny: .91, r: 15 });
-  for(let i=1;i<=api.economy.trophies;i++)initial.push({id:'trophy-'+i,trophy:true,room:2,nx:.14+((i-1)%4)*.073,ny:Math.max(.12,.30-Math.floor((i-1)/4)*.06),r:13});
+  // Displayed VII shelf fragments move into the physical collection. Moved fragments remain loose.
+  for(const v of remembered?.things||[]){if(/^trophy-|^fragment-/.test(v.id)){
+    const old=Number(v.id.split('-')[1]),displayX=.14+((old-1)%4)*.073,displayY=Math.max(.12,.30-Math.floor((old-1)/4)*.06);
+    const onShelf=[.314,.254,.194].some(y=>Math.abs(v.ny-y)<.025);
+    if(v.id.startsWith('trophy-')&&v.room===2&&Math.abs(v.nx-displayX)<.015&&(Math.abs(v.ny-displayY)<.035||onShelf))continue;
+    initial.push({...v,trophy:true,r:13});
+  }}
+  for(const item of api.economy.catalogue.filter(v=>v.category==='toy'&&api.economy.owned.includes(v.id))){const v=remembered?.things?.find(v=>v.id===item.id);if(v)initial.push({...v,toy:true,r:item.id==='ring-toy'?24:20});}
   for (const seed of initial) {
     const saved = remembered?.things?.find(v => v.id === seed.id);
     const safe = saved && Number.isInteger(saved.room) && saved.room >= 0 && saved.room <= 5 && Number.isFinite(saved.nx) && Number.isFinite(saved.ny);
     home.things.push({ ...seed, ...(safe ? { room: saved.room, nx: clamp(saved.nx, .03, .97), ny: clamp(saved.ny, .03, .97) } : {}),
+      ...(saved?.stored?{stored:true}:{}),
       ...(seed.food?{stock:!safe,bites:safe&&Number.isFinite(saved.bites)?clamp(Math.round(saved.bites),0,4):4}:{}), x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0, touch: 0 });
   }
-  function ensureTrophies() {
-    for(let i=1;i<=api.economy.trophies;i++){
-      if(home.things.some(v=>v.id==='trophy-'+i))continue;
-      home.things.push({id:'trophy-'+i,trophy:true,room:3,x:clamp(byte.x+35+((i-1)%3)*22,18,world.w-18),y:api.floorY(),vx:0,vy:0,angle:0,spin:0,touch:0,r:13});
-    }save();
-  }
+  function ensureTrophies() { home.possessions?.historyChanged(); save(); }
   function replenishBiscuits() {
     const biscuits=home.things.filter(v=>v.food&&!v.vegetable);
     if(!biscuits.length||biscuits.some(v=>v.bites>0))return false;
@@ -54,7 +57,7 @@ window.createByteHome = function createByteHome(api) {
   function save() {
     if (!world.w || home.travel) return;
     const data = { room: home.room, slept: home.slept, found: home.found, stoneHome: home.stoneHome,
-      things: home.things.map(v => ({ id: v.id, room: v.room, nx: clamp(v.x / world.w, 0, 1), ny: clamp(v.y / world.h, 0, 1),...(v.food?{bites:v.bites}:{}) })) };
+      things: home.things.map(v => ({ id: v.id, room: v.room, nx: clamp(v.x / world.w, 0, 1), ny: clamp(v.y / world.h, 0, 1),...(v.food?{bites:v.bites}:{}),...(v.trophy?{trophy:true}:{}),...(v.toy?{toy:true}:{}),...(v.stored?{stored:true}:{}) })) };
     try { localStorage.setItem(key, JSON.stringify(data)); } catch (_) {}
     home.savedAt = home.time;
   }
@@ -104,8 +107,10 @@ window.createByteHome = function createByteHome(api) {
     if (right) return home.room === 4 ? 0 : home.room===2?5:home.room + 1;
     return null;
   }
-  function cancel() {
+  function cancel(keepPlay=false) {
     if (home.travel) return;
+    if(keepPlay&&home.activity?.kind==='possession')return;
+    home.possessions?.cancel();
     api.kitchen.cancel();
     const owned = home.journey || home.activity;
     home.journey = null; home.activity = null;
@@ -157,7 +162,7 @@ window.createByteHome = function createByteHome(api) {
     if (reason === 'rest') api.restHere();
     else if (reason === 'obby') api.obbyHere();
     else if (reason === 'button') { autonomy.choice = 'button'; autonomy.idleTime = 0; }
-    else if (reason === 'play') { home.activity = { kind: 'play', phase: 'approach', elapsed: 0, kicks: 0 }; }
+    else if (reason === 'play') { home.possessions.cooldown=0; home.possessions.start(); }
     else if (reason === 'treasure') { home.stoneHome = true; drop(); life.curious = 2; api.voice('pet', .6); }
     else { drop(); life.curious = 2; }
     save();
@@ -179,9 +184,11 @@ window.createByteHome = function createByteHome(api) {
     home.journey = { target: next, reason: 'visit', item: null }; startTravel(next);
   }
   function beginHand(x, y, id) {
-    const hit = [...home.things].reverse().find(v => (!v.food||v.bites>0)&&v.room === home.room && Math.hypot(x - v.x, y + (obby.hasLaunched ? obby.cameraY : 0) - v.y) < Math.max(28, v.r + 9));
+    if(home.possessions?.hitFixture(x,y))return true;
+    const hit = [...home.things].reverse().find(v => !v.stored&&(!v.food||v.bites>0)&&v.room === home.room && Math.hypot(x - v.x, y + (obby.hasLaunched ? obby.cameraY : 0) - v.y) < Math.max(28, v.r + 9));
     if (!hit) return false;
-    cancel(); if (home.carried === hit) drop();
+    cancel(home.possessions?.canAnswer(hit)); if (home.carried === hit) drop();
+    home.possessions?.onGrab(hit);
     home.hand = { item: hit, id, dx: x - hit.x, dy: y + (obby.hasLaunched ? obby.cameraY : 0) - hit.y,
       lastX: x, lastY: y, time: performance.now(), vx: 0, vy: 0, moved: performance.now() };
     hit.vx = hit.vy = 0; hit.touch = 1; life.pointer.kind = 'object';
@@ -197,6 +204,7 @@ window.createByteHome = function createByteHome(api) {
     v.x = clamp(x - hand.dx, v.r, world.w - v.r);
     v.y = y + (obby.hasLaunched ? obby.cameraY : 0) - hand.dy;
     if (!obby.hasLaunched) v.y = clamp(v.y, v.r, world.h - v.r - 10);
+    home.possessions?.onMove(v,hand);
     return true;
   }
   function endHand(id, cancelled = false) {
@@ -206,6 +214,7 @@ window.createByteHome = function createByteHome(api) {
     home.hand = null; life.pointer.active = false;
     const next = cancelled ? null : portal(hand.lastX, hand.lastY);
     if (next !== null) request(next, 'visit', v);
+    home.possessions?.onRelease(v,hand,cancelled);
     save(); return true;
   }
   function findStone() {
@@ -218,7 +227,7 @@ window.createByteHome = function createByteHome(api) {
   function updateThings(dt) {
     const gx = earth.enabled && !obby.hasLaunched ? earth.x : 0, gy = earth.enabled && !obby.hasLaunched ? earth.y : 1650;
     for (const v of home.things) {
-      if(v.food&&v.bites<=0)continue;
+      if(v.stored||v.food&&v.bites<=0)continue;
       v.touch = Math.max(0, v.touch - dt);
       if (home.carried === v || home.hand?.item === v) continue;
       const sensed = api.senses.state, fresh = sensed.open && sensed.motion && performance.now() - sensed.lastMotion < 180;
@@ -233,21 +242,11 @@ window.createByteHome = function createByteHome(api) {
       if (v.x > world.w - v.r) { v.x = world.w - v.r; v.vx = -Math.abs(v.vx) * .55; }
       if ((!obby.hasLaunched || v.room !== home.room) && !v.fromAbove && v.y < v.r) { v.y = v.r; v.vy = Math.abs(v.vy) * .45; }
       if (v.y > bottom) {
-        v.fromAbove = false; v.y = bottom; v.vy = Math.abs(v.vy) > 60 ? -Math.abs(v.vy) * (v.id === 'ball' ? .54 : .28) : 0;
+        v.fromAbove = false; v.y = bottom; v.vy = Math.abs(v.vy) > 60 ? -Math.abs(v.vy) * (v.id === 'ball' ? .54 : v.id==='comet-ball'?.62:v.id==='ring-toy'?.18:.28) : 0;
         v.vx *= Math.exp(-dt * 2.1); v.spin = v.vx / v.r;
       }
       api.bathroom.supportTool(v, previousY, dt);
       api.kitchen.supportTool(v,previousY);
-      if(v.trophy&&v.room===2&&!earth.enabled&&v.vy>=0&&v.x>world.w*.065+v.r*.5&&v.x<world.w*.43-v.r*.5){
-        for(let row=0;row<Math.min(3,Math.ceil(api.economy.trophies/4));row++){const top=world.h*(.33-row*.06);
-          if(previousY+v.r<=top+2&&v.y+v.r>=top){v.y=top-v.r;v.vy=0;v.vx*=.96;v.spin*=.95;break;}
-        }
-      }
-      if (!earth.enabled && v.room === 2 && v.y > world.h - 45 && Math.abs(v.vy) < 160) {
-        const lo = world.w * .43 + v.r, hi = world.w * .82 - v.r;
-        if (v.x > lo - v.r && v.x < lo && v.vx < 0) { v.x = lo; v.vx = Math.abs(v.vx) * .45; }
-        if (v.x < hi + v.r && v.x > hi && v.vx > 0) { v.x = hi; v.vx = -Math.abs(v.vx) * .45; }
-      }
       if (earth.enabled && (v.x <= v.r + 1 || v.x >= world.w - v.r - 1 || v.y <= v.r + 1)) {
         v.vx *= Math.exp(-dt * 2); v.vy *= Math.exp(-dt * 2);
       }
@@ -268,7 +267,7 @@ window.createByteHome = function createByteHome(api) {
     // The loft can be visited independently; its spring platform is always available there.
     if (home.room === 3 && !home.travel && !obby.active) api.obbyHere();
     if (life.phase === 'sleep' && home.room === 0 && !home.slept) { home.slept = true; save(); }
-    findStone(); updateThings(dt);
+    findStone(); updateThings(dt); home.possessions.update(dt);
     if (home.travel) {
       const tr = home.travel; tr.elapsed += dt;
       const p = clamp(tr.elapsed / tr.duration, 0, 1), ease = p * p * (3 - 2 * p);
@@ -304,15 +303,14 @@ window.createByteHome = function createByteHome(api) {
     if (home.restBeat > 3.2) { home.restBeat = 0; api.restHere(); }
     if (free && !home.activity && autonomy.choice === 'button' && home.room !== 1) request(1, 'button');
     if (free && !home.activity && autonomy.choice === 'play') {
-      const ball = home.things.find(v => v.id === 'ball');
-      if (ball.room !== home.room) request(ball.room, 'play'); else arrive('play');
+      if(home.room!==2)request(2,'play');else{home.possessions.cooldown=0;home.possessions.start();autonomy.choice=null;}
     }
     if (free && !home.activity && autonomy.choice === 'wander') request(home.room === 1 ? 2 : 1, 'visit');
     const stone = home.things.find(v => v.id === 'stone');
-    if (free && stone && !home.stoneHome && home.room === stone.room && home.time > 4 && !home.activity && !earth.enabled) {
+    if (free && stone && !stone.stored && !home.stoneHome && home.room === stone.room && home.time > 4 && !home.activity && !earth.enabled) {
       home.activity = { kind: 'collect', elapsed: 0 };
     }
-    if (home.activity&&home.activity.kind!=='food' && !home.hand && !byte.grabbed && !web.active && !obby.hasLaunched && life.phase === 'awake') {
+    if (home.activity&&home.activity.kind!=='food'&&home.activity.kind!=='possession' && !home.hand && !byte.grabbed && !web.active && !obby.hasLaunched && life.phase === 'awake') {
       const act = home.activity; act.elapsed += dt;
       const item = home.things.find(v => v.id === (act.kind === 'collect' ? 'stone' : 'ball'));
       if (!item || item.room !== home.room || act.elapsed > 12 || earth.enabled) { home.activity = null; autonomy.choice = null; home.playCooldown = 18; }
@@ -350,11 +348,12 @@ window.createByteHome = function createByteHome(api) {
     ctx.restore();
   }
   function drawThings() {
+    home.possessions.drawEffects();
     for (const v of home.things) {
-      if(v.food&&v.bites<=0)continue;
+      if(v.stored||v.food&&v.bites<=0)continue;
       const screenX = offset(v.room);
       if (screenX >= world.w || screenX <= -world.w) continue;
-      ctx.save(); ctx.translate(screenX, offsetY(v.room) - (obby.hasLaunched ? obby.cameraY : 0)); itemShape(v); ctx.restore();
+      ctx.save(); ctx.translate(screenX, offsetY(v.room) - (obby.hasLaunched ? obby.cameraY : 0)); if(!home.possessions.drawToy(v))itemShape(v); ctx.restore();
     }
   }
   function arch(x, y, w, h, fill, stroke) {
@@ -396,19 +395,11 @@ window.createByteHome = function createByteHome(api) {
       ctx.fillStyle = '#9eab8938'; ctx.beginPath(); ctx.ellipse(w * .51, floor - 22, w * .23, 9, 0, 0, Math.PI * 2); ctx.fill();
     } else if (index === 2) {
       const hatch = stairsX();
-      // A small fragment shelf shares the playroom with the ladder; trophies remain loose belongings.
-      if(api.economy.trophies){for(let row=0;row<Math.min(3,Math.ceil(api.economy.trophies/4));row++){
-        const sy=h*(.33-row*.06);ctx.fillStyle='#816a4b';ctx.fillRect(w*.055,sy,w*.385,9);
-        ctx.fillStyle='#d2ba8c';ctx.fillRect(w*.055,sy,w*.385,3);ctx.fillStyle='#674f3944';ctx.fillRect(w*.08,sy+9,w*.025,14);ctx.fillRect(w*.385,sy+9,w*.025,14);
-      }}
       ctx.fillStyle = '#a18b68'; ctx.fillRect(0, 0, w, 25);
       ctx.fillStyle = '#4e6254'; ctx.fillRect(hatch - 82, 0, 164, 43);
       ctx.strokeStyle = '#8b7853'; ctx.lineWidth = 7; ctx.strokeRect(hatch - 84, -8, 168, 51);
       ctx.strokeStyle = '#897348'; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(hatch - 29, 39); ctx.lineTo(hatch - 29, floor - 24); ctx.moveTo(hatch + 29, 39); ctx.lineTo(hatch + 29, floor - 24); ctx.stroke();
       ctx.strokeStyle = '#e0cc96'; ctx.lineWidth = 6; ctx.beginPath(); for (let yy = 64; yy < floor - 25; yy += 38) { ctx.moveTo(hatch - 29, yy); ctx.lineTo(hatch + 29, yy); } ctx.stroke();
-      ctx.fillStyle = '#988862'; ctx.fillRect(w * .43, floor - 35, w * .39, 27); ctx.fillStyle = '#6d705355'; ctx.fillRect(w * .45, floor - 30, w * .35, 22);
-      ctx.strokeStyle = '#c4b383'; ctx.lineWidth = 3; ctx.strokeRect(w * .43, floor - 35, w * .39, 27);
-      ctx.fillStyle = '#5d796555'; ctx.beginPath(); ctx.ellipse(w * .63, floor - 51, 37, 4, 0, 0, Math.PI * 2); ctx.fill();
     } else {
       // A whole loft sits below the roof opening; the bounce route begins inside it.
       ctx.fillStyle = '#9abfc5'; ctx.fillRect(12, 0, w * .56, 48);
@@ -428,6 +419,7 @@ window.createByteHome = function createByteHome(api) {
       ctx.strokeStyle = '#e0cc96'; ctx.lineWidth = 4; ctx.beginPath(); for (let yy = floor - 27; yy < floor + 10; yy += 13) { ctx.moveTo(hatch - 28, yy); ctx.lineTo(hatch + 28, yy); } ctx.stroke();
     }
     if (dark > 0) { ctx.fillStyle = `rgba(16,30,38,${dark * .57})`; ctx.fillRect(0, 0, w, h); }
+    home.possessions.drawFixtures(index,t);
     if (home.journey && index === home.room) {
       const next = nextRoom(home.journey.target), vertical = index === 3 || next === 3;
       ctx.fillStyle = `rgba(255,239,184,${.06 + Math.sin(t * .005) * .025})`;
@@ -479,6 +471,7 @@ window.createByteHome = function createByteHome(api) {
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) { if (home.hand) endHand(home.hand.id, true); save(); } });
   window.addEventListener('pagehide', save);
+  home.possessions=window.createBytePossessions({...api,home,remembered,save,cancel,drop});
   return Object.assign(home, { resize, space, offset, offsetY, stairsX, syncUI, portal, request, cancel, update, draw, drawThings, beginHand, moveHand, endHand, afterByteRelease, save, drop, ensureTrophies,
     rest() { if (home.room === 0) api.restHere(); else request(0, 'rest'); },
     obby() { if (home.room === 3) api.obbyHere(); else request(3, 'obby'); },

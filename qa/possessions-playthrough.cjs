@@ -1,0 +1,22 @@
+/* Ordinary RAF and trusted CDP touch. Fixtures own things/history but never edit Byte,
+   the toy act, positions, velocities, clocks, phases or autonomy decisions after load. */
+const{chromium,devices}=require('playwright'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const out=process.env.BYTE_QA_OUTPUT||'/tmp/byte-possessions-play';fs.mkdirSync(out,{recursive:true});
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox',...(process.env.BYTE_QA_SOFTWARE?['--disable-gpu']:[])]}),runs=[],errors=[];
+for(const [name,owned]of [['fetch',['comet-ball']],['wind',['pinwheel']],['compress',['frog-toy']],['rhythm',['rattle']],['roll',['ring-toy']]]){
+ const c=await b.newContext({...devices['Pixel 7'],viewport:{width:390,height:844}});await c.addInitScript(owned=>{if(location.hostname!=='127.0.0.1')return;localStorage.setItem('byte-sunburn-home-v1',JSON.stringify({room:2,things:[]}));localStorage.setItem('byte-sunburn-crystals-v1',JSON.stringify({balance:25,owned,trophies:12}));},owned);
+ const p=await c.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto((process.env.BYTE_QA_URL||'http://127.0.0.1:4196/')+'?probe');await p.waitForSelector('#arrival.ready');const cd=await c.newCDPSession(p);if(process.env.BYTE_QA_CPU)await cd.send('Emulation.setCPUThrottlingRate',{rate:Number(process.env.BYTE_QA_CPU)});
+ async function touch(type,x,y){await cd.send('Input.dispatchTouchEvent',{type,touchPoints:type==='touchEnd'?[]:[{id:1,x,y,radiusX:5,radiusY:5,force:1}]})}
+ const phases=[];await p.exposeFunction('phaseEvidence',v=>phases.push(v));await p.evaluate(()=>{let last;window.addEventListener('pointerup',()=>{const q=__byteProbe,a=q.home.possessions.act;if(a&&q.home.possessions.answered)window.lastToyRelease={id:a.item.id,phase:a.phase,answered:q.home.possessions.answered,vx:a.item.vx,vy:a.item.vy,wheelSpin:a.item.wheelSpin,shakes:a.item.shakes};});setInterval(()=>{const q=__byteProbe,a=q.home.possessions.act;const signature=(a?.phase||'none')+':'+q.bodyGeometry().pose;if(signature!==last){last=signature;phaseEvidence({phase:a?.phase||'none',id:a?.item?.id,pose:q.bodyGeometry().pose,time:performance.now(),carried:q.home.carried?.id})}},80)});
+ await p.waitForFunction(()=>__byteProbe.home.possessions.act?.phase==='invite'&&__byteProbe.home.possessions.act.elapsed>2&&Math.hypot(__byteProbe.home.possessions.act.item.vx,__byteProbe.home.possessions.act.item.vy)<100,{},{timeout:35000});const id=await p.evaluate(()=>__byteProbe.home.possessions.act.item.id);assert.equal(id,owned[0]);await p.screenshot({path:path.join(out,name+'-invitation.png'),scale:'css'});
+ const v=await p.evaluate(()=>({x:__byteProbe.home.possessions.act.item.x,y:__byteProbe.home.possessions.act.item.y}));await touch('touchStart',v.x,v.y);await p.waitForTimeout(80);
+ if(name==='compress')await p.waitForTimeout(800);
+ if(name==='rhythm'||name==='wind'){for(let i=0;i<6;i++){await touch('touchMove',i%2?100:140,600);await p.waitForTimeout(130);}}
+ else {await touch('touchMove',v.x-60,v.y-70);await p.waitForTimeout(60);await touch('touchMove',Math.max(75,v.x-180),v.y-240);await p.waitForTimeout(35);}
+ await touch('touchEnd');const release=await p.evaluate(()=>window.lastToyRelease);
+ assert(release,'trusted release did not answer the offered physical object');assert.equal(release.answered,1);if(name==='fetch'||name==='roll')assert(Math.hypot(release.vx,release.vy)>150,'a real throw must preserve measured motion');if(name==='compress')assert(release.vy< -400);if(name==='wind')assert(release.wheelSpin>0);if(name==='rhythm')assert(release.shakes>2);
+ await p.waitForFunction(()=>__byteProbe.home.possessions.invitations>=2||__byteProbe.home.possessions.act?.phase==='invite'&&__byteProbe.home.possessions.answered>0,{},{timeout:23000});
+ await p.screenshot({path:path.join(out,name+'-response.png'),scale:'css'});const end=await p.evaluate(()=>({invitations:__byteProbe.home.possessions.invitations,phase:__byteProbe.home.possessions.act?.phase,answered:__byteProbe.home.possessions.answered,retrievals:__byteProbe.home.possessions.retrievals}));assert(phases.some(v=>v.phase==='rummage'&&v.pose==='rummaging'));runs.push({name,id,release,end,phases});console.log('PASS',name,JSON.stringify({release,end}));await c.close();
+}
+ await b.close();fs.writeFileSync(path.join(out,'possessions-playthrough.json'),JSON.stringify({runs,errors},null,2));assert.deepEqual(errors,[]);
+})().catch(e=>{console.error(e);process.exit(1)});

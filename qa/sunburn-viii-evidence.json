@@ -1,0 +1,1453 @@
+{
+  "classification": "IMPLEMENTED AND RUNTIME-REACHABLE in local browser; native publication verified separately after commit",
+  "physical_phone": "Samsung Galaxy A06 5G Chrome unavailable here; Human Eyes/Fingers acceptance pending",
+  "parent": "2fe29edd8cfb1cec659001bb3125092cee140cfa",
+  "branch": "experiment/sunburn-viii-2026-10-07",
+  "catalogue": {
+    "total": 43,
+    "wearables": 38,
+    "toys": 5,
+    "head": 14,
+    "eyes": 7,
+    "contacts": 4,
+    "top": 8,
+    "accessory": 5
+  },
+  "deterministic_possessions": {
+    "checks": [
+      {
+        "name": "43 authored choices, five compatible wearable layers and five genuinely different new toy verbs; legacy ownership migrates",
+        "pass": true
+      },
+      {
+        "name": "shop purchases never equip; physical wardrobe manages combinable owned clothes without repurchase or physics changes",
+        "pass": true
+      },
+      {
+        "name": "physical chest instantiates/stores possessions and persistence retains ownership and presence",
+        "pass": true
+      },
+      {
+        "name": "autonomous approach/search/retrieve uses authored rummaging and actually introduces a stored object; grab interrupts without taking physical authority",
+        "pass": true
+      },
+      {
+        "name": "invitation is answered by touching/throwing its real toy; Byte chases and brings it back with momentum physics",
+        "pass": true
+      },
+      {
+        "name": "frog compression/release, pinwheel swipe/breath and rattle shake have interrogable physical effects",
+        "pass": true
+      },
+      {
+        "name": "10000 trophies have bounded simulation, withdrawal/deposit conserve history and wallet, loose fragments survive reload",
+        "pass": true
+      },
+      {
+        "name": "VII display migration preserves moved fragments and stored bath tools across reload",
+        "pass": true
+      },
+      {
+        "name": "toy release onto the loft hatch yields to established carry navigation",
+        "pass": true
+      },
+      {
+        "name": "five-in-one-run trophy rule is unchanged; wallet spending cannot consume stored or loose history",
+        "pass": true
+      },
+      {
+        "name": "Byte can withdraw a real trophy, carry it physically and take it into his nook",
+        "pass": true
+      },
+      {
+        "name": "clothing/contact caches remain bounded and no cosmetic changes physical bounds in any HQ acting state",
+        "pass": true
+      },
+      {
+        "name": "wardrobe does not intersect the authored nook; compact passages, shop and chest remain operable at five sizes",
+        "pass": true
+      }
+    ],
+    "errors": []
+  },
+  "protected_regressions": {
+    "mobile": {
+      "pass": 10,
+      "checks": [
+        {
+          "name": "gentle hold closes eyes without moving Byte",
+          "pass": true
+        },
+        {
+          "name": "finger hold and movement retain scuttle authority",
+          "pass": true
+        },
+        {
+          "name": "all four dragged boundaries contain and compress visible body",
+          "pass": true
+        },
+        {
+          "name": "throw retains measured release momentum",
+          "pass": true
+        },
+        {
+          "name": "spool web plants, remains physical, and endpoint release preserves momentum",
+          "pass": true
+        },
+        {
+          "name": "slack player rope applies no push",
+          "pass": true
+        },
+        {
+          "name": "Byte makes a physical sleeping web and touch wakes him",
+          "pass": true
+        },
+        {
+          "name": "scheming pulls the gravity control down and activates Earth gravity without sensor consent",
+          "pass": true
+        },
+        {
+          "name": "continuous Earth vector supports non-bottom scuttle and corners",
+          "pass": true
+        },
+        {
+          "name": "first platform waits; player placement starts climb; web and fall return home",
+          "pass": true
+        }
+      ],
+      "method": "browser fixtures, stepped simulation and trusted CDP input; corresponding committed probe"
+    },
+    "home": {
+      "pass": 20,
+      "checks": [
+        {
+          "name": "actual finger invitations traverse both doors with continuous camera motion and keep the aperture in its own space",
+          "pass": true
+        },
+        {
+          "name": "a calm held Byte can be carried into a doorway without escaping ordinary outer-wall squish",
+          "pass": true
+        },
+        {
+          "name": "a physical toy can be dragged to a passage, accompany Byte, settle elsewhere, and survive reload",
+          "pass": true
+        },
+        {
+          "name": "autonomous rest travels to the nook, makes a physical strand, and leaves a local memory after waking",
+          "pass": true
+        },
+        {
+          "name": "Human Fingers can invite rest by leaving Byte calmly on his actual mat",
+          "pass": true
+        },
+        {
+          "name": "Byte autonomously retrieves and offers the original physical ball in the play space",
+          "pass": true
+        },
+        {
+          "name": "the upstairs opportunity takes Byte to the loft, waits, and requires physical platform contact",
+          "pass": true
+        },
+        {
+          "name": "a waiting platform stays in its loft while Byte can leave, sleep elsewhere and return to it",
+          "pass": true
+        },
+        {
+          "name": "a found upstairs stone falls back into the home and Byte carries it to his nook",
+          "pass": true
+        },
+        {
+          "name": "the repaired prank travels back to the aperture, schemes, dislodges its control and activates Earth mode",
+          "pass": true
+        },
+        {
+          "name": "a platform left waiting upstairs does not suppress the downstairs gravity prank",
+          "pass": true
+        },
+        {
+          "name": "phone inertia and microphone pressure act on physical belongings as well as Byte",
+          "pass": true
+        },
+        {
+          "name": "a charging invitation travels to its visible warmth, while voice travel leaves phone forces active",
+          "pass": true
+        },
+        {
+          "name": "Earth support remains coherent through carrying Byte into a neighboring space",
+          "pass": true
+        },
+        {
+          "name": "opening the real capture aperture then leaving its room keeps sensing live without moving the aperture into a HUD",
+          "pass": true
+        },
+        {
+          "name": "grabbing Byte interrupts a carrying trip and leaves the belonging physical in the current space",
+          "pass": true
+        },
+        {
+          "name": "a planted player strand prevents departure and survives a doorway invitation",
+          "pass": true
+        },
+        {
+          "name": "quiet sensory attention yields to a doorway trip while physical breath still changes momentum",
+          "pass": true
+        },
+        {
+          "name": "Earth-grounded doorway travel uses an actual opening, and a ceiling does not become a sideways corridor",
+          "pass": true
+        },
+        {
+          "name": "backgrounding releases an interrupted object hand, and resizing during passage safely recontains Byte",
+          "pass": true
+        }
+      ],
+      "method": "browser fixtures, stepped simulation and trusted CDP input; corresponding committed probe"
+    },
+    "device": {
+      "pass": 10,
+      "checks": [
+        {
+          "name": "sensor consent belongs to puck, never creature touch; denial remains playable",
+          "pass": true
+        },
+        {
+          "name": "the gravity control toggles Earth mode on, receives motion and returns to screen mode",
+          "pass": true
+        },
+        {
+          "name": "missing hardware data times out safely; unsupported API gives readable fallback",
+          "pass": true
+        },
+        {
+          "name": "mute persists, and audio starts only after a gesture",
+          "pass": true
+        },
+        {
+          "name": "secondary fingers cannot take over a grab; touch cancellation plants room web",
+          "pass": true
+        },
+        {
+          "name": "backgrounding stops simulation and releases interrupted hands while keeping planted web",
+          "pass": true
+        },
+        {
+          "name": "portrait, landscape and desktop layouts keep visible body and puck contained",
+          "pass": true
+        },
+        {
+          "name": "rotation preserves proportional planted rope and stationary displaced puck",
+          "pass": true
+        },
+        {
+          "name": "a real held web redirects a missed platform into a landing, retaining useful release momentum",
+          "pass": true
+        },
+        {
+          "name": "Earth-supported scheming and aiming preserve the same body frame",
+          "pass": true
+        }
+      ],
+      "method": "browser fixtures, stepped simulation and trusted CDP input; corresponding committed probe"
+    },
+    "room": {
+      "pass": 18,
+      "checks": [
+        {
+          "name": "real camera/mic streams are acquired by the window and stopped on close",
+          "pass": true
+        },
+        {
+          "name": "camera light centroid drives grounded travel without moving the body pivot",
+          "pass": true
+        },
+        {
+          "name": "a moving foreground is perceived separately from uniform exposure changes",
+          "pass": true
+        },
+        {
+          "name": "covering the camera physically retreats to a web; restored light wakes without resetting velocity",
+          "pass": true
+        },
+        {
+          "name": "darkness on an Earth-owned side uses supported dozing, with no incompatible sleeping strand",
+          "pass": true
+        },
+        {
+          "name": "harmonic voice earns attention; a sound attack adds real flight velocity; constant DC is ignored",
+          "pass": true
+        },
+        {
+          "name": "sustained turbulent microphone pressure lifts the existing body; silence lets it fall",
+          "pass": true
+        },
+        {
+          "name": "sound/breath preserve a player\u2019s planted tether and a held body retains finger authority",
+          "pass": true
+        },
+        {
+          "name": "Byte\u2019s own sound suppression cannot recursively trigger microphone reactions",
+          "pass": true
+        },
+        {
+          "name": "real broadband breath remains physical during Byte\u2019s own sound gate",
+          "pass": true
+        },
+        {
+          "name": "explicit media denial offers partial retry; audio-only capture remains useful",
+          "pass": true
+        },
+        {
+          "name": "backgrounding stops native capture tracks and never secretly reacquires them",
+          "pass": true
+        },
+        {
+          "name": "a late media grant after cancellation stops its tracks immediately",
+          "pass": true
+        },
+        {
+          "name": "charging event invites grounded basking and unplugging releases that response",
+          "pass": true
+        },
+        {
+          "name": "gyroscope acceleration and linear phone motion act independently of screen gravity",
+          "pass": true
+        },
+        {
+          "name": "camera light and voice intent travel along Earth-owned side ground, not the screen floor",
+          "pass": true
+        },
+        {
+          "name": "charging warmth follows the hardware bottom in landscape, independent of gravity",
+          "pass": true
+        },
+        {
+          "name": "null motion samples never claim a functioning sense or shut off camera and microphone",
+          "pass": true
+        }
+      ],
+      "method": "browser fixtures, stepped simulation and trusted CDP input; corresponding committed probe"
+    },
+    "upstairs": {
+      "pass": 10,
+      "checks": [
+        "actual ladder touch enters a separate loft; visit and idle never auto-launch",
+        "downstairs gravity control and sensory aperture stay downstairs",
+        "loft persists across reload at room scale with a usable waiting platform",
+        "floor hatch returns downstairs without playing the obby",
+        "physical ball can accompany Byte upstairs without activating the obby",
+        "the same belonging comes back down the ladder",
+        "actual player placement starts automatic bouncing; camera climbs completely outside the loft",
+        "outdoor held web stays physical and release retains velocity",
+        "a missed descent returns to the loft, normal scale and its waiting spring",
+        "after returning from outdoors the ladder still leads downstairs"
+      ],
+      "method": "browser fixtures, stepped simulation and trusted CDP input; corresponding committed probe"
+    },
+    "crystal": {
+      "pass": 13,
+      "checks": [
+        "separate loft stays a normal room before actual platform contact",
+        "physical placement supplies one decisive launch with no ordinary ledges",
+        "more than a readable half-second of actual clear sky separates house and crystal, with no ledges",
+        "first crystal ledge catches the launch and preserves ordinary bounce force",
+        "arbitrary screen placement attaches to material; held anchor stays fixed in world space",
+        "release retains both linear momentum and swing spin",
+        "slack crystal rope still never pushes",
+        "near crystal features move with world/camera, independently of 12% distant-sky travel",
+        "missed route returns to room-scale loft rather than auto-bouncing on the launcher",
+        "return resets the route and permits another clean launch",
+        "a released pre-surface hold cannot leave a fake empty-sky anchor",
+        "holding through clear sky can attach when the physical surface arrives",
+        "expedition fragment is discovered above the structure, preserving the existing physical possession"
+      ],
+      "method": "browser fixtures, stepped simulation and trusted CDP input; corresponding committed probe"
+    },
+    "care": {
+      "pass": 9,
+      "checks": [
+        {
+          "name": "bathroom is physically left of nook, independently visitable and returns through the same doorway",
+          "pass": true
+        },
+        {
+          "name": "physical bath lever fills retained water; grabbed Byte remains free; held sponge removes local mud and provokes a physical splash",
+          "pass": true
+        },
+        {
+          "name": "shower head turns on, follows a real finger and wets Byte without filling bath; sponge shares the same washing process",
+          "pass": true
+        },
+        {
+          "name": "the physical plug empties the bath and a portable sponge accompanies Byte through the bathroom doorway",
+          "pass": true
+        },
+        {
+          "name": "dry rubbing does not magically wash; wet cleaning is body-local and does not commandeer body/rope physics",
+          "pass": true
+        },
+        {
+          "name": "wet Byte shakes off real droplets outside the bathroom; expedition return leaves contextual dirt",
+          "pass": true
+        },
+        {
+          "name": "fixture cancellation, hidden page and resize release care ownership without erasing persistent anchors",
+          "pass": true
+        },
+        {
+          "name": "Earth down remains continuous in the bathroom while tilted water drains; there is no competing tub ground frame",
+          "pass": true
+        },
+        {
+          "name": "older home history upgrades in place; sponge is portable and storage refusal remains playable",
+          "pass": true
+        }
+      ],
+      "method": "browser fixtures, stepped simulation and trusted CDP input; corresponding committed probe"
+    },
+    "kitchen": {
+      "pass": 7,
+      "checks": [
+        {
+          "name": "kitchen extends the play room; all old room coordinates and compact door geometry stay intact",
+          "pass": true
+        },
+        {
+          "name": "food uses the room rope: slack does nothing; taut web pulls both bodies; releasing leaves both velocities intact",
+          "pass": true
+        },
+        {
+          "name": "an existing planted player strand prevents theft and survives kitchen cancellation",
+          "pass": true
+        },
+        {
+          "name": "Human Fingers can interrupt the scheme, grab Byte and preserve ordinary release control",
+          "pass": true
+        },
+        {
+          "name": "five viewport presentations retain high stock, readable scheme and a physically completed autonomous meal",
+          "pass": true
+        },
+        {
+          "name": "repeated mud events spread new smears across the body; every HQ pose retains its original alpha silhouette",
+          "pass": true
+        },
+        {
+          "name": "Earth orientation controls physical food and mouth alignment; it does not create a competing Byte kitchen floor",
+          "pass": true
+        }
+      ],
+      "method": "browser fixtures, stepped simulation and trusted CDP input; corresponding committed probe"
+    },
+    "acting": {
+      "pass": 10,
+      "checks": [
+        {
+          "name": "authored presentation leaves body state, dimensions, spool point and support geometry independent of source artwork",
+          "pass": true
+        },
+        {
+          "name": "rest uses its original physical web sequence while drowsy, tucked sleep and groggy waking become distinct readable poses",
+          "pass": true
+        },
+        {
+          "name": "physical grab, scuttle, scheming, player web and expedition override acting without a performance controller taking ownership",
+          "pass": true
+        },
+        {
+          "name": "healthy food is inspected before refusal, stays attached to the offering finger and is never consumed",
+          "pass": true
+        },
+        {
+          "name": "released broccoli uses physical body-contact projection/shove, remains in the world and never becomes a meal",
+          "pass": true
+        },
+        {
+          "name": "broccoli alone never becomes a desirable theft opportunity; remaining biscuits still use contextual scheming and the room rope",
+          "pass": true
+        },
+        {
+          "name": "actual held-biscuit bites produce satisfaction after eating; a grab immediately yields the performance to Fingers",
+          "pass": true
+        },
+        {
+          "name": "wet annoyance reuses the existing physical shake event and immediately gives way to grabbed-body authority",
+          "pass": true
+        },
+        {
+          "name": "every authored pose uses the existing dirt/wet coating and retains its exact transparent silhouette",
+          "pass": true
+        },
+        {
+          "name": "new opinion and sleeping poses remain contained/readable at five mobile viewport shapes",
+          "pass": true
+        }
+      ],
+      "method": "browser fixtures, stepped simulation and trusted CDP input; corresponding committed probe"
+    }
+  },
+  "protected_core_passes": 107,
+  "additional_regressions": {
+    "bath_read": {
+      "samples": [
+        {
+          "name": "empty",
+          "fill": 0,
+          "surface": 809,
+          "draining": false,
+          "drain": {
+            "x": 236.18400000000003,
+            "y": 803,
+            "handleX": 274.6,
+            "handleY": 704.596,
+            "plugY": 803
+          },
+          "body": {
+            "x": 180.00000535901148,
+            "y": 680.068,
+            "vy": 0
+          },
+          "wet": 0
+        },
+        {
+          "name": "low",
+          "fill": 0.3046399999999997,
+          "surface": 778.71756544,
+          "draining": false,
+          "drain": {
+            "x": 236.18400000000003,
+            "y": 803,
+            "handleX": 274.6,
+            "handleY": 704.596,
+            "plugY": 803
+          },
+          "body": {
+            "x": 180.00000535901148,
+            "y": 680.068,
+            "vy": 0
+          },
+          "wet": 0
+        },
+        {
+          "name": "half",
+          "fill": 0.6031260000000005,
+          "surface": 749.0468630959999,
+          "draining": false,
+          "drain": {
+            "x": 236.18400000000003,
+            "y": 803,
+            "handleX": 274.6,
+            "handleY": 704.596,
+            "plugY": 803
+          },
+          "body": {
+            "x": 180.00000535901148,
+            "y": 680.068,
+            "vy": 0
+          },
+          "wet": 0
+        },
+        {
+          "name": "full",
+          "fill": 0.9912020000000004,
+          "surface": 710.4705563919999,
+          "draining": false,
+          "drain": {
+            "x": 236.18400000000003,
+            "y": 803,
+            "handleX": 274.6,
+            "handleY": 704.596,
+            "plugY": 803
+          },
+          "body": {
+            "x": 180.00000535901148,
+            "y": 680.068,
+            "vy": -129.6025409752006
+          },
+          "wet": 1
+        },
+        {
+          "name": "open-plug",
+          "fill": 0.9549550000000002,
+          "surface": 714.07365318,
+          "draining": true,
+          "drain": {
+            "x": 236.18400000000003,
+            "y": 803,
+            "handleX": 274.6,
+            "handleY": 704.596,
+            "plugY": 761
+          },
+          "body": {
+            "x": 180.00000535901148,
+            "y": 680.068,
+            "vy": -159.6625907266782
+          },
+          "wet": 1
+        },
+        {
+          "name": "draining",
+          "fill": 0.4423549999999994,
+          "surface": 765.02814358,
+          "draining": true,
+          "drain": {
+            "x": 236.18400000000003,
+            "y": 803,
+            "handleX": 274.6,
+            "handleY": 704.596,
+            "plugY": 761
+          },
+          "body": {
+            "x": 180.00000535901148,
+            "y": 680.068,
+            "vy": -10.809875390752001
+          },
+          "wet": 0.9955996000000004
+        },
+        {
+          "name": "drained",
+          "fill": 0,
+          "surface": 809,
+          "draining": false,
+          "drain": {
+            "x": 236.18400000000003,
+            "y": 803,
+            "handleX": 274.6,
+            "handleY": 704.596,
+            "plugY": 803
+          },
+          "body": {
+            "x": 180.00000535901148,
+            "y": 680.068,
+            "vy": -0.35019683543027885
+          },
+          "wet": 0.9858004000000014
+        }
+      ],
+      "nook": {
+        "inside": null,
+        "edge": 4
+      },
+      "layouts": [
+        {
+          "size": {
+            "width": 320,
+            "height": 568
+          },
+          "width": 17.6,
+          "top": 234.1599999999999,
+          "floor": 558,
+          "hitWidth": 27.200000000000003,
+          "nookLeft": 28.799999999999997,
+          "inside": null
+        },
+        {
+          "size": {
+            "width": 390,
+            "height": 844
+          },
+          "width": 21.45,
+          "top": 439.31999999999994,
+          "floor": 834,
+          "hitWidth": 33.150000000000006,
+          "nookLeft": 35.1,
+          "inside": null
+        },
+        {
+          "size": {
+            "width": 844,
+            "height": 390
+          },
+          "width": 23.1,
+          "top": 138.06,
+          "floor": 344,
+          "hitWidth": 35.7,
+          "nookLeft": 37.8,
+          "inside": null
+        }
+      ],
+      "errors": [],
+      "normalRAF": true,
+      "actualTouch": true
+    },
+    "crystal_cache": {
+      "result": {
+        "warm": {
+          "skyBuilds": 1,
+          "tileBuilds": 5,
+          "opticalBuilds": 1,
+          "cachedTiles": 5,
+          "bitmapBytes": 6585040
+        },
+        "staticView": {
+          "skyBuilds": 1,
+          "tileBuilds": 5,
+          "opticalBuilds": 1,
+          "cachedTiles": 5,
+          "bitmapBytes": 6585040
+        },
+        "staticGradients": 0,
+        "patterns": 0,
+        "maxBytes": 9960040,
+        "maxCached": 8,
+        "maxDomBands": 5,
+        "final": {
+          "skyBuilds": 41,
+          "tileBuilds": 29,
+          "opticalBuilds": 81,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "camera": -15000
+      },
+      "resized": {
+        "cache": {
+          "skyBuilds": 42,
+          "tileBuilds": 35,
+          "opticalBuilds": 82,
+          "cachedTiles": 6,
+          "bitmapBytes": 3496956
+        },
+        "sameBounds": true
+      },
+      "errors": []
+    },
+    "pantry": {
+      "initial": {
+        "room": 5,
+        "meals": 0,
+        "food": [
+          {
+            "id": "biscuit-0",
+            "x": 109.20000000000002,
+            "y": 287.84,
+            "bites": 4,
+            "room": 5
+          },
+          {
+            "id": "biscuit-1",
+            "x": 159.9,
+            "y": 287.84,
+            "bites": 4,
+            "room": 5
+          },
+          {
+            "id": "biscuit-2",
+            "x": 210.60000000000002,
+            "y": 287.84,
+            "bites": 4,
+            "room": 5
+          },
+          {
+            "id": "biscuit-vi",
+            "x": 243.75,
+            "y": 287.84,
+            "bites": 4,
+            "room": 5
+          }
+        ],
+        "broccoli": 4,
+        "mouth": {
+          "x": 86.04671199966911,
+          "y": 757.1496293616802
+        }
+      },
+      "empty": {
+        "room": 5,
+        "meals": 4,
+        "food": [
+          {
+            "id": "biscuit-0",
+            "x": 90.4297821044922,
+            "y": 751.8166540527343,
+            "bites": 0,
+            "room": 5
+          },
+          {
+            "id": "biscuit-1",
+            "x": 90.42194213867188,
+            "y": 754.1538732910155,
+            "bites": 0,
+            "room": 5
+          },
+          {
+            "id": "biscuit-2",
+            "x": 90.40082702636721,
+            "y": 750.6238439941405,
+            "bites": 0,
+            "room": 5
+          },
+          {
+            "id": "biscuit-vi",
+            "x": 90.40740203857422,
+            "y": 753.1611364746093,
+            "bites": 0,
+            "room": 5
+          }
+        ],
+        "broccoli": 4,
+        "mouth": {
+          "x": 86.78602870169904,
+          "y": 757.670321884122
+        }
+      },
+      "replenished": {
+        "room": 5,
+        "meals": 4,
+        "food": [
+          {
+            "id": "biscuit-0",
+            "x": 109.20000000000002,
+            "y": 287.84,
+            "bites": 4,
+            "room": 5
+          },
+          {
+            "id": "biscuit-1",
+            "x": 154.05,
+            "y": 287.84,
+            "bites": 4,
+            "room": 5
+          },
+          {
+            "id": "biscuit-2",
+            "x": 198.9,
+            "y": 287.84,
+            "bites": 4,
+            "room": 5
+          },
+          {
+            "id": "biscuit-vi",
+            "x": 243.75,
+            "y": 287.84,
+            "bites": 4,
+            "room": 5
+          }
+        ],
+        "broccoli": 4,
+        "mouth": {
+          "x": 92.0521312195032,
+          "y": 751.4243745375012
+        }
+      },
+      "errors": []
+    }
+  },
+  "ordinary_toy_play": {
+    "runs": [
+      {
+        "name": "fetch",
+        "id": "comet-ball",
+        "release": {
+          "id": "comet-ball",
+          "phase": "chase",
+          "answered": 1,
+          "vx": -860.7593842196566,
+          "vy": -1219.409282700422
+        },
+        "end": {
+          "invitations": 2,
+          "phase": "invite",
+          "answered": 1,
+          "retrievals": 1
+        },
+        "phases": [
+          {
+            "phase": "none",
+            "pose": null,
+            "time": 1159.6000000238419
+          },
+          {
+            "phase": "to-chest",
+            "id": "comet-ball",
+            "pose": null,
+            "time": 10518.5
+          },
+          {
+            "phase": "rummage",
+            "id": "comet-ball",
+            "pose": "rummaging",
+            "time": 10598.300000011921
+          },
+          {
+            "phase": "present",
+            "id": "comet-ball",
+            "pose": null,
+            "time": 12445.800000011921,
+            "carried": "comet-ball"
+          },
+          {
+            "phase": "invite",
+            "id": "comet-ball",
+            "pose": "expectant",
+            "time": 13036.90000000596
+          },
+          {
+            "phase": "human",
+            "id": "comet-ball",
+            "pose": "expectant",
+            "time": 16530.80000001192
+          },
+          {
+            "phase": "chase",
+            "id": "comet-ball",
+            "pose": null,
+            "time": 16805.90000000596
+          },
+          {
+            "phase": "present",
+            "id": "comet-ball",
+            "pose": null,
+            "time": 19756.5,
+            "carried": "comet-ball"
+          },
+          {
+            "phase": "invite",
+            "id": "comet-ball",
+            "pose": "expectant",
+            "time": 20372.100000023842
+          }
+        ]
+      },
+      {
+        "name": "wind",
+        "id": "pinwheel",
+        "release": {
+          "id": "pinwheel",
+          "phase": "respond",
+          "answered": 1,
+          "vx": 0,
+          "vy": 0,
+          "wheelSpin": 40
+        },
+        "end": {
+          "invitations": 1,
+          "phase": "invite",
+          "answered": 1,
+          "retrievals": 1
+        },
+        "phases": [
+          {
+            "phase": "none",
+            "pose": null,
+            "time": 2201.2999999821186
+          },
+          {
+            "phase": "rummage",
+            "id": "pinwheel",
+            "pose": "rummaging",
+            "time": 10281.299999982119
+          },
+          {
+            "phase": "present",
+            "id": "pinwheel",
+            "pose": null,
+            "time": 12399.299999982119,
+            "carried": "pinwheel"
+          },
+          {
+            "phase": "invite",
+            "id": "pinwheel",
+            "pose": "expectant",
+            "time": 12849
+          },
+          {
+            "phase": "human",
+            "id": "pinwheel",
+            "pose": "expectant",
+            "time": 15315.299999982119
+          },
+          {
+            "phase": "respond",
+            "id": "pinwheel",
+            "pose": "expectant",
+            "time": 16380.299999982119
+          },
+          {
+            "phase": "invite",
+            "id": "pinwheel",
+            "pose": "expectant",
+            "time": 17818.19999998808
+          }
+        ]
+      },
+      {
+        "name": "compress",
+        "id": "frog-toy",
+        "release": {
+          "id": "frog-toy",
+          "phase": "chase",
+          "answered": 1,
+          "vx": -566.6666666666667,
+          "vy": -798.3749999999998
+        },
+        "end": {
+          "invitations": 2,
+          "phase": "invite",
+          "answered": 1,
+          "retrievals": 1
+        },
+        "phases": [
+          {
+            "phase": "none",
+            "pose": null,
+            "time": 1575.2999999821186
+          },
+          {
+            "phase": "to-chest",
+            "id": "frog-toy",
+            "pose": null,
+            "time": 13026
+          },
+          {
+            "phase": "rummage",
+            "id": "frog-toy",
+            "pose": "rummaging",
+            "time": 13093.59999999404
+          },
+          {
+            "phase": "present",
+            "id": "frog-toy",
+            "pose": null,
+            "time": 15173.5,
+            "carried": "frog-toy"
+          },
+          {
+            "phase": "invite",
+            "id": "frog-toy",
+            "pose": "expectant",
+            "time": 15758.199999988079
+          },
+          {
+            "phase": "human",
+            "id": "frog-toy",
+            "pose": "expectant",
+            "time": 18213.899999976158
+          },
+          {
+            "phase": "chase",
+            "id": "frog-toy",
+            "pose": null,
+            "time": 19190.899999976158
+          },
+          {
+            "phase": "present",
+            "id": "frog-toy",
+            "pose": null,
+            "time": 20456.899999976158,
+            "carried": "frog-toy"
+          },
+          {
+            "phase": "invite",
+            "id": "frog-toy",
+            "pose": "expectant",
+            "time": 20937
+          }
+        ]
+      },
+      {
+        "name": "rhythm",
+        "id": "rattle",
+        "release": {
+          "id": "rattle",
+          "phase": "respond",
+          "answered": 1,
+          "vx": 0,
+          "vy": 0,
+          "shakes": 6
+        },
+        "end": {
+          "invitations": 1,
+          "phase": "invite",
+          "answered": 1,
+          "retrievals": 1
+        },
+        "phases": [
+          {
+            "phase": "none",
+            "pose": null,
+            "time": 1011.5999999940395
+          },
+          {
+            "phase": "to-chest",
+            "id": "rattle",
+            "pose": null,
+            "time": 10791.799999982119
+          },
+          {
+            "phase": "rummage",
+            "id": "rattle",
+            "pose": "rummaging",
+            "time": 10875
+          },
+          {
+            "phase": "present",
+            "id": "rattle",
+            "pose": "rummaging",
+            "time": 12808.399999976158,
+            "carried": "rattle"
+          },
+          {
+            "phase": "present",
+            "id": "rattle",
+            "pose": null,
+            "time": 12869.799999982119,
+            "carried": "rattle"
+          },
+          {
+            "phase": "invite",
+            "id": "rattle",
+            "pose": "expectant",
+            "time": 13419.5
+          },
+          {
+            "phase": "human",
+            "id": "rattle",
+            "pose": "expectant",
+            "time": 15790.09999999404
+          },
+          {
+            "phase": "respond",
+            "id": "rattle",
+            "pose": "expectant",
+            "time": 16805.399999976158
+          },
+          {
+            "phase": "invite",
+            "id": "rattle",
+            "pose": "expectant",
+            "time": 18214.09999999404
+          }
+        ]
+      },
+      {
+        "name": "roll",
+        "id": "ring-toy",
+        "release": {
+          "id": "ring-toy",
+          "phase": "chase",
+          "answered": 1,
+          "vx": -626.9207128997529,
+          "vy": -888.137676607983
+        },
+        "end": {
+          "invitations": 2,
+          "phase": "invite",
+          "answered": 1,
+          "retrievals": 1
+        },
+        "phases": [
+          {
+            "phase": "none",
+            "pose": null,
+            "time": 1472.2000000178814
+          },
+          {
+            "phase": "rummage",
+            "id": "ring-toy",
+            "pose": null,
+            "time": 11876.200000017881
+          },
+          {
+            "phase": "rummage",
+            "id": "ring-toy",
+            "pose": "rummaging",
+            "time": 12071.5
+          },
+          {
+            "phase": "present",
+            "id": "ring-toy",
+            "pose": "rummaging",
+            "time": 14913.600000023842,
+            "carried": "ring-toy"
+          },
+          {
+            "phase": "present",
+            "id": "ring-toy",
+            "pose": null,
+            "time": 15018.300000011921,
+            "carried": "ring-toy"
+          },
+          {
+            "phase": "invite",
+            "id": "ring-toy",
+            "pose": "expectant",
+            "time": 15570.300000011921
+          },
+          {
+            "phase": "human",
+            "id": "ring-toy",
+            "pose": "expectant",
+            "time": 18586.20000001788
+          },
+          {
+            "phase": "chase",
+            "id": "ring-toy",
+            "pose": null,
+            "time": 18818.600000023842
+          },
+          {
+            "phase": "invite",
+            "id": "ring-toy",
+            "pose": "expectant",
+            "time": 20833
+          }
+        ]
+      }
+    ],
+    "errors": []
+  },
+  "ordinary_furniture_storage": {
+    "before": {
+      "history": 12,
+      "stored": 11,
+      "loose": 1,
+      "balance": 30,
+      "gear": {
+        "head": "plum-beanie",
+        "eyes": "round-specs",
+        "top": "sailor"
+      }
+    },
+    "after": {
+      "history": 12,
+      "stored": 12,
+      "loose": 0,
+      "balance": 30,
+      "gear": {
+        "head": "plum-beanie",
+        "eyes": "round-specs",
+        "top": "sailor"
+      }
+    },
+    "errors": []
+  },
+  "ordinary_expeditions": {
+    "method": "Normal RAF, trusted touch and virtual acceleration; fixtures suppress competing idle opportunities, no controller/body/wallet/pickup mutation. Wardrobe equip uses public API in this route; physical furniture tested separately.",
+    "runs": [
+      {
+        "number": 1,
+        "seed": 2941009222,
+        "bounces": 3,
+        "collected": 5,
+        "stored": 1,
+        "trustedMotion": 833
+      },
+      {
+        "number": 2,
+        "seed": 1339246698,
+        "bounces": 3,
+        "collected": 5,
+        "stored": 2,
+        "trustedMotion": 539
+      }
+    ],
+    "misses": [],
+    "errors": [],
+    "failedRequests": [],
+    "final": {
+      "x": 156,
+      "y": 747.888,
+      "vx": 0,
+      "vy": 0,
+      "half": 89.7,
+      "bodyW": 145.31400000000002,
+      "bodyH": 179.4,
+      "spool": {
+        "x": 185.92234419882757,
+        "y": 785.9519580008293
+      },
+      "w": 390,
+      "room": 3,
+      "launch": false,
+      "phase": "dropping",
+      "age": 0,
+      "camera": 0,
+      "balance": 5,
+      "collected": 0,
+      "seed": 0,
+      "trophies": 2,
+      "platforms": [],
+      "pickups": [],
+      "things": [],
+      "stored": 2,
+      "equipped": null,
+      "owned": [
+        "cloud-cap"
+      ]
+    }
+  },
+  "presentation": {
+    "combinations": 45,
+    "alphaLeakPixels": 0,
+    "clippedEdgePixels": 0,
+    "errors": [],
+    "method": "45 deterministic costume/pose combinations, care coating, geometry/spool invariance and inspected visual gallery"
+  },
+  "performance": {
+    "normal": [
+      {
+        "name": "VII-a",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 59.542078448222945,
+        "p95FrameMs": 16.800000000000182,
+        "medianCompletedRasterMs": 0.8999999761581421,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "VIII-a",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 59.07964982999216,
+        "p95FrameMs": 16.799999999999727,
+        "medianCompletedRasterMs": 0.7000000178813934,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "VII-b",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 59.84799532293301,
+        "p95FrameMs": 16.700000000000728,
+        "medianCompletedRasterMs": 1,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "VIII-b",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 56.46414449897687,
+        "p95FrameMs": 16.800000000000182,
+        "medianCompletedRasterMs": 0.9000000059604645,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      }
+    ],
+    "sixTimesCPU": [
+      {
+        "name": "VII-a",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 28.227672373900973,
+        "p95FrameMs": 66.59999999999991,
+        "medianCompletedRasterMs": 6.5999999940395355,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "VIII-a",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 25.604639684106616,
+        "p95FrameMs": 66.70000000000027,
+        "medianCompletedRasterMs": 8,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "VII-b",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 22.558467865692712,
+        "p95FrameMs": 83.39999999999964,
+        "medianCompletedRasterMs": 7.0999999940395355,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 24,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "VIII-b",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 16.744705262178673,
+        "p95FrameMs": 133.19999999999982,
+        "medianCompletedRasterMs": 18.5,
+        "cache": {
+          "skyBuilds": 12,
+          "tileBuilds": 12,
+          "opticalBuilds": 23,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      }
+    ],
+    "limitations": "Software Chromium/DPR2 simulated moving crystal rendering. Physics paused to isolate renderer. 6x results vary on shared host; not actual handset validation. Earlier wide comparison prompted cached bitmap composition of all costume layers. Crystal cache remains 8 tiles / 9960040 bytes. 10000 stored trophies bounded; deliberate loose physical clutter costs linearly."
+  },
+  "corrections": [
+    "Furniture yields to Byte/loose objects.",
+    "Opening touch cannot dismiss freshly opened chest/wardrobe via backdrop.",
+    "Offers face clear space away from mute.",
+    "Toy reactions yield to doorway/hatch carrying.",
+    "Speculative throw sampling patch rejected after trace proved test released on ladder. No sampling change retained."
+  ],
+  "compromises": [
+    "Vector cosmetics/toys beside HQ Byte.",
+    "Tops mask existing jacket; no new physical body.",
+    "Eyewear hidden on closed-eye poses.",
+    "Footwear omitted for anatomy coherence.",
+    "New search/expectant art remains candidate pending Human Eyes.",
+    "Invisible chest contents cheated; retrieval and carrying physical.",
+    "Local-origin storage without cross-device sync."
+  ]
+}

@@ -1,4 +1,8 @@
-# Current candidate: Sunburn VII — pocket money, physical memories
+# Current candidate: Sunburn VIII — stuff worth bringing home
+
+This isolated branch is `experiment/sunburn-viii-2026-10-07`, forked from VII `2fe29edd8cfb1cec659001bb3125092cee140cfa`. [Sunburn VIII implementation and evidence](SUNBURN-VIII.md) covers 43 stocked treasures, combinable clothes, a physical wardrobe, chest/search/toy invitations, and conserved scalable Crystal history. The existing experimental phone origin and local history are retained; canonical and earlier branches are unchanged. The previous campaign records follow.
+
+# Sunburn VII — pocket money, physical memories
 
 This isolated branch is `experiment/sunburn-vii-2026-10-07`, forked from Sunburn VI `cc46742bcdda538bee4733ec061cf1a666769c4a`. [Sunburn VII implementation and evidence](SUNBURN-VII.md) covers fresh Crystal runs, gameplay earning, separate physical trophies, permanent expressive hats and precise biscuit replenishment. Canonical and earlier experimental branches remain unchanged. The existing experimental phone origin and its local home history are retained.
 

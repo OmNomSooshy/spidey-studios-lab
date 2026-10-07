@@ -2,7 +2,7 @@
   const canvas = document.querySelector('#scene');
   const ctx = canvas.getContext('2d');
   const assets = { idle: null, blink: null, curious: null, walk: [], scheming: null };
-  const actingNames = ['drowsy', 'asleep', 'waking', 'refusal', 'satisfied'];
+  const actingNames = ['drowsy', 'asleep', 'waking', 'refusal', 'satisfied', 'rummaging', 'expectant'];
   const gravityButton = document.querySelector('#gravity-toggle');
   const gravityLabel = document.querySelector('#gravity-label');
   const gravityStatus = document.querySelector('#gravity-status');
@@ -126,7 +126,7 @@
   }
   function noticeTouch(x, y, id) {
     outside.dozing = false; outside.dream = false; outside.powerInvite = false; outside.bask = 0;
-    home.cancel();
+    home.cancel(home.possessions.answerAt(x,y));
     life.waking = 0;
     unlockAudio();
     wakeByte();
@@ -560,6 +560,7 @@
       else if (kitchen.refusal > 0 || bathroom.shake > 0) pose = 'refusal';
       else if (life.waking > 0) pose = 'waking';
       else if (kitchen.satisfaction > 0) pose = 'satisfied';
+      if(!pose&&home.possessions.pose)pose=home.possessions.pose;
       if (pose) frame = assets[pose] || frame;
     }
     const frameW = bodyW();
@@ -1269,6 +1270,7 @@
     autonomy.idleTime += dt;
     if (autonomy.idleTime < 7.2) return;
     autonomy.idleTime = 0;
+    if(home.possessions.opportunity()){home.possessions.start();return;}
     if(kitchen.opportunity()){kitchen.start();return;}
     const opportunities = [];
     if (buttonWeb.phase === 'waiting' && !buttonBody.loose) opportunities.push('button');
@@ -1704,8 +1706,8 @@
       ctx.rotate(angle);
       ctx.scale(byte.facing, 1);
       ctx.scale(squeezeX, squeezeY);
-      ctx.drawImage(obby.hasLaunched ? frame : bathroom.present(frame, t), -frameW / 2, -bodyH() / 2, frameW, bodyH());
-      economy.drawHat(ctx, frameW, bodyH(), frame);
+      const dressed=economy.bodyPresentation(frame);
+      ctx.drawImage(obby.hasLaunched ? dressed : bathroom.present(dressed, t), -frameW / 2, -bodyH() / 2, frameW, bodyH());
       ctx.restore();
     }
     // Keep a planted endpoint above Byte's opaque artwork so its hit target stays visible.

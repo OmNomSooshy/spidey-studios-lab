@@ -283,7 +283,9 @@
 
   const room = window.ByteRoom;
   const outside = { soundId: 0, shadowId: 0, joltId: 0, chargeId: 0, bask: 0, powerInvite: false, stimulusAt: 0, duck: 0, wind: 0, dream: false, dozing: false, seekTime: 0, lastMove: 0, reaction: '', reactionTime: 0 };
-  const home = window.createByteHome({ ctx, world, byte, life, earth, web, obby, autonomy,
+  const bathroom = window.createByteBathroom({ ctx, world, byte, life, earth, web, obby, home: () => home,
+    bodyW: () => bodyW(), bodyH: () => bodyH(), bodyGeometry, roomH: () => spriteH, floorY: () => floorY(), down: earthDown, voice, tactile });
+  const home = window.createByteHome({ ctx, world, byte, life, earth, web, obby, autonomy, bathroom,
     senses: room, bodyW: () => bodyW(), bodyH: () => bodyH(), roomW: () => spriteW, roomH: () => spriteH, extents: bodyHalfExtents, floorY: () => floorY(), wakeByte, voice,
     pranking: () => !['waiting', 'released'].includes(buttonWeb.phase), down: earthDown,
     restHere: beginRestHere, obbyHere: beginObbyHere, skyOpening: crystal.opening });
@@ -549,7 +551,7 @@
     const lean = !earth.enabled && byte.mode === 'idle' && life.gazeX !== null && life.curious > 0 ? clamp((life.gazeX - byte.x) * .00028, -.07, .07) : 0;
     squeezeX *= 1 + outside.duck * .22;
     squeezeY *= 1 - outside.duck * .32;
-    const angle = byte.angle + lean;
+    const angle = byte.angle + lean + (byte.mode === 'scheming' ? 0 : bathroom.shakeAngle());
     return { frame, frameW, bob, squeezeX, squeezeY, angle };
   }
   function bodyHalfExtents() {
@@ -579,7 +581,7 @@
       byte.grabSquishY = pressureY;
       const extent = bodyHalfExtents();
       const minX = extent.x, maxX = world.w - extent.x;
-      const minY = extent.y, maxY = earth.enabled ? world.h - extent.y : Math.min(floorY(), world.h - extent.y);
+      const minY = extent.y, maxY = earth.enabled ? world.h - extent.y : Math.min(floorY(), world.h - extent.y, bathroom.floorAt(desiredX) - extent.y);
       const pushX = Math.max(minX - desiredX, desiredX - maxX, 0);
       const pushY = Math.max(minY - desiredY, desiredY - maxY, 0);
       pressureX = clamp(pushX / halfW(), 0, .55);
@@ -589,7 +591,7 @@
     byte.grabSquishY = pressureY;
     const extent = bodyHalfExtents();
     byte.x = clamp(desiredX, extent.x, world.w - extent.x);
-    byte.y = clamp(desiredY, extent.y, earth.enabled ? world.h - extent.y : Math.min(floorY(), world.h - extent.y));
+    byte.y = clamp(desiredY, extent.y, earth.enabled ? world.h - extent.y : Math.min(floorY(), world.h - extent.y, bathroom.floorAt(desiredX) - extent.y));
   }
 
   function earthDown() {
@@ -1364,6 +1366,7 @@
       web.pointerId = null;
       return;
     }
+    if (bathroom.begin(px, py, e.pointerId)) { canvas.setPointerCapture(e.pointerId); return; }
     if (home.beginHand(point.x, point.y - (obby.hasLaunched ? obby.cameraY : 0), e.pointerId)) { canvas.setPointerCapture(e.pointerId); return; }
     if (obby.hasLaunched) {
       if (obby.web.active || obby.web.pending) return;
@@ -1422,6 +1425,7 @@
     if (home.travel) return;
     const handRect = canvas.getBoundingClientRect();
     const handPoint = obby.hasLaunched ? crystal.unproject(e.clientX - handRect.left, e.clientY - handRect.top) : { x: e.clientX - handRect.left, y: e.clientY - handRect.top };
+    if (bathroom.move(handPoint.x, handPoint.y, e.pointerId)) { e.preventDefault(); return; }
     if (home.moveHand(handPoint.x, handPoint.y - (obby.hasLaunched ? obby.cameraY : 0), e.pointerId)) { e.preventDefault(); return; }
     if (byte.grabbed && e.pointerId !== life.pointer.id) return;
     if (life.pointer.active && e.pointerId === life.pointer.id) {
@@ -1459,6 +1463,10 @@
     byte.lastSamples = byte.lastSamples.filter(p => t - p.t < 120).slice(-6);
   }
   function endDrag(e) {
+    if (bathroom.end(e.pointerId, e.type !== 'pointerup')) {
+      if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
+      return;
+    }
     if (home.endHand(e.pointerId, e.type !== 'pointerup')) {
       if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
       return;
@@ -1507,6 +1515,7 @@
 
   function update(dt, t) {
     if (home.travel) return;
+    bathroom.update(dt, t);
     const g = 1650;
     const previousY = byte.y;
     byte.idlePhase += dt * 2.1;
@@ -1586,6 +1595,7 @@
       byte.x = clamp(byte.x, extent.x, world.w - extent.x);
       if (!obby.hasLaunched) byte.y = clamp(byte.y, extent.y, Math.min(floorY(), world.h - extent.y));
     }
+    bathroom.afterPhysics();
     landOnObbyPlatform(previousY);
     if (obby.hasLaunched && byte.y >= floorY() && byte.vy >= 0) landBackHome();
 
@@ -1622,6 +1632,7 @@
   }
 
   function draw(t) {
+    if (!obby.hasLaunched && bathroom.beginFrame()) ctx.clearRect(0, 0, world.w, world.h);
     const cameraY = obby.hasLaunched ? obby.cameraY : 0;
     home.syncUI();
     if (obby.hasLaunched) {
@@ -1649,7 +1660,7 @@
       ctx.rotate(angle);
       ctx.scale(byte.facing, 1);
       ctx.scale(squeezeX, squeezeY);
-      ctx.drawImage(frame, -frameW / 2, -bodyH() / 2, frameW, bodyH());
+      ctx.drawImage(obby.hasLaunched ? frame : bathroom.present(frame, t), -frameW / 2, -bodyH() / 2, frameW, bodyH());
       ctx.restore();
     }
     // Keep a planted endpoint above Byte's opaque artwork so its hit target stays visible.
@@ -1658,6 +1669,7 @@
     drawButtonWeb();
     ctx.restore();
     ctx.save(); if (obby.hasLaunched) crystal.applyView(); home.drawThings(); ctx.restore();
+    bathroom.foreground(t);
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -1675,7 +1687,7 @@
   });
   // Runtime handles are available only to an explicitly enabled local QA harness.
   if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probe')) {
-    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal };
+    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal, bathroom };
   }
 
   function loop(t) {

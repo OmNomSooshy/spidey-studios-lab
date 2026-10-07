@@ -25,7 +25,7 @@ const percentile=(values,p)=>{values.sort((a,b)=>a-b);return values[Math.min(val
   await p.waitForTimeout(duration);
   const sample=await p.evaluate(()=>{const q=__byteProbe,v=perfFrames,intervals=v.slice(1).map((t,i)=>t-v[i]);return{intervals,frames:v.length,elapsed:v.at(-1)-v[0],dpr:q.world.dpr,cache:q.crystal.stats?.()}});
   // Drain the final bitmap each time: measure completed raster work, not just queued canvas commands.
-  const raster=await p.evaluate(()=>{const q=__byteProbe,canvases=[...document.querySelectorAll('canvas')].map(c=>c.getContext('2d')),v=[];for(let i=0;i<24;i++){q.obby.cameraY-=8;q.byte.y=q.obby.cameraY+320;const t=performance.now();q.draw(t);for(const ctx of canvases)ctx.getImageData(0,0,1,1);v.push(performance.now()-t)}return v});
+  const raster=await p.evaluate(()=>{const q=__byteProbe,canvases=[...document.querySelectorAll('canvas')].filter(c=>c.getClientRects().length).map(c=>c.getContext('2d')),v=[];for(let i=0;i<24;i++){q.obby.cameraY-=8;q.byte.y=q.obby.cameraY+320;const t=performance.now();q.draw(t);for(const ctx of canvases)ctx.getImageData(0,0,1,1);v.push(performance.now()-t)}return v});
   const s={variant,rate,software:!!process.env.BYTE_QA_SOFTWARE,dpr:sample.dpr,fps:1000*(sample.frames-1)/sample.elapsed,medianFrameMs:percentile([...sample.intervals],.5),p95FrameMs:percentile([...sample.intervals],.95),medianRasterMs:percentile([...raster],.5),p95RasterMs:percentile([...raster],.95),cache:sample.cache,errors};assert(!errors.length);results.push(s);console.log(JSON.stringify(s));await c.close();
  }
  fs.writeFileSync(path.join(out,(baseline?'before':'after')+(process.env.BYTE_QA_SOFTWARE?'-software':'')+'.json'),JSON.stringify(results,null,2));await b.close();

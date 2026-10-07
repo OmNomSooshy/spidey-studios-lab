@@ -1,3 +1,9 @@
+# Current candidate: Sunburn IV — care becomes play
+
+This isolated branch is `experiment/sunburn-iv-2026-10-07`, forked from Sunburn III performance repair `948192009bb1219a50b5b19125e51fcbc3c7d2af`. [Sunburn IV implementation and QA](SUNBURN-IV.md) describes the bathroom. The existing Sunburn candidate hosting origin is reused to retain its local player history. Canonical, Through the Glass and Sunburn III source branches remain separate.
+
+The inherited Sunburn III design record follows.
+
 # Sunburn III — a place Byte lives
 
 This is a noncanonical candidate on `experiment/sunburn-iii-2026-10-06`, forked from the validated Through the Glass repair `5665c230e0c81b09889d521f78ab77d50c01b435`. Canonical Spider Byte and the Through the Glass branch have separate source and hosting identities and are not updated by this experiment.

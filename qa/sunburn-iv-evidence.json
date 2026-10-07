@@ -1,0 +1,725 @@
+{
+  "base_commit": "948192009bb1219a50b5b19125e51fcbc3c7d2af",
+  "branch": "experiment/sunburn-iv-2026-10-07",
+  "environment": "Local Chromium, Android/iPhone viewport emulation, trusted browser touch and virtual sensors; not physical phone",
+  "physical_phone_validated": false,
+  "suites": {
+    "mobile": {
+      "checks": 10,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "name": "gentle hold closes eyes without moving Byte",
+          "pass": true
+        },
+        {
+          "name": "finger hold and movement retain scuttle authority",
+          "pass": true
+        },
+        {
+          "name": "all four dragged boundaries contain and compress visible body",
+          "pass": true
+        },
+        {
+          "name": "throw retains measured release momentum",
+          "pass": true
+        },
+        {
+          "name": "spool web plants, remains physical, and endpoint release preserves momentum",
+          "pass": true
+        },
+        {
+          "name": "slack player rope applies no push",
+          "pass": true
+        },
+        {
+          "name": "Byte makes a physical sleeping web and touch wakes him",
+          "pass": true
+        },
+        {
+          "name": "scheming pulls the gravity control down and activates Earth gravity without sensor consent",
+          "pass": true
+        },
+        {
+          "name": "continuous Earth vector supports non-bottom scuttle and corners",
+          "pass": true
+        },
+        {
+          "name": "first platform waits; player placement starts climb; web and fall return home",
+          "pass": true
+        }
+      ]
+    },
+    "device": {
+      "checks": 10,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "name": "sensor consent belongs to puck, never creature touch; denial remains playable",
+          "pass": true
+        },
+        {
+          "name": "the gravity control toggles Earth mode on, receives motion and returns to screen mode",
+          "pass": true
+        },
+        {
+          "name": "missing hardware data times out safely; unsupported API gives readable fallback",
+          "pass": true
+        },
+        {
+          "name": "mute persists, and audio starts only after a gesture",
+          "pass": true
+        },
+        {
+          "name": "secondary fingers cannot take over a grab; touch cancellation plants room web",
+          "pass": true
+        },
+        {
+          "name": "backgrounding stops simulation and releases interrupted hands while keeping planted web",
+          "pass": true
+        },
+        {
+          "name": "portrait, landscape and desktop layouts keep visible body and puck contained",
+          "pass": true
+        },
+        {
+          "name": "rotation preserves proportional planted rope and stationary displaced puck",
+          "pass": true
+        },
+        {
+          "name": "a real held web redirects a missed platform into a landing, retaining useful release momentum",
+          "pass": true
+        },
+        {
+          "name": "Earth-supported scheming and aiming preserve the same body frame",
+          "pass": true
+        }
+      ]
+    },
+    "sensing": {
+      "checks": 18,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "name": "real camera/mic streams are acquired by the window and stopped on close",
+          "pass": true
+        },
+        {
+          "name": "camera light centroid drives grounded travel without moving the body pivot",
+          "pass": true
+        },
+        {
+          "name": "a moving foreground is perceived separately from uniform exposure changes",
+          "pass": true
+        },
+        {
+          "name": "covering the camera physically retreats to a web; restored light wakes without resetting velocity",
+          "pass": true
+        },
+        {
+          "name": "darkness on an Earth-owned side uses supported dozing, with no incompatible sleeping strand",
+          "pass": true
+        },
+        {
+          "name": "harmonic voice earns attention; a sound attack adds real flight velocity; constant DC is ignored",
+          "pass": true
+        },
+        {
+          "name": "sustained turbulent microphone pressure lifts the existing body; silence lets it fall",
+          "pass": true
+        },
+        {
+          "name": "sound/breath preserve a player\u2019s planted tether and a held body retains finger authority",
+          "pass": true
+        },
+        {
+          "name": "Byte\u2019s own sound suppression cannot recursively trigger microphone reactions",
+          "pass": true
+        },
+        {
+          "name": "real broadband breath remains physical during Byte\u2019s own sound gate",
+          "pass": true
+        },
+        {
+          "name": "explicit media denial offers partial retry; audio-only capture remains useful",
+          "pass": true
+        },
+        {
+          "name": "backgrounding stops native capture tracks and never secretly reacquires them",
+          "pass": true
+        },
+        {
+          "name": "a late media grant after cancellation stops its tracks immediately",
+          "pass": true
+        },
+        {
+          "name": "charging event invites grounded basking and unplugging releases that response",
+          "pass": true
+        },
+        {
+          "name": "gyroscope acceleration and linear phone motion act independently of screen gravity",
+          "pass": true
+        },
+        {
+          "name": "camera light and voice intent travel along Earth-owned side ground, not the screen floor",
+          "pass": true
+        },
+        {
+          "name": "charging warmth follows the hardware bottom in landscape, independent of gravity",
+          "pass": true
+        },
+        {
+          "name": "null motion samples never claim a functioning sense or shut off camera and microphone",
+          "pass": true
+        }
+      ]
+    },
+    "home": {
+      "checks": 20,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "name": "actual finger invitations traverse both doors with continuous camera motion and keep the aperture in its own space",
+          "pass": true
+        },
+        {
+          "name": "a calm held Byte can be carried into a doorway without escaping ordinary outer-wall squish",
+          "pass": true
+        },
+        {
+          "name": "a physical toy can be dragged to a passage, accompany Byte, settle elsewhere, and survive reload",
+          "pass": true
+        },
+        {
+          "name": "autonomous rest travels to the nook, makes a physical strand, and leaves a local memory after waking",
+          "pass": true
+        },
+        {
+          "name": "Human Fingers can invite rest by leaving Byte calmly on his actual mat",
+          "pass": true
+        },
+        {
+          "name": "Byte autonomously approaches and kicks a physical ball in the play space",
+          "pass": true
+        },
+        {
+          "name": "the upstairs opportunity takes Byte to the loft, waits, and requires physical platform contact",
+          "pass": true
+        },
+        {
+          "name": "a waiting platform stays in its loft while Byte can leave, sleep elsewhere and return to it",
+          "pass": true
+        },
+        {
+          "name": "a found upstairs stone falls back into the home and Byte carries it to his nook",
+          "pass": true
+        },
+        {
+          "name": "the repaired prank travels back to the aperture, schemes, dislodges its control and activates Earth mode",
+          "pass": true
+        },
+        {
+          "name": "a platform left waiting upstairs does not suppress the downstairs gravity prank",
+          "pass": true
+        },
+        {
+          "name": "phone inertia and microphone pressure act on physical belongings as well as Byte",
+          "pass": true
+        },
+        {
+          "name": "a charging invitation travels to its visible warmth, while voice travel leaves phone forces active",
+          "pass": true
+        },
+        {
+          "name": "Earth support remains coherent through carrying Byte into a neighboring space",
+          "pass": true
+        },
+        {
+          "name": "opening the real capture aperture then leaving its room keeps sensing live without moving the aperture into a HUD",
+          "pass": true
+        },
+        {
+          "name": "grabbing Byte interrupts a carrying trip and leaves the belonging physical in the current space",
+          "pass": true
+        },
+        {
+          "name": "a planted player strand prevents departure and survives a doorway invitation",
+          "pass": true
+        },
+        {
+          "name": "quiet sensory attention yields to a doorway trip while physical breath still changes momentum",
+          "pass": true
+        },
+        {
+          "name": "Earth-grounded doorway travel uses an actual opening, and a ceiling does not become a sideways corridor",
+          "pass": true
+        },
+        {
+          "name": "backgrounding releases an interrupted object hand, and resizing during passage safely recontains Byte",
+          "pass": true
+        }
+      ]
+    },
+    "upstairs": {
+      "checks": 10,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "name": "actual ladder touch enters a separate loft; visit and idle never auto-launch",
+          "pass": true
+        },
+        {
+          "name": "downstairs gravity control and sensory aperture stay downstairs",
+          "pass": true
+        },
+        {
+          "name": "loft persists across reload at room scale with a usable waiting platform",
+          "pass": true
+        },
+        {
+          "name": "floor hatch returns downstairs without playing the obby",
+          "pass": true
+        },
+        {
+          "name": "physical ball can accompany Byte upstairs without activating the obby",
+          "pass": true
+        },
+        {
+          "name": "the same belonging comes back down the ladder",
+          "pass": true
+        },
+        {
+          "name": "actual player placement starts automatic bouncing; camera climbs completely outside the loft",
+          "pass": true
+        },
+        {
+          "name": "outdoor held web stays physical and release retains velocity",
+          "pass": true
+        },
+        {
+          "name": "a missed descent returns to the loft, normal scale and its waiting spring",
+          "pass": true
+        },
+        {
+          "name": "after returning from outdoors the ladder still leads downstairs",
+          "pass": true
+        }
+      ]
+    },
+    "crystal": {
+      "checks": 13,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "name": "separate loft stays a normal room before actual platform contact",
+          "pass": true
+        },
+        {
+          "name": "physical placement supplies one decisive launch with no ordinary ledges",
+          "pass": true
+        },
+        {
+          "name": "more than a readable half-second of actual clear sky separates house and crystal, with no ledges",
+          "pass": true
+        },
+        {
+          "name": "first crystal ledge catches the launch and preserves ordinary bounce force",
+          "pass": true
+        },
+        {
+          "name": "arbitrary screen placement attaches to material; held anchor stays fixed in world space",
+          "pass": true
+        },
+        {
+          "name": "release retains both linear momentum and swing spin",
+          "pass": true
+        },
+        {
+          "name": "slack crystal rope still never pushes",
+          "pass": true
+        },
+        {
+          "name": "near crystal features move with world/camera, independently of 12% distant-sky travel",
+          "pass": true
+        },
+        {
+          "name": "missed route returns to room-scale loft rather than auto-bouncing on the launcher",
+          "pass": true
+        },
+        {
+          "name": "return resets the route and permits another clean launch",
+          "pass": true
+        },
+        {
+          "name": "a released pre-surface hold cannot leave a fake empty-sky anchor",
+          "pass": true
+        },
+        {
+          "name": "holding through clear sky can attach when the physical surface arrives",
+          "pass": true
+        },
+        {
+          "name": "expedition fragment is discovered above the structure, preserving the existing physical possession",
+          "pass": true
+        }
+      ]
+    },
+    "care": {
+      "checks": 9,
+      "passed": true,
+      "errors": [],
+      "results": [
+        {
+          "name": "bathroom is physically left of nook, independently visitable and returns through the same doorway",
+          "pass": true
+        },
+        {
+          "name": "physical bath lever fills retained water; grabbed Byte remains free; held sponge removes local mud and provokes a physical splash",
+          "pass": true
+        },
+        {
+          "name": "shower head turns on, follows a real finger and wets Byte without filling bath; sponge shares the same washing process",
+          "pass": true
+        },
+        {
+          "name": "the physical plug empties the bath and a portable sponge accompanies Byte through the bathroom doorway",
+          "pass": true
+        },
+        {
+          "name": "dry rubbing does not magically wash; wet cleaning is body-local and does not commandeer body/rope physics",
+          "pass": true
+        },
+        {
+          "name": "wet Byte shakes off real droplets outside the bathroom; expedition return leaves contextual dirt",
+          "pass": true
+        },
+        {
+          "name": "fixture cancellation, hidden page and resize release care ownership without erasing persistent anchors",
+          "pass": true
+        },
+        {
+          "name": "Earth down remains continuous in the bathroom while tilted water drains; there is no competing tub ground frame",
+          "pass": true
+        },
+        {
+          "name": "older home history upgrades in place; sponge is portable and storage refusal remains playable",
+          "pass": true
+        }
+      ]
+    }
+  },
+  "bathroom_layouts": [
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "g": {
+        "x": 57.599999999999994,
+        "w": 179.20000000000002,
+        "rim": 446.84799999999996,
+        "bottom": 544,
+        "surface": 454.84799999999996,
+        "tapX": 64,
+        "tapY": 323.76,
+        "dishX": 36.800000000000004,
+        "dishY": 346.48,
+        "mountX": 204.8,
+        "mountY": 136.32,
+        "pipeX": 208,
+        "pipeY": 65.32000000000001
+      },
+      "wet": 1,
+      "x": 150.39999999999998,
+      "y": 429.18399999999997,
+      "contained": true,
+      "room": 4,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 360,
+        "height": 740
+      },
+      "g": {
+        "x": 64.8,
+        "w": 201.60000000000002,
+        "rim": 606.704,
+        "bottom": 716,
+        "surface": 614.704,
+        "tapX": 72,
+        "tapY": 421.79999999999995,
+        "dishX": 41.4,
+        "dishY": 451.4,
+        "mountX": 230.4,
+        "mountY": 177.6,
+        "pipeX": 234,
+        "pipeY": 85.10000000000001
+      },
+      "wet": 1,
+      "x": 169.2,
+      "y": 586.8320000000001,
+      "contained": true,
+      "room": 4,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "g": {
+        "x": 70.2,
+        "w": 218.40000000000003,
+        "rim": 701.596,
+        "bottom": 820,
+        "surface": 709.596,
+        "tapX": 78,
+        "tapY": 481.08,
+        "dishX": 44.85,
+        "dishY": 514.84,
+        "mountX": 249.6,
+        "mountY": 202.56,
+        "pipeX": 253.5,
+        "pipeY": 97.06
+      },
+      "wet": 1,
+      "x": 183.29999999999998,
+      "y": 680.068,
+      "contained": true,
+      "room": 4,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "g": {
+        "x": 77.39999999999999,
+        "w": 240.8,
+        "rim": 777.452,
+        "bottom": 908,
+        "surface": 785.452,
+        "tapX": 86,
+        "tapY": 531.24,
+        "dishX": 49.45,
+        "dishY": 568.52,
+        "mountX": 275.2,
+        "mountY": 223.67999999999998,
+        "pipeX": 279.5,
+        "pipeY": 107.18
+      },
+      "wet": 1,
+      "x": 202.1,
+      "y": 753.716,
+      "contained": true,
+      "room": 4,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "g": {
+        "x": 75.6,
+        "w": 235.20000000000002,
+        "rim": 256.08,
+        "bottom": 330,
+        "surface": 264.08,
+        "tapX": 84,
+        "tapY": 201.77999999999997,
+        "dishX": 48.300000000000004,
+        "dishY": 215.94,
+        "mountX": 268.8,
+        "mountY": 84.96,
+        "pipeX": 273,
+        "pipeY": 40.71
+      },
+      "wet": 1,
+      "x": 197.39999999999998,
+      "y": 242.64,
+      "contained": true,
+      "room": 4,
+      "errors": []
+    }
+  ],
+  "performance": {
+    "care-normal": {
+      "fps": 58.54,
+      "medianFrameMs": 16.7,
+      "p95FrameMs": 16.8,
+      "maxFrameMs": 99.9,
+      "maxTouchTimestampDelayMs": 44.2,
+      "maxLongTaskMs": 147,
+      "exitMs": 62,
+      "cpuRate": 1,
+      "software": false,
+      "room": 0,
+      "mud": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "washed": true,
+      "splashes": 1,
+      "errors": []
+    },
+    "care-constrained": {
+      "fps": 32.45,
+      "medianFrameMs": 33.3,
+      "p95FrameMs": 49.9,
+      "maxFrameMs": 116.6,
+      "maxTouchTimestampDelayMs": 193.7,
+      "maxLongTaskMs": 200,
+      "exitMs": 153,
+      "cpuRate": 6,
+      "software": true,
+      "room": 0,
+      "mud": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "washed": true,
+      "splashes": 1,
+      "errors": []
+    },
+    "crystal-inherited": {
+      "variant": "full",
+      "rate": 6,
+      "software": true,
+      "dpr": 2,
+      "fps": 35.47098506572077,
+      "medianFrameMs": 16.700000000000273,
+      "p95FrameMs": 50.100000000000136,
+      "medianRasterMs": 5,
+      "p95RasterMs": 9,
+      "cache": {
+        "skyBuilds": 12,
+        "tileBuilds": 11,
+        "opticalBuilds": 23,
+        "cachedTiles": 8,
+        "bitmapBytes": 9960040
+      },
+      "errors": []
+    },
+    "crystal-iv": {
+      "variant": "full",
+      "rate": 6,
+      "software": true,
+      "dpr": 2,
+      "fps": 42.00140004666822,
+      "medianFrameMs": 16.699999999999818,
+      "p95FrameMs": 49.899999999999864,
+      "medianRasterMs": 5.9000000059604645,
+      "p95RasterMs": 43.3999999910593,
+      "cache": {
+        "skyBuilds": 12,
+        "tileBuilds": 11,
+        "opticalBuilds": 23,
+        "cachedTiles": 8,
+        "bitmapBytes": 9960040
+      },
+      "errors": []
+    },
+    "crystal-inherited-repeat": {
+      "variant": "full",
+      "rate": 6,
+      "software": true,
+      "dpr": 2,
+      "fps": 43.023869181062906,
+      "medianFrameMs": 16.699999999999818,
+      "p95FrameMs": 49.90000000000009,
+      "medianRasterMs": 6.200000002980232,
+      "p95RasterMs": 17.299999997019768,
+      "cache": {
+        "skyBuilds": 12,
+        "tileBuilds": 11,
+        "opticalBuilds": 24,
+        "cachedTiles": 8,
+        "bitmapBytes": 9960040
+      },
+      "errors": []
+    },
+    "crystal-iv-repeat": {
+      "variant": "full",
+      "rate": 6,
+      "software": true,
+      "dpr": 2,
+      "fps": 45.209759989362404,
+      "medianFrameMs": 16.699999999999818,
+      "p95FrameMs": 33.400000000000546,
+      "medianRasterMs": 5.300000011920929,
+      "p95RasterMs": 32.19999998807907,
+      "cache": {
+        "skyBuilds": 12,
+        "tileBuilds": 11,
+        "opticalBuilds": 24,
+        "cachedTiles": 8,
+        "bitmapBytes": 9960040
+      },
+      "errors": []
+    }
+  },
+  "crystal_cache": {
+    "result": {
+      "warm": {
+        "skyBuilds": 1,
+        "tileBuilds": 5,
+        "opticalBuilds": 1,
+        "cachedTiles": 5,
+        "bitmapBytes": 6585040
+      },
+      "staticView": {
+        "skyBuilds": 1,
+        "tileBuilds": 5,
+        "opticalBuilds": 1,
+        "cachedTiles": 5,
+        "bitmapBytes": 6585040
+      },
+      "staticGradients": 0,
+      "patterns": 0,
+      "maxBytes": 9960040,
+      "maxCached": 8,
+      "maxDomBands": 5,
+      "final": {
+        "skyBuilds": 41,
+        "tileBuilds": 29,
+        "opticalBuilds": 81,
+        "cachedTiles": 8,
+        "bitmapBytes": 9960040
+      },
+      "camera": -15000
+    },
+    "resized": {
+      "cache": {
+        "skyBuilds": 42,
+        "tileBuilds": 35,
+        "opticalBuilds": 82,
+        "cachedTiles": 6,
+        "bitmapBytes": 3496956
+      },
+      "sameBounds": true
+    },
+    "errors": []
+  },
+  "limitations": [
+    "Galaxy A06 5G Chrome acceptance remains pending; no claim that prior physical performance failure is cleared.",
+    "No care sprite compositing in the outdoor expedition; room presentation resumes on return.",
+    "Performance emulation is variable and includes occasional long frames and raster spikes."
+  ]
+}

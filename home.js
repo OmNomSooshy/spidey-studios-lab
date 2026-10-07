@@ -1,4 +1,4 @@
-/* Sunburn III: three downstairs spaces, one loft, and physical belongings. */
+/* Sunburn home: four downstairs spaces, one loft, and physical belongings. */
 window.createByteHome = function createByteHome(api) {
   const { ctx, world, byte, life, earth, web, obby, autonomy } = api;
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -6,16 +6,16 @@ window.createByteHome = function createByteHome(api) {
   let remembered;
   try { remembered = JSON.parse(localStorage.getItem(key)); } catch (_) {}
   const home = {
-    room: Number.isInteger(remembered?.room) ? clamp(remembered.room, 0, 3) : 1,
+    room: Number.isInteger(remembered?.room) ? clamp(remembered.room, 0, 4) : 1,
     cameraX: 0, cameraY: 0, travel: null, journey: null, activity: null, hand: null, carried: null,
     slept: !!remembered?.slept, found: !!remembered?.found, stoneHome: !!remembered?.stoneHome,
-    time: 0, savedAt: 0, playCooldown: 0, restBeat: 0, visits: [false, true, false, false], things: [],
+    time: 0, savedAt: 0, playCooldown: 0, restBeat: 0, visits: [false, true, false, false, false], things: [],
   };
-  const initial = [{ id: 'ball', room: 2, nx: .62, ny: .91, r: 20 }];
+  const initial = [{ id: 'ball', room: 2, nx: .62, ny: .91, r: 20 }, { id: 'sponge', room: 4, nx: .115, ny: .58, r: 18 }];
   if (home.found) initial.push({ id: 'stone', room: 0, nx: .46, ny: .91, r: 15 });
   for (const seed of initial) {
     const saved = remembered?.things?.find(v => v.id === seed.id);
-    const safe = saved && Number.isInteger(saved.room) && saved.room >= 0 && saved.room <= 3 && Number.isFinite(saved.nx) && Number.isFinite(saved.ny);
+    const safe = saved && Number.isInteger(saved.room) && saved.room >= 0 && saved.room <= 4 && Number.isFinite(saved.nx) && Number.isFinite(saved.ny);
     home.things.push({ ...seed, ...(safe ? { room: saved.room, nx: clamp(saved.nx, .03, .97), ny: clamp(saved.ny, .03, .97) } : {}), x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0, touch: 0 });
   }
   function save() {
@@ -37,9 +37,11 @@ window.createByteHome = function createByteHome(api) {
     if (interrupted && home.carried) drop();
     const p = space(home.room); home.cameraX = p.x; home.cameraY = p.y; syncUI();
   }
-  function space(room) { return { x: Math.min(room, 2) * world.w, y: room === 3 ? -world.h : 0 }; }
+  function space(room) { return { x: (room === 4 ? -1 : Math.min(room, 2)) * world.w, y: room === 3 ? -world.h : 0 }; }
   function nextRoom(target) {
+    if (home.room === 4) return 0;
     if (home.room === 3) return 2;
+    if (target === 4) return home.room === 0 ? 4 : home.room - 1;
     if (target === 3) return home.room === 2 ? 3 : home.room + 1;
     return home.room + Math.sign(target - home.room);
   }
@@ -60,13 +62,13 @@ window.createByteHome = function createByteHome(api) {
     if (home.room === 2 && Math.abs(x - stairsX()) < 40 && y > 45 && y < world.h - 12) return 3;
     if (home.room === 3) return Math.abs(x - stairsX()) < 67 && y > world.h - 72 ? 2 : null;
     const top = Math.max(world.h * .39, world.h - 10 - api.bodyH() * 2.2);
-    const left = x < 90 && home.room > 0, right = x > world.w - 90 && home.room < 2;
+    const left = x < 90 && home.room < 3, right = x > world.w - 90 && (home.room < 2 || home.room === 4);
     if (!left && !right) return null;
     const distance = x - (left ? 16 : world.w - 16);
     const archTop = top + 80 - Math.sqrt(Math.max(0, 80 * 80 - distance * distance));
     if (y < archTop + 6) return null;
-    if (left) return home.room - 1;
-    if (right) return home.room + 1;
+    if (left) return home.room === 0 ? 4 : home.room - 1;
+    if (right) return home.room === 4 ? 0 : home.room + 1;
     return null;
   }
   function cancel() {
@@ -83,7 +85,7 @@ window.createByteHome = function createByteHome(api) {
       if (earth.enabled && (!earth.support.active || earth.support.edge !== 'bottom')) return null;
       return { x: stairsX(), y: earth.enabled ? world.h - e.y : api.floorY() };
     }
-    const dir = Math.sign(next - home.room);
+    const dir = Math.sign(space(next).x - space(home.room).x);
     const x = dir < 0 ? e.x + 12 : world.w - e.x - 12;
     if (!earth.enabled) return { x, y: api.floorY() };
     if (!earth.support.active) return null;
@@ -105,7 +107,7 @@ window.createByteHome = function createByteHome(api) {
   }
   function startTravel(target) {
     const next = nextRoom(target), from = space(home.room), to = space(next);
-    const vertical = from.y !== to.y, dir = vertical ? 1 : Math.sign(next - home.room);
+    const vertical = from.y !== to.y, dir = vertical ? 1 : Math.sign(space(next).x - space(home.room).x);
     if (target === home.room || home.travel || web.active || obby.hasLaunched) return;
     const e = api.extents();
     const destination = vertical ? stairsX() : dir > 0 ? e.x + 14 : world.w - e.x - 14;
@@ -137,7 +139,7 @@ window.createByteHome = function createByteHome(api) {
   function afterByteRelease(x, y) {
     const next = portal(x, y);
     const e = api.extents(), vertical = next !== null && (next === 3 || home.room === 3);
-    const nearOpening = vertical ? Math.abs(byte.x - stairsX()) : next < home.room ? byte.x - e.x : world.w - byte.x - e.x;
+    const nearOpening = vertical ? Math.abs(byte.x - stairsX()) : space(next).x < space(home.room).x ? byte.x - e.x : world.w - byte.x - e.x;
     if (next === null || web.active || api.pranking() || nearOpening > 96) return;
     home.journey = { target: next, reason: 'visit', item: null }; startTravel(next);
   }
@@ -187,6 +189,7 @@ window.createByteHome = function createByteHome(api) {
       v.vx += (gx + (fresh ? sensed.inertiaX - sensed.turnA * ry * .15 : 0) + wind * sensed.breathX) * dt;
       v.vy += (gy + (fresh ? sensed.inertiaY + sensed.turnA * rx * .15 : 0) + wind * sensed.breathY) * dt;
       if (fresh) v.spin = clamp(v.spin + sensed.turnA * .22 * dt, -10, 10);
+      const previousY = v.y;
       v.x += v.vx * dt; v.y += v.vy * dt; v.angle += v.spin * dt;
       const bottom = world.h - v.r - 10;
       if (v.x < v.r) { v.x = v.r; v.vx = Math.abs(v.vx) * .55; }
@@ -196,6 +199,7 @@ window.createByteHome = function createByteHome(api) {
         v.fromAbove = false; v.y = bottom; v.vy = Math.abs(v.vy) > 60 ? -Math.abs(v.vy) * (v.id === 'ball' ? .54 : .28) : 0;
         v.vx *= Math.exp(-dt * 2.1); v.spin = v.vx / v.r;
       }
+      api.bathroom.supportTool(v, previousY, dt);
       if (!earth.enabled && v.room === 2 && v.y > world.h - 45 && Math.abs(v.vy) < 160) {
         const lo = world.w * .43 + v.r, hi = world.w * .82 - v.r;
         if (v.x > lo - v.r && v.x < lo && v.vx < 0) { v.x = lo; v.vx = Math.abs(v.vx) * .45; }
@@ -290,6 +294,7 @@ window.createByteHome = function createByteHome(api) {
       ctx.fillStyle = g; ctx.strokeStyle = '#876337'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, v.r, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.shadowBlur = 0; ctx.strokeStyle = '#f4dfb0'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(0, 0, v.r * .48, v.r - 2, .5, 0, Math.PI * 2); ctx.stroke();
       ctx.fillStyle = '#8b663e77'; for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.arc(Math.sin(i * 2.4) * 12, Math.cos(i * 3.7) * 11, 1.2, 0, Math.PI * 2); ctx.fill(); }
+    } else if (v.id === 'sponge') { api.bathroom.drawSponge(v);
     } else {
       ctx.fillStyle = '#7bbab9'; ctx.strokeStyle = '#487c83'; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(-15, 0); ctx.lineTo(-9, -12); ctx.lineTo(7, -14); ctx.lineTo(16, -2); ctx.lineTo(9, 12); ctx.lineTo(-7, 14); ctx.closePath(); ctx.fill(); ctx.stroke();
@@ -301,7 +306,7 @@ window.createByteHome = function createByteHome(api) {
   function drawThings() {
     for (const v of home.things) {
       const screenX = offset(v.room);
-      if (screenX > world.w || screenX < -world.w) continue;
+      if (screenX >= world.w || screenX <= -world.w) continue;
       ctx.save(); ctx.translate(screenX, offsetY(v.room) - (obby.hasLaunched ? obby.cameraY : 0)); itemShape(v); ctx.restore();
     }
   }
@@ -310,6 +315,7 @@ window.createByteHome = function createByteHome(api) {
     ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x, y + w * .5); ctx.arc(x + w * .5, y + w * .5, w * .5, Math.PI, 0); ctx.lineTo(x + w, y + h); ctx.closePath(); ctx.fill(); ctx.stroke();
   }
   function drawSpace(index, t) {
+    if (index === 4) { api.bathroom.drawRoom(t); return; }
     const w = world.w, h = world.h, floor = h - 10;
     const bH = api.roomH(), bW = api.roomW();
     const palette = [['#506671', '#8a9b94', '#a8b09c'], ['#efe0ba', '#f5ecdb', '#dce4cf'], ['#b0c0a8', '#e0dbc0', '#c1bb9b'], ['#cfb58b', '#e6d6b7', '#cdbd98']][index];
@@ -324,10 +330,11 @@ window.createByteHome = function createByteHome(api) {
     ctx.strokeStyle = '#685d442e'; for (let x = 12; x < w; x += 58) { ctx.beginPath(); ctx.moveTo(x, floor - 16); ctx.lineTo(x - 13, h); ctx.stroke(); }
     ctx.strokeStyle = '#eee0b37a'; ctx.beginPath(); ctx.moveTo(0, floor - 17); ctx.lineTo(w, floor - 17); ctx.stroke();
     const top = Math.max(h * .39, floor - bH * 2.2), dh = floor - top;
-    if (index > 0 && index < 3) {
-      arch(-64, top, 160, dh, index === 1 ? '#5d7580' : '#e6dcc3', '#947e57');
+    if (index >= 0 && index < 3) {
+      arch(-64, top, 160, dh, index === 0 ? '#a9c9c7' : index === 1 ? '#5d7580' : '#e6dcc3', '#947e57');
       ctx.fillStyle = index === 1 ? '#c3b0a2' : '#bdae80'; ctx.fillRect(0, floor - 14, 93, 14);
-      if (index === 1) { ctx.strokeStyle = '#dad9c77a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-18, top + 114); ctx.quadraticCurveTo(27, top + 174, 62, top + 115); ctx.stroke(); ctx.fillStyle = '#c7b9a277'; ctx.beginPath(); ctx.ellipse(18, floor - 21, 47, 10, 0, 0, Math.PI * 2); ctx.fill(); }
+      if (index === 0) { ctx.strokeStyle = '#e7f0dd'; ctx.lineWidth = 2; ctx.beginPath(); for (let y = top + 104; y < floor; y += 45) { ctx.moveTo(0, y); ctx.lineTo(87, y); } ctx.moveTo(43, top + 92); ctx.lineTo(43, floor); ctx.stroke(); }
+      else if (index === 1) { ctx.strokeStyle = '#dad9c77a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-18, top + 114); ctx.quadraticCurveTo(27, top + 174, 62, top + 115); ctx.stroke(); ctx.fillStyle = '#c7b9a277'; ctx.beginPath(); ctx.ellipse(18, floor - 21, 47, 10, 0, 0, Math.PI * 2); ctx.fill(); }
       else { ctx.strokeStyle = '#c4a65f'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(16, top + 62, 17, 0, Math.PI * 2); ctx.stroke(); }
     }
     if (index < 2) {
@@ -382,13 +389,13 @@ window.createByteHome = function createByteHome(api) {
       const next = nextRoom(home.journey.target), vertical = index === 3 || next === 3;
       ctx.fillStyle = `rgba(255,239,184,${.06 + Math.sin(t * .005) * .025})`;
       if (vertical) ctx.fillRect(stairsX() - 34, index === 3 ? floor - 36 : 43, 68, index === 3 ? 46 : floor - 67);
-      else ctx.fillRect(next < index ? 0 : w - 94, top, 94, dh);
+      else ctx.fillRect(space(next).x < space(index).x ? 0 : w - 94, top, 94, dh);
     }
   }
   function draw(t) {
-    for (let index = 0; index < 4; index++) {
+    for (let index = 0; index < 5; index++) {
       const ox = offset(index), oy = offsetY(index), screenY = oy - (obby.hasLaunched ? obby.cameraY : 0);
-      if (ox < -world.w || ox > world.w || screenY > world.h * 1.35 || screenY + world.h < 0) continue;
+      if (ox <= -world.w || ox >= world.w || screenY > world.h * 1.35 || screenY + world.h < 0) continue;
       if (index === 3 && obby.hasLaunched) {
         // The camera can now see the building above its old viewport boundary.
         // Continue the loft into a pitched, open-skylight roof instead of clipping it at y=0.

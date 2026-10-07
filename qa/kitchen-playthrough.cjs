@@ -6,7 +6,7 @@ const out=process.env.BYTE_QA_OUTPUT||'/tmp/byte-kitchen-live';fs.mkdirSync(out,
  if(process.env.BYTE_QA_CPU)await cd.send('Emulation.setCPUThrottlingRate',{rate:+process.env.BYTE_QA_CPU});
  await p.goto((process.env.BYTE_QA_URL||'http://127.0.0.1:4193/')+'?probe');await p.waitForSelector('#arrival.ready');
  // Read-only instrumentation. No autonomy overrides, body writes or simulation stepping drive this route.
- await p.evaluate(()=>{window.kitchenTrace=[];window.kitchenDelays=[];window.kitchenTasks=[];for(const type of ['pointerdown','pointerup'])addEventListener(type,e=>kitchenDelays.push(performance.now()-e.timeStamp),{capture:true});new PerformanceObserver(l=>kitchenTasks.push(...l.getEntries().map(e=>e.duration))).observe({type:'longtask'});function track(t){const q=__byteProbe;if(q.home.room===5&&!q.home.travel)kitchenTrace.push({t,phase:q.kitchen.phase,mode:q.byte.mode,x:q.byte.x,y:q.byte.y,angle:q.byte.angle,web:q.web.active,planted:q.web.planted,food:q.web.food?.id,meals:q.kitchen.meals,biscuits:q.home.things.filter(v=>v.food).map(v=>({id:v.id,x:v.x,y:v.y,bites:v.bites,shelf:v.onShelf})),frame:q.bodyGeometry().frame?.src});requestAnimationFrame(track)}requestAnimationFrame(track)});
+ await p.evaluate(()=>{window.kitchenTrace=[];window.kitchenDelays=[];window.kitchenTasks=[];for(const type of ['pointerdown','pointerup'])addEventListener(type,e=>kitchenDelays.push(performance.now()-e.timeStamp),{capture:true});new PerformanceObserver(l=>kitchenTasks.push(...l.getEntries().map(e=>e.duration))).observe({type:'longtask'});function track(t){const q=__byteProbe;if(q.home.room===5&&!q.home.travel)kitchenTrace.push({t,phase:q.kitchen.phase,mode:q.byte.mode,x:q.byte.x,y:q.byte.y,angle:q.byte.angle,web:q.web.active,planted:q.web.planted,food:q.web.food?.id,meals:q.kitchen.meals,biscuits:q.home.things.filter(v=>v.food&&!v.vegetable).map(v=>({id:v.id,x:v.x,y:v.y,bites:v.bites,shelf:v.onShelf})),frame:q.bodyGeometry().frame?.src});requestAnimationFrame(track)}requestAnimationFrame(track)});
  async function touch(type,x,y){await cd.send('Input.dispatchTouchEvent',{type,touchPoints:type==='touchEnd'?[]:[{id:1,x,y,radiusX:5,radiusY:5,force:1}]})}
  async function tap(x,y){await touch('touchStart',x,y);await touch('touchEnd')}
  async function snap(n){if(!process.env.BYTE_QA_NOCAPTURE)await p.screenshot({path:path.join(out,'kitchen-live-'+n+'.png'),scale:'css'})}
@@ -14,7 +14,7 @@ const out=process.env.BYTE_QA_OUTPUT||'/tmp/byte-kitchen-live';fs.mkdirSync(out,
  await tap(370,630);await p.waitForFunction(()=>__byteProbe.home.room===5&&!__byteProbe.home.travel);await snap('arrival');
  await p.waitForFunction(()=>__byteProbe.kitchen.phase==='scheming',undefined,{timeout:20000});await snap('scheming');
  await p.waitForFunction(()=>__byteProbe.web.food&&__byteProbe.web.progress===1);await snap('rope');
- await p.waitForFunction(()=>__byteProbe.home.things.some(v=>v.food&&!v.onShelf&&v.bites===4&&v.y>500));await snap('stolen');
+ await p.waitForFunction(()=>__byteProbe.home.things.some(v=>v.food&&!v.vegetable&&!v.onShelf&&v.bites===4&&v.y>500));await snap('stolen');
  await p.waitForFunction(()=>__byteProbe.kitchen.meals===1,undefined,{timeout:18000});await snap('eaten');
  const f=await p.evaluate(()=>{const v=__byteProbe.home.things.find(v=>v.food&&v.bites===4);return{id:v.id,x:v.x,y:v.y}});
  await touch('touchStart',f.x,f.y);assert.equal(await p.evaluate(()=>__byteProbe.home.hand?.item.id),f.id);

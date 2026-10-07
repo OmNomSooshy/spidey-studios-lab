@@ -27,6 +27,9 @@ window.createByteHome = function createByteHome(api) {
   };
   const initial = [{ id: 'ball', room: 2, nx: .62, ny: .91, r: 20 }, { id: 'sponge', room: 4, nx: .115, ny: .58, r: 18 }];
   for(let i=0;i<3;i++)initial.push({id:'biscuit-'+i,room:5,nx:.28+i*.13,ny:.34,r:16,food:true,bites:4});
+  // One new physical portion makes the contrast available in an already-used Sunburn V home.
+  initial.push({id:'biscuit-vi',room:5,nx:.625,ny:.34,r:16,food:true,bites:4});
+  initial.push({id:'broccoli',room:5,nx:.70,ny:.90,r:18,food:true,vegetable:true,bites:4});
   if (home.found) initial.push({ id: 'stone', room: 0, nx: .46, ny: .91, r: 15 });
   for (const seed of initial) {
     const saved = remembered?.things?.find(v => v.id === seed.id);
@@ -49,7 +52,7 @@ window.createByteHome = function createByteHome(api) {
       v.x = oldW ? v.x * world.w / oldW : v.nx * world.w;
       v.y = oldH ? v.y * world.h / oldH : Math.min(world.h - v.r - 10, v.ny * world.h);
       v.x = clamp(v.x, v.r, world.w - v.r); v.y = clamp(v.y, v.r, world.h - v.r - 10);
-      if(v.food&&v.stock){v.y=api.kitchen.geometry().shelfY-v.r;v.onShelf=true;v.stock=false}
+      if(v.food&&v.stock){v.y=(v.vegetable?api.kitchen.geometry().tableY:api.kitchen.geometry().shelfY)-v.r;v.onShelf=!v.vegetable;v.stock=false}
     }
     if (interrupted && home.carried) drop();
     const p = space(home.room); home.cameraX = p.x; home.cameraY = p.y; syncUI();
@@ -229,7 +232,7 @@ window.createByteHome = function createByteHome(api) {
       if (earth.enabled && (v.x <= v.r + 1 || v.x >= world.w - v.r - 1 || v.y <= v.r + 1)) {
         v.vx *= Math.exp(-dt * 2); v.vy *= Math.exp(-dt * 2);
       }
-      if (!v.food&&v.room === home.room && !home.travel && !byte.grabbed && life.phase === 'awake' && Math.abs(v.y - byte.y) < api.bodyH() * .45) {
+      if ((!v.food||v.vegetable)&&v.room === home.room && !home.travel && !byte.grabbed && life.phase === 'awake' && Math.abs(v.y - byte.y) < api.bodyH() * .45) {
         const reach = api.bodyW() * .31 + v.r, dx = v.x - byte.x;
         if (Math.abs(dx) < reach && Math.abs(dx) > .01) {
           const side = Math.sign(dx), speed = Math.max(0, -v.vx * side);

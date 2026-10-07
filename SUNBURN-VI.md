@@ -1,0 +1,52 @@
+# Sunburn VI — Byte has opinions
+
+Candidate: `experiment/sunburn-vi-2026-10-07`. Parent: `4983f65d1db839998e18d9548d52e1b043de3e16`. This is a character-performance experiment; Human Eyes decides whether the new appearance deserves canon.
+
+## The deliberate vocabulary
+
+Five authored HQ poses extend the existing idle, blink, curious, scuttle and scheming vocabulary. The new art follows the original front Byte and approved scheming reference: lime/spot language, amber eyes, three tufts, blue jacket, squat spider body and orange hip spool. The transparent master is retained in `art/sunburn-vi-acting-source.png`; normalized runtime images are in `assets/hq/`. Offline extraction uses one common scale, explicit body centers and the existing 214×264 canvas/foot reference. Head scale stays consistent; tiredness and folded sleep naturally compress the pose. Image bounds never enter body dimensions, contact/support, rope length or the physical spool reference. The five optimized PNGs total about 277 KiB; their decoded pixels total 1.08 MiB. No new renderer or animation framework is involved.
+
+| Performance | Underlying trigger | Authored presentation and transition | Physical authority / interruption |
+| --- | --- | --- | --- |
+| Drowsy / settling | Existing `nest-cast` and first portion of `settling` after Byte independently chooses rest or finds his mat | Heavy lids, eye rub and slack sleepy mouth. Existing scuttle remains locomotion; the drowsy pose appears at the pause before he casts/hops, and again while settling. | Original timing, web, gravity and motion stay authoritative. Touch wakes; grab/scuttle/player web suppress the pose. |
+| Actually asleep | Existing `sleep`, late low-speed `settling`, or existing supported Through the Glass doze | Tucked legs, eyes peacefully shut, head into joined hands. Existing breathing/deformation and physical web rotation continue. | The sleeping strand stays a real rope. Grabbing releases/wakes exactly as before; no body lock or position writes come from the art. |
+| Groggy waking | Existing wake from settled/sleeping life; existing supported doze ending | Distinct half-open eyes, little yawn and cheek rub for up to 1.65 seconds, then the ordinary HQ vocabulary returns. | Life becomes awake immediately and the strand releases with momentum intact. A held Byte uses ordinary grab presentation; a brief gentle lift may leave a remaining groggy beat after release. Scuttle, player web, travel and expedition take priority. |
+| Broccoli evaluation / refusal | Offered physical broccoli reaches his mouth | Existing curious pose inspects for 0.5 seconds, followed by pursed lips, narrowed eyes, head drawn back and push-away hands for 1.45 seconds. A small real recoil/shove supports the opinion. Withdrawal returns him to ordinary life; repeating the offer can annoy him again. | Held food stays under the finger. Loose broccoli uses existing belonging/body contacts and receives a physical shove when refusal/contact permits. Grabbing Byte cancels the reaction. No food is hidden, remotely acquired or counted as a meal. |
+| Satisfied biscuit eater | A physical biscuit's fourth real bite completes a meal, whether stolen or offered | A relaxed, closed-mouth pleased smile with hands on his belly, for 2.1 seconds. Crumbs and jam remain the actual existing aftermath. | Existing chewing/contact, physics and rope theft remain causal. Any touch cancels the satisfied beat; motion/interaction still takes precedence. |
+| Wet annoyance | Existing physical drying shake | Refusal face reused as a wet, irritated little huff during the shake. Existing shake deformation, droplets and water history carry the consequence. | The presentation reads `bathroom.shake`; it does not create a shake or alter water physics. Grab immediately wins. |
+
+All families are reachable in the candidate. The sleep/food routes below distinguish actual normal browser interactions from direct-state presentation probes. No text, opinion icon, dialogue, emotion meter or tutorial was added.
+
+## One healthy food, one established preference
+
+Broccoli is a portable physical floret on the dining table. It shares hand movement, momentum, environmental gravity/inertia, shelf/table support and persistence with the existing food/belongings. Its tiny texture is baked once. Offer it where a biscuit is offered: Byte examines it, then refuses. He does not consume it. There are no nutritional benefits, fullness values, hunger thresholds or punishment. This candidate's preference is fixed; learning/changing preferences is deliberately outside scope.
+
+Only desirable biscuits qualify for autonomous food theft. The same approved scheming pose, room `web` state and tension solver retrieve them physically. No second food web or canned acquisition was introduced.
+
+Sunburn V's saved bites, meals, dirt, rooms, rest history and belongings remain. One new biscuit (`biscuit-vi`) joins the high shelf so an already-exhausted Sunburn V pantry can still show the preference contrast. Its eaten state is also remembered, and it never automatically refills. A fresh home therefore has four biscuits plus broccoli. This is finite content, not a food-supply policy. An exhausted kitchen keeps the floret and the meal history; long-term pantry replenishment remains unresolved.
+
+## Iteration and discarded approaches
+
+I kept authored content to five poses. Inspecting food reuses curious; locomotion still uses the original scuttle; wanting a biscuit still uses the original scheming. Separate craving, chewing, victory and caught-theft sprite catalogues were not built. New emotion/needs architecture would not make these particular events clearer.
+
+The first ordinary food capture exposed loose broccoli sitting over Byte's face during biscuit satisfaction. Broccoli now receives the existing physical belonging/body contact response, so Byte can knock it aside instead of ghosting through it. Biscuit contact/catching behavior is unchanged. Food held in his face may still occlude it: Fingers owns that physical presentation rather than the renderer hiding the vegetable.
+
+A sleep test initially touched the rotated spool rather than the body and correctly started a player web. The test now touches the body center; the spool's existing priority was not altered. Two probe assertions initially demanded bit-exact coordinates across live breathing timestamps and browser touch-coordinate serialization. Sub-pixel tolerances corrected those assertions; product physics was not changed to satisfy them.
+
+The art master has invisible colored RGB outside its alpha mask. Runtime extraction preserves transparency, and actual room captures show no opaque background. The master and extraction metadata are retained so Human Eyes can evaluate the authored character rather than just tiny runtime images. No existing approved artwork was overwritten.
+
+## Evidence and boundaries
+
+`qa/sunburn-vi-evidence.json` records final checks, normal browser routes, storage upgrade, alpha comparisons and constrained measurements. `qa/acting-playthrough.cjs` uses ordinary RAF and actual Android Chrome touch without body/life/autonomy writes or manual stepping. It discovers the mat, observes autonomous rest, physically wakes/lifts Byte, offers/withdraws broccoli, allows natural biscuit theft, watches satisfaction and interrupts it with a grab. Normal captures and software-rendered 6× CPU runs are separate.
+
+`qa/acting-probe.cjs` checks actual food contact, shared physical control, rest momentum, presentation priority, body/spool independence, all five new alpha silhouettes and five viewport shapes. These checks include direct simulation/state setup and are not presented as first-player experience. `qa/acting-upgrade.cjs` seeds only a Sunburn V-shaped saved home, then watches ordinary autonomy obtain the new biscuit and verifies that history and its consumed state survive reload.
+
+Inherited touch/flick/wall squish, rope/plant/release, Earth support/corners/scuttle, gravity prank, sensing, sleep, house/possessions, loft and crystal checks are retained. The two old sleep-image assertions were updated from blink to the intended authored asleep asset; their underlying physics assertions remain. Bath/dirt/drain/cutaway behavior and outdoor renderer source are unchanged. Final ordinary constrained care and crystal routes check their continued accessibility.
+
+The final record contains **108 passing checks**, plus normal browser acting, wet-shake, storage-upgrade and traversal routes. All five new poses retained exact original alpha under the existing dirt/wet coating, with zero outside-silhouette pixels. Normal care captured refusal during a real post-bath shake. The retained master reproduces all five runtime PNGs byte-for-byte through the preparation script.
+
+Under isolated 6× CPU/software rendering, the final natural food route averaged 34.90 FPS, the original kitchen route 44.78 FPS, care 24.26 FPS and the outdoor live route 24.31 FPS. Browser exits took 163–265 ms. A separate six-second crystal benchmark averaged 41.50 FPS with the existing eight-tile, 9,960,040-byte bound. The nook is an inherited slower path: the actual sleep route averaged 13.55 FPS under this stress. A matched frozen-scene comparison measured awake Sunburn V/VI at 20.33/20.00 FPS and asleep at 15.91/18.69 FPS, with completed sleep raster median 51.2/43.3 ms. This comparison did not show a new pose rendering regression; it does not prove phone performance. The nook's low software-stress result is explicitly retained in the evidence rather than averaged away.
+
+Known weaknesses: the real sleeping strand can rotate Byte into an inverted hanging pose; this remains physical rest, not a staged upright sleeping movie, and Human Eyes must judge its readability. His new poses have authored proportions and folding within a stable physical frame; final identity approval remains Human Eyes. A held floret can partially cover his face. Biscuits remain finite. The fixed refusal is playful character information, not sophisticated preference learning.
+
+Chromium emulation/software rendering is not a Samsung Galaxy A06 5G. Physical sensor acquisition, sustained handset responsiveness, haptics/sound and the actual emotional/readability result remain Human Fingers' acceptance. No desktop result is used to overrule a phone failure. Source, push and deployment confirmation are supplied at handoff; stop there.

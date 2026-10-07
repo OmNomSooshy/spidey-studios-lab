@@ -1,0 +1,979 @@
+{
+  "candidate": "experiment/sunburn-vi-2026-10-07",
+  "base_commit": "4983f65d1db839998e18d9548d52e1b043de3e16",
+  "recorded_utc": "2026-10-07T06:09:38.456936+00:00",
+  "classification": "IMPLEMENTED AND RUNTIME-REACHABLE in local mobile browser; exact pushed commit and native publication status are reported at handoff. Human Eyes/physical-phone acceptance remains pending.",
+  "performance_families": [
+    {
+      "family": "sleep",
+      "trigger": "existing nest-cast / settling / sleep and supported doze",
+      "poses": [
+        "drowsy",
+        "asleep"
+      ],
+      "reachable": "normal RAF + actual touch mat/rest route; Earth-supported doze regression",
+      "authority": "original web/phase timing/physics retained; grab, scuttle and player web take priority"
+    },
+    {
+      "family": "waking",
+      "trigger": "existing wake from settling/sleep or supported doze ending",
+      "poses": [
+        "waking"
+      ],
+      "hold_seconds": 1.65,
+      "reachable": "normal RAF + actual gentle body lift/release",
+      "authority": "awake immediately; strand releases without erasing momentum; grab temporarily suppresses, travel/scuttle/web/expedition override"
+    },
+    {
+      "family": "healthy refusal",
+      "trigger": "physical offered broccoli within mouth contact",
+      "poses": [
+        "existing curious",
+        "refusal"
+      ],
+      "inspection_seconds": 0.5,
+      "refusal_seconds": 1.45,
+      "reachable": "normal RAF + actual food offer/withdrawal",
+      "authority": "held food follows finger; real recoil/loose-object shove; no eating, deleting or scripted food acquisition; grab cancels"
+    },
+    {
+      "family": "biscuit satisfaction",
+      "trigger": "fourth actual contact bite completes a biscuit meal",
+      "poses": [
+        "satisfied"
+      ],
+      "hold_seconds": 2.1,
+      "reachable": "normal RAF natural physical web theft and original hand-feeding route",
+      "authority": "same rope solver and bite/contact law; any touch cancels, locomotion/player web/expedition override"
+    },
+    {
+      "family": "wet annoyance",
+      "trigger": "existing physical post-bath drying shake",
+      "poses": [
+        "refusal reused"
+      ],
+      "reachable": "normal RAF actual bath/sponge/shower/return route captured pose during real shake",
+      "authority": "reads shake only, never starts water/physics events; grab wins"
+    }
+  ],
+  "checks_passed": 108,
+  "checks": {
+    "touch": [
+      "gentle hold closes eyes without moving Byte",
+      "finger hold and movement retain scuttle authority",
+      "all four dragged boundaries contain and compress visible body",
+      "throw retains measured release momentum",
+      "spool web plants, remains physical, and endpoint release preserves momentum",
+      "slack player rope applies no push",
+      "Byte makes a physical sleeping web and touch wakes him",
+      "scheming pulls the gravity control down and activates Earth gravity without sensor consent",
+      "continuous Earth vector supports non-bottom scuttle and corners",
+      "first platform waits; player placement starts climb; web and fall return home"
+    ],
+    "device": [
+      "sensor consent belongs to puck, never creature touch; denial remains playable",
+      "the gravity control toggles Earth mode on, receives motion and returns to screen mode",
+      "missing hardware data times out safely; unsupported API gives readable fallback",
+      "mute persists, and audio starts only after a gesture",
+      "secondary fingers cannot take over a grab; touch cancellation plants room web",
+      "backgrounding stops simulation and releases interrupted hands while keeping planted web",
+      "portrait, landscape and desktop layouts keep visible body and puck contained",
+      "rotation preserves proportional planted rope and stationary displaced puck",
+      "a real held web redirects a missed platform into a landing, retaining useful release momentum",
+      "Earth-supported scheming and aiming preserve the same body frame"
+    ],
+    "sensing": [
+      "real camera/mic streams are acquired by the window and stopped on close",
+      "camera light centroid drives grounded travel without moving the body pivot",
+      "a moving foreground is perceived separately from uniform exposure changes",
+      "covering the camera physically retreats to a web; restored light wakes without resetting velocity",
+      "darkness on an Earth-owned side uses supported dozing, with no incompatible sleeping strand",
+      "harmonic voice earns attention; a sound attack adds real flight velocity; constant DC is ignored",
+      "sustained turbulent microphone pressure lifts the existing body; silence lets it fall",
+      "sound/breath preserve a player\u2019s planted tether and a held body retains finger authority",
+      "Byte\u2019s own sound suppression cannot recursively trigger microphone reactions",
+      "real broadband breath remains physical during Byte\u2019s own sound gate",
+      "explicit media denial offers partial retry; audio-only capture remains useful",
+      "backgrounding stops native capture tracks and never secretly reacquires them",
+      "a late media grant after cancellation stops its tracks immediately",
+      "charging event invites grounded basking and unplugging releases that response",
+      "gyroscope acceleration and linear phone motion act independently of screen gravity",
+      "camera light and voice intent travel along Earth-owned side ground, not the screen floor",
+      "charging warmth follows the hardware bottom in landscape, independent of gravity",
+      "null motion samples never claim a functioning sense or shut off camera and microphone"
+    ],
+    "home": [
+      "actual finger invitations traverse both doors with continuous camera motion and keep the aperture in its own space",
+      "a calm held Byte can be carried into a doorway without escaping ordinary outer-wall squish",
+      "a physical toy can be dragged to a passage, accompany Byte, settle elsewhere, and survive reload",
+      "autonomous rest travels to the nook, makes a physical strand, and leaves a local memory after waking",
+      "Human Fingers can invite rest by leaving Byte calmly on his actual mat",
+      "Byte autonomously approaches and kicks a physical ball in the play space",
+      "the upstairs opportunity takes Byte to the loft, waits, and requires physical platform contact",
+      "a waiting platform stays in its loft while Byte can leave, sleep elsewhere and return to it",
+      "a found upstairs stone falls back into the home and Byte carries it to his nook",
+      "the repaired prank travels back to the aperture, schemes, dislodges its control and activates Earth mode",
+      "a platform left waiting upstairs does not suppress the downstairs gravity prank",
+      "phone inertia and microphone pressure act on physical belongings as well as Byte",
+      "a charging invitation travels to its visible warmth, while voice travel leaves phone forces active",
+      "Earth support remains coherent through carrying Byte into a neighboring space",
+      "opening the real capture aperture then leaving its room keeps sensing live without moving the aperture into a HUD",
+      "grabbing Byte interrupts a carrying trip and leaves the belonging physical in the current space",
+      "a planted player strand prevents departure and survives a doorway invitation",
+      "quiet sensory attention yields to a doorway trip while physical breath still changes momentum",
+      "Earth-grounded doorway travel uses an actual opening, and a ceiling does not become a sideways corridor",
+      "backgrounding releases an interrupted object hand, and resizing during passage safely recontains Byte"
+    ],
+    "loft": [
+      "actual ladder touch enters a separate loft; visit and idle never auto-launch",
+      "downstairs gravity control and sensory aperture stay downstairs",
+      "loft persists across reload at room scale with a usable waiting platform",
+      "floor hatch returns downstairs without playing the obby",
+      "physical ball can accompany Byte upstairs without activating the obby",
+      "the same belonging comes back down the ladder",
+      "actual player placement starts automatic bouncing; camera climbs completely outside the loft",
+      "outdoor held web stays physical and release retains velocity",
+      "a missed descent returns to the loft, normal scale and its waiting spring",
+      "after returning from outdoors the ladder still leads downstairs"
+    ],
+    "crystal": [
+      "separate loft stays a normal room before actual platform contact",
+      "physical placement supplies one decisive launch with no ordinary ledges",
+      "more than a readable half-second of actual clear sky separates house and crystal, with no ledges",
+      "first crystal ledge catches the launch and preserves ordinary bounce force",
+      "arbitrary screen placement attaches to material; held anchor stays fixed in world space",
+      "release retains both linear momentum and swing spin",
+      "slack crystal rope still never pushes",
+      "near crystal features move with world/camera, independently of 12% distant-sky travel",
+      "missed route returns to room-scale loft rather than auto-bouncing on the launcher",
+      "return resets the route and permits another clean launch",
+      "a released pre-surface hold cannot leave a fake empty-sky anchor",
+      "holding through clear sky can attach when the physical surface arrives",
+      "expedition fragment is discovered above the structure, preserving the existing physical possession"
+    ],
+    "care": [
+      "bathroom is physically left of nook, independently visitable and returns through the same doorway",
+      "physical bath lever fills retained water; grabbed Byte remains free; held sponge removes local mud and provokes a physical splash",
+      "shower head turns on, follows a real finger and wets Byte without filling bath; sponge shares the same washing process",
+      "the physical plug empties the bath and a portable sponge accompanies Byte through the bathroom doorway",
+      "dry rubbing does not magically wash; wet cleaning is body-local and does not commandeer body/rope physics",
+      "wet Byte shakes off real droplets outside the bathroom; expedition return leaves contextual dirt",
+      "fixture cancellation, hidden page and resize release care ownership without erasing persistent anchors",
+      "Earth down remains continuous in the bathroom while tilted water drains; there is no competing tub ground frame",
+      "older home history upgrades in place; sponge is portable and storage refusal remains playable"
+    ],
+    "kitchen": [
+      "kitchen extends the play room; all old room coordinates and compact door geometry stay intact",
+      "food uses the room rope: slack does nothing; taut web pulls both bodies; releasing leaves both velocities intact",
+      "an existing planted player strand prevents theft and survives kitchen cancellation",
+      "Human Fingers can interrupt the scheme, grab Byte and preserve ordinary release control",
+      "five viewport presentations retain high stock, readable scheme and a physically completed autonomous meal",
+      "repeated mud events spread new smears across the body; every HQ pose retains its original alpha silhouette",
+      "Earth orientation controls physical food and mouth alignment; it does not create a competing Byte kitchen floor"
+    ],
+    "acting": [
+      "authored presentation leaves body state, dimensions, spool point and support geometry independent of source artwork",
+      "rest uses its original physical web sequence while drowsy, tucked sleep and groggy waking become distinct readable poses",
+      "physical grab, scuttle, scheming, player web and expedition override acting without a performance controller taking ownership",
+      "healthy food is inspected before refusal, stays attached to the offering finger and is never consumed",
+      "released broccoli uses physical body-contact projection/shove, remains in the world and never becomes a meal",
+      "broccoli alone never becomes a desirable theft opportunity; remaining biscuits still use contextual scheming and the room rope",
+      "actual held-biscuit bites produce satisfaction after eating; a grab immediately yields the performance to Fingers",
+      "wet annoyance reuses the existing physical shake event and immediately gives way to grabbed-body authority",
+      "every authored pose uses the existing dirt/wet coating and retains its exact transparent silhouette",
+      "new opinion and sleeping poses remain contained/readable at five mobile viewport shapes"
+    ],
+    "upgrade": [
+      "Existing exhausted Sunburn V home retains history, receives one new physical biscuit, naturally schemes/webs/eats it, and remembers consumed state after reload."
+    ]
+  },
+  "normal_browser_routes": {
+    "method": "Ordinary RAF and actual Android Chrome touch; acting routes have read-only recording and no body/life/autonomy writes or simulation stepping. Care/crystal routes suppress competing idle opportunities for repeatability; crystal uses trusted virtual accelerometer, no body/phase writes.",
+    "sleep": {
+      "poses_observed": [
+        "asleep",
+        "drowsy",
+        "waking"
+      ],
+      "sleep_with_own_rope": true,
+      "wake_without_rope": true,
+      "grab_suppresses_pose": true
+    },
+    "food": {
+      "poses_observed": [
+        "refusal",
+        "satisfied"
+      ],
+      "refusals": 1,
+      "meals": 1,
+      "food_after": [
+        {
+          "id": "biscuit-0",
+          "bites": 0,
+          "room": 5,
+          "x": 278.44888499451224,
+          "y": 753.7913689229982
+        },
+        {
+          "id": "biscuit-1",
+          "bites": 4,
+          "room": 5,
+          "x": 159.9,
+          "y": 287.84
+        },
+        {
+          "id": "biscuit-2",
+          "bites": 4,
+          "room": 5,
+          "x": 210.60000000000002,
+          "y": 287.84
+        },
+        {
+          "id": "biscuit-vi",
+          "bites": 4,
+          "room": 5,
+          "x": 243.75,
+          "y": 287.84
+        },
+        {
+          "id": "broccoli",
+          "bites": 4,
+          "room": 5,
+          "x": 355.63118773705673,
+          "y": 816
+        }
+      ],
+      "healthy_bites_unchanged": true
+    },
+    "care": {
+      "dirt_events": 12,
+      "washed": true,
+      "remaining_dirt": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "splashes": 1,
+      "real_wet_shake_samples": 44,
+      "real_shake_poses": [
+        "refusal"
+      ]
+    },
+    "outdoor": {
+      "route_samples": [
+        {
+          "name": "loft",
+          "room": 3,
+          "phase": "waiting",
+          "age": 0,
+          "x": 249.5999999999999,
+          "y": 747.888,
+          "cam": 0,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "roof",
+          "room": 3,
+          "phase": "launch",
+          "age": 0.096,
+          "x": 116.99999407226554,
+          "y": 207.0922361975459,
+          "cam": -113.62776380245413,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "clear-sky",
+          "room": 3,
+          "phase": "launch",
+          "age": 0.6900000000000022,
+          "x": 116.9999957037353,
+          "y": -1573.1769160939843,
+          "cam": -1893.8969160939844,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "crystal",
+          "room": 3,
+          "phase": "launch",
+          "age": 1.6149000000000047,
+          "x": 116.99999824404908,
+          "y": -3189.2173036703825,
+          "cam": -3509.937303670383,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "swing",
+          "room": 3,
+          "phase": "launch",
+          "age": 2.1769000000000087,
+          "x": 116.99999978762821,
+          "y": -3479.9746040606765,
+          "cam": -3800.6946040606763,
+          "web": true,
+          "found": false
+        },
+        {
+          "name": "tilt",
+          "room": 3,
+          "phase": "climb",
+          "age": 2.83360000000001,
+          "x": 183.7157781839935,
+          "y": -3718.2037488117967,
+          "cam": -4038.923748811797,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "return",
+          "room": 3,
+          "phase": "dropping",
+          "age": 0,
+          "x": 288.45207730124423,
+          "y": 583.2843359999997,
+          "cam": 0,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "downstairs",
+          "room": 2,
+          "phase": "waiting",
+          "age": 0,
+          "x": 249.5999817741807,
+          "y": 747.888,
+          "cam": 0,
+          "web": false,
+          "found": false
+        }
+      ],
+      "trusted_motion_events": 271,
+      "errors": []
+    },
+    "upgrade": {
+      "before": {
+        "slept": true,
+        "found": true,
+        "stoneHome": true,
+        "washed": true,
+        "meals": 3,
+        "things": [
+          {
+            "id": "ball",
+            "room": 1
+          },
+          {
+            "id": "sponge",
+            "room": 4
+          },
+          {
+            "id": "biscuit-0",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-1",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-2",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-vi",
+            "room": 5,
+            "bites": 4
+          },
+          {
+            "id": "broccoli",
+            "room": 5,
+            "bites": 4
+          },
+          {
+            "id": "stone",
+            "room": 0
+          }
+        ],
+        "phase": "idle"
+      },
+      "scheme": {
+        "slept": true,
+        "found": true,
+        "stoneHome": true,
+        "washed": true,
+        "meals": 3,
+        "things": [
+          {
+            "id": "ball",
+            "room": 1
+          },
+          {
+            "id": "sponge",
+            "room": 4
+          },
+          {
+            "id": "biscuit-0",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-1",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-2",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-vi",
+            "room": 5,
+            "bites": 4
+          },
+          {
+            "id": "broccoli",
+            "room": 5,
+            "bites": 4
+          },
+          {
+            "id": "stone",
+            "room": 0
+          }
+        ],
+        "phase": "scheming"
+      },
+      "web": {
+        "slept": true,
+        "found": true,
+        "stoneHome": true,
+        "washed": true,
+        "meals": 3,
+        "things": [
+          {
+            "id": "ball",
+            "room": 1
+          },
+          {
+            "id": "sponge",
+            "room": 4
+          },
+          {
+            "id": "biscuit-0",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-1",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-2",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-vi",
+            "room": 5,
+            "bites": 4
+          },
+          {
+            "id": "broccoli",
+            "room": 5,
+            "bites": 4
+          },
+          {
+            "id": "stone",
+            "room": 0
+          }
+        ],
+        "phase": "reel",
+        "web": "biscuit-vi"
+      },
+      "eaten": {
+        "slept": true,
+        "found": true,
+        "stoneHome": true,
+        "washed": true,
+        "meals": 4,
+        "things": [
+          {
+            "id": "ball",
+            "room": 1
+          },
+          {
+            "id": "sponge",
+            "room": 4
+          },
+          {
+            "id": "biscuit-0",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-1",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-2",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-vi",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "broccoli",
+            "room": 5,
+            "bites": 4
+          },
+          {
+            "id": "stone",
+            "room": 0
+          }
+        ],
+        "phase": "idle"
+      },
+      "reload": {
+        "slept": true,
+        "found": true,
+        "stoneHome": true,
+        "washed": true,
+        "meals": 4,
+        "things": [
+          {
+            "id": "ball",
+            "room": 1
+          },
+          {
+            "id": "sponge",
+            "room": 4
+          },
+          {
+            "id": "biscuit-0",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-1",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-2",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "biscuit-vi",
+            "room": 5,
+            "bites": 0
+          },
+          {
+            "id": "broccoli",
+            "room": 5,
+            "bites": 4
+          },
+          {
+            "id": "stone",
+            "room": 0
+          }
+        ],
+        "phase": "idle"
+      },
+      "errors": []
+    }
+  },
+  "five_pose_coating_alpha": [
+    {
+      "name": "drowsy",
+      "src": "http://127.0.0.1:4194/assets/hq/drowsy.png",
+      "max": 0,
+      "leak": 0
+    },
+    {
+      "name": "asleep",
+      "src": "http://127.0.0.1:4194/assets/hq/asleep.png",
+      "max": 0,
+      "leak": 0
+    },
+    {
+      "name": "waking",
+      "src": "http://127.0.0.1:4194/assets/hq/waking.png",
+      "max": 0,
+      "leak": 0
+    },
+    {
+      "name": "refusal",
+      "src": "http://127.0.0.1:4194/assets/hq/refusal.png",
+      "max": 0,
+      "leak": 0
+    },
+    {
+      "name": "satisfied",
+      "src": "http://127.0.0.1:4194/assets/hq/satisfied.png",
+      "max": 0,
+      "leak": 0
+    }
+  ],
+  "five_viewport_shapes": [
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "body": 147.20000000000002,
+      "extents": {
+        "x": 60.03305501390229,
+        "y": 73.08511726678731
+      },
+      "x": 144,
+      "y": 487.344,
+      "pose": "refusal",
+      "broccoli": 493.44
+    },
+    {
+      "viewport": {
+        "width": 360,
+        "height": 740
+      },
+      "body": 165.6,
+      "extents": {
+        "x": 67.53597086170433,
+        "y": 82.22225819542676
+      },
+      "x": 162,
+      "y": 650.512,
+      "pose": "refusal",
+      "broccoli": 657.6199999999999
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "body": 179.4,
+      "extents": {
+        "x": 73.15442515575397,
+        "y": 89.08589486943957
+      },
+      "x": 175.5,
+      "y": 747.888,
+      "pose": "refusal",
+      "broccoli": 755.755
+    },
+    {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "body": 197.8,
+      "extents": {
+        "x": 80.59774340546852,
+        "y": 98.29661307966853
+      },
+      "x": 193.5,
+      "y": 827.056,
+      "pose": "refusal",
+      "broccoli": 835.9350000000001
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "body": 112,
+      "extents": {
+        "x": 45.6775188394891,
+        "y": 55.608001432729495
+      },
+      "x": 189,
+      "y": 290.24,
+      "pose": "refusal",
+      "broccoli": 294.40000000000003
+    }
+  ],
+  "master_and_extraction": {
+    "source_sha256": "4f9a0aff396f5bd493128ff56d46e3b3585a443d02aa98e4d5dec1a2ada7e260",
+    "poses": [
+      {
+        "pose": "drowsy",
+        "source_crop": [
+          31,
+          9,
+          512,
+          517
+        ],
+        "body_center_x": 277,
+        "common_scale": 0.403,
+        "foot_baseline": 260,
+        "normalized_alpha_bounds": [
+          8,
+          59,
+          202,
+          263
+        ],
+        "canvas": [
+          214,
+          264
+        ],
+        "bytes": 59723
+      },
+      {
+        "pose": "asleep",
+        "source_crop": [
+          567,
+          73,
+          970,
+          506
+        ],
+        "body_center_x": 788,
+        "common_scale": 0.403,
+        "foot_baseline": 260,
+        "normalized_alpha_bounds": [
+          19,
+          90,
+          179,
+          262
+        ],
+        "canvas": [
+          214,
+          264
+        ],
+        "bytes": 46587
+      },
+      {
+        "pose": "waking",
+        "source_crop": [
+          1023,
+          19,
+          1505,
+          520
+        ],
+        "body_center_x": 1270,
+        "common_scale": 0.403,
+        "foot_baseline": 260,
+        "normalized_alpha_bounds": [
+          8,
+          62,
+          201,
+          262
+        ],
+        "canvas": [
+          214,
+          264
+        ],
+        "bytes": 61476
+      },
+      {
+        "pose": "refusal",
+        "source_crop": [
+          27,
+          513,
+          508,
+          1002
+        ],
+        "body_center_x": 280,
+        "common_scale": 0.403,
+        "foot_baseline": 260,
+        "normalized_alpha_bounds": [
+          6,
+          67,
+          198,
+          262
+        ],
+        "canvas": [
+          214,
+          264
+        ],
+        "bytes": 56601
+      },
+      {
+        "pose": "satisfied",
+        "source_crop": [
+          539,
+          516,
+          1037,
+          997
+        ],
+        "body_center_x": 791,
+        "common_scale": 0.403,
+        "foot_baseline": 260,
+        "normalized_alpha_bounds": [
+          5,
+          70,
+          205,
+          262
+        ],
+        "canvas": [
+          214,
+          264
+        ],
+        "bytes": 59604
+      }
+    ]
+  },
+  "performance": {
+    "conditions": "Isolated Chromium,390x844,DPR2,6x CPU and GPU disabled. All intervals reported, no discarded slow frames. No Samsung Galaxy A06 hardware result is claimed. Host load varies; comparisons are observations, not a phone guarantee.",
+    "final_sleep_live": {
+      "frames": 328,
+      "average_fps": 13.55,
+      "p95_frame_gap_ms": 100.1,
+      "max_frame_gap_ms": 1116.7,
+      "max_pointer_delay_ms": 273,
+      "max_long_task_ms": 1113,
+      "exit_ms": 265,
+      "errors": []
+    },
+    "final_food_live": {
+      "frames": 781,
+      "average_fps": 34.9,
+      "p95_frame_gap_ms": 66.8,
+      "max_frame_gap_ms": 283.3,
+      "max_pointer_delay_ms": 168.1,
+      "max_long_task_ms": 252,
+      "exit_ms": 191,
+      "errors": []
+    },
+    "final_kitchen_live": {
+      "frames": 810,
+      "average_fps": 44.78,
+      "p95_frame_gap_ms": 33.4,
+      "max_frame_gap_ms": 266.7,
+      "max_pointer_delay_ms": 222.5,
+      "max_long_task_ms": 163,
+      "exit_ms": 206,
+      "errors": []
+    },
+    "final_care_live": {
+      "frames": 855,
+      "average_fps": 24.26,
+      "p95_frame_gap_ms": 66.7,
+      "max_frame_gap_ms": 183.3,
+      "max_pointer_delay_ms": 182.8,
+      "max_long_task_ms": 225,
+      "exit_ms": 163,
+      "errors": []
+    },
+    "final_crystal_live": {
+      "frames": 189,
+      "average_fps": 24.31,
+      "p95_frame_gap_ms": 100.1,
+      "max_frame_gap_ms": 233.3,
+      "max_pointer_delay_ms": 765.6,
+      "max_long_task_ms": 426,
+      "exit_ms": 183,
+      "errors": []
+    },
+    "crystal_six_second_benchmark": [
+      {
+        "variant": "full",
+        "rate": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 41.50138337944599,
+        "medianFrameMs": 16.700000000000045,
+        "p95FrameMs": 49.899999999999636,
+        "medianRasterMs": 3.5999999940395355,
+        "p95RasterMs": 14.400000005960464,
+        "cache": {
+          "skyBuilds": 12,
+          "tileBuilds": 11,
+          "opticalBuilds": 23,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "errors": []
+      }
+    ],
+    "matched_nook_render_comparison": [
+      {
+        "source": "sunburn-v",
+        "phase": "awake",
+        "frame": "http://127.0.0.1:4193/assets/hq/idle.png",
+        "cpuRate": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 20.329201914879665,
+        "p95FrameMs": 66.69999999999982,
+        "medianCompletedRasterMs": 41,
+        "p95CompletedRasterMs": 51,
+        "errors": []
+      },
+      {
+        "source": "sunburn-v",
+        "phase": "sleep",
+        "frame": "http://127.0.0.1:4193/assets/hq/blink.png",
+        "cpuRate": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 15.912481352560915,
+        "p95FrameMs": 83.39999999999964,
+        "medianCompletedRasterMs": 51.20000000298023,
+        "p95CompletedRasterMs": 60.79999999701977,
+        "errors": []
+      },
+      {
+        "source": "sunburn-vi",
+        "phase": "awake",
+        "frame": "http://127.0.0.1:4194/assets/hq/idle.png",
+        "cpuRate": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 20,
+        "p95FrameMs": 66.70000000000073,
+        "medianCompletedRasterMs": 39.6000000089407,
+        "p95CompletedRasterMs": 51.900000005960464,
+        "errors": []
+      },
+      {
+        "source": "sunburn-vi",
+        "phase": "sleep",
+        "frame": "http://127.0.0.1:4194/assets/hq/asleep.png",
+        "cpuRate": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 18.68913734876553,
+        "p95FrameMs": 66.70000000000027,
+        "medianCompletedRasterMs": 43.29999999701977,
+        "p95CompletedRasterMs": 51.599999994039536,
+        "errors": []
+      }
+    ],
+    "nook_interpretation": "The nook is a slower inherited rendering path under this extreme software stress. Matched frozen scenes did not show a new pose rendering regression: awake20.33\u219220.00FPS, asleep15.91\u219218.69FPS; completed asleep raster median51.2\u219243.3ms. Actual VI sleep route averaged13.55FPS including touch/release work. This is disclosed, not hidden or declared a handset result.",
+    "new_runtime_bitmap_bytes": 1129920,
+    "new_runtime_png_bytes": 283991
+  },
+  "protected_source_unchanged": [
+    "crystal.js",
+    "room.js",
+    "bathroom.js",
+    "style.css",
+    "all eight existing approved HQ PNGs"
+  ],
+  "iterations": [
+    "Loose broccoli obscured biscuit satisfaction: reused existing body-contact response for the new vegetable; held food stays under Fingers.",
+    "Sleep probe first touched rotated spool and correctly created player web: corrected test hit point to body center, retained spool priority.",
+    "Exact coordinate assertions failed on live breathing/touch serialization at sub-pixel scale: corrected test tolerance, unchanged product physics."
+  ],
+  "known_limits": [
+    "The physical sleeping strand can rotate Byte into an inverted hang; sleep readability remains Human Eyes authority.",
+    "A held vegetable may cover part of his face; renderer does not hide it or remove finger authority.",
+    "Four finite biscuits in a fresh home, including one new portion for VI upgrade; all consumed states persist, no refills.",
+    "Fixed broccoli dislike, no learning/nutrition/needs system.",
+    "New HQ identity, first-player emotional readability, actual A06 performance and real hardware sensors/haptics remain Human acceptance."
+  ],
+  "local_artifacts": "/workspace/spider-byte-sunburn-vi-qa (normal/constrained full traces, videos and screenshots remain local QA artifacts; summaries and source probes are committed)"
+}

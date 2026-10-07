@@ -1,0 +1,120 @@
+{
+  "source_sha256": "4f9a0aff396f5bd493128ff56d46e3b3585a443d02aa98e4d5dec1a2ada7e260",
+  "poses": [
+    {
+      "pose": "drowsy",
+      "source_crop": [
+        31,
+        9,
+        512,
+        517
+      ],
+      "body_center_x": 277,
+      "common_scale": 0.403,
+      "foot_baseline": 260,
+      "normalized_alpha_bounds": [
+        8,
+        59,
+        202,
+        263
+      ],
+      "canvas": [
+        214,
+        264
+      ],
+      "bytes": 59723
+    },
+    {
+      "pose": "asleep",
+      "source_crop": [
+        567,
+        73,
+        970,
+        506
+      ],
+      "body_center_x": 788,
+      "common_scale": 0.403,
+      "foot_baseline": 260,
+      "normalized_alpha_bounds": [
+        19,
+        90,
+        179,
+        262
+      ],
+      "canvas": [
+        214,
+        264
+      ],
+      "bytes": 46587
+    },
+    {
+      "pose": "waking",
+      "source_crop": [
+        1023,
+        19,
+        1505,
+        520
+      ],
+      "body_center_x": 1270,
+      "common_scale": 0.403,
+      "foot_baseline": 260,
+      "normalized_alpha_bounds": [
+        8,
+        62,
+        201,
+        262
+      ],
+      "canvas": [
+        214,
+        264
+      ],
+      "bytes": 61476
+    },
+    {
+      "pose": "refusal",
+      "source_crop": [
+        27,
+        513,
+        508,
+        1002
+      ],
+      "body_center_x": 280,
+      "common_scale": 0.403,
+      "foot_baseline": 260,
+      "normalized_alpha_bounds": [
+        6,
+        67,
+        198,
+        262
+      ],
+      "canvas": [
+        214,
+        264
+      ],
+      "bytes": 56601
+    },
+    {
+      "pose": "satisfied",
+      "source_crop": [
+        539,
+        516,
+        1037,
+        997
+      ],
+      "body_center_x": 791,
+      "common_scale": 0.403,
+      "foot_baseline": 260,
+      "normalized_alpha_bounds": [
+        5,
+        70,
+        205,
+        262
+      ],
+      "canvas": [
+        214,
+        264
+      ],
+      "bytes": 59604
+    }
+  ]
+}

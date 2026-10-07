@@ -2,6 +2,7 @@
   const canvas = document.querySelector('#scene');
   const ctx = canvas.getContext('2d');
   const assets = { idle: null, blink: null, curious: null, walk: [], scheming: null };
+  const actingNames = ['drowsy', 'asleep', 'waking', 'refusal', 'satisfied'];
   const gravityButton = document.querySelector('#gravity-toggle');
   const gravityLabel = document.querySelector('#gravity-label');
   const gravityStatus = document.querySelector('#gravity-status');
@@ -54,7 +55,7 @@
 
   const life = {
     phase: 'awake', elapsed: 0, lastTouch: 0, interactions: 0, scale: 1,
-    welcomed: false, curious: 1.4, pet: 0, roughness: 0, pendingFollow: false, afterToss: false, reactionBlink: 0,
+    welcomed: false, curious: 1.4, pet: 0, roughness: 0, pendingFollow: false, afterToss: false, reactionBlink: 0, waking: 0, wasDozing: false,
     gazeX: null, gazeY: null, noticeAt: 0, returnAt: 0,
     pointer: { active: false, id: null, kind: '', x: 0, y: 0, startX: 0, startY: 0, movedAt: 0, speed: 0 },
     nest: { active: false, x: 0, y: 0, length: 0, progress: 0, fade: 0 },
@@ -113,6 +114,7 @@
   function wakeByte() {
     const sleeping = life.phase !== 'awake';
     if (sleeping) {
+      life.waking = ['settling', 'sleep'].includes(life.phase) ? 1.65 : 0;
       life.nest.fade = life.nest.active ? 1 : 0;
       life.nest.active = false;
       life.phase = 'awake'; life.elapsed = 0;
@@ -125,6 +127,7 @@
   function noticeTouch(x, y, id) {
     outside.dozing = false; outside.dream = false; outside.powerInvite = false; outside.bask = 0;
     home.cancel();
+    life.waking = 0;
     unlockAudio();
     wakeByte();
     life.lastTouch = now();
@@ -187,6 +190,9 @@
     if (life.pointer.active && life.pointer.kind === 'follow') life.curious = Math.max(life.curious, .3);
     life.curious = Math.max(0, life.curious - dt);
     life.reactionBlink = Math.max(0, life.reactionBlink - dt);
+    if (life.wasDozing && !outside.dozing) life.waking = 1.65;
+    life.wasDozing = outside.dozing;
+    life.waking = home.travel || obby.hasLaunched || web.active ? 0 : Math.max(0, life.waking - dt);
     if (life.afterToss && byte.mode === 'idle' && !life.pointer.active && !web.active && !upstairsHere) {
       life.afterToss = false; life.reactionBlink = .22; life.curious = 2.1; voice('notice', .45);
     }
@@ -543,6 +549,16 @@
       if (life.phase === 'sleep' || outside.dozing || outside.bask > 0 || life.pet > .45 || life.reactionBlink > 0) frame = assets.blink;
       else if (life.curious > 0 && !byte.blinking && (byte.mode === 'idle' || life.phase === 'nest-cast')) frame = assets.curious;
     }
+    // Presentation reads existing life/care/food events; it never owns body motion or support.
+    let pose = null;
+    if (!moving && byte.mode !== 'scheming' && !byte.grabbed && !obby.hasLaunched && !web.active) {
+      if (life.phase === 'sleep' || outside.dozing || life.phase === 'settling' && life.elapsed > 1.15 && Math.hypot(byte.vx, byte.vy) < 110) pose = 'asleep';
+      else if (life.phase === 'nest-cast' || life.phase === 'settling') pose = 'drowsy';
+      else if (kitchen.refusal > 0 || bathroom.shake > 0) pose = 'refusal';
+      else if (life.waking > 0) pose = 'waking';
+      else if (kitchen.satisfaction > 0) pose = 'satisfied';
+      if (pose) frame = assets[pose] || frame;
+    }
     const frameW = bodyW();
     const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
     const horizontalSquish = Math.max(byte.wallSquish, byte.grabSquishX);
@@ -556,7 +572,7 @@
     squeezeX *= 1 + outside.duck * .22;
     squeezeY *= 1 - outside.duck * .32;
     const angle = byte.angle + lean + (byte.mode === 'scheming' ? 0 : bathroom.shakeAngle());
-    return { frame, frameW, bob, squeezeX, squeezeY, angle };
+    return { frame, frameW, bob, squeezeX, squeezeY, angle, pose };
   }
   function bodyHalfExtents() {
     const { frameW, squeezeX, squeezeY, angle } = bodyGeometry();
@@ -1735,12 +1751,14 @@
     loadImage('assets/hq/curious.png'),
     loadFrames('hq/scuttle', 4),
     loadImage('assets/hq/scheming.png'),
-  ]).then(([idle, blink, curious, walk, scheming]) => {
+    Promise.all(actingNames.map(name => loadImage(`assets/hq/${name}.png`))),
+  ]).then(([idle, blink, curious, walk, scheming, acting]) => {
     assets.idle = idle; assets.blink = blink; assets.curious = curious; assets.walk = walk;
     assets.scheming = scheming;
+    actingNames.forEach((name, i) => { assets[name] = acting[i]; });
     resize();
     byte.x = world.w * .4; byte.y = floorY(); byte.blinkAt = now() + 1400;
-    if (!idle || !walk.every(Boolean)) { document.querySelector('#arrival').textContent = 'Byte could not arrive. Reload to try again.'; return; }
+    if (!idle || !walk.every(Boolean) || !acting.every(Boolean)) { document.querySelector('#arrival').textContent = 'Byte could not arrive. Reload to try again.'; return; }
     document.querySelector('#arrival').classList.add('ready');
     requestAnimationFrame(loop);
   });

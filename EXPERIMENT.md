@@ -1,91 +1,106 @@
-# Through the Glass — a noncanonical Spider Byte future probe
+# Sunburn III — a place Byte lives
 
-Branch: `experiment/through-the-glass-2026-10-06`.
-Parent: the prior Little Sun candidate, `0183fca0de88aae1652ccd228108b368ed17ee32`.
-Canonical source remains `2bc4e42a280f5e2119ddd98bc9a9602514fd84d3` on `main`.
-This branch has a separate hosting identity and does not update canonical Pages or the previous candidate.
+This is a noncanonical candidate on `experiment/sunburn-iii-2026-10-06`, forked from the validated Through the Glass repair `5665c230e0c81b09889d521f78ab77d50c01b435`. Canonical Spider Byte and the Through the Glass branch have separate source and hosting identities and are not updated by this experiment.
 
-## The bet
+## The thesis
 
-Byte can inhabit the phone more convincingly if something outside the glass can interrupt his own life. The player opens a small camera/microphone window once, knowingly grants browser permissions, then light, nearby movement, a voice, a clap, breath, and the phone's own movement can reach the same physical creature they already touch.
+A home becomes meaningful when the creature goes somewhere for a reason, and when what happened there remains after he leaves. Three neighboring spaces, two movable belongings, one preferred sleeping place, and the existing world above are enough to test that now.
 
-There is no sensor dashboard, transcription, face recognition, network model, or instruction sequence. The live circular window and listening ring acknowledge the open senses. The creature supplies the feedback. Touch still works, his own idle opportunities still happen, and upstairs is still upstairs.
+The quiet nook is left of the aperture hall. The play space and its open loft are to the right. Upstairs is physically above that play space. There is no room picker, travel menu, care panel, score, currency, or tutorial sequence.
 
-### Real inputs and consequences
+## What Human Fingers can discover
 
-| Input | Acquisition | Consequence |
-| --- | --- | --- |
-| Camera light and contrast | Local front-camera capture, downsampled to 32 × 24 at about 10 Hz; luminance, color, and bright centroid | Light enters the habitat. Grounded Byte walks toward its projected patch, using the current support tangent in Earth mode. |
-| Camera foreground movement / shadow | Successive luminance frames, with uniform exposure change subtracted | He ducks, looks toward the movement, and retreats along his current ground when space permits. A sudden darkening compresses/blinks him. |
-| Dark camera view | Sustained low luminance while quiet and unoccupied | He builds his own physical sleeping strand in Screen mode. On Earth-owned side ground he curls/dozes on that support instead. Light return, sound, breath, pickup, or touch wakes him. |
-| Quiet voice-like sound | Local microphone/Web Audio RMS and spectral measurements | Curious attention; if grounded and free, he approaches the window along the current ground. He does not understand words. |
-| Abrupt loud sound | RMS attack with a refractory interval | A startle adds real Earth-up or screen-up velocity and small angular momentum. It does not reset an existing flight or delete the player's rope. |
-| Sustained turbulent breath-like sound | Persistent broadband/low-frequency microphone energy | Pressure supplies continuous force to his existing physics. He lifts, swings under a tether, and falls when the pressure stops. No canned flight. |
-| Phone acceleration and turning | DeviceMotion linear acceleration and local-Z rotation rate | Pickup wakes/startles him; translations and angular acceleration produce bounded inertia against the moving glass, even with Screen gravity selected. Existing Earth gravity and upstairs tilt remain separate. |
-| Charger connection, optional | Battery Status `chargingchange`, where available | Plugging in wakes him and draws him toward a warm hardware-bottom patch to bask. Unplugging releases that response. This is an interpretation of power connection, not measured temperature. |
+- Invite Byte through the visible archway with a finger, or carry him into the opening and release. He walks there and the camera follows the passage. Pulling him past an ordinary outer boundary still produces containment and squish. A web planted in a room keeps him in that room until its endpoint is released.
+- Leave him calmly on the nook's mat. After a readable quiet opportunity he makes the existing physical sleeping strand, hangs, settles, and sleeps. Picking him up or the existing environmental stimuli can wake him. This is a bodily rest activity, not an energy refill button.
+- Grab, roll, throw, or move the cork ball. Drag it to a doorway and release; Byte takes it through the opening and puts it down in the next space. It can be brought to the nook or hall rather than being a play-room icon.
+- Encounter a descending platform in the play space. It waits for real contact. Leave it there, go elsewhere, and come back: the opportunity remains where it arrived. Place Byte onto it to bounce into the existing tilt/web climb.
+- Find one blue stone sufficiently far upstairs. It has a real falling body and can return downstairs. Byte can pick it up, carry it through the hall, and leave it in his nook. Human Fingers can subsequently move it elsewhere.
+- Return after a reload to the last occupied space and the belongings' last saved locations. A faint silk trace remains once Byte has slept in his nook. There is no absence punishment or simulated neglect.
 
-The player's planted room strand retains its ownership and pull-only law. Sensor forces add to velocity; held Byte retains finger authority. Existing scuttle moves him; camera or sound measurements never derive animation-driven velocity. No artwork was generated or replaced.
+## What Byte does independently
 
-## Experience decisions and revisions
+The existing short-idle arbitration now includes playing with the ball and wandering, alongside rest, the platform opportunity, and the gravity-control prank. These are opportunities, not a scripted room tour. Human interaction interrupts a trip or toy activity. A dropped carried object keeps physical velocity rather than vanishing.
 
-- **One deliberate window gesture.** Mobile browsers require consent and a gesture for these senses. The control says camera, mic, and motion before permission prompts. It can close all new capture at any time. Light-only and sound-only retries make a partially denied window useful.
-- **A physical correspondence, rather than a catalog of APIs.** Light attracts, nearby movement unsettles, a sharp noise startles, air pushes, the handset moves the glass, and a charger offers warmth. These interpretations are narrow and readable without a control panel.
-- **Rejected location, network state, notifications, and semantic speech.** They add permission or infrastructure without giving Byte an immediate bodily relationship with the room. No cloud speech service is used. No Bluetooth pairing or native app is needed.
-- **Investigated light/proximity and Generic Sensor APIs.** AmbientLightSensor, ProximitySensor and Magnetometer were absent in the available Chromium runtime. Accelerometer/Gyroscope were present, but the existing DeviceMotion permission path covers the useful physical signals with broader mobile compatibility. Camera contrast/occlusion supplies the usable visual input; it is not falsely presented as a lux meter or proximity sensor.
-- **Revised the gyro axis and force signs.** DeviceMotion.gamma is local Z, unlike similarly named DeviceOrientation angles. The conversion accounts for device-Y-up versus canvas-Y-down. Trusted browser sensor events verify the path, not only a manually assigned state.
-- **Revised microphone echo handling.** Initially any Byte sound blanked his ears and interrupted sustained breath after an impact. The final guard rejects narrow self-emitted tones while allowing strong measured broadband external input. DC offset is removed before RMS estimation.
-- **Revised darkness under Earth gravity.** A screen-up sleeping strand would compete with Earth-owned side support. Earth-night uses supported dozing; ordinary Screen-night keeps the physical web nest.
-- **Revised light/voice ground intent.** These initially approached only along the screen floor. They now project onto the current supported tangent, including side-wall scuttle. Support changes do not discretize gravity.
-- **Revised the climbing overlay.** The large room window initially intercepted a legitimate upstairs web point. Upstairs now keeps only a small close control in the bottom corner when sensing is open.
-- **Revised permission lifetime.** Late grants, video playback, and AudioContext resume all have cancellation checks. Empty motion events do not claim a functioning sensor. Backgrounding stops tracks and contexts; foregrounding does not silently reacquire anything.
-- **Kept the prank's established consequence.** Byte dislodging the gravity control activates Earth mode, regardless of prior sensor permission. The control still owns Human Fingers' explicit sensor request and ordinary on/off toggle.
+Rest means going to the nook, walking to his spot, casting the established sleeping strand, and settling under existing physics. A calm placement on the mat gives him a local rest opportunity before the ordinary longer idle selection.
+
+Play means seeking the ball's actual current room, approaching it using existing scuttle, and giving it two physical kicks. Moving the toy changes where that activity happens. The ball then continues under gravity, bounce, friction and phone forces; animation does not drive it.
+
+The prank means returning to the aperture hall, holding the unchanged scheming beat, targeting/webbing the control, dislodging it, and actually enabling Earth gravity. Tapping the loose control restores Screen gravity without restoring its UI position. The control stays in that hall, including when Byte leaves. A platform left waiting upstairs does not suppress the downstairs prank.
+
+Once the upstairs stone has returned, a free Byte can claim it for his nook. This is one authored action, not endless confiscation or an inventory system. He can leave afterward. The object's return does not require him to stand beside it forever.
+
+## Spatial integration
+
+The sensing aperture is in the central hall. Its camera light patch is local there; a quiet voice can draw Byte back to it. Optional charger warmth also has a visible location in that hall, and he can travel to it. Darkness can send him to his nook. Trips and activities have priority over quiet retargeting, while loud sound, breath and handset forces remain physical interruptions.
+
+Camera/microphone/motion acquisition, permission handling, signal processing and background shutdown are inherited. No new sensor APIs or recording systems were added. Phone inertia and breath pressure also affect the loose belongings. Sensing can remain open while Byte is elsewhere or upstairs, but the aperture itself stays downstairs rather than following as HUD. The existing global mute utility remains available.
+
+The skywell, not a Play button, contains the platform arrival. Its home walls scroll below Byte on ascent and come back into view during descent. Existing platform support, automatic bounce, tilt steering, held screen-point rope and momentum-preserving release remain authoritative. Upstairs continues using the candidate's existing screen-relative climbing grammar. Earth-owned boundary ground downstairs is still continuous and never snapped to four directions.
+
+Room and obby body scales, HQ assets, spool origin, deployed player-rope length, grab/flick, deformation and collision forces retain their existing authority. The place uses a fixed room reference for furniture presentation, so shrinking traversal Byte does not shrink his home. Two narrow containment corrections account for impact deformation and late acting/scale changes before presentation; they do not reduce angular velocity, lock orientation, or change restitution.
+
+## Care and history explored
+
+Care is arranging an opportunity: lead him to his mat, stop disturbing him, open or close his sensing aperture, bring a toy, move a possession, or help him get upstairs and home. He still chooses and can be interrupted. There are no need meters or upkeep penalties.
+
+Only the last room, object locations, first stone discovery/claim, and a slept-here trace are saved locally. Audio/video are not saved. Runtime momentum, exact Byte position, sleep phase, platform state and the dislodged puck are not persisted across reload. Storage denial leaves the session playable. There is no cloud save or offline installation.
+
+## Revisions and rejected directions
+
+- Rejected a room menu and a generalized home framework at design time. Built three authored spaces with actual trips and things already happening in them.
+- Kept a short authored doorway crossing instead of rewriting all established physics into a multi-screen solver. This is an explicit compromise, not a claim of unrestricted continuous architecture.
+- Expanded the initial narrow door hit region to agree with the visible curved opening. Neighboring room art initially bled across the portal; each room background is now clipped correctly.
+- Removed the inherited miniature sensing HUD upstairs. The aperture belongs downstairs; its acquired signals remain live until closed or backgrounded.
+- Revised the waiting-platform state after it trapped the creature in the play space. It now remains a spatial object while downstairs life can continue.
+- Quiet sensory targeting initially fought doorway intent. It now yields to the trip and never skips the continuous phone-force step when initiating voice travel.
+- A normal-animation-frame playthrough showed the untouched first-visit greeting moving a freshly placed Byte off his mat. Touch now counts as the greeting, so that gesture cannot override a first care action.
+- Stress tests found rotated Earth-impact squish enlarging a footprint after the original collision measure, and prank aiming rotating Byte after physics. The final boundary pass accounts for the body actually presented, preserving the act and squish.
+- An early test incorrectly required Byte to remain beside his returned stone. Revised the test to inspect its arrival and persistent location without removing his next independent choice.
+- A repeated-rest test incorrectly restarted a creature already hanging from his sleeping strand. It now lets the active rest routine finish rather than replacing its phase in the test.
 
 ## Self-QA
 
-The final suites exercise 39 focused scenarios (21 inherited creature/device checks plus 18 new room checks), along with a live browser capture run, trusted virtual sensor run, combined-input stress run, and the inherited endurance run.
+The final focused suites pass all 58 scenarios (10 creature, 10 device, 18 sensing, 20 place), alongside the six capture, motion, stress, endurance and playthrough runs. QA is opt-in only on localhost with `?probe`; production exposes no simulation handles.
 
-- Real browser `getUserMedia`, video pixels, MediaStream audio, FFT/RMS, normal animation frames and physics were run with reproducible camera/audio fixture files. That complete pipeline produced voice attention, sound flight, breath lift, a sleeping strand after darkening, and waking when the view brightened.
-- Chromium's virtual hardware backend emitted **trusted DeviceMotion events** for gyroscope and linear acceleration. The listener converted those events into opposite-glass inertial forces and a pickup response with Screen gravity still selected.
-- Room checks cover spatial light, exposure versus foreground motion, dark sleep/wake, side-wall night and light/voice scuttle, tonal voice versus noisy air, clap impulses, DC rejection, self-audio filtering, preserved player web and held-body authority, partial permission denial, real track shutdown, cancelled late grants, charger events, landscape hardware-bottom geometry, and null motion data.
-- Existing checks cover actual CDP touch grab/throw, all four deliberate squish boundaries, planted web lifetime and endpoint release, slack ropes, sleep/wake, scheming/prank, continuous Earth support and corners, platform entry/scale, tilt/web traversal, actual rope rescue, return home, viewport changes, mute, cancellation, and secondary fingers.
-- A 60-second combined sensor simulation checks finite state, visible room containment, preserved planted rope ownership and a bounded climbing platform pool. A separate 332-second creature endurance run checks repeated autonomy/physics cycles. Final browser suites report no script errors or failed local assets.
-- The initial heavily concurrent regression batch exposed timing-sensitive touch-release and subpixel breath-envelope assertions. Running the unchanged creature cases without contention passed. Those failures are retained in external QA logs; they were not “fixed” by weakening runtime physics.
+- CDP touch checks cover grab/hold/flick, every squish boundary, player rope payout/plant/slack/release, sleep/wake, scheming and the repaired Earth prank, continuously varying support/corners, platform entry, traversal scale, real held-rope rescue and return home.
+- Device checks cover permissions and denial, missing sensor data, audio gesture/mute persistence, secondary pointers, cancellation, backgrounding, viewport changes, displaced-puck state, Earth-side aiming, and the obby rescue.
+- Sensing checks cover real stream acquisition/shutdown, camera centroids and foreground/exposure separation, dark sleep/light wake, side-ground light/voice/dozing, voice/noise/DC/echo handling, breath, player tether ownership, charger events, cancellation and null samples.
+- Place checks cover both doors, camera motion, carried Byte, carried and remembered belongings, mat rest, toy kicks, waiting-platform departure/return, stone return/claim, cross-space prank and platform coexistence, Earth-side doorway eligibility, sensory travel/forces, player-web blocking, interruptions and resize/background recovery.
+- An uninterrupted normal-animation-loop browser visit uses actual emulated touches only: arrive, visit nook, place Byte on mat, sleep/wake, return through hall, visit play space, bring the physical toy back and reload. It does not call routine or simulation functions.
+- A full browser capture pipeline uses reproducible video/audio fixtures through actual getUserMedia, camera pixels and Web Audio. Trusted virtual hardware emits DeviceMotion events. Combined sensor stress runs for 60 simulated seconds; separate inherited creature and place endurance runs exercise repeated autonomy and house/upstairs cycles for several minutes each.
 
-These tests use Chromium, touch emulation, capture fixtures, and controlled virtual hardware. They are **not physical iPhone/Safari or Android acceptance**. Human Fingers must judge permission behavior, microphone classification, sensor feel/signs on their handset, discoverability, and whether the creature's response reads as alive.
+These are Chromium simulations, browser captures and virtual hardware, not actual Safari/iPhone or Android acceptance. Door discoverability, travel feel, sleep/carry readability, microphone direction/classification, real device sensor signs, and sustained phone performance/battery use need Human Eyes and Human Fingers. Fixture-based success does not claim physical-room accuracy.
 
-### Known weaknesses and accepted compromises
+### Reproduce
 
-- Camera auto-exposure can hide actual room-light changes. Covering/darkening the camera view is reliable; turning off a lamp is device-dependent. The light centroid is bright pixels, not a recognized lamp, face, or person.
-- Breath detection is a local heuristic. Fans, music, fricatives and other turbulent noise may count as air. Browser/handset noise processing can weaken real breath. No claim of perfect voice/breath classification is made.
-- Charging input is optional and absent in Safari. Already charging when the window opens makes the warm patch visible, but does not fabricate a fresh plug-in event. A physical microphone/charging port can be somewhere other than the assumed hardware-bottom edge.
-- Camera and microphone cost battery. Capture requests modest ideal resolution/rate, samples only a tiny image, and stops in the background. No actual phone performance or battery-life measurement was possible.
-- Long sustained breath can overpower gravity and lift Byte very far upstairs. This candidate chooses unmetered physical play over balancing the inherited obby.
-- Simultaneous strong real-world stimuli can interrupt quiet autonomy, rest, or scheming. That is intentional reciprocity with the room, but noisy surroundings may make independent quiet life harder to discover.
-- Capture may be denied by browsers or embedding policy. Use a secure top-level Safari/Chrome page. A denied window leaves ordinary touch play intact and offers partial retries.
-- The consent caption and permission prompts add an explicit gateway; the consequences after opening it are non-touch. Audio/video are processed locally and never recorded, retained across closing, or uploaded by this app.
-- Existing Little Sun experimental compromises remain: reused closed-eye artwork for rest, synthetic creature sounds, visual/tactile canvas accessibility limits, no runtime persistence or offline installation, and screen-relative upstairs bounce grammar.
-
-## Reproduce
-
-Serve this directory with a static server on port 4190. Node, Playwright, and Chromium are QA-only dependencies; the deployed app remains static HTML/CSS/JS.
+Serve the checkout as ordinary static files. Node/Playwright/Chromium and FFmpeg for the playthrough recording are QA tools only, not app dependencies.
 
 ```sh
-export BYTE_QA_URL=http://127.0.0.1:4190/
-export BYTE_QA_OUTPUT=/tmp/byte-glass-qa
+export BYTE_QA_URL=http://127.0.0.1:4191/
+export BYTE_QA_OUTPUT=/tmp/byte-sunburn-qa
 python qa/create-room-fixtures.py
+node qa/mobile-probe.cjs
+node qa/device-probe.cjs
 node qa/room-probe.cjs
+node qa/home-probe.cjs
 node qa/capture-probe.cjs
 node qa/phone-sensor-probe.cjs
 node qa/sensor-stress-probe.cjs
-node qa/mobile-probe.cjs
-node qa/device-probe.cjs
 node qa/endurance-probe.cjs
+node qa/place-endurance.cjs
+node qa/place-playthrough.cjs
 ```
 
-Run the browser suites sequentially for stable input timing. `BYTE_CHROMIUM` can select another Chromium executable. Probe handles are available only on localhost with `?probe`; production does not expose simulation controls. Raw fixtures, screenshots, and reports remain outside the repository and deployment.
+Run suites sequentially for stable touch timing. Raw fixtures, videos, screenshots and logs are kept outside the checkout and deployment.
 
-## What deserves Human Fingers
+## Accepted weaknesses and Management decisions
 
-The first bet is **blow → the same creature lifts → stop → gravity gets him back**, especially while he is hanging from the player's web. The second is **cover the camera → he settles into darkness → uncover or make a sound → he wakes**. The third is moving/turning the actual phone while Screen gravity stays selected: the glass and its inhabitant should no longer feel like the same inert screen.
+The three spaces use the same bounded physics room while occupied. A roughly 0.88-second authored camera/body crossing pauses ordinary body integration and creature touch input; accumulated sensor momentum resumes on arrival. This needs a phone feel judgment. It is not a general continuous level solver, and a planted player anchor does not span rooms.
 
-What this probe suggests: Byte feels present when the outside world can make a consequential interruption while his own physical life continues. A sensor meter establishes that the phone noticed something; a creature preserving momentum, flinching, seeking light, or losing his nap establishes that **he** noticed it. Whether those interpretations survive a real child's room is the next evidence, not something browser fixtures can decide.
+Carrying is an authored pickup with a rigid approximate hand attachment, not articulated hands or a second rope system. Props have simple circular boundaries and coarse body contact. Touching a loose object grabs it; upstairs, its small hit region therefore takes priority over a grapple anchor at that exact point. The loft ladder and most furniture are scenery; the mat, movable belongings, toy tray lip, sleeping strand and platforms provide the actual affordances. There is no furniture collision mesh or wall adhesion.
+
+A visit may be declined under Earth gravity when the supporting boundary cannot physically lead to that doorway. Human Fingers can still carry Byte into the opening. Automatic trips do not invent wall crawling or airborne steering to overcome the current ground frame.
+
+The home plan, room-bound sensing control, mat invitation, toy-carry grammar, and one-time stone claim are experiments for Management to evaluate, not new canon. Sensor limitations from Through the Glass remain, including device-dependent exposure, breath classification, hardware-bottom assumptions and absent Battery Status on Safari. Sleeping still reuses the approved closed-eye pose and existing physical strand, rather than new sleep artwork.
+
+The strongest observation from building it: a sleeping pose reads as a state; going to his spot, making a strand, waking and leaving evidence reads as a life. An object that can remain somewhere after both the finger and Byte have left does more for place than another labeled room. Whether Lilli finds those relationships without explanation is the next evidence.

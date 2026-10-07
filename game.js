@@ -123,10 +123,12 @@
   }
   function noticeTouch(x, y, id) {
     outside.dozing = false; outside.dream = false; outside.powerInvite = false; outside.bask = 0;
+    home.cancel();
     unlockAudio();
     wakeByte();
     life.lastTouch = now();
     life.interactions++;
+    life.welcomed = true;
     life.curious = .8;
     life.gazeX = x; life.gazeY = y;
     Object.assign(life.pointer, { active: true, id, kind: '', x, y, startX: x, startY: y, movedAt: now(), speed: 0 });
@@ -135,12 +137,15 @@
     }
   }
   function followTouch(x, y) {
+    const passage = home.portal(x, y);
+    if (passage !== null && !web.active && home.request(passage)) return;
     byte.targetX = clamp(x, halfW(), world.w - halfW());
     byte.targetY = earth.enabled ? clamp(y, halfH(), world.h - halfH()) : floorY();
     life.pendingFollow = true;
     if (!web.active && (earth.enabled ? earth.support.active : byte.mode === 'idle' && byte.y >= floorY() - 8)) byte.mode = 'scuttle';
   }
-  function beginRest() {
+  function beginRest() { home.rest(); }
+  function beginRestHere() {
     life.phase = 'nest-walk'; life.elapsed = 0;
     byte.targetX = clamp(world.w * .34, halfW() + 12, world.w - halfW() - 12);
     byte.targetY = floorY(); byte.mode = 'scuttle';
@@ -171,14 +176,15 @@
     byte.spin += lever * impulse * inverseInertia;
   }
   function updateLife(dt) {
+    const upstairsHere = obby.hasLaunched || (obby.active && home.room === 2);
     life.scale += ((obby.hasLaunched ? obby.scale : 1) - life.scale) * (1 - Math.exp(-dt * 7));
     life.elapsed += dt;
-    if (life.pendingFollow && byte.targetX !== null && !web.active && !obby.active && !byte.grabbed && (earth.enabled ? earth.support.active : byte.mode === 'idle' && byte.y >= floorY() - 8)) byte.mode = 'scuttle';
+    if (life.pendingFollow && byte.targetX !== null && !web.active && !upstairsHere && !byte.grabbed && (earth.enabled ? earth.support.active : byte.mode === 'idle' && byte.y >= floorY() - 8)) byte.mode = 'scuttle';
     if (byte.targetX === null) life.pendingFollow = false;
     if (life.pointer.active && life.pointer.kind === 'follow') life.curious = Math.max(life.curious, .3);
     life.curious = Math.max(0, life.curious - dt);
     life.reactionBlink = Math.max(0, life.reactionBlink - dt);
-    if (life.afterToss && byte.mode === 'idle' && !life.pointer.active && !web.active && !obby.active) {
+    if (life.afterToss && byte.mode === 'idle' && !life.pointer.active && !web.active && !upstairsHere) {
       life.afterToss = false; life.reactionBlink = .22; life.curious = 2.1; voice('notice', .45);
     }
     life.roughness *= Math.exp(-dt * .035);
@@ -187,7 +193,7 @@
     const calmHold = byte.grabbed && pointer.active && pointer.kind === 'byte' && (now() - pointer.movedAt > 160 || pointer.speed < 65) && Math.hypot(pointer.x - pointer.startX, pointer.y - pointer.startY) < 30;
     life.pet = clamp(life.pet + dt * (calmHold ? 1.5 : -2), 0, 1);
     if (calmHold && life.pet > .65) { voice('pet', .55); life.roughness *= Math.exp(-dt * 1.5); }
-    if (!life.welcomed && now() > 2800 && !pointer.active && byte.mode === 'idle' && !obby.active) {
+    if (!life.welcomed && now() > 2800 && !pointer.active && byte.mode === 'idle' && !upstairsHere) {
       life.welcomed = true;
       byte.targetX = clamp(byte.x + spriteW * .42, halfW() + 10, world.w - halfW() - 10);
       byte.targetY = floorY(); byte.mode = 'scuttle'; life.curious = 2;
@@ -217,7 +223,7 @@
     } else if (life.phase === 'sleep' && life.elapsed > 12) {
       voice('sleep', .3); life.elapsed = 0;
     }
-    if (life.phase !== 'awake' && (earth.enabled || obby.active || web.active)) wakeByte();
+    if (life.phase !== 'awake' && (earth.enabled || obby.hasLaunched || (obby.active && home.room === 2) || web.active)) wakeByte();
     if (earth.enabled) gravityButton.style.setProperty('--down-angle', `${earthBodyAngle() * 180 / Math.PI}deg`);
     else gravityButton.style.setProperty('--down-angle', '0deg');
   }
@@ -248,9 +254,9 @@
     const sky = ctx.createLinearGradient(0, 0, 0, h);
     const darkness = room.state.open && room.state.camera && room.state.lastFrame > 0 ? clamp((.2 - room.state.brightness) / .2, 0, 1) : 0;
     const dim = (day, night) => day.map((v, i) => v + (night[i] - v) * darkness);
-    sky.addColorStop(0, mix(dim([248,235,204], [38,53,59]), [39,71,74], altitude));
-    sky.addColorStop(.55, mix(dim([247,239,224], [49,65,67]), [82,113,112], altitude));
-    sky.addColorStop(1, mix(dim([221,231,212], [67,83,77]), [154,178,154], altitude));
+    sky.addColorStop(0, mix(dim([176,192,168], [38,53,59]), [39,71,74], altitude));
+    sky.addColorStop(.55, mix(dim([224,219,192], [49,65,67]), [82,113,112], altitude));
+    sky.addColorStop(1, mix(dim([193,187,155], [67,83,77]), [154,178,154], altitude));
     ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
     const target = !obby.hasLaunched ? buttonTargetInCanvas() : { x: w * .72, y: -60 };
     const glow = ctx.createRadialGradient(target.x, target.y, 0, target.x, target.y, w * 1.25);
@@ -299,6 +305,10 @@
 
   const room = window.ByteRoom;
   const outside = { soundId: 0, shadowId: 0, joltId: 0, chargeId: 0, bask: 0, powerInvite: false, stimulusAt: 0, duck: 0, wind: 0, dream: false, dozing: false, seekTime: 0, lastMove: 0, reaction: '', reactionTime: 0 };
+  const home = window.createByteHome({ ctx, world, byte, life, earth, web, obby, autonomy,
+    senses: room, bodyW: () => bodyW(), bodyH: () => bodyH(), roomW: () => spriteW, roomH: () => spriteH, extents: bodyHalfExtents, floorY: () => floorY(), wakeByte, voice,
+    pranking: () => !['waiting', 'released'].includes(buttonWeb.phase), down: earthDown,
+    restHere: beginRestHere, obbyHere: beginObbyHere });
   function openRoom(kind = 'both') {
     if (room.state.open || room.state.pending) {
       room.close(); stopMotionIfUnused();
@@ -389,16 +399,19 @@
       if (life.pointer.active || Math.hypot(byte.vx, byte.vy) > 180 || sensed.brightness > .19 || sensed.level > .018 || outside.wind > .04) outside.dozing = false;
       else outside.duck = Math.max(outside.duck, .55);
     }
-    const unoccupied = !byte.grabbed && !life.pointer.active && !web.active && !obby.active && (buttonWeb.phase === 'waiting' || buttonWeb.phase === 'released');
+    const unoccupied = !byte.grabbed && !life.pointer.active && !web.active && !obby.hasLaunched && !(obby.active && home.room === 2) && !home.travel && !home.journey && !home.activity && (buttonWeb.phase === 'waiting' || buttonWeb.phase === 'released');
     if (sensed.camera && sensed.darkFor > 3 && unoccupied && life.phase === 'awake' && !outside.dozing && byte.mode === 'idle' && t - Math.max(outside.stimulusAt, life.lastTouch) > 2200) {
       autonomy.choice = null; autonomy.idleTime = 0;
       outside.dream = true;
       if (earth.enabled) { outside.dozing = true; outside.duck = .6; } else beginRest();
       outside.reaction = 'dark'; outside.reactionTime = 2;
     }
-    if (unoccupied && outside.powerInvite && sensed.charging && life.phase === 'awake' && byte.mode === 'idle' && (!earth.enabled || earth.support.active)) {
-      const power = roomPowerPoint(), target = roomGroundPoint(power.x, power.y);
-      if (!seekRoomPoint(target)) { outside.powerInvite = false; outside.bask = 5; voice('pet', .4); }
+    if (unoccupied && !home.journey && !home.travel && outside.powerInvite && sensed.charging && life.phase === 'awake' && byte.mode === 'idle' && (!earth.enabled || earth.support.active)) {
+      if (home.room !== 1) { if (!home.request(1, 'warmth')) outside.powerInvite = false; }
+      else {
+        const power = roomPowerPoint(), target = roomGroundPoint(power.x, power.y);
+        if (!seekRoomPoint(target)) { outside.powerInvite = false; outside.bask = 5; voice('pet', .4); }
+      }
     }
     outside.bask = Math.max(0, outside.bask - dt);
     if (outside.bask > 0 && (life.pointer.active || !sensed.charging || outside.wind > .04 || sensed.level > .025)) outside.bask = 0;
@@ -406,10 +419,11 @@
       life.curious = Math.max(life.curious, .6); life.gazeX = world.w * .5; life.gazeY = 63;
     }
     outside.seekTime += dt;
-    if (unoccupied && life.phase === 'awake' && byte.mode === 'idle' && outside.seekTime > 1.7 && outside.bask <= 0 && !outside.powerInvite && (!earth.enabled || earth.support.active) && outside.wind < .04) {
+    if (unoccupied && !home.journey && !home.travel && life.phase === 'awake' && byte.mode === 'idle' && outside.seekTime > 1.7 && outside.bask <= 0 && !outside.powerInvite && (!earth.enabled || earth.support.active) && outside.wind < .04) {
       const hearing = sensed.mic && sensed.listeningFor > .6;
-      const lit = sensed.camera && sensed.lastFrame > 0 && sensed.contrast > .06 && sensed.brightness > .16;
-      if (hearing || lit) {
+      const lit = home.room === 1 && sensed.camera && sensed.lastFrame > 0 && sensed.contrast > .06 && sensed.brightness > .16;
+      if (hearing && home.room !== 1) { home.request(1, 'listen'); outside.seekTime = 0; }
+      else if (hearing || lit) {
         const target = hearing ? roomGroundPoint(world.w * .5, 63) : roomGroundPoint(sensed.lightX * world.w, sensed.lightY * world.h);
         if (Math.abs(groundDistance(target)) > bodyW() * .3 && seekRoomPoint(target)) {
           life.curious = 1.5;
@@ -418,7 +432,7 @@
         outside.seekTime = 0;
       }
     }
-    if (sensed.camera && sensed.movement > .065 && t - outside.lastMove > 3000 && unoccupied && life.phase === 'awake' && byte.mode === 'idle') {
+    if (sensed.camera && sensed.movement > .065 && t - outside.lastMove > 3000 && unoccupied && !home.journey && !home.travel && life.phase === 'awake' && byte.mode === 'idle') {
       outside.lastMove = t; outside.duck = .6; life.curious = 2.5;
       life.gazeX = sensed.movementX * world.w; life.gazeY = sensed.movementY * world.h;
       outside.reaction = 'movement'; outside.reactionTime = 2;
@@ -516,6 +530,7 @@
       }
       resetEarthSupport();
     }
+    home.resize(oldW, oldH);
     const extent = bodyHalfExtents();
     byte.x = clamp(byte.x || world.w * .4, extent.x, world.w - extent.x);
     if (!obby.hasLaunched) byte.y = clamp(byte.y || floorY(), extent.y, Math.min(floorY(), world.h - extent.y));
@@ -566,6 +581,15 @@
       x: (rotatedW * c + rotatedH * s) * .5,
       y: (rotatedW * s + rotatedH * c) * .5,
     };
+  }
+  function containRoomBody() {
+    if (home.travel || obby.hasLaunched) return;
+    if (byte.grabbed) { constrainGrabbedByte(byte.grabDesiredX, byte.grabDesiredY); return; }
+    const extent = bodyHalfExtents(), bob = bodyGeometry().bob;
+    byte.x = clamp(byte.x, extent.x, world.w - extent.x);
+    const bottom = earth.enabled ? world.h - extent.y - bob : Math.min(floorY(), world.h - extent.y - bob);
+    byte.y = clamp(byte.y, extent.y - bob, bottom);
+    if (earth.enabled) updateEarthBoundaryContacts();
   }
   function constrainGrabbedByte(desiredX, desiredY) {
     byte.grabDesiredX = desiredX;
@@ -651,6 +675,10 @@
         }
       }
     }
+    // The collision itself can change the rotated footprint through visible squish.
+    const afterImpact = bodyHalfExtents();
+    byte.x = clamp(byte.x, afterImpact.x, world.w - afterImpact.x);
+    byte.y = clamp(byte.y, afterImpact.y, world.h - afterImpact.y);
     updateEarthBoundaryContacts();
   }
   function earthBodyAngle() {
@@ -1050,7 +1078,7 @@
   }
   function updateButtonWeb(dt) {
     if (buttonWeb.phase === 'waiting') {
-      if (autonomy.choice !== 'button' || byte.mode !== 'idle' || byte.grabbed || web.active || buttonBody.loose || obby.active) {
+      if (home.room !== 1 || home.travel || autonomy.choice !== 'button' || byte.mode !== 'idle' || byte.grabbed || web.active || buttonBody.loose || obby.hasLaunched) {
         buttonWeb.idleTime = 0;
         return;
       }
@@ -1139,7 +1167,8 @@
     let guard = 0;
     while (obby.highestPlatformY > targetY && guard++ < 24) spawnPlatformAbove();
   }
-  function beginObby() {
+  function beginObby() { home.obby(); }
+  function beginObbyHere() {
     obby.active = true;
     obby.phase = 'dropping';
     obby.idleTime = 0;
@@ -1176,7 +1205,7 @@
     fillPlatformsAhead();
   }
   function updateAutonomy(dt) {
-    if (obby.active || life.phase !== 'awake') return;
+    if (obby.hasLaunched || (obby.active && home.room === 2) || home.travel || home.journey || home.activity || life.phase !== 'awake') return;
     const idle = byte.mode === 'idle' && !byte.grabbed && !web.active && !life.pointer.active;
     if (!idle) {
       if (autonomy.choice === 'obby' || (autonomy.choice === 'button' && buttonWeb.phase === 'waiting')) autonomy.choice = null;
@@ -1190,8 +1219,10 @@
     autonomy.idleTime = 0;
     const opportunities = [];
     if (buttonWeb.phase === 'waiting' && !buttonBody.loose) opportunities.push('button');
-    opportunities.push('obby');
-    if (life.roughness > .25) opportunities.push('obby');
+    if (!obby.active) opportunities.push('obby');
+    if (home.playCooldown <= 0 && !earth.enabled) opportunities.push('play');
+    opportunities.push('wander');
+    if (life.roughness > .25 && !obby.active) opportunities.push('obby');
     if (!earth.enabled) { opportunities.push('rest'); if (life.roughness < .15) opportunities.push('rest'); }
     autonomy.choice = opportunities[Math.floor(Math.random() * opportunities.length)];
     if (autonomy.choice === 'rest') beginRest();
@@ -1245,7 +1276,7 @@
     }
   }
   function landOnObbyPlatform(previousY) {
-    if (!obby.active || byte.vy <= 0) return;
+    if (!obby.active || home.room !== 2 || byte.vy <= 0) return;
     const previousBottom = previousY + halfH();
     const currentBottom = byte.y + halfH();
     const supportHalf = bodyW() * .18;
@@ -1288,6 +1319,7 @@
     if (e.isPrimary === false) return;
     const rect = canvas.getBoundingClientRect();
     const px = e.clientX - rect.left, py = e.clientY - rect.top;
+    if (home.travel) return;
     noticeTouch(px, py, e.pointerId);
     if (web.active && web.planted && Math.hypot(px - web.anchorX, py - web.anchorY) <= 42) {
       // Releasing the web leaves Byte's current linear and angular momentum untouched.
@@ -1296,6 +1328,7 @@
       web.pointerId = null;
       return;
     }
+    if (home.beginHand(px, py, e.pointerId)) { canvas.setPointerCapture(e.pointerId); return; }
     if (obby.hasLaunched) {
       if (obby.web.active) return;
       life.pointer.kind = 'obbyweb'; voice('web', .75);
@@ -1353,6 +1386,9 @@
     web.anchorX = nextX; web.anchorY = nextY;
   }
   function moveDrag(e) {
+    if (home.travel) return;
+    const handRect = canvas.getBoundingClientRect();
+    if (home.moveHand(e.clientX - handRect.left, e.clientY - handRect.top, e.pointerId)) { e.preventDefault(); return; }
     if (byte.grabbed && e.pointerId !== life.pointer.id) return;
     if (life.pointer.active && e.pointerId === life.pointer.id) {
       const room = canvas.getBoundingClientRect();
@@ -1388,6 +1424,10 @@
     byte.lastSamples = byte.lastSamples.filter(p => t - p.t < 120).slice(-6);
   }
   function endDrag(e) {
+    if (home.endHand(e.pointerId, e.type !== 'pointerup')) {
+      if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
+      return;
+    }
     if (byte.grabbed && e.pointerId !== life.pointer.id) return;
     if (e.pointerId === life.pointer.id) { life.pointer.active = false; life.lastTouch = now(); life.curious = 1.7; }
     if (obby.web.active && e.pointerId === obby.web.pointerId) {
@@ -1421,6 +1461,7 @@
     byte.mode = 'air';
     byte.squash = .13;
     byte.lastSamples = [];
+    if (e.type === 'pointerup') { const r = canvas.getBoundingClientRect(); home.afterByteRelease(e.clientX - r.left, e.clientY - r.top); }
   }
 
   canvas.addEventListener('pointerdown', beginDrag);
@@ -1430,6 +1471,7 @@
   window.addEventListener('pointercancel', endDrag);
 
   function update(dt, t) {
+    if (home.travel) return;
     const g = 1650;
     const previousY = byte.y;
     byte.idlePhase += dt * 2.1;
@@ -1546,9 +1588,18 @@
 
   function draw(t) {
     const cameraY = obby.hasLaunched ? obby.cameraY : 0;
-    drawHabitat(t);
+    home.syncUI();
+    if (obby.hasLaunched) {
+      drawHabitat(t);
+      ctx.save(); ctx.translate(0, -cameraY); home.draw(t); ctx.restore();
+    } else home.draw(t);
+    ctx.save();
+    ctx.translate(obby.hasLaunched ? 0 : home.offset(1), 0);
     drawOutside(t);
-    drawPlatforms();
+    ctx.restore();
+    ctx.save(); ctx.translate(obby.hasLaunched ? 0 : home.offset(2), 0);
+    drawPlatforms(); ctx.restore();
+    ctx.save(); ctx.translate(obby.hasLaunched ? 0 : home.offset(), 0);
     drawNest();
 
     const { frame, frameW, bob, squeezeX, squeezeY, angle } = bodyGeometry(t);
@@ -1565,6 +1616,8 @@
     drawWeb();
     drawObbyWeb();
     drawButtonWeb();
+    ctx.restore();
+    home.drawThings();
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -1582,7 +1635,7 @@
   });
   // Runtime handles are available only to an explicitly enabled local QA harness.
   if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probe')) {
-    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, room, outside, updateOutside, reactToRoom, roomPowerPoint };
+    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home };
   }
 
   function loop(t) {
@@ -1592,12 +1645,14 @@
     if (window.__byteProbe?.paused) { draw(t); requestAnimationFrame(loop); return; }
     room.sample(t);
     updateOutside(dt, t);
+    home.update(dt);
     update(dt, t);
     updateLife(dt);
     updateAutonomy(dt);
     updateButtonWeb(dt);
     updateObby(dt);
     updateButtonPhysics(dt);
+    containRoomBody();
     draw(t);
     requestAnimationFrame(loop);
   }

@@ -59,4 +59,4 @@ body.obby-away #room-caption,body.obby-away #room-fallback { display:none; }
 
 .room-partial #room-caption { animation:none; opacity:1; }
 body.obby-away #room-port { top:auto; bottom:max(18px,env(safe-area-inset-bottom)); right:max(18px,env(safe-area-inset-right)); left:auto; transform:none; width:42px; }
-body.obby-away:not(.room-open) #room-port { display:none; }
+body.obby-away #room-port { display:none; }

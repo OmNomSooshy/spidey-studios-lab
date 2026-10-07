@@ -1,0 +1,1293 @@
+{
+  "classification": "IMPLEMENTED AND RUNTIME-REACHABLE in local browser; native publication verified separately for the final commit",
+  "physical_phone": "Samsung Galaxy A06 5G Chrome unavailable here. Human Eyes/Fingers acceptance and actual handset performance remain pending.",
+  "branch": "experiment/sunburn-ix-2026-10-07",
+  "parent": "c5e417bdb9c21e54b3395556f8ee75496d0219c4",
+  "content": {
+    "permanent_items_preserved": 43,
+    "renewable_treats": 6,
+    "new_authored_poses": [
+      "anticipation",
+      "sour",
+      "proud",
+      "fresh"
+    ],
+    "new_rooms_or_mechanics": 0,
+    "treat_prices": [
+      1,
+      2
+    ],
+    "earning_cadence": "unchanged",
+    "trophy_rule": "five pickups within one run, unchanged"
+  },
+  "ix_stepped": {
+    "checks": [
+      {
+        "name": "49 real choices retain all 43 permanent items; six repeatable treats cost 1\u20132 crystals and never equip or become permanent ownership",
+        "pass": true
+      },
+      {
+        "name": "all six foods use actual hand/mouth contact, diminishing portions and physical meal completion; reactions follow the tasted portion",
+        "pass": true
+      },
+      {
+        "name": "genuine authored sleep retains a physical nest while dreaming about actual food, owned toys, washing or history; touch ends dream and keeps grab authority",
+        "pass": true
+      },
+      {
+        "name": "new authored pride and clean delight interpret real outfit and wash transitions, yield to grab, and add bounded wet floor evidence",
+        "pass": true
+      },
+      {
+        "name": "paid food never joins free biscuit replenishment; partially eaten portions retain identity and quantity through reload",
+        "pass": true
+      },
+      {
+        "name": "paid delivery survives purchase during an existing room transition; broccoli, returned play and trophy history update the same tiny presentation memory",
+        "pass": true
+      },
+      {
+        "name": "five-size shop and corrected trunk territories remain legible and cache sizes remain bounded",
+        "pass": true
+      }
+    ],
+    "errors": [],
+    "failed": [],
+    "method": "Stepped simulation fixtures with real CDP touches; normal-RAF experience tested separately"
+  },
+  "protected_regression_suites": [
+    {
+      "name": "mobile-probe",
+      "exit": 0
+    },
+    {
+      "name": "device-probe",
+      "exit": 0
+    },
+    {
+      "name": "room-probe",
+      "exit": 0
+    },
+    {
+      "name": "home-probe",
+      "exit": 0
+    },
+    {
+      "name": "upstairs-probe",
+      "exit": 0
+    },
+    {
+      "name": "crystal-probe",
+      "exit": 0
+    },
+    {
+      "name": "care-probe",
+      "exit": 0
+    },
+    {
+      "name": "kitchen-probe",
+      "exit": 0
+    },
+    {
+      "name": "acting-probe",
+      "exit": 0
+    },
+    {
+      "name": "bath-read-probe",
+      "exit": 0
+    },
+    {
+      "name": "crystal-cache",
+      "exit": 0
+    }
+  ],
+  "possessions_stepped": {
+    "checks": [
+      {
+        "name": "43 permanent choices plus six treats, five compatible wearable layers and five genuinely different new toy verbs; legacy ownership migrates",
+        "pass": true
+      },
+      {
+        "name": "shop purchases never equip; physical wardrobe manages combinable owned clothes without repurchase or physics changes",
+        "pass": true
+      },
+      {
+        "name": "physical chest instantiates/stores possessions and persistence retains ownership and presence",
+        "pass": true
+      },
+      {
+        "name": "autonomous approach/search/retrieve uses authored rummaging and actually introduces a stored object; grab interrupts without taking physical authority",
+        "pass": true
+      },
+      {
+        "name": "invitation is answered by touching/throwing its real toy; Byte chases and brings it back with momentum physics",
+        "pass": true
+      },
+      {
+        "name": "frog compression/release, pinwheel swipe/breath and rattle shake have interrogable physical effects",
+        "pass": true
+      },
+      {
+        "name": "10000 trophies have bounded simulation, withdrawal/deposit conserve history and wallet, loose fragments survive reload",
+        "pass": true
+      },
+      {
+        "name": "VII display migration preserves moved fragments and stored bath tools across reload",
+        "pass": true
+      },
+      {
+        "name": "toy release onto the loft hatch yields to established carry navigation",
+        "pass": true
+      },
+      {
+        "name": "five-in-one-run trophy rule is unchanged; wallet spending cannot consume stored or loose history",
+        "pass": true
+      },
+      {
+        "name": "Byte can withdraw a real trophy, carry it physically and take it into his nook",
+        "pass": true
+      },
+      {
+        "name": "clothing/contact caches remain bounded and no cosmetic changes physical bounds in any HQ acting state",
+        "pass": true
+      },
+      {
+        "name": "wardrobe does not intersect the authored nook; compact passages, shop and chest remain operable at five sizes",
+        "pass": true
+      }
+    ],
+    "errors": []
+  },
+  "ordinary_ix": {
+    "trace": [
+      {
+        "name": "shop-sour-moon",
+        "room": 5,
+        "pose": null,
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 20,
+        "meals": 0,
+        "lastFood": null,
+        "bites": [],
+        "fizz": 0
+      },
+      {
+        "name": "served-sour-moon",
+        "room": 5,
+        "pose": null,
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 19,
+        "meals": 0,
+        "lastFood": null,
+        "bites": [
+          {
+            "id": "treat-1-sour-moon",
+            "bites": 2,
+            "room": 5
+          }
+        ],
+        "fizz": 0
+      },
+      {
+        "name": "anticipation-sour-moon",
+        "room": 5,
+        "pose": "anticipation",
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 19,
+        "meals": 0,
+        "lastFood": null,
+        "bites": [
+          {
+            "id": "treat-1-sour-moon",
+            "bites": 2,
+            "room": 5
+          }
+        ],
+        "fizz": 0
+      },
+      {
+        "name": "taste-sour-moon",
+        "room": 5,
+        "pose": "sour",
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 19,
+        "meals": 0,
+        "lastFood": "sour-moon",
+        "bites": [
+          {
+            "id": "treat-1-sour-moon",
+            "bites": 1,
+            "room": 5
+          }
+        ],
+        "fizz": 0
+      },
+      {
+        "name": "finished-sour-moon",
+        "room": 5,
+        "pose": "sour",
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 19,
+        "meals": 1,
+        "lastFood": "sour-moon",
+        "bites": [],
+        "fizz": 0
+      },
+      {
+        "name": "shop-fizz-berry",
+        "room": 5,
+        "pose": "sour",
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 19,
+        "meals": 1,
+        "lastFood": "sour-moon",
+        "bites": [],
+        "fizz": 0
+      },
+      {
+        "name": "served-fizz-berry",
+        "room": 5,
+        "pose": "satisfied",
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 17,
+        "meals": 1,
+        "lastFood": "sour-moon",
+        "bites": [
+          {
+            "id": "treat-2-fizz-berry",
+            "bites": 3,
+            "room": 5
+          }
+        ],
+        "fizz": 0
+      },
+      {
+        "name": "anticipation-fizz-berry",
+        "room": 5,
+        "pose": "anticipation",
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 17,
+        "meals": 1,
+        "lastFood": "sour-moon",
+        "bites": [
+          {
+            "id": "treat-2-fizz-berry",
+            "bites": 3,
+            "room": 5
+          }
+        ],
+        "fizz": 0
+      },
+      {
+        "name": "taste-fizz-berry",
+        "room": 5,
+        "pose": null,
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 17,
+        "meals": 1,
+        "lastFood": "fizz-berry",
+        "bites": [
+          {
+            "id": "treat-2-fizz-berry",
+            "bites": 2,
+            "room": 5
+          }
+        ],
+        "fizz": 7
+      },
+      {
+        "name": "finished-fizz-berry",
+        "room": 5,
+        "pose": "satisfied",
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 17,
+        "meals": 2,
+        "lastFood": "fizz-berry",
+        "bites": [],
+        "fizz": 18
+      },
+      {
+        "name": "room-2",
+        "room": 2,
+        "pose": null,
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 17,
+        "meals": 2,
+        "lastFood": "fizz-berry",
+        "bites": [],
+        "fizz": 11
+      },
+      {
+        "name": "room-1",
+        "room": 1,
+        "pose": null,
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 17,
+        "meals": 2,
+        "lastFood": "fizz-berry",
+        "bites": [],
+        "fizz": 4
+      },
+      {
+        "name": "room-0",
+        "room": 0,
+        "pose": null,
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 17,
+        "meals": 2,
+        "lastFood": "fizz-berry",
+        "bites": [],
+        "fizz": 0
+      },
+      {
+        "name": "dreaming-at-home",
+        "room": 0,
+        "pose": "asleep",
+        "phase": "sleep",
+        "nest": true,
+        "dream": {
+          "kind": "food",
+          "id": "fizz-berry"
+        },
+        "balance": 17,
+        "meals": 2,
+        "lastFood": "fizz-berry",
+        "bites": [],
+        "fizz": 0
+      },
+      {
+        "name": "interrupted-dream",
+        "room": 0,
+        "pose": "waking",
+        "phase": "awake",
+        "nest": false,
+        "dream": null,
+        "balance": 17,
+        "meals": 2,
+        "lastFood": "fizz-berry",
+        "bites": [],
+        "fizz": 0
+      }
+    ],
+    "errors": [],
+    "method": "normal RAF and trusted CDP touch; initial wallet/ownership/room fixture only"
+  },
+  "ordinary_trunk": {
+    "results": [
+      {
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "geometry": {
+          "c": {
+            "x": 86.4,
+            "y": 496,
+            "w": 76.8,
+            "h": 54
+          },
+          "door": 27.200000000000003,
+          "ladder": 204.8,
+          "w": 320,
+          "h": 568,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      },
+      {
+        "viewport": {
+          "width": 360,
+          "height": 740
+        },
+        "geometry": {
+          "c": {
+            "x": 97.2,
+            "y": 668,
+            "w": 86.39999999999999,
+            "h": 54
+          },
+          "door": 30.6,
+          "ladder": 230.4,
+          "w": 360,
+          "h": 740,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      },
+      {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "geometry": {
+          "c": {
+            "x": 105.30000000000001,
+            "y": 772,
+            "w": 93.6,
+            "h": 54
+          },
+          "door": 33.150000000000006,
+          "ladder": 249.6,
+          "w": 390,
+          "h": 844,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        },
+        "ordinaryRoute": {
+          "thrown": {
+            "stored": false,
+            "vx": 344.45768782136486,
+            "vy": -1124.5530396521028,
+            "journey": null,
+            "room": 2,
+            "carried": null
+          },
+          "physicalDeposit": true,
+          "storedReload": true,
+          "retrieval": true,
+          "ladderCarry": true,
+          "loftReload": true
+        }
+      },
+      {
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "geometry": {
+          "c": {
+            "x": 116.10000000000001,
+            "y": 860,
+            "w": 103.2,
+            "h": 54
+          },
+          "door": 36.550000000000004,
+          "ladder": 275.2,
+          "w": 430,
+          "h": 932,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      },
+      {
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "geometry": {
+          "c": {
+            "x": 113.4,
+            "y": 282,
+            "w": 100.8,
+            "h": 54
+          },
+          "door": 35.7,
+          "ladder": 268.8,
+          "w": 420,
+          "h": 354,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      }
+    ],
+    "errors": [],
+    "method": "normal RAF/trusted touch; initial room/ownership fixtures only"
+  },
+  "ordinary_furniture": {
+    "before": {
+      "history": 12,
+      "stored": 11,
+      "loose": 1,
+      "balance": 30,
+      "gear": {
+        "head": "plum-beanie",
+        "eyes": "round-specs",
+        "top": "sailor"
+      }
+    },
+    "after": {
+      "history": 12,
+      "stored": 12,
+      "loose": 0,
+      "balance": 30,
+      "gear": {
+        "head": "plum-beanie",
+        "eyes": "round-specs",
+        "top": "sailor"
+      }
+    },
+    "errors": []
+  },
+  "presentation": {
+    "cases": 57,
+    "alpha_leaks": 0,
+    "body_cache": 16,
+    "top_cache": 32,
+    "errors": []
+  },
+  "detail_pixels_and_budget": {
+    "results": [
+      {
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "rows": [
+          {
+            "room": 0,
+            "changed": 0,
+            "maxDifference": 0
+          },
+          {
+            "room": 2,
+            "changed": 0,
+            "maxDifference": 0
+          },
+          {
+            "room": 3,
+            "changed": 0,
+            "maxDifference": 0
+          }
+        ],
+        "cache": [
+          {
+            "width": 48,
+            "height": 26,
+            "bytes": 4992
+          },
+          {
+            "width": 52,
+            "height": 47,
+            "bytes": 9776
+          },
+          {
+            "width": 51,
+            "height": 46,
+            "bytes": 9384
+          }
+        ]
+      },
+      {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "rows": [
+          {
+            "room": 0,
+            "changed": 0,
+            "maxDifference": 0
+          },
+          {
+            "room": 2,
+            "changed": 0,
+            "maxDifference": 0
+          },
+          {
+            "room": 3,
+            "changed": 0,
+            "maxDifference": 0
+          }
+        ],
+        "cache": [
+          {
+            "width": 58,
+            "height": 26,
+            "bytes": 6032
+          },
+          {
+            "width": 60,
+            "height": 47,
+            "bytes": 11280
+          },
+          {
+            "width": 58,
+            "height": 46,
+            "bytes": 10672
+          }
+        ]
+      },
+      {
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "rows": [
+          {
+            "room": 0,
+            "changed": 0,
+            "maxDifference": 0
+          },
+          {
+            "room": 2,
+            "changed": 0,
+            "maxDifference": 0
+          },
+          {
+            "room": 3,
+            "changed": 0,
+            "maxDifference": 0
+          }
+        ],
+        "cache": [
+          {
+            "width": 63,
+            "height": 26,
+            "bytes": 6552
+          },
+          {
+            "width": 60,
+            "height": 48,
+            "bytes": 11520
+          },
+          {
+            "width": 59,
+            "height": 46,
+            "bytes": 10856
+          }
+        ]
+      },
+      {
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "rows": [
+          {
+            "room": 0,
+            "changed": 0,
+            "maxDifference": 0
+          },
+          {
+            "room": 2,
+            "changed": 0,
+            "maxDifference": 0
+          },
+          {
+            "room": 3,
+            "changed": 0,
+            "maxDifference": 0
+          }
+        ],
+        "cache": [
+          {
+            "width": 62,
+            "height": 26,
+            "bytes": 6448
+          },
+          {
+            "width": 60,
+            "height": 47,
+            "bytes": 11280
+          },
+          {
+            "width": 59,
+            "height": 46,
+            "bytes": 10856
+          }
+        ]
+      }
+    ],
+    "errors": []
+  },
+  "performance": {
+    "outdoor_1x": [
+      {
+        "name": "VIII-a",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 57.99694590550817,
+        "p95FrameMs": 16.799999999999955,
+        "medianCompletedRasterMs": 0.699999988079071,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "IX-a",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 58.61899193796541,
+        "p95FrameMs": 16.800000000000182,
+        "medianCompletedRasterMs": 0.5999999940395355,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "VIII-b",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 57.84882379186731,
+        "p95FrameMs": 16.800000000000182,
+        "medianCompletedRasterMs": 0.5999999940395355,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "IX-b",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 59.69414443521339,
+        "p95FrameMs": 16.700000000000728,
+        "medianCompletedRasterMs": 0.7000000178813934,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      }
+    ],
+    "outdoor_6x": [
+      {
+        "name": "VIII-a",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 34.92468883179223,
+        "p95FrameMs": 50,
+        "medianCompletedRasterMs": 4.9000000059604645,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "IX-a",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 36.00166161515147,
+        "p95FrameMs": 50.099999999999454,
+        "medianCompletedRasterMs": 6.5,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 24,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "VIII-b",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 32.15533024601135,
+        "p95FrameMs": 50.100000000000364,
+        "medianCompletedRasterMs": 6.0999999940395355,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      },
+      {
+        "name": "IX-b",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 27.62261371309312,
+        "p95FrameMs": 66.60000000000036,
+        "medianCompletedRasterMs": 5.600000023841858,
+        "cache": {
+          "skyBuilds": 12,
+          "tileBuilds": 12,
+          "opticalBuilds": 23,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      }
+    ],
+    "home_before": [
+      {
+        "name": "VIII",
+        "scene": "sleep",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 60.00142015195625,
+        "p95FrameMs": 16.700000000000728,
+        "medianCompletedRasterMs": 5.9000000059604645,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "IX",
+        "scene": "sleep",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 60.00355050594711,
+        "p95FrameMs": 16.700000000000273,
+        "medianCompletedRasterMs": 10.5,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "VIII",
+        "scene": "kitchen",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 60.00142015195626,
+        "p95FrameMs": 16.800000000000182,
+        "medianCompletedRasterMs": 1.2999999821186066,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "IX",
+        "scene": "kitchen",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 60.00142015195626,
+        "p95FrameMs": 16.700000000000273,
+        "medianCompletedRasterMs": 1.300000011920929,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "VIII",
+        "scene": "sleep",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 18.817681519616542,
+        "p95FrameMs": 66.69999999999982,
+        "medianCompletedRasterMs": 43.599999994039536,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "IX",
+        "scene": "sleep",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 9.586025704750408,
+        "p95FrameMs": 116.70000000000073,
+        "medianCompletedRasterMs": 87.09999999403954,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "VIII",
+        "scene": "kitchen",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 60.00142015195626,
+        "p95FrameMs": 16.700000000000273,
+        "medianCompletedRasterMs": 9.199999988079071,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "IX",
+        "scene": "kitchen",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 39.764254775260945,
+        "p95FrameMs": 33.40000000000009,
+        "medianCompletedRasterMs": 16.900000005960464,
+        "bodyCache": 1,
+        "errors": []
+      }
+    ],
+    "ablation": [
+      {
+        "name": "full",
+        "scene": "sleep",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 11.445615982241954,
+        "p95FrameMs": 100,
+        "medianCompletedRasterMs": 80.10000002384186,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "no-decor",
+        "scene": "sleep",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 17.895364749640336,
+        "p95FrameMs": 66.70000000000027,
+        "medianCompletedRasterMs": 46.400000005960464,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "no-dream",
+        "scene": "sleep",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 10.235775801214174,
+        "p95FrameMs": 116.70000000000005,
+        "medianCompletedRasterMs": 87.19999998807907,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "neither",
+        "scene": "sleep",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 19.059720457433293,
+        "p95FrameMs": 66.69999999999982,
+        "medianCompletedRasterMs": 42.80000001192093,
+        "bodyCache": 1,
+        "errors": []
+      }
+    ],
+    "home_final": [
+      {
+        "name": "VIII",
+        "scene": "sleep",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 60.003550505947096,
+        "p95FrameMs": 16.700000000000273,
+        "medianCompletedRasterMs": 5.5,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "IX",
+        "scene": "sleep",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 60.003550505947096,
+        "p95FrameMs": 16.799999999999727,
+        "medianCompletedRasterMs": 6.5,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "VIII",
+        "scene": "kitchen",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 60.003550505947096,
+        "p95FrameMs": 16.700000000000273,
+        "medianCompletedRasterMs": 1,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "IX",
+        "scene": "kitchen",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 60,
+        "p95FrameMs": 16.700000000000273,
+        "medianCompletedRasterMs": 1.5,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "VIII",
+        "scene": "sleep",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 14.556557551658027,
+        "p95FrameMs": 133.4000000000001,
+        "medianCompletedRasterMs": 44.5,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "IX",
+        "scene": "sleep",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 16.843287248227945,
+        "p95FrameMs": 83.40000000000009,
+        "medianCompletedRasterMs": 48.89999997615814,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "VIII",
+        "scene": "kitchen",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 51.83554640346518,
+        "p95FrameMs": 33.30000000000018,
+        "medianCompletedRasterMs": 8.300000011920929,
+        "bodyCache": 1,
+        "errors": []
+      },
+      {
+        "name": "IX",
+        "scene": "kitchen",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 47.221729096396245,
+        "p95FrameMs": 33.40000000000009,
+        "medianCompletedRasterMs": 10.900000005960464,
+        "bodyCache": 1,
+        "errors": []
+      }
+    ]
+  },
+  "initial_qa_failures_resolved": [
+    "Input bridge originally advanced stepped simulation before a queued pointer move. It now acknowledges actual dispatch.",
+    "An ordinary chest tap hit Byte occupying that point. The route now physically moves him clear.",
+    "A moving-object catch used stale coordinates and missed by 38px, entering unchanged ladder territory. The route now waits for the actual thrown body to settle.",
+    "Parallel/browser-probe overhead made some intended quick throws exceed the existing fresh-motion window. Isolated ordinary input trials passed with measured momentum.",
+    "The initial full-screen transparent room-detail cache caused a constrained sleeping-scene regression. Ablation isolated it; exact-pixel cropping removed most of that cost."
+  ],
+  "protected_source_remotes": {
+    "main": "2bc4e42a280f5e2119ddd98bc9a9602514fd84d3",
+    "through_the_glass": "5665c230e0c81b09889d521f78ab77d50c01b435",
+    "sunburn_viii": "c5e417bdb9c21e54b3395556f8ee75496d0219c4"
+  },
+  "limits": [
+    "Software CPU throttling is comparison evidence, not a target-handset certification.",
+    "New authored art, reaction timing and small room details require Human Eyes acceptance.",
+    "Local browser/origin persistence; deliberately accumulated loose portions/belongings cost linearly.",
+    "Dream memory is one recent context plus existing ownership/history, not a subconscious model."
+  ],
+  "ordinary_toys": {
+    "runs": [
+      {
+        "name": "fetch",
+        "id": "comet-ball",
+        "release": {
+          "id": "comet-ball",
+          "phase": "chase",
+          "answered": 1,
+          "vx": -1033.4347819887557,
+          "vy": -1400
+        },
+        "end": {
+          "invitations": 2,
+          "phase": "invite",
+          "answered": 1,
+          "retrievals": 1
+        },
+        "rummaging_visible": true,
+        "proud_after_response": true
+      },
+      {
+        "name": "wind",
+        "id": "pinwheel",
+        "release": {
+          "id": "pinwheel",
+          "phase": "respond",
+          "answered": 1,
+          "vx": 0,
+          "vy": 0,
+          "wheelSpin": 40
+        },
+        "end": {
+          "invitations": 1,
+          "phase": "invite",
+          "answered": 1,
+          "retrievals": 1
+        },
+        "rummaging_visible": true,
+        "proud_after_response": false
+      },
+      {
+        "name": "compress",
+        "id": "frog-toy",
+        "release": {
+          "id": "frog-toy",
+          "phase": "chase",
+          "answered": 1,
+          "vx": -447.36842103136746,
+          "vy": -795.9239999999919
+        },
+        "end": {
+          "invitations": 2,
+          "phase": "invite",
+          "answered": 1,
+          "retrievals": 1
+        },
+        "rummaging_visible": true,
+        "proud_after_response": true
+      },
+      {
+        "name": "rhythm",
+        "id": "rattle",
+        "release": {
+          "id": "rattle",
+          "phase": "respond",
+          "answered": 1,
+          "vx": 0,
+          "vy": 0,
+          "shakes": 6
+        },
+        "end": {
+          "invitations": 1,
+          "phase": "invite",
+          "answered": 1,
+          "retrievals": 1
+        },
+        "rummaging_visible": true,
+        "proud_after_response": false
+      },
+      {
+        "name": "roll",
+        "id": "ring-toy",
+        "release": {
+          "id": "ring-toy",
+          "phase": "chase",
+          "answered": 1,
+          "vx": -1026.156876347065,
+          "vy": -1400
+        },
+        "end": {
+          "invitations": 2,
+          "phase": "invite",
+          "answered": 1,
+          "retrievals": 1
+        },
+        "rummaging_visible": true,
+        "proud_after_response": true
+      }
+    ],
+    "errors": [],
+    "method": "normal RAF/trusted touch; initial ownership fixture only"
+  },
+  "ordinary_expeditions": {
+    "runs": [
+      {
+        "collected": 5,
+        "trophies": 1,
+        "bounces": 5,
+        "seed": 528351654,
+        "stored": 1,
+        "loose": 0
+      },
+      {
+        "collected": 5,
+        "trophies": 2,
+        "bounces": 5,
+        "seed": 2262145109,
+        "stored": 2,
+        "loose": 0
+      }
+    ],
+    "legitimate_misses": 2,
+    "ownership_and_wallet_persistence": true,
+    "errors": [],
+    "failed_requests": [],
+    "method": "normal RAF/trusted touch and emulated device sensors; only competing autonomy suppressed"
+  },
+  "ordinary_care": {
+    "washed": true,
+    "room": 0,
+    "fresh_pose_samples": 176,
+    "wet_refusal_samples": 29,
+    "errors": [],
+    "method": "normal RAF/trusted touch; only competing idle autonomy suppressed"
+  },
+  "ordinary_pantry": {
+    "exit": 0,
+    "method": "existing real-input depletion/leave/return with partial supply preservation"
+  }
+}

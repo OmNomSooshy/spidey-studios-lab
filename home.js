@@ -39,16 +39,18 @@ window.createByteHome = function createByteHome(api) {
     initial.push({...v,trophy:true,r:13});
   }}
   for(const item of api.economy.catalogue.filter(v=>v.category==='toy'&&api.economy.owned.includes(v.id))){const v=remembered?.things?.find(v=>v.id===item.id);if(v)initial.push({...v,toy:true,r:item.id==='ring-toy'?24:20});}
+  // Purchased portions persist as the same physical food, never as a stock/inventory balance.
+  for(const v of remembered?.things||[]){const treat=api.economy.catalogue.find(t=>t.category==='food'&&t.id===v.treat);if(treat&&typeof v.id==='string'&&v.id.startsWith('treat-')&&Number.isFinite(v.bites)&&v.bites>0)initial.push({...v,food:true,r:18,stock:false});}
   for (const seed of initial) {
     const saved = remembered?.things?.find(v => v.id === seed.id);
     const safe = saved && Number.isInteger(saved.room) && saved.room >= 0 && saved.room <= 5 && Number.isFinite(saved.nx) && Number.isFinite(saved.ny);
     home.things.push({ ...seed, ...(safe ? { room: saved.room, nx: clamp(saved.nx, .03, .97), ny: clamp(saved.ny, .03, .97) } : {}),
       ...(saved?.stored?{stored:true}:{}),
-      ...(seed.food?{stock:!safe,bites:safe&&Number.isFinite(saved.bites)?clamp(Math.round(saved.bites),0,4):4}:{}), x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0, touch: 0 });
+      ...(seed.food?{stock:!safe,bites:safe&&Number.isFinite(saved.bites)?clamp(Math.round(saved.bites),0,seed.treat?api.economy.catalogue.find(t=>t.id===seed.treat).portions:4):4}:{}), x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0, touch: 0 });
   }
   function ensureTrophies() { home.possessions?.historyChanged(); save(); }
   function replenishBiscuits() {
-    const biscuits=home.things.filter(v=>v.food&&!v.vegetable);
+    const biscuits=home.things.filter(v=>v.id.startsWith('biscuit-'));
     if(!biscuits.length||biscuits.some(v=>v.bites>0))return false;
     const shelf=api.kitchen.geometry();
     biscuits.forEach((v,i)=>Object.assign(v,{room:5,x:world.w*(.28+i*.115),y:shelf.shelfY-v.r,bites:4,onShelf:true,stock:false,inMouth:false,vx:0,vy:0,angle:0,spin:0,contact:0}));
@@ -57,7 +59,7 @@ window.createByteHome = function createByteHome(api) {
   function save() {
     if (!world.w || home.travel) return;
     const data = { room: home.room, slept: home.slept, found: home.found, stoneHome: home.stoneHome,
-      things: home.things.map(v => ({ id: v.id, room: v.room, nx: clamp(v.x / world.w, 0, 1), ny: clamp(v.y / world.h, 0, 1),...(v.food?{bites:v.bites}:{}),...(v.trophy?{trophy:true}:{}),...(v.toy?{toy:true}:{}),...(v.stored?{stored:true}:{}) })) };
+      things: home.things.map(v => ({ id: v.id, room: v.room, nx: clamp(v.x / world.w, 0, 1), ny: clamp(v.y / world.h, 0, 1),...(v.food?{bites:v.bites,...(v.treat?{treat:v.treat}:{})}:{}),...(v.trophy?{trophy:true}:{}),...(v.toy?{toy:true}:{}),...(v.stored?{stored:true}:{}) })) };
     try { localStorage.setItem(key, JSON.stringify(data)); } catch (_) {}
     home.savedAt = home.time;
   }
@@ -376,6 +378,7 @@ window.createByteHome = function createByteHome(api) {
     ctx.fillStyle = '#958364'; ctx.fillRect(0, floor - 17, w, 27);
     ctx.strokeStyle = '#685d442e'; for (let x = 12; x < w; x += 58) { ctx.beginPath(); ctx.moveTo(x, floor - 16); ctx.lineTo(x - 13, h); ctx.stroke(); }
     ctx.strokeStyle = '#eee0b37a'; ctx.beginPath(); ctx.moveTo(0, floor - 17); ctx.lineTo(w, floor - 17); ctx.stroke();
+    home.details?.roomDecoration(index);
     const top = Math.max(h * .39, floor - bH * 2.2), dh = floor - top;
     if (index < 3) window.drawBytePassage(ctx, w, h, bH, 'left', index === 0 ? '#a9c9c7' : index === 1 ? '#5d7580' : '#e6dcc3');
     if (index < 3) window.drawBytePassage(ctx, w, h, bH, 'right', index === 0 ? '#e6dcc3' : index===1?'#9aaf9a':'#ead1a8');
@@ -472,7 +475,7 @@ window.createByteHome = function createByteHome(api) {
   document.addEventListener('visibilitychange', () => { if (document.hidden) { if (home.hand) endHand(home.hand.id, true); save(); } });
   window.addEventListener('pagehide', save);
   home.possessions=window.createBytePossessions({...api,home,remembered,save,cancel,drop});
-  return Object.assign(home, { resize, space, offset, offsetY, stairsX, syncUI, portal, request, cancel, update, draw, drawThings, beginHand, moveHand, endHand, afterByteRelease, save, drop, ensureTrophies,
+  return Object.assign(home, { deliverTreat:item=>api.kitchen.deliver(item),resize, space, offset, offsetY, stairsX, syncUI, portal, request, cancel, update, draw, drawThings, beginHand, moveHand, endHand, afterByteRelease, save, drop, ensureTrophies,
     rest() { if (home.room === 0) api.restHere(); else request(0, 'rest'); },
     obby() { if (home.room === 3) api.obbyHere(); else request(3, 'obby'); },
   });

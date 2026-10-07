@@ -2,7 +2,7 @@
   const canvas = document.querySelector('#scene');
   const ctx = canvas.getContext('2d');
   const assets = { idle: null, blink: null, curious: null, walk: [], scheming: null };
-  const actingNames = ['drowsy', 'asleep', 'waking', 'refusal', 'satisfied', 'rummaging', 'expectant'];
+  const actingNames = ['drowsy', 'asleep', 'waking', 'refusal', 'satisfied', 'rummaging', 'expectant', 'anticipation', 'sour', 'proud', 'fresh'];
   const gravityButton = document.querySelector('#gravity-toggle');
   const gravityLabel = document.querySelector('#gravity-label');
   const gravityStatus = document.querySelector('#gravity-status');
@@ -79,7 +79,7 @@
     const profiles = {
       notice: [580, 770, .12], pet: [420, 490, .24], toss: [830, 480, .17],
       boing: [145, 430, .2], web: [1200, 280, .07], sleep: [200, 165, .34],
-      crime: [510, 670, .15], land: [120, 65, .09], wake: [440, 680, .16],
+      crime: [510, 670, .15], crunch: [280,90,.07],sour:[420,150,.23],bubble:[800,1300,.08],happy:[560,920,.15], land: [120, 65, .09], wake: [440, 680, .16],
     };
     const p = profiles[kind];
     const stamp = performance.now();
@@ -235,6 +235,7 @@
     if (life.phase !== 'awake' && (earth.enabled || obby.hasLaunched || web.active)) wakeByte();
     if (earth.enabled) gravityButton.style.setProperty('--down-angle', `${earthBodyAngle() * 180 / Math.PI}deg`);
     else gravityButton.style.setProperty('--down-angle', '0deg');
+    details.update(dt);
   }
   function drawNest() {
     const nest = life.nest;
@@ -298,6 +299,7 @@
     senses: room, bodyW: () => bodyW(), bodyH: () => bodyH(), roomW: () => spriteW, roomH: () => spriteH, extents: bodyHalfExtents, floorY: () => floorY(), wakeByte, voice,
     pranking: () => !['waiting', 'released'].includes(buttonWeb.phase), down: earthDown,
     restHere: beginRestHere, obbyHere: beginObbyHere, skyOpening: crystal.opening });
+  const details=window.createByteLifeDetails({ctx,world,byte,life,home,bathroom,kitchen,economy,obby,earth,web,bodyW:()=>bodyW(),bodyH:()=>bodyH(),floorY:()=>floorY(),roomH:()=>spriteH});home.details=details;
   function openRoom(kind = 'both') {
     if (room.state.open || room.state.pending) {
       room.close(); stopMotionIfUnused();
@@ -559,7 +561,11 @@
       else if (life.phase === 'nest-cast' || life.phase === 'settling') pose = 'drowsy';
       else if (kitchen.refusal > 0 || bathroom.shake > 0) pose = 'refusal';
       else if (life.waking > 0) pose = 'waking';
+      else if(kitchen.sour>0)pose='sour';
+      else if(kitchen.anticipation>0)pose='anticipation';
       else if (kitchen.satisfaction > 0) pose = 'satisfied';
+      else if(details.fresh>0)pose='fresh';
+      else if(details.proud>0&&byte.mode==='idle')pose='proud';
       if(!pose&&home.possessions.pose)pose=home.possessions.pose;
       if (pose) frame = assets[pose] || frame;
     }
@@ -1718,6 +1724,7 @@
     ctx.save(); if (obby.hasLaunched) crystal.applyView(); home.drawThings(); ctx.restore();
     bathroom.foreground(t);
     kitchen.foreground(t);
+    details.foreground(t);
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -1735,7 +1742,7 @@
   });
   // Runtime handles are available only to an explicitly enabled local QA harness.
   if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probe')) {
-    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal, bathroom, kitchen, economy };
+    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal, bathroom, kitchen, economy, details };
   }
 
   function loop(t) {

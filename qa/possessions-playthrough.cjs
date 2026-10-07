@@ -13,7 +13,7 @@ for(const [name,owned]of [['fetch',['comet-ball']],['wind',['pinwheel']],['compr
  if(name==='compress')await p.waitForTimeout(800);
  if(name==='rhythm'||name==='wind'){for(let i=0;i<6;i++){await touch('touchMove',i%2?100:140,600);await p.waitForTimeout(130);}}
  else {await touch('touchMove',v.x-60,v.y-70);await p.waitForTimeout(60);await touch('touchMove',Math.max(75,v.x-180),v.y-240);await p.waitForTimeout(35);}
- await touch('touchEnd');const release=await p.evaluate(()=>window.lastToyRelease);
+ await touch('touchEnd');const release=await p.evaluate(()=>window.lastToyRelease);console.log('TOY RELEASE',name,JSON.stringify(release));
  assert(release,'trusted release did not answer the offered physical object');assert.equal(release.answered,1);if(name==='fetch'||name==='roll')assert(Math.hypot(release.vx,release.vy)>150,'a real throw must preserve measured motion');if(name==='compress')assert(release.vy< -400);if(name==='wind')assert(release.wheelSpin>0);if(name==='rhythm')assert(release.shakes>2);
  await p.waitForFunction(()=>__byteProbe.home.possessions.invitations>=2||__byteProbe.home.possessions.act?.phase==='invite'&&__byteProbe.home.possessions.answered>0,{},{timeout:23000});
  await p.screenshot({path:path.join(out,name+'-response.png'),scale:'css'});const end=await p.evaluate(()=>({invitations:__byteProbe.home.possessions.invitations,phase:__byteProbe.home.possessions.act?.phase,answered:__byteProbe.home.possessions.answered,retrievals:__byteProbe.home.possessions.retrievals}));assert(phases.some(v=>v.phase==='rummage'&&v.pose==='rummaging'));runs.push({name,id,release,end,phases});console.log('PASS',name,JSON.stringify({release,end}));await c.close();

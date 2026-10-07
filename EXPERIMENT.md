@@ -1,4 +1,8 @@
-# Current candidate: Sunburn VIII — stuff worth bringing home
+# Current candidate: Sunburn IX — deepen the life
+
+This isolated branch is `experiment/sunburn-ix-2026-10-07`, based on VIII's trunk-placement correction `c5e417bdb9c21e54b3395556f8ee75496d0219c4`. [Sunburn IX implementation and evidence](SUNBURN-IX.md) covers contextual dreaming, six renewable physical treats, four authored performances, and connections across care, food, play, clothing and history. The existing private experimental phone origin and saved life are retained. Canonical and earlier experimental branches are unchanged. The previous campaign records follow.
+
+# Sunburn VIII — stuff worth bringing home
 
 This isolated branch is `experiment/sunburn-viii-2026-10-07`, forked from VII `2fe29edd8cfb1cec659001bb3125092cee140cfa`. [Sunburn VIII implementation and evidence](SUNBURN-VIII.md) covers 43 stocked treasures, combinable clothes, a physical wardrobe, chest/search/toy invitations, and conserved scalable Crystal history. The existing experimental phone origin and local history are retained; canonical and earlier branches are unchanged. The previous campaign records follow.
 

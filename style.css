@@ -134,3 +134,5 @@ body.obby-away #crystal-wallet:after { color:#effff0; text-shadow:0 1px 4px #274
 .collection-items p,.collection-note { font:11px/1.4 system-ui; color:#7b886e; }
 .collection-items button { width:100%; border:1px solid #648673; border-radius:12px; background:#557d68; color:#fff7df; padding:11px 3px; font:600 12px system-ui; }
 .collection-note { text-align:center; margin:20px 0 0; }
+
+#shop-caption { margin:0 0 10px; color:#7a816b; font:12px/1.5 Georgia,serif; text-align:center; }

@@ -11,7 +11,7 @@ window.createByteBathroom = function createByteBathroom(api) {
   }
   const state = { fill: clamp(Number(saved?.fill)||0,0,1), source: null, draining: false, hand: null, wet: 0, washed: !!saved?.washed,
     patches: marks.map(([x,y,r],i)=>({x,y,r,dirt:clamp(Number.isFinite(saved?.mud?.[i])?saved.mud[i]:.85,0,1),foam:0,
-      stains:Array.isArray(saved?.stains?.[i])?saved.stains[i].slice(-8).filter(s=>s&&['dx','dy','r','angle','shape'].every(k=>Number.isFinite(s[k]))&&Math.abs(s.dx)<=1&&Math.abs(s.dy)<=1&&s.r>0&&s.r<1).map(s=>({...s,kind:s.kind==='jam'?'jam':'mud'})):[stain(i,0),stain(i,1)]})),
+      stains:Array.isArray(saved?.stains?.[i])?saved.stains[i].slice(-8).filter(s=>s&&['dx','dy','r','angle','shape'].every(k=>Number.isFinite(s[k]))&&Math.abs(s.dx)<=1&&Math.abs(s.dy)<=1&&s.r>0&&s.r<1).map(s=>({...s,kind:['jam','berry','crumb'].includes(s.kind)?s.kind:'mud'})):[stain(i,0),stain(i,1)]})),
     puddle: clamp(Number(saved?.puddle)||0,0,1), particles: [], head: {x:0,y:0,vx:0,vy:0},
     time: 0, dirty: false, savedAt:0, wetAge:0, shake:0, mischief:false, splashes:0, scrubbed:0,
     lastSponge:null, floorContact:false, expedition:false, previousRoom:1, width:0, height:0,
@@ -39,6 +39,7 @@ window.createByteBathroom = function createByteBathroom(api) {
     const sky=wall.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#d5e3dc');sky.addColorStop(1,'#f0eee0');wall.fillStyle=sky;wall.fillRect(0,0,w,h);
     wall.strokeStyle='#faf8e9';wall.lineWidth=3;wall.beginPath();for(let x=0;x<w;x+=48){wall.moveTo(x,0);wall.lineTo(x,h*.88)}for(let y=0;y<h*.88;y+=58){wall.moveTo(0,y);wall.lineTo(w,y)}wall.stroke();
     wall.fillStyle='#b0c4bd';wall.fillRect(0,h*.88,w,h*.12);wall.strokeStyle='#dbe5d6';wall.lineWidth=2;wall.beginPath();for(let x=-h;x<w+h;x+=58){wall.moveTo(x,h*.88);wall.lineTo(x+80,h)}wall.stroke();
+    api.home().details?.paintDecor(wall,4);
     window.drawBytePassage(wall,w,h,api.roomH(),'right','#536d76');
     // Round frosted window, quiet pipes, soap dish and the back of a generous ceramic tub.
     rect(wall,w*.075,h*.15,w*.24,h*.20,36,'#a7c8c7','#9aaea0');wall.strokeStyle='#f4f1d6';wall.lineWidth=5;wall.beginPath();wall.moveTo(w*.195,h*.17);wall.lineTo(w*.195,h*.34);wall.moveTo(w*.10,h*.25);wall.lineTo(w*.29,h*.25);wall.stroke();
@@ -98,8 +99,8 @@ window.createByteBathroom = function createByteBathroom(api) {
       p.dirt=clamp(p.dirt+strength,0,1);p.stains.push(stain(i,state.dirtEvents),stain(i,state.dirtEvents+3));p.stains=p.stains.slice(-8);}
     state.stainVersion++;state.dirty=true;
   }
-  function foodMess(){const p=state.patches[3];if(p.dirt<.02)p.stains=[];
-    p.dirt=clamp(p.dirt+.14,0,1);p.stains.push({dx:.16,dy:-.83,r:.22,angle:.2,shape:2,kind:'jam'});p.stains=p.stains.slice(-8);state.stainVersion++;state.dirty=true;}
+  function foodMess(kind='jam'){const p=state.patches[3];if(p.dirt<.02)p.stains=[];
+    p.dirt=clamp(p.dirt+.14,0,1);p.stains.push({dx:.16,dy:-.83,r:.22,angle:.2,shape:2,kind});p.stains=p.stains.slice(-8);state.stainVersion++;state.dirty=true;}
   function begin(x,y,id) {
     if(!here())return false;
     const g=geometry();
@@ -167,7 +168,7 @@ window.createByteBathroom = function createByteBathroom(api) {
     for(let i=0;i<state.patches.length;i++){const p=state.patches[i],x=p.x*w,y=p.y*h,r=p.r*h;
       if(p.dirt>.015){const count=Math.ceil(p.stains.length*Math.min(1,p.dirt*1.2));
         for(let n=0;n<count;n++){const s=p.stains[n],sx=x+s.dx*r,sy=y+s.dy*r,sr=r*s.r;
-          ctx.save();ctx.translate(sx,sy);ctx.rotate(s.angle);ctx.fillStyle=s.kind==='jam'?`rgba(145,64,45,${p.dirt*.85})`:`rgba(99,65,35,${.16+p.dirt*.64})`;ctx.beginPath();
+          ctx.save();ctx.translate(sx,sy);ctx.rotate(s.angle);const color={jam:'145,64,45',berry:'124,66,137',crumb:'177,130,55'}[s.kind];ctx.fillStyle=color?`rgba(${color},${p.dirt*.85})`:`rgba(99,65,35,${.16+p.dirt*.64})`;ctx.beginPath();
           if(s.shape===0){ctx.ellipse(0,0,sr*1.8,sr*.65,0,0,Math.PI*2);ctx.ellipse(sr*.5,sr*.25,sr,sr*.5,.3,0,Math.PI*2)}
           else if(s.shape===1){for(let k=0;k<5;k++)ctx.ellipse(Math.sin(k*2.4)*sr*.8,Math.cos(k*2.4)*sr*.8,sr*(k?.45:.85),sr*.55,k,0,Math.PI*2)}
           else {ctx.moveTo(-sr,-sr*.25);ctx.lineTo(sr*1.4,-sr*.55);ctx.lineTo(sr*.9,sr*.8);ctx.lineTo(-sr*.6,sr*.55);ctx.closePath()}

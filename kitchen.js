@@ -4,11 +4,11 @@ window.createByteKitchen = function(api) {
   const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   let history;try{history=JSON.parse(localStorage.getItem('byte-sunburn-kitchen-v1'))}catch(_){}
   const state={phase:'idle',food:null,elapsed:0,time:0,nextTheft:0,chew:0,refusal:0,satisfaction:0,
-    opinion:null,opinionTime:0,rejected:0,
+    opinion:null,opinionTime:0,rejected:0,anticipation:0,sour:0,lastFood:history?.lastFood||null,serial:Math.max(0,Number(history?.serial)||0),fizz:[],
     meals:Math.max(0,Number(history?.meals)||0),crumbs:[],width:0,height:0,attempts:0,bites:0};
   const backdrop=document.createElement('canvas');backdrop.id='kitchen-scenery';backdrop.setAttribute('aria-hidden','true');ctx.canvas.before(backdrop);
   const wall=backdrop.getContext('2d',{alpha:false});
-  const foodFrames=[];
+  const foodFrames=[],treatFrames=new Map();
   let vegetableFrame;
   const here=()=>api.home().room===5&&!api.home().travel&&!obby.hasLaunched;
   function geometry(){const w=world.w,h=world.h;return{shelfX:w*.17,shelfW:w*.48,shelfY:Math.min(h*.36,h-api.roomH()*1.65),tableX:w*.14,tableW:w*.72,tableY:api.floorY()+api.bodyH()*.055+16}}
@@ -17,7 +17,7 @@ window.createByteKitchen = function(api) {
     const lx=(moving?.23:curious?.025:plotting?.055:0)*b.frameW*byte.facing*b.squeezeX,ly=(moving?.105:plotting?.25:curious?.025:.055)*api.bodyH()*b.squeezeY,c=Math.cos(b.angle),s=Math.sin(b.angle);
     return{x:byte.x+lx*c-ly*s,y:byte.y+b.bob+lx*s+ly*c};
   }
-  function save(){try{localStorage.setItem('byte-sunburn-kitchen-v1',JSON.stringify({meals:state.meals}))}catch(_){}api.home().save()}
+  function save(){try{localStorage.setItem('byte-sunburn-kitchen-v1',JSON.stringify({meals:state.meals,lastFood:state.lastFood,serial:state.serial}))}catch(_){}api.home().save()}
   function box(p,x,y,w,h,r,fill,stroke){p.fillStyle=fill;p.beginPath();p.roundRect(x,y,w,h,r);p.fill();if(stroke){p.strokeStyle=stroke;p.stroke()}}
   function resize(){
     if(state.width===world.w&&state.height===world.h)return;
@@ -39,6 +39,9 @@ window.createByteKitchen = function(api) {
     // A low table puts an offered or fallen biscuit at face height without immobilising Byte.
     wall.fillStyle='#ab7a4e';wall.fillRect(g.tableX+14,g.tableY+9,9,h-g.tableY-21);wall.fillRect(g.tableX+g.tableW-23,g.tableY+9,9,h-g.tableY-21);
     box(wall,g.tableX,g.tableY,g.tableW,12,6,'#c39c69','#9b754a');wall.fillStyle='#ead7af';wall.beginPath();wall.ellipse(w*.48,g.tableY-1,g.tableW*.34,6,0,0,Math.PI*2);wall.fill();wall.strokeStyle='#f2e6ca';wall.lineWidth=2;wall.stroke();
+    wall.fillStyle='#9ebdb4';wall.beginPath();wall.ellipse(w*.77,g.tableY-2,w*.09,6,0,0,Math.PI*2);wall.fill();wall.strokeStyle='#e5eee0';wall.lineWidth=2;wall.stroke();
+    wall.strokeStyle='#d9b58c';wall.lineWidth=1;wall.setLineDash([3,4]);wall.beginPath();wall.moveTo(g.tableX+8,g.tableY+8);wall.lineTo(g.tableX+g.tableW-8,g.tableY+8);wall.stroke();wall.setLineDash([]);
+    api.home().details?.paintDecor(wall,5);
     window.drawBytePassage(wall,w,h,api.roomH(),'left','#b0c0a8');
     if(!foodFrames.length)for(let bites=1;bites<=4;bites++){
       const frame=document.createElement('canvas');frame.width=frame.height=80;
@@ -65,7 +68,17 @@ window.createByteKitchen = function(api) {
     ctx.fillStyle='#d9a75b';ctx.fill('evenodd');ctx.clip('evenodd');ctx.strokeStyle='#edca87';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,r-3,0,Math.PI*2);ctx.stroke();
     ctx.fillStyle='#ac674a';ctx.beginPath();ctx.arc(0,0,r*.42,0,Math.PI*2);ctx.fill();ctx.fillStyle='#eac382';for(let i=0;i<8;i++){const a=i*Math.PI/4;ctx.beginPath();ctx.arc(Math.cos(a)*r*.65,Math.sin(a)*r*.65,1.4,0,Math.PI*2);ctx.fill()}ctx.restore();
   }
-  function drawFood(v){const size=(v.r+4)*2;ctx.drawImage(v.vegetable?vegetableFrame:foodFrames[v.bites],-size*.5,-size*.5,size,size)}
+  function drawFood(v){const size=(v.r+4)*2;let frame=v.vegetable?vegetableFrame:foodFrames[v.bites];
+    if(v.treat){const item=window.byteTreasures.find(t=>t.id===v.treat),key=v.treat+':'+v.bites;frame=treatFrames.get(key);if(!frame&&item?.image?.naturalWidth){frame=document.createElement('canvas');frame.width=frame.height=80;const p=frame.getContext('2d');p.drawImage(item.image,48,0,160,160,0,0,80,80);p.globalCompositeOperation='destination-out';for(let i=0;i<item.portions-v.bites;i++){p.beginPath();p.arc(63,23+i*15,13,0,Math.PI*2);p.fill();}treatFrames.set(key,frame);}}
+    if(frame)ctx.drawImage(frame,-size*.5,-size*.5,size,size);
+  }
+  function deliver(item){if(item.category!=='food'||!world.w)return false;const h=api.home(),g=geometry();let id;do{id='treat-'+(++state.serial)+'-'+item.id}while(h.things.some(v=>v.id===id));
+    const v={id,treat:item.id,food:true,bites:item.portions,r:18,room:5,nx:.77,ny:0,x:world.w*(.77+Math.sin(state.serial*2.4)*.045),y:g.tableY-18,vx:0,vy:0,angle:Math.sin(state.serial)*.2,spin:0,touch:0};h.things.push(v);save();
+    // A shop can remain open while Byte starts a room trip. Preserve this delivery even
+    // while normal home-position saving waits for that transition to finish.
+    if(h.travel){try{const remembered=JSON.parse(localStorage.getItem('byte-sunburn-home-v1'))||{};remembered.things=remembered.things||[];remembered.things.push({id:v.id,treat:v.treat,room:5,nx:v.x/world.w,ny:v.y/world.h,bites:v.bites});localStorage.setItem('byte-sunburn-home-v1',JSON.stringify(remembered));}catch(_){} }
+    return v;
+  }
   function supportTool(v,previousY){
     if(!v.food||v.room!==5||v.bites<=0)return;
     const g=geometry(),insideShelf=v.x>g.shelfX-v.r*.2&&v.x<g.shelfX+g.shelfW+v.r*.2;
@@ -76,7 +89,7 @@ window.createByteKitchen = function(api) {
   function carry(v){const m=v.inMouth?mouth():{x:byte.x+byte.facing*api.bodyGeometry().frameW*.34,y:byte.y-api.bodyH()*.13};v.room=api.home().room;v.x=m.x;v.y=m.y;v.vx=byte.vx;v.vy=byte.vy;v.angle=api.bodyGeometry().angle}
   function cancel(){
     const home=api.home();api.releaseFoodWeb();
-    state.refusal=state.satisfaction=0;state.opinion=null;state.opinionTime=0;
+    state.refusal=state.satisfaction=state.anticipation=state.sour=0;state.opinion=null;state.opinionTime=0;
     if(state.phase!=='idle'){if(home.activity?.kind==='food')home.activity=null;byte.targetX=byte.targetY=null;if(byte.mode==='scheming')byte.mode=earth.enabled?'air':'idle';autonomy.choice=null;autonomy.idleTime=0;state.nextTheft=state.time+7}
     state.phase='idle';state.food=null;state.elapsed=0;
   }
@@ -88,15 +101,23 @@ window.createByteKitchen = function(api) {
     state.phase='approach';state.elapsed=0;state.attempts++;home.activity={kind:'food'};autonomy.choice='food';life.curious=1.2;return true;
   }
   function bite(v,t){
-    v.bites--;state.bites++;state.chew=.4;life.reactionBlink=.18;life.curious=1.2;api.voice('pet',.3);api.tactile(.15);
-    bathroom.foodMess();const m=mouth(t);for(let i=0;i<5&&state.crumbs.length<24;i++)state.crumbs.push({room:api.home().room,x:m.x,y:m.y,vx:Math.sin(i*2.4)*60,vy:-35-i*8,life:.6+i*.08});
-    if(v.bites===0){const h=api.home();if(h.hand?.item===v){h.hand=null;life.pointer.kind='eaten'}if(h.carried===v)h.carried=null;state.meals++;cancel();state.satisfaction=2.1;state.nextTheft=state.time+35;life.curious=2;api.voice('notice',.3)}save();
+    v.bites--;state.bites++;state.lastFood=v.treat||'biscuit';state.chew=.4;life.reactionBlink=.18;life.curious=1.2;api.voice('pet',.3);api.tactile(.15);
+    const m=mouth(t),treat=window.byteTreasures.find(vv=>vv.id===v.treat),taste=treat?.taste;
+    bathroom.foodMess(taste==='fizz'?'berry':taste==='crunch'||taste==='sour'?'crumb':'jam');
+    if(taste==='sour'){state.sour=1.35;api.voice('sour',.5);}
+    if(taste==='crunch')api.voice('crunch',.55);
+    if(taste==='fizz'){for(let i=0;i<7&&state.fizz.length<18;i++)state.fizz.push({room:api.home().room,x:m.x,y:m.y,vx:Math.sin(i*2.4)*24,vy:-25-i*7,age:0,r:2+i%3});api.voice('bubble',.4);}
+    if(taste==='delight')api.voice('happy',.6);
+    for(let i=0;i<5&&state.crumbs.length<24;i++)state.crumbs.push({room:api.home().room,x:m.x,y:m.y,vx:Math.sin(i*2.4)*60,vy:-35-i*8,life:.6+i*.08,color:taste==='fizz'?'#9b80ad':taste==='jam'||taste==='delight'?'#c87585':'#c89c60'});
+    if(v.bites===0){const h=api.home();if(h.hand?.item===v){h.hand=null;life.pointer.kind='eaten'}if(h.carried===v)h.carried=null;state.meals++;const sourLeft=state.sour;cancel();state.sour=sourLeft;state.satisfaction=2.1;if(v.treat)h.things.splice(h.things.indexOf(v),1);state.nextTheft=state.time+35;life.curious=2;api.voice('notice',.3)}save();
   }
   function update(dt,t){
     state.time+=dt;state.chew=Math.max(0,state.chew-dt);
+    state.anticipation=Math.max(0,state.anticipation-dt);state.sour=Math.max(0,state.sour-dt);
     state.refusal=Math.max(0,state.refusal-dt);state.satisfaction=Math.max(0,state.satisfaction-dt);
-    if(byte.grabbed||hiding()){state.refusal=state.satisfaction=0;state.opinion=null;state.opinionTime=0;}
+    if(byte.grabbed||hiding()){state.refusal=state.satisfaction=state.anticipation=state.sour=0;state.opinion=null;state.opinionTime=0;}
     for(const c of state.crumbs){c.life-=dt;c.vy+=800*dt;c.x+=c.vx*dt;c.y+=c.vy*dt}state.crumbs=state.crumbs.filter(c=>c.life>0);
+    for(const b of state.fizz){b.age+=dt;b.x+=b.vx*dt;b.y+=b.vy*dt;}state.fizz=state.fizz.filter(b=>b.age<1.5);
     if(obby.hasLaunched)return;
     const h=api.home();
     if(state.phase!=='idle'){
@@ -124,6 +145,9 @@ window.createByteKitchen = function(api) {
       if(!v.food||v.bites<=0||v.room!==h.room)continue;
       const near=Math.hypot(v.x-m.x,v.y-m.y)<v.r+api.bodyH()*.055;
       const held=h.hand?.item===v,carried=h.carried===v;
+      if(v.treat&&held&&!byte.grabbed&&state.sour<=0&&state.refusal<=0&&Math.hypot(v.x-m.x,v.y-m.y)<api.bodyH()*.48&& !near)state.anticipation=.35;
+      if(v.treat==='carrot-curl'&&near&&!v.accepted){v.tasteContact=(v.tasteContact||0)+dt;if(v.tasteContact>.4&&v.tasteContact<1)state.refusal=.35;if(v.tasteContact<1.6){v.contact=0;continue;}v.accepted=true;}
+      else if(v.treat==='carrot-curl'&&!near)v.tasteContact=0;
       if(v.vegetable){
         v.contact=0;
         if(near&&!byte.grabbed&&!web.active&&!h.carried&&(held||state.opinion===v||v.touch>0)){
@@ -153,9 +177,10 @@ window.createByteKitchen = function(api) {
   function hiding(){return api.home().travel||obby.hasLaunched||life.phase!=='awake';}
   function foreground(){
     const h=api.home();if(obby.hasLaunched)return;
-    for(const c of state.crumbs){const x=c.x+h.offset(c.room),y=c.y+h.offsetY(c.room);ctx.fillStyle='#c89c60';ctx.beginPath();ctx.arc(x,y,1.8,0,Math.PI*2);ctx.fill()}
+    for(const c of state.crumbs){const x=c.x+h.offset(c.room),y=c.y+h.offsetY(c.room);ctx.fillStyle=c.color||'#c89c60';ctx.beginPath();ctx.arc(x,y,1.8,0,Math.PI*2);ctx.fill()}
+    for(const b of state.fizz){ctx.save();ctx.translate(h.offset(b.room),h.offsetY(b.room));ctx.globalAlpha=(1-b.age/1.5)*.8;ctx.strokeStyle='#c6a9d2';ctx.lineWidth=1.3;ctx.beginPath();ctx.arc(b.x,b.y,b.r+b.age*2,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fff2f3';ctx.fillRect(b.x-1,b.y-2,1.5,1.5);ctx.restore();}
     if(state.meals&&Math.abs(h.offset(5))<world.w){const g=geometry();ctx.save();ctx.translate(h.offset(5),h.offsetY(5));ctx.fillStyle='#ad784755';for(let i=0;i<Math.min(12,state.meals*3);i++){ctx.beginPath();ctx.arc(world.w*.43+Math.sin(i*2.4)*world.w*.16,g.tableY-2+Math.cos(i)*2,1.4,0,Math.PI*2);ctx.fill()}ctx.restore()}
   }
   window.addEventListener('pagehide',()=>{cancel();save()});document.addEventListener('visibilitychange',()=>{if(document.hidden){cancel();save()}});
-  return Object.assign(state,{geometry,mouth,resize,beginFrame,drawRoom,drawFood,supportTool,carry,cancel,opportunity,start,update,foreground,save});
+  return Object.assign(state,{dreamFood:id=>id==='broccoli'?vegetableFrame:foodFrames[4],deliver,treatFrames,geometry,mouth,resize,beginFrame,drawRoom,drawFood,supportTool,carry,cancel,opportunity,start,update,foreground,save});
 };

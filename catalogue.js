@@ -1,4 +1,4 @@
-/* Authored stocked catalogue. Cosmetic categories never own physics. */
+/* Authored stocked catalogue. Cosmetics never own physics; treats are physical portions. */
 window.byteTreasures = [
   {
     "id": "cloud-cap",
@@ -367,5 +367,65 @@ window.byteTreasures = [
     "price": 5,
     "description": "Shake a rhythm. He answers.",
     "src": "assets/cosmetics/rattle.svg"
+  },
+  {
+    "id": "jam-star",
+    "category": "food",
+    "name": "Jam star",
+    "price": 1,
+    "portions": 3,
+    "taste": "jam",
+    "description": "Sticky fingers. Happier spider.",
+    "src": "assets/cosmetics/jam-star.svg"
+  },
+  {
+    "id": "sour-moon",
+    "category": "food",
+    "name": "Sour moon",
+    "price": 1,
+    "portions": 2,
+    "taste": "sour",
+    "description": "A lemon biscuit. A decision he may regret.",
+    "src": "assets/cosmetics/sour-moon.svg"
+  },
+  {
+    "id": "fizz-berry",
+    "category": "food",
+    "name": "Fizz berry",
+    "price": 2,
+    "portions": 3,
+    "taste": "fizz",
+    "description": "Small berry. Ridiculous bubbles.",
+    "src": "assets/cosmetics/fizz-berry.svg"
+  },
+  {
+    "id": "honey-knot",
+    "category": "food",
+    "name": "Honey knot",
+    "price": 1,
+    "portions": 3,
+    "taste": "crunch",
+    "description": "A warm little crunch.",
+    "src": "assets/cosmetics/honey-knot.svg"
+  },
+  {
+    "id": "pink-cloud",
+    "category": "food",
+    "name": "Pink cloud",
+    "price": 2,
+    "portions": 3,
+    "taste": "delight",
+    "description": "One extremely important tiny cake.",
+    "src": "assets/cosmetics/pink-cloud.svg"
+  },
+  {
+    "id": "carrot-curl",
+    "category": "food",
+    "name": "Carrot curl",
+    "price": 1,
+    "portions": 2,
+    "taste": "hesitant",
+    "description": "Edible. He will need a moment.",
+    "src": "assets/cosmetics/carrot-curl.svg"
   }
 ];

@@ -4,7 +4,7 @@ window.createByteEconomy = function(api) {
   let saved;try{saved=JSON.parse(localStorage.getItem(key))}catch(_){}
   const integer=v=>Number.isSafeInteger(v)&&v>=0?v:0;
   const catalogue=window.byteTreasures;
-  const state={balance:integer(saved?.balance),owned:catalogue.filter(v=>saved?.owned?.includes(v.id)).map(v=>v.id),equipped:null,
+  const state={balance:integer(saved?.balance),owned:catalogue.filter(v=>v.category!=='food'&&saved?.owned?.includes(v.id)).map(v=>v.id),equipped:null,
     runs:integer(saved?.runs),trophies:integer(saved?.trophies),active:false,collected:0,seed:0,pickups:[],sparks:[],rng:1,lastX:0,lastY:0};
   state.gear={...saved?.gear};
   if(state.owned.includes(saved?.equipped)){state.equipped=saved.equipped;if(!state.gear.head)state.gear.head=saved.equipped;}
@@ -54,7 +54,7 @@ window.createByteEconomy = function(api) {
     for(const s of state.sparks){ctx.globalAlpha=1-s.age/.5;ctx.fillStyle='#e9fff1';ctx.fillRect(s.x-1,s.y-obby.cameraY-1,2,2);}ctx.globalAlpha=1;}
   function nameOf(frame){return frame?.src?.split('/').pop()||'idle.png';}
   function headFrame(frame,w,h){const n=nameOf(frame),side=n.startsWith('scuttle-'),low=n==='asleep.png';
-    return {x:(side?.075:.015)*w,hatY:({'asleep.png':-.245,'drowsy.png':-.365,'scheming.png':-.285,'rummaging.png':-.30,'refusal.png':-.365,'satisfied.png':-.375}[n]??-.405)*h,
+    return {x:(side?.075:.015)*w,hatY:({'asleep.png':-.245,'drowsy.png':-.365,'scheming.png':-.285,'rummaging.png':-.30,'anticipation.png':-.405,'proud.png':-.405,'sour.png':-.39,'fresh.png':-.405,'refusal.png':-.365,'satisfied.png':-.375}[n]??-.405)*h,
       eyeY:({'asleep.png':.065,'scheming.png':.075,'rummaging.png':.06,'drowsy.png':.005,'refusal.png':-.015,'satisfied.png':-.03}[n]??-.04)*h,side,low};}
   function topTexture(item,frame){if(!frame?.naturalWidth)return null;const key=item.id+nameOf(frame);if(topCache.has(key))return topCache.get(key);
     const c=document.createElement('canvas');c.width=128;c.height=158;const p=c.getContext('2d',{willReadFrequently:true});p.drawImage(frame,0,0,128,158);
@@ -72,7 +72,7 @@ window.createByteEconomy = function(api) {
         const col=accent?(item.pattern==='bee'?[48,55,45]:[230,224,190]):rgb;for(let k=0;k<3;k++)d[i+k]=Math.min(255,col[k]*light);
       }else d[i+3]=0;
     }p.putImageData(pixels,0,0);topCache.set(key,c);if(topCache.size>32)topCache.delete(topCache.keys().next().value);return c;}
-  const eyeCenters={'idle.png':[[76,124],[134,127]],'curious.png':[[80,133],[136,116]],'drowsy.png':[[80,153],[128,162]],'waking.png':[[77,140],[127,146]],'refusal.png':[[64,143],[130,154]],'expectant.png':[[72,133],[130,138]],'scheming.png':[[82,183],[138,192]],'rummaging.png':[[75,180],[125,181]],'scuttle-0.png':[[134,144],[177,142]],'scuttle-1.png':[[119,143],[161,141]],'scuttle-2.png':[[130,141],[172,138]],'scuttle-3.png':[[138,144],[178,141]]};
+  const eyeCenters={'anticipation.png':[[83,112],[141,128]],'proud.png':[[77,116],[138,129]],'idle.png':[[76,124],[134,127]],'curious.png':[[80,133],[136,116]],'drowsy.png':[[80,153],[128,162]],'waking.png':[[77,140],[127,146]],'refusal.png':[[64,143],[130,154]],'expectant.png':[[72,133],[130,138]],'scheming.png':[[82,183],[138,192]],'rummaging.png':[[75,180],[125,181]],'scuttle-0.png':[[134,144],[177,142]],'scuttle-1.png':[[119,143],[161,141]],'scuttle-2.png':[[130,141],[172,138]],'scuttle-3.png':[[138,144],[178,141]]};
   function contactTexture(item,frame){if(!frame?.naturalWidth)return null;const key=item.id+nameOf(frame);if(topCache.has(key))return topCache.get(key);
     const c=document.createElement('canvas');c.width=128;c.height=158;const p=c.getContext('2d',{willReadFrequently:true});p.drawImage(frame,0,0,128,158);const pixels=p.getImageData(0,0,128,158),rgb=item.color.match(/\w\w/g).map(v=>parseInt(v,16));
     const eyes=eyeCenters[nameOf(frame)]||[];
@@ -94,22 +94,23 @@ window.createByteEconomy = function(api) {
     const c=document.createElement('canvas');c.width=214;c.height=264;const p=c.getContext('2d');p.drawImage(frame,0,0,214,264);p.save();p.translate(107,132);drawWearables(p,214,264,frame);p.restore();
     bodyCache.set(key,c);if(bodyCache.size>16)bodyCache.delete(bodyCache.keys().next().value);return c;}
   function drawPreview(){ink.clearRect(0,0,240,250);if(!idle.complete||!idle.naturalWidth)return;ink.save();ink.translate(120,131);ink.drawImage(idle,-91,-112,182,224);
-    const gear={...state.gear},item=catalogue.find(v=>v.id===showing);if(item&&item.category!=='toy')gear[item.category]=item.id;
-    drawWearables(ink,182,224,idle,gear);ink.restore();if(item?.category==='toy'&&item.texture)ink.drawImage(item.texture,155,172,75,47);}
-  function equip(id){const item=catalogue.find(v=>v.id===id);if(!item||item.category==='toy'||!state.owned.includes(id))return false;
+    const gear={...state.gear},item=catalogue.find(v=>v.id===showing);if(item&&!['toy','food'].includes(item.category))gear[item.category]=item.id;
+    drawWearables(ink,182,224,idle,gear);ink.restore();if(['toy','food'].includes(item?.category)&&item.texture)ink.drawImage(item.texture,155,172,75,47);}
+  function equip(id){const item=catalogue.find(v=>v.id===id);if(!item||['toy','food'].includes(item.category)||!state.owned.includes(id))return false;
     if(state.gear[item.category]===id)delete state.gear[item.category];else state.gear[item.category]=id;state.equipped=state.gear.head||null;save();return true;}
-  function renderShop(){sync();title.textContent=view==='wardrobe'?'Byte’s wardrobe':'Little treasures';eyebrow.textContent=view==='wardrobe'?'BESIDE THE NOOK':'SMALL THINGS. BIG PERSONALITY.';
-    tabs.replaceChildren();const names={head:'Headwear',eyes:'Eyewear',contacts:'Eyes',top:'Clothes',accessory:'Extras',toy:'Toys'};
-    for(const [cat,label]of Object.entries(names)){if(view==='wardrobe'&&cat==='toy')continue;const b=document.createElement('button');b.type='button';b.textContent=label;b.classList.toggle('selected',cat===category);b.onclick=()=>{category=cat;renderShop()};tabs.append(b);}
+  function renderShop(){sync();title.textContent=view==='wardrobe'?'Byte’s wardrobe':'Little Treasures';eyebrow.textContent=view==='wardrobe'?'BESIDE THE NOOK':'SMALL THINGS. BIG PERSONALITY.';
+    tabs.replaceChildren();const names={head:'Headwear',eyes:'Eyewear',contacts:'Eyes',top:'Clothes',accessory:'Extras',toy:'Toys',food:'Treats'};
+    for(const [cat,label]of Object.entries(names)){if(view==='wardrobe'&&['toy','food'].includes(cat))continue;const b=document.createElement('button');b.type='button';b.textContent=label;b.classList.toggle('selected',cat===category);b.onclick=()=>{category=cat;renderShop()};tabs.append(b);}
     if(catalogue.find(v=>v.id===showing)?.category!==category)showing=state.gear[category]||catalogue.find(v=>v.category===category&&(view!=='wardrobe'||state.owned.includes(v.id)))?.id;
-    list.replaceChildren();for(const item of catalogue.filter(v=>v.category===category&&(view!=='wardrobe'||state.owned.includes(v.id)))){const owned=state.owned.includes(item.id),card=document.createElement('article');card.className='shop-item';card.dataset.item=item.id;
+    document.querySelector('#shop-caption').textContent=category==='food'?'One real portion, delivered to the kitchen saucer. No chores. Just a little moment.':view==='wardrobe'?'Yours to wear, combine, or take off.':'Keep it, make it his. The fun pays you.';
+    list.replaceChildren();for(const item of catalogue.filter(v=>v.category===category&&(view!=='wardrobe'||state.owned.includes(v.id)))){const owned=state.owned.includes(item.id),consumable=item.category==='food',card=document.createElement('article');card.className='shop-item';card.dataset.item=item.id;
       const see=document.createElement('button');see.className='item-preview';see.type='button';see.setAttribute('aria-label',`Preview ${item.name}`);const image=document.createElement('img');image.src=item.src;image.alt='';see.append(image);see.onclick=()=>{showing=item.id;renderShop()};card.classList.toggle('selected',showing===item.id);
       const title=document.createElement('h3');title.textContent=item.name;const desc=document.createElement('p');desc.textContent=item.description;
-      const action=document.createElement('button');action.className='item-action';action.type='button';action.dataset.action=view==='wardrobe'?'equip':'buy';action.disabled=view==='shop'&&(owned||state.balance<item.price);
-      action.textContent=view==='wardrobe'?(state.gear[item.category]===item.id?'Take off':'Wear it'):owned?(item.category==='toy'?'In your trunk':'In your wardrobe'):`${item.price} ◇ · Buy`;
-      action.onclick=()=>{showing=item.id;if(view==='shop'){if(state.balance<item.price||state.owned.includes(item.id))return;state.balance-=item.price;state.owned.push(item.id);status.textContent=`${item.name} is yours.`;api.home()?.possessions?.acquired(item);}
-        else{equip(item.id);status.textContent=state.gear[item.category]?'Looking good.':'A little less dressed.';}save();renderShop();};
-      const ownership=document.createElement('span');ownership.className='item-ownership';ownership.textContent=owned?'YOURS':' ';card.append(see,title,desc,ownership,action);list.append(card);}
+      const action=document.createElement('button');action.className='item-action';action.type='button';action.dataset.action=view==='wardrobe'?'equip':'buy';action.disabled=view==='shop'&&((!consumable&&owned)||state.balance<item.price);
+      action.textContent=view==='wardrobe'?(state.gear[item.category]===item.id?'Take off':'Wear it'):consumable?`${item.price} ◇ · ${api.home()?.room===5?'Serve here':'To the kitchen'}`:owned?(item.category==='toy'?'In your trunk':'In your wardrobe'):`${item.price} ◇ · Buy`;
+      action.onclick=()=>{showing=item.id;if(view==='shop'){if(state.balance<item.price||!consumable&&state.owned.includes(item.id))return;if(consumable){if(!api.home()?.deliverTreat(item))return;status.textContent=`${item.name} is on the kitchen saucer.`;}else{state.owned.push(item.id);status.textContent=`${item.name} is yours.`;api.home()?.possessions?.acquired(item);}state.balance-=item.price;}
+        else{equip(item.id);status.textContent=state.gear[item.category]?'Looking good.':'A little less dressed.';}save();renderShop();if(consumable&&api.home()?.room===5)shop.close();};
+      const ownership=document.createElement('span');ownership.className='item-ownership';ownership.textContent=consumable?'ONE REAL TREAT':owned?'YOURS':' ';card.append(see,title,desc,ownership,action);list.append(card);}
     if(!list.children.length){const p=document.createElement('p');p.className='empty-collection';p.textContent='Your next little treasure has a place here.';list.append(p);}drawPreview();}
   function openWardrobe(){view='wardrobe';category='head';renderShop();status.textContent='';shop.showModal();}
   wallet.addEventListener('click',()=>{if(obby.hasLaunched||api.home().travel)return;view='shop';renderShop();status.textContent='';shop.showModal();});

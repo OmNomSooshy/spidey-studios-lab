@@ -12,7 +12,7 @@ window.drawBytePassage = function(p, w, h, bodyH, side, neighbor) {
   p.strokeStyle = '#f5e7c078'; p.lineWidth = 1.2; p.beginPath(); p.moveTo(d - 3, g.top + 7); p.lineTo(d - 3, g.floor - 12); p.stroke();
   p.restore();
 };
-/* Sunburn home: four downstairs spaces, one loft, and physical belongings. */
+/* Sunburn home: five downstairs spaces, one loft, and physical belongings. */
 window.createByteHome = function createByteHome(api) {
   const { ctx, world, byte, life, earth, web, obby, autonomy } = api;
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -20,22 +20,24 @@ window.createByteHome = function createByteHome(api) {
   let remembered;
   try { remembered = JSON.parse(localStorage.getItem(key)); } catch (_) {}
   const home = {
-    room: Number.isInteger(remembered?.room) ? clamp(remembered.room, 0, 4) : 1,
+    room: Number.isInteger(remembered?.room) ? clamp(remembered.room, 0, 5) : 1,
     cameraX: 0, cameraY: 0, travel: null, journey: null, activity: null, hand: null, carried: null,
     slept: !!remembered?.slept, found: !!remembered?.found, stoneHome: !!remembered?.stoneHome,
-    time: 0, savedAt: 0, playCooldown: 0, restBeat: 0, visits: [false, true, false, false, false], things: [],
+    time: 0, savedAt: 0, playCooldown: 0, restBeat: 0, visits: [false, true, false, false, false, false], things: [],
   };
   const initial = [{ id: 'ball', room: 2, nx: .62, ny: .91, r: 20 }, { id: 'sponge', room: 4, nx: .115, ny: .58, r: 18 }];
+  for(let i=0;i<3;i++)initial.push({id:'biscuit-'+i,room:5,nx:.28+i*.13,ny:.34,r:16,food:true,bites:4});
   if (home.found) initial.push({ id: 'stone', room: 0, nx: .46, ny: .91, r: 15 });
   for (const seed of initial) {
     const saved = remembered?.things?.find(v => v.id === seed.id);
-    const safe = saved && Number.isInteger(saved.room) && saved.room >= 0 && saved.room <= 4 && Number.isFinite(saved.nx) && Number.isFinite(saved.ny);
-    home.things.push({ ...seed, ...(safe ? { room: saved.room, nx: clamp(saved.nx, .03, .97), ny: clamp(saved.ny, .03, .97) } : {}), x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0, touch: 0 });
+    const safe = saved && Number.isInteger(saved.room) && saved.room >= 0 && saved.room <= 5 && Number.isFinite(saved.nx) && Number.isFinite(saved.ny);
+    home.things.push({ ...seed, ...(safe ? { room: saved.room, nx: clamp(saved.nx, .03, .97), ny: clamp(saved.ny, .03, .97) } : {}),
+      ...(seed.food?{stock:!safe,bites:safe&&Number.isFinite(saved.bites)?clamp(Math.round(saved.bites),0,4):4}:{}), x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0, touch: 0 });
   }
   function save() {
     if (!world.w || home.travel) return;
     const data = { room: home.room, slept: home.slept, found: home.found, stoneHome: home.stoneHome,
-      things: home.things.map(v => ({ id: v.id, room: v.room, nx: clamp(v.x / world.w, 0, 1), ny: clamp(v.y / world.h, 0, 1) })) };
+      things: home.things.map(v => ({ id: v.id, room: v.room, nx: clamp(v.x / world.w, 0, 1), ny: clamp(v.y / world.h, 0, 1),...(v.food?{bites:v.bites}:{}) })) };
     try { localStorage.setItem(key, JSON.stringify(data)); } catch (_) {}
     home.savedAt = home.time;
   }
@@ -47,16 +49,19 @@ window.createByteHome = function createByteHome(api) {
       v.x = oldW ? v.x * world.w / oldW : v.nx * world.w;
       v.y = oldH ? v.y * world.h / oldH : Math.min(world.h - v.r - 10, v.ny * world.h);
       v.x = clamp(v.x, v.r, world.w - v.r); v.y = clamp(v.y, v.r, world.h - v.r - 10);
+      if(v.food&&v.stock){v.y=api.kitchen.geometry().shelfY-v.r;v.onShelf=true;v.stock=false}
     }
     if (interrupted && home.carried) drop();
     const p = space(home.room); home.cameraX = p.x; home.cameraY = p.y; syncUI();
   }
-  function space(room) { return { x: (room === 4 ? -1 : Math.min(room, 2)) * world.w, y: room === 3 ? -world.h : 0 }; }
+  function space(room) { return { x: (room === 4 ? -1 : room===5?3:Math.min(room, 2)) * world.w, y: room === 3 ? -world.h : 0 }; }
   function nextRoom(target) {
     if (home.room === 4) return 0;
+    if (home.room === 5) return 2;
     if (home.room === 3) return 2;
     if (target === 4) return home.room === 0 ? 4 : home.room - 1;
     if (target === 3) return home.room === 2 ? 3 : home.room + 1;
+    if (target === 5) return home.room === 2 ? 5 : home.room + 1;
     return home.room + Math.sign(target - home.room);
   }
   const stairsX = () => world.w * .64;
@@ -76,14 +81,15 @@ window.createByteHome = function createByteHome(api) {
     if (home.room === 2 && Math.abs(x - stairsX()) < 40 && y > 45 && y < world.h - 12) return 3;
     if (home.room === 3) return Math.abs(x - stairsX()) < 67 && y > world.h - 72 ? 2 : null;
     const passage = window.bytePassageBounds(world.w, world.h, api.bodyH());
-    const left = x < passage.hitWidth && home.room < 3, right = x > world.w - passage.hitWidth && (home.room < 2 || home.room === 4);
+    const left = x < passage.hitWidth && (home.room < 3||home.room===5), right = x > world.w - passage.hitWidth && (home.room < 3 || home.room === 4);
     if ((!left && !right) || y < passage.top + 24) return null;
-    if (left) return home.room === 0 ? 4 : home.room - 1;
-    if (right) return home.room === 4 ? 0 : home.room + 1;
+    if (left) return home.room === 0 ? 4 : home.room===5?2:home.room - 1;
+    if (right) return home.room === 4 ? 0 : home.room===2?5:home.room + 1;
     return null;
   }
   function cancel() {
     if (home.travel) return;
+    api.kitchen.cancel();
     const owned = home.journey || home.activity;
     home.journey = null; home.activity = null;
     if (owned) { byte.targetX = byte.targetY = null; if (byte.mode === 'scuttle') byte.mode = earth.enabled && !earth.support.active ? 'air' : 'idle'; autonomy.choice = null; autonomy.idleTime = 0; }
@@ -142,6 +148,7 @@ window.createByteHome = function createByteHome(api) {
   function drop() {
     if (!home.carried) return;
     const v = home.carried;
+    if(v.food){v.inMouth=false;v.room=home.room;v.vx=byte.vx;v.vy=byte.vy;v.spin=byte.spin;home.carried=null;return;}
     v.room = home.room; v.x = clamp(byte.x + byte.facing * api.bodyW() * .34, v.r + 8, world.w - v.r - 8);
     v.y = clamp(byte.y - api.bodyH() * .12, v.r, world.h - v.r - 10);
     v.vx = byte.vx + byte.facing * 35; v.vy = byte.vy;
@@ -155,12 +162,13 @@ window.createByteHome = function createByteHome(api) {
     home.journey = { target: next, reason: 'visit', item: null }; startTravel(next);
   }
   function beginHand(x, y, id) {
-    const hit = [...home.things].reverse().find(v => v.room === home.room && Math.hypot(x - v.x, y + (obby.hasLaunched ? obby.cameraY : 0) - v.y) < Math.max(28, v.r + 9));
+    const hit = [...home.things].reverse().find(v => (!v.food||v.bites>0)&&v.room === home.room && Math.hypot(x - v.x, y + (obby.hasLaunched ? obby.cameraY : 0) - v.y) < Math.max(28, v.r + 9));
     if (!hit) return false;
     cancel(); if (home.carried === hit) drop();
     home.hand = { item: hit, id, dx: x - hit.x, dy: y + (obby.hasLaunched ? obby.cameraY : 0) - hit.y,
       lastX: x, lastY: y, time: performance.now(), vx: 0, vy: 0, moved: performance.now() };
     hit.vx = hit.vy = 0; hit.touch = 1; life.pointer.kind = 'object';
+    if(hit.food){hit.onShelf=false;hit.inMouth=false;}
     return true;
   }
   function moveHand(x, y, id) {
@@ -193,6 +201,7 @@ window.createByteHome = function createByteHome(api) {
   function updateThings(dt) {
     const gx = earth.enabled && !obby.hasLaunched ? earth.x : 0, gy = earth.enabled && !obby.hasLaunched ? earth.y : 1650;
     for (const v of home.things) {
+      if(v.food&&v.bites<=0)continue;
       v.touch = Math.max(0, v.touch - dt);
       if (home.carried === v || home.hand?.item === v) continue;
       const sensed = api.senses.state, fresh = sensed.open && sensed.motion && performance.now() - sensed.lastMotion < 180;
@@ -211,6 +220,7 @@ window.createByteHome = function createByteHome(api) {
         v.vx *= Math.exp(-dt * 2.1); v.spin = v.vx / v.r;
       }
       api.bathroom.supportTool(v, previousY, dt);
+      api.kitchen.supportTool(v,previousY);
       if (!earth.enabled && v.room === 2 && v.y > world.h - 45 && Math.abs(v.vy) < 160) {
         const lo = world.w * .43 + v.r, hi = world.w * .82 - v.r;
         if (v.x > lo - v.r && v.x < lo && v.vx < 0) { v.x = lo; v.vx = Math.abs(v.vx) * .45; }
@@ -219,7 +229,7 @@ window.createByteHome = function createByteHome(api) {
       if (earth.enabled && (v.x <= v.r + 1 || v.x >= world.w - v.r - 1 || v.y <= v.r + 1)) {
         v.vx *= Math.exp(-dt * 2); v.vy *= Math.exp(-dt * 2);
       }
-      if (v.room === home.room && !home.travel && !byte.grabbed && life.phase === 'awake' && Math.abs(v.y - byte.y) < api.bodyH() * .45) {
+      if (!v.food&&v.room === home.room && !home.travel && !byte.grabbed && life.phase === 'awake' && Math.abs(v.y - byte.y) < api.bodyH() * .45) {
         const reach = api.bodyW() * .31 + v.r, dx = v.x - byte.x;
         if (Math.abs(dx) < reach && Math.abs(dx) > .01) {
           const side = Math.sign(dx), speed = Math.max(0, -v.vx * side);
@@ -229,7 +239,7 @@ window.createByteHome = function createByteHome(api) {
         }
       }
     }
-    if (home.carried) { const v = home.carried; v.room = home.room; v.x = byte.x + byte.facing * api.bodyW() * .34; v.y = byte.y - api.bodyH() * .13; }
+    if (home.carried) { const v = home.carried; if(v.food)api.kitchen.carry(v);else{v.room = home.room; v.x = byte.x + byte.facing * api.bodyW() * .34; v.y = byte.y - api.bodyH() * .13;} }
   }
   function update(dt) {
     home.time += dt; home.playCooldown = Math.max(0, home.playCooldown - dt); syncUI();
@@ -252,7 +262,7 @@ window.createByteHome = function createByteHome(api) {
         life.curious = 1.5;
         if (home.journey?.target === home.room) arrive(home.journey.reason);
       }
-      if (home.carried) { const v = home.carried; v.room = home.room; v.x = byte.x + byte.facing * api.bodyW() * .34; v.y = byte.y - api.bodyH() * .13; }
+      if (home.carried) { const v = home.carried; if(v.food)api.kitchen.carry(v);else{v.room = home.room; v.x = byte.x + byte.facing * api.bodyW() * .34; v.y = byte.y - api.bodyH() * .13;} }
       syncUI(); return;
     }
     if (home.journey && !byte.grabbed && !home.hand && !web.active && !obby.hasLaunched) {
@@ -278,7 +288,7 @@ window.createByteHome = function createByteHome(api) {
     if (free && stone && !home.stoneHome && home.room === stone.room && home.time > 4 && !home.activity && !earth.enabled) {
       home.activity = { kind: 'collect', elapsed: 0 };
     }
-    if (home.activity && !home.hand && !byte.grabbed && !web.active && !obby.hasLaunched && life.phase === 'awake') {
+    if (home.activity&&home.activity.kind!=='food' && !home.hand && !byte.grabbed && !web.active && !obby.hasLaunched && life.phase === 'awake') {
       const act = home.activity; act.elapsed += dt;
       const item = home.things.find(v => v.id === (act.kind === 'collect' ? 'stone' : 'ball'));
       if (!item || item.room !== home.room || act.elapsed > 12 || earth.enabled) { home.activity = null; autonomy.choice = null; home.playCooldown = 18; }
@@ -306,6 +316,7 @@ window.createByteHome = function createByteHome(api) {
       ctx.shadowBlur = 0; ctx.strokeStyle = '#f4dfb0'; ctx.lineWidth = 3; ctx.beginPath(); ctx.ellipse(0, 0, v.r * .48, v.r - 2, .5, 0, Math.PI * 2); ctx.stroke();
       ctx.fillStyle = '#8b663e77'; for (let i = 0; i < 8; i++) { ctx.beginPath(); ctx.arc(Math.sin(i * 2.4) * 12, Math.cos(i * 3.7) * 11, 1.2, 0, Math.PI * 2); ctx.fill(); }
     } else if (v.id === 'sponge') { api.bathroom.drawSponge(v);
+    } else if(v.food){ctx.shadowBlur=0;ctx.shadowColor='transparent';api.kitchen.drawFood(v);
     } else {
       ctx.fillStyle = '#7bbab9'; ctx.strokeStyle = '#487c83'; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.moveTo(-15, 0); ctx.lineTo(-9, -12); ctx.lineTo(7, -14); ctx.lineTo(16, -2); ctx.lineTo(9, 12); ctx.lineTo(-7, 14); ctx.closePath(); ctx.fill(); ctx.stroke();
@@ -316,6 +327,7 @@ window.createByteHome = function createByteHome(api) {
   }
   function drawThings() {
     for (const v of home.things) {
+      if(v.food&&v.bites<=0)continue;
       const screenX = offset(v.room);
       if (screenX >= world.w || screenX <= -world.w) continue;
       ctx.save(); ctx.translate(screenX, offsetY(v.room) - (obby.hasLaunched ? obby.cameraY : 0)); itemShape(v); ctx.restore();
@@ -327,6 +339,7 @@ window.createByteHome = function createByteHome(api) {
   }
   function drawSpace(index, t) {
     if (index === 4) { api.bathroom.drawRoom(t); return; }
+    if (index === 5) { api.kitchen.drawRoom(t); return; }
     const w = world.w, h = world.h, floor = h - 10;
     const bH = api.roomH(), bW = api.roomW();
     const palette = [['#506671', '#8a9b94', '#a8b09c'], ['#efe0ba', '#f5ecdb', '#dce4cf'], ['#b0c0a8', '#e0dbc0', '#c1bb9b'], ['#cfb58b', '#e6d6b7', '#cdbd98']][index];
@@ -342,7 +355,7 @@ window.createByteHome = function createByteHome(api) {
     ctx.strokeStyle = '#eee0b37a'; ctx.beginPath(); ctx.moveTo(0, floor - 17); ctx.lineTo(w, floor - 17); ctx.stroke();
     const top = Math.max(h * .39, floor - bH * 2.2), dh = floor - top;
     if (index < 3) window.drawBytePassage(ctx, w, h, bH, 'left', index === 0 ? '#a9c9c7' : index === 1 ? '#5d7580' : '#e6dcc3');
-    if (index < 2) window.drawBytePassage(ctx, w, h, bH, 'right', index === 0 ? '#e6dcc3' : '#9aaf9a');
+    if (index < 3) window.drawBytePassage(ctx, w, h, bH, 'right', index === 0 ? '#e6dcc3' : index===1?'#9aaf9a':'#ead1a8');
     if (index === 0) {
       const cx = w * .34, cy = api.floorY() - bH * .34;
       arch(cx - w * .25, cy - bH * 1.05, w * .5, bH * 1.4, '#263f5099', '#758a85');
@@ -394,7 +407,7 @@ window.createByteHome = function createByteHome(api) {
     }
   }
   function draw(t) {
-    for (let index = 0; index < 5; index++) {
+    for (let index = 0; index < 6; index++) {
       const ox = offset(index), oy = offsetY(index), screenY = oy - (obby.hasLaunched ? obby.cameraY : 0);
       if (ox <= -world.w || ox >= world.w || screenY > world.h * 1.35 || screenY + world.h < 0) continue;
       if (index === 3 && obby.hasLaunched) {

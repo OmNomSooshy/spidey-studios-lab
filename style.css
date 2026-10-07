@@ -70,3 +70,5 @@ body.obby-away #room-port { display:none; }
 /* Bathroom masonry is cached once; Byte, fixtures and water retain native-DPR rendering. */
 #bathroom-scenery { position:absolute; inset:0; width:100%; height:100%; z-index:0; display:none; pointer-events:none; }
 body.bathroom-here:not(.obby-away) #bathroom-scenery { display:block; }
+#kitchen-scenery { position:absolute; inset:0; width:100%; height:100%; z-index:0; display:none; pointer-events:none; }
+body.kitchen-here:not(.obby-away) #kitchen-scenery { display:block; }

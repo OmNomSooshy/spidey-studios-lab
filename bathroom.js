@@ -4,12 +4,18 @@ window.createByteBathroom = function createByteBathroom(api) {
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const key = 'byte-sunburn-care-v1';
   let saved; try { saved = JSON.parse(localStorage.getItem(key)); } catch (_) {}
-  const marks = [[-.13,-.24,.065],[-.29,-.025,.07],[.27,-.025,.06],[-.13,.19,.06],[-.29,.37,.065],[.3,.36,.07]];
+  const marks = [[-.08,-.19,.145],[-.28,.02,.12],[.27,.025,.12],[-.03,.18,.15],[-.28,.36,.12],[.29,.35,.12]];
+  function stain(i,n,kind='mud') {
+    const a=(i*1.3+n*2.399),reach=n?Math.min(.82,.3+n*.08):.13;
+    return {dx:Math.cos(a)*reach,dy:Math.sin(a)*reach,r:.23+(n%3)*.09,angle:a,shape:(i+n)%3,kind};
+  }
   const state = { fill: clamp(Number(saved?.fill)||0,0,1), source: null, draining: false, hand: null, wet: 0, washed: !!saved?.washed,
-    patches: marks.map(([x,y,r],i)=>({x,y,r,dirt:clamp(Number.isFinite(saved?.mud?.[i])?saved.mud[i]:.85,0,1),foam:0})),
+    patches: marks.map(([x,y,r],i)=>({x,y,r,dirt:clamp(Number.isFinite(saved?.mud?.[i])?saved.mud[i]:.85,0,1),foam:0,
+      stains:Array.isArray(saved?.stains?.[i])?saved.stains[i].slice(-8).filter(s=>s&&['dx','dy','r','angle','shape'].every(k=>Number.isFinite(s[k]))&&Math.abs(s.dx)<=1&&Math.abs(s.dy)<=1&&s.r>0&&s.r<1).map(s=>({...s,kind:s.kind==='jam'?'jam':'mud'})):[stain(i,0),stain(i,1)]})),
     puddle: clamp(Number(saved?.puddle)||0,0,1), particles: [], head: {x:0,y:0,vx:0,vy:0},
     time: 0, dirty: false, savedAt:0, wetAge:0, shake:0, mischief:false, splashes:0, scrubbed:0,
-    lastSponge:null, floorContact:false, expedition:false, previousRoom:1, width:0, height:0 };
+    lastSponge:null, floorContact:false, expedition:false, previousRoom:1, width:0, height:0,
+    dirtEvents:Math.max(0,Number(saved?.dirtEvents)||0),stainVersion:0 };
   const backdrop = document.createElement('canvas'); backdrop.id='bathroom-scenery';backdrop.setAttribute('aria-hidden','true');ctx.canvas.before(backdrop);
   const wall = backdrop.getContext('2d', {alpha:false});
   const here = () => api.home().room===4&&!api.home().travel&&!obby.hasLaunched;
@@ -19,7 +25,7 @@ window.createByteBathroom = function createByteBathroom(api) {
       tapX:w*.20,tapY:h*.57,dishX:w*.115,dishY:h*.61,mountX:w*.64,mountY:h*.24,pipeX:w*.65,pipeY:h*.115};
   }
   function save() {
-    try {localStorage.setItem(key,JSON.stringify({mud:state.patches.map(p=>p.dirt),washed:state.washed,fill:state.fill,puddle:state.puddle}));}catch(_){}
+    try {localStorage.setItem(key,JSON.stringify({mud:state.patches.map(p=>p.dirt),stains:state.patches.map(p=>p.stains),dirtEvents:state.dirtEvents,washed:state.washed,fill:state.fill,puddle:state.puddle}));}catch(_){}
     state.dirty=false;state.savedAt=state.time;
   }
   function rect(p,x,y,w,h,r,fill,stroke) {p.fillStyle=fill;p.beginPath();p.roundRect(x,y,w,h,r);p.fill();if(stroke){p.strokeStyle=stroke;p.stroke();}}
@@ -86,8 +92,14 @@ window.createByteBathroom = function createByteBathroom(api) {
     for(let i=0;i<n&&state.particles.length<36;i++){const a=i*2.399+state.time*2,s=(75+i%5*30)*strength;state.particles.push({room,x,y,vx:Math.cos(a)*s,vy:-70-Math.abs(Math.sin(a))*s,life:.6+i%4*.13,muddy});}
   }
   function dirtyFeet(strength=.3) {
-    for(const i of [1,3,4,5])state.patches[i].dirt=clamp(state.patches[i].dirt+strength,0,1);state.dirty=true;
+    state.dirtEvents++;
+    const regions=[3,4,5];if(state.dirtEvents>1)regions.push(1,2);if(state.dirtEvents>3)regions.push(0);
+    for(const i of regions){const p=state.patches[i];if(p.dirt<.02)p.stains=[];
+      p.dirt=clamp(p.dirt+strength,0,1);p.stains.push(stain(i,state.dirtEvents),stain(i,state.dirtEvents+3));p.stains=p.stains.slice(-8);}
+    state.stainVersion++;state.dirty=true;
   }
+  function foodMess(){const p=state.patches[3];if(p.dirt<.02)p.stains=[];
+    p.dirt=clamp(p.dirt+.14,0,1);p.stains.push({dx:.16,dy:-.83,r:.22,angle:.2,shape:2,kind:'jam'});p.stains=p.stains.slice(-8);state.stainVersion++;state.dirty=true;}
   function begin(x,y,id) {
     if(!here())return false;
     const g=geometry();
@@ -151,11 +163,21 @@ window.createByteBathroom = function createByteBathroom(api) {
   const ink=coating.getContext('2d'); let coatingKey='',coatingFrame=null,coatingAt=0;
   function paintCoat() {
     const ctx=ink,w=214,h=264;
+    ctx.save();ctx.translate(w*.5,h*.5);
     for(let i=0;i<state.patches.length;i++){const p=state.patches[i],x=p.x*w,y=p.y*h,r=p.r*h;
-      if(p.dirt>.015){ctx.save();ctx.translate(x,y);ctx.rotate(i*.9);ctx.fillStyle=`rgba(104,71,39,${p.dirt*.8})`;ctx.beginPath();ctx.ellipse(0,0,r*.8,r*.47,0,0,Math.PI*2);ctx.ellipse(r*.48,r*.15,r*.5,r*.3,.4,0,Math.PI*2);ctx.fill();ctx.fillStyle=`rgba(180,132,64,${p.dirt*.5})`;ctx.beginPath();ctx.arc(-r*.2,-r*.16,r*.21,0,Math.PI*2);ctx.fill();ctx.restore();}
-      if(p.foam>.03){ctx.fillStyle=`rgba(245,255,232,${p.foam*.92})`;ctx.strokeStyle='#daf8e2aa';ctx.lineWidth=.8;for(let j=0;j<4;j++){ctx.beginPath();ctx.arc(x+Math.sin(j*2.4)*r*.5,y+Math.cos(j*2.4)*r*.4,r*(.28+(j%2)*.1),0,Math.PI*2);ctx.fill();ctx.stroke();}}
+      if(p.dirt>.015){const count=Math.ceil(p.stains.length*Math.min(1,p.dirt*1.2));
+        for(let n=0;n<count;n++){const s=p.stains[n],sx=x+s.dx*r,sy=y+s.dy*r,sr=r*s.r;
+          ctx.save();ctx.translate(sx,sy);ctx.rotate(s.angle);ctx.fillStyle=s.kind==='jam'?`rgba(145,64,45,${p.dirt*.85})`:`rgba(99,65,35,${.16+p.dirt*.64})`;ctx.beginPath();
+          if(s.shape===0){ctx.ellipse(0,0,sr*1.8,sr*.65,0,0,Math.PI*2);ctx.ellipse(sr*.5,sr*.25,sr,sr*.5,.3,0,Math.PI*2)}
+          else if(s.shape===1){for(let k=0;k<5;k++)ctx.ellipse(Math.sin(k*2.4)*sr*.8,Math.cos(k*2.4)*sr*.8,sr*(k?.45:.85),sr*.55,k,0,Math.PI*2)}
+          else {ctx.moveTo(-sr,-sr*.25);ctx.lineTo(sr*1.4,-sr*.55);ctx.lineTo(sr*.9,sr*.8);ctx.lineTo(-sr*.6,sr*.55);ctx.closePath()}
+          ctx.fill();ctx.fillStyle=`rgba(184,128,61,${p.dirt*.55})`;ctx.beginPath();ctx.ellipse(-sr*.4,-sr*.18,sr*.6,sr*.18,0,0,Math.PI*2);ctx.fill();ctx.restore();
+        }
+      }
+      if(p.foam>.03){const foamR=Math.min(r,h*.075);ctx.fillStyle=`rgba(245,255,232,${p.foam*.92})`;ctx.strokeStyle='#daf8e2aa';ctx.lineWidth=.8;for(let j=0;j<4;j++){ctx.beginPath();ctx.arc(x+Math.sin(j*2.4)*foamR*.5,y+Math.cos(j*2.4)*foamR*.4,foamR*(.28+(j%2)*.1),0,Math.PI*2);ctx.fill();ctx.stroke();}}
     }
     if(state.wet>.05){ctx.strokeStyle=`rgba(229,255,240,${state.wet*.75})`;ctx.lineWidth=1.5;ctx.lineCap='round';ctx.beginPath();for(const [x,y]of [[-.28,-.23],[.24,-.20],[-.12,.11],[.19,.21]]){ctx.moveTo(x*w,y*h);ctx.lineTo(x*w+1,y*h+h*.035)}ctx.stroke();}
+    ctx.restore();
   }
   function floorAt(x) {
     if(!here()||earth.enabled)return Infinity;
@@ -174,7 +196,7 @@ window.createByteBathroom = function createByteBathroom(api) {
   function present(frame,t) {
     if(!frame)return frame;
     if(state.wet<.05&&state.patches.every(p=>p.dirt<=.015&&p.foam<=.03))return frame;
-    const key=state.patches.map(p=>`${Math.round(p.dirt*24)}:${Math.round(p.foam*24)}`).join(',')+`:${Math.round(state.wet*24)}`;
+    const key=state.patches.map(p=>`${Math.round(p.dirt*24)}:${Math.round(p.foam*24)}`).join(',')+`:${Math.round(state.wet*24)}:${state.stainVersion}`;
     if(frame!==coatingFrame||key!==coatingKey&&t-coatingAt>50){
       ink.clearRect(0,0,214,264);ink.drawImage(frame,0,0,214,264);
       // Bake care into this small cached sprite rather than blending a second body-sized layer every frame.
@@ -237,5 +259,5 @@ window.createByteBathroom = function createByteBathroom(api) {
     for(const p of state.particles){if(p.room!==home.room)continue;ctx.fillStyle=p.muddy?'#93744c99':`rgba(205,247,238,${Math.min(1,p.life)})`;ctx.beginPath();ctx.ellipse(p.x,p.y,2.3,p.muddy?2:3.5,0,0,Math.PI*2);ctx.fill();}
   }
   window.addEventListener('pagehide',save);document.addEventListener('visibilitychange',()=>{if(document.hidden){state.hand=null;state.source=null;save();}});
-  return Object.assign(state,{geometry,drainGeometry,save,resize,beginFrame,drawRoom,drawSponge,supportTool,begin,move,end,update,floorAt,afterPhysics,present,foreground,waterAt,point:downPoint,shakeAngle:()=>state.shake>0?Math.sin(state.time*58)*.065*state.shake/.75:0});
+  return Object.assign(state,{geometry,drainGeometry,save,resize,beginFrame,drawRoom,drawSponge,supportTool,begin,move,end,update,floorAt,afterPhysics,present,foreground,waterAt,point:downPoint,dirtyFeet,foodMess,shakeAngle:()=>state.shake>0?Math.sin(state.time*58)*.065*state.shake/.75:0});
 };

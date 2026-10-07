@@ -1,4 +1,8 @@
-# Current candidate: Sunburn IV — care becomes play
+# Current candidate: Sunburn V — kitchen / little thief
+
+This isolated branch is `experiment/sunburn-v-2026-10-07`, forked from the Human Eyes bath/passage correction `842cb55872c581fae9df345e9b411ef7045c67e3`. [Sunburn V implementation, decisions and evidence](SUNBURN-V.md) describes the kitchen, physical feeding/theft and richer washable dirt. The existing experimental hosting origin is reused so local home/care history carries forward. Earlier source branches, including Sunburn IV, remain separate.
+
+# Sunburn IV — care becomes play
 
 This isolated branch is `experiment/sunburn-iv-2026-10-07`, forked from Sunburn III performance repair `948192009bb1219a50b5b19125e51fcbc3c7d2af`. [Sunburn IV implementation and QA](SUNBURN-IV.md) describes the bathroom. The existing Sunburn candidate hosting origin is reused to retain its local player history. Canonical, Through the Glass and Sunburn III source branches remain separate.
 

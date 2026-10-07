@@ -285,7 +285,9 @@
   const outside = { soundId: 0, shadowId: 0, joltId: 0, chargeId: 0, bask: 0, powerInvite: false, stimulusAt: 0, duck: 0, wind: 0, dream: false, dozing: false, seekTime: 0, lastMove: 0, reaction: '', reactionTime: 0 };
   const bathroom = window.createByteBathroom({ ctx, world, byte, life, earth, web, obby, home: () => home,
     bodyW: () => bodyW(), bodyH: () => bodyH(), bodyGeometry, roomH: () => spriteH, floorY: () => floorY(), down: earthDown, voice, tactile });
-  const home = window.createByteHome({ ctx, world, byte, life, earth, web, obby, autonomy, bathroom,
+  const kitchen = window.createByteKitchen({ctx,world,byte,life,earth,web,obby,autonomy,bathroom,home:()=>home,
+    bodyH:()=>bodyH(),bodyGeometry,roomH:()=>spriteH,floorY:()=>floorY(),extents:bodyHalfExtents,voice,tactile,castFoodWeb,releaseFoodWeb});
+  const home = window.createByteHome({ ctx, world, byte, life, earth, web, obby, autonomy, bathroom, kitchen,
     senses: room, bodyW: () => bodyW(), bodyH: () => bodyH(), roomW: () => spriteW, roomH: () => spriteH, extents: bodyHalfExtents, floorY: () => floorY(), wakeByte, voice,
     pranking: () => !['waiting', 'released'].includes(buttonWeb.phase), down: earthDown,
     restHere: beginRestHere, obbyHere: beginObbyHere, skyOpening: crystal.opening });
@@ -512,6 +514,7 @@
       resetEarthSupport();
     }
     home.resize(oldW, oldH);
+    kitchen.resize();
     const extent = bodyHalfExtents();
     byte.x = clamp(byte.x || world.w * .4, extent.x, world.w - extent.x);
     if (!obby.hasLaunched) byte.y = clamp(byte.y || floorY(), extent.y, Math.min(floorY(), world.h - extent.y));
@@ -548,6 +551,7 @@
     const breath = Math.sin(t * (life.phase === 'sleep' || outside.dozing ? .0016 : .003)) * .007;
     squeezeX *= 1 + breath + life.pet * .025;
     squeezeY *= 1 - breath - life.pet * .035;
+    if(kitchen.chew>0){const chew=Math.sin(t*.065)*kitchen.chew; squeezeX*=1+chew*.04;squeezeY*=1-chew*.035;}
     const lean = !earth.enabled && byte.mode === 'idle' && life.gazeX !== null && life.curious > 0 ? clamp((life.gazeX - byte.x) * .00028, -.07, .07) : 0;
     squeezeX *= 1 + outside.duck * .22;
     squeezeY *= 1 - outside.duck * .32;
@@ -750,6 +754,9 @@
   }
   function solveWebTether() {
     if (!web.active) return;
+    // The same room rope may have a light, movable endpoint instead of a planted anchor.
+    const food=web.food,foodInverseMass=food?6:0;
+    if(food){web.anchorX=food.x;web.anchorY=food.y;if(web.progress<1)return;}
     let spool = spoolPosition();
     let dx = web.anchorX - spool.x, dy = web.anchorY - spool.y;
     let distance = Math.hypot(dx, dy);
@@ -758,8 +765,9 @@
     const nx = dx / distance, ny = dy / distance;
     const excess = distance - web.deployedLength;
     // Project only the rope's excess length; a slack web has no physical effect.
-    byte.x += nx * excess;
-    byte.y += ny * excess;
+    byte.x += nx * excess/(1+foodInverseMass);
+    byte.y += ny * excess/(1+foodInverseMass);
+    if(food){const previousY=food.y;food.x-=nx*excess*foodInverseMass/(1+foodInverseMass);food.y-=ny*excess*foodInverseMass/(1+foodInverseMass);kitchen.supportTool(food,previousY);web.anchorX=food.x;web.anchorY=food.y;}
     byte.x = clamp(byte.x, halfW(), world.w - halfW());
     byte.y = clamp(byte.y, halfH(), earth.enabled ? world.h - halfH() : floorY());
 
@@ -771,17 +779,24 @@
     const rx = spool.x - byte.x, ry = spool.y - byte.y;
     const pointVx = byte.vx - byte.spin * ry;
     const pointVy = byte.vy + byte.spin * rx;
-    const towardAnchor = pointVx * tx + pointVy * ty;
-    if (towardAnchor >= 0) return;
+    const towardAnchor = (pointVx-(food?.vx||0)) * tx + (pointVy-(food?.vy||0)) * ty;
+    const reel=food?(web.reel||0):0;
+    if (towardAnchor >= reel) return;
 
     // A tension impulse cancels outward velocity at the spool and adds the matching swing torque.
     const lever = rx * ty - ry * tx;
     const inverseInertia = 1 / Math.max(1, (bodyW() * bodyW() + bodyH() * bodyH()) / 12);
-    const impulse = -towardAnchor / (1 + lever * lever * inverseInertia);
+    const impulse = (reel-towardAnchor) / (1 + foodInverseMass + lever * lever * inverseInertia);
     byte.vx += tx * impulse;
     byte.vy += ty * impulse;
     byte.spin += lever * impulse * inverseInertia;
+    if(food){food.vx-=tx*impulse*foodInverseMass;food.vy-=ty*impulse*foodInverseMass;}
   }
+  function castFoodWeb(food){
+    const spool=spoolPosition();Object.assign(web,{active:true,planted:false,pointerId:null,food,progress:0,reel:0,
+      anchorX:food.x,anchorY:food.y,deployedLength:Math.hypot(food.x-spool.x,food.y-spool.y)});
+  }
+  function releaseFoodWeb(){if(!web.food)return;web.active=false;web.planted=false;web.pointerId=null;web.food=null;web.reel=0;}
   function solveObbyWeb() {
     const tether = obby.web;
     if (!obby.active || !tether.active || now() - (tether.born || 0) < 90) return;
@@ -816,18 +831,20 @@
   function drawWeb() {
     if (!web.active) return;
     const spool = spoolPosition();
-    const distance = Math.hypot(web.anchorX - spool.x, web.anchorY - spool.y);
+    const shot=web.food?web.progress:1;
+    const endX=spool.x+(web.anchorX-spool.x)*shot,endY=spool.y+(web.anchorY-spool.y)*shot;
+    const distance = Math.hypot(endX - spool.x, endY - spool.y);
     const slack = Math.max(0, web.deployedLength - distance);
     const sag = Math.min(34, slack * .32);
-    const midX = (spool.x + web.anchorX) * .5;
-    const midY = (spool.y + web.anchorY) * .5 + sag;
+    const midX = (spool.x + endX) * .5;
+    const midY = (spool.y + endY) * .5 + sag;
     ctx.save();
     ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(spool.x, spool.y); ctx.quadraticCurveTo(midX, midY, web.anchorX, web.anchorY);
+    ctx.beginPath(); ctx.moveTo(spool.x, spool.y); ctx.quadraticCurveTo(midX, midY, endX, endY);
     ctx.strokeStyle = 'rgba(54, 69, 78, .72)'; ctx.lineWidth = 4; ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(spool.x, spool.y); ctx.quadraticCurveTo(midX, midY, web.anchorX, web.anchorY);
+    ctx.beginPath(); ctx.moveTo(spool.x, spool.y); ctx.quadraticCurveTo(midX, midY, endX, endY);
     ctx.strokeStyle = '#f8fbff'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.beginPath(); ctx.arc(web.anchorX, web.anchorY, web.planted ? 8 : 4, 0, Math.PI * 2);
+    ctx.beginPath(); ctx.arc(endX, endY, web.planted ? 8 : 4, 0, Math.PI * 2);
     ctx.fillStyle = web.planted ? '#f58220' : '#fff'; ctx.fill();
     ctx.strokeStyle = 'rgba(54,69,78,.9)'; ctx.lineWidth = web.planted ? 2 : 1.5; ctx.stroke();
     if (web.planted) {
@@ -1230,6 +1247,7 @@
     autonomy.idleTime += dt;
     if (autonomy.idleTime < 7.2) return;
     autonomy.idleTime = 0;
+    if(kitchen.opportunity()){kitchen.start();return;}
     const opportunities = [];
     if (buttonWeb.phase === 'waiting' && !buttonBody.loose) opportunities.push('button');
     if (!obby.active) opportunities.push('obby');
@@ -1516,6 +1534,7 @@
   function update(dt, t) {
     if (home.travel) return;
     bathroom.update(dt, t);
+    kitchen.update(dt,t);
     const g = 1650;
     const previousY = byte.y;
     byte.idlePhase += dt * 2.1;
@@ -1632,7 +1651,8 @@
   }
 
   function draw(t) {
-    if (!obby.hasLaunched && bathroom.beginFrame()) ctx.clearRect(0, 0, world.w, world.h);
+    const bathHere=bathroom.beginFrame(),kitchenHere=kitchen.beginFrame();
+    if (!obby.hasLaunched && (bathHere||kitchenHere)) ctx.clearRect(0, 0, world.w, world.h);
     const cameraY = obby.hasLaunched ? obby.cameraY : 0;
     home.syncUI();
     if (obby.hasLaunched) {
@@ -1670,6 +1690,7 @@
     ctx.restore();
     ctx.save(); if (obby.hasLaunched) crystal.applyView(); home.drawThings(); ctx.restore();
     bathroom.foreground(t);
+    kitchen.foreground(t);
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -1687,7 +1708,7 @@
   });
   // Runtime handles are available only to an explicitly enabled local QA harness.
   if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probe')) {
-    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal, bathroom };
+    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal, bathroom, kitchen };
   }
 
   function loop(t) {

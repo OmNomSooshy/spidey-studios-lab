@@ -1,0 +1,553 @@
+{
+  "candidate": "experiment/sunburn-v-2026-10-07",
+  "base_commit": "842cb55872c581fae9df345e9b411ef7045c67e3",
+  "recorded_utc": "2026-10-07T05:28:50.304940+00:00",
+  "classification": "Implemented and runtime-reachable in local Chromium; exact final commit and publication status are reported at handoff. Physical-phone validation is pending.",
+  "checks_passed": 97,
+  "regression_checks": {
+    "touch": [
+      "gentle hold closes eyes without moving Byte",
+      "finger hold and movement retain scuttle authority",
+      "all four dragged boundaries contain and compress visible body",
+      "throw retains measured release momentum",
+      "spool web plants, remains physical, and endpoint release preserves momentum",
+      "slack player rope applies no push",
+      "Byte makes a physical sleeping web and touch wakes him",
+      "scheming pulls the gravity control down and activates Earth gravity without sensor consent",
+      "continuous Earth vector supports non-bottom scuttle and corners",
+      "first platform waits; player placement starts climb; web and fall return home"
+    ],
+    "device": [
+      "sensor consent belongs to puck, never creature touch; denial remains playable",
+      "the gravity control toggles Earth mode on, receives motion and returns to screen mode",
+      "missing hardware data times out safely; unsupported API gives readable fallback",
+      "mute persists, and audio starts only after a gesture",
+      "secondary fingers cannot take over a grab; touch cancellation plants room web",
+      "backgrounding stops simulation and releases interrupted hands while keeping planted web",
+      "portrait, landscape and desktop layouts keep visible body and puck contained",
+      "rotation preserves proportional planted rope and stationary displaced puck",
+      "a real held web redirects a missed platform into a landing, retaining useful release momentum",
+      "Earth-supported scheming and aiming preserve the same body frame"
+    ],
+    "sensing": [
+      "real camera/mic streams are acquired by the window and stopped on close",
+      "camera light centroid drives grounded travel without moving the body pivot",
+      "a moving foreground is perceived separately from uniform exposure changes",
+      "covering the camera physically retreats to a web; restored light wakes without resetting velocity",
+      "darkness on an Earth-owned side uses supported dozing, with no incompatible sleeping strand",
+      "harmonic voice earns attention; a sound attack adds real flight velocity; constant DC is ignored",
+      "sustained turbulent microphone pressure lifts the existing body; silence lets it fall",
+      "sound/breath preserve a player\u2019s planted tether and a held body retains finger authority",
+      "Byte\u2019s own sound suppression cannot recursively trigger microphone reactions",
+      "real broadband breath remains physical during Byte\u2019s own sound gate",
+      "explicit media denial offers partial retry; audio-only capture remains useful",
+      "backgrounding stops native capture tracks and never secretly reacquires them",
+      "a late media grant after cancellation stops its tracks immediately",
+      "charging event invites grounded basking and unplugging releases that response",
+      "gyroscope acceleration and linear phone motion act independently of screen gravity",
+      "camera light and voice intent travel along Earth-owned side ground, not the screen floor",
+      "charging warmth follows the hardware bottom in landscape, independent of gravity",
+      "null motion samples never claim a functioning sense or shut off camera and microphone"
+    ],
+    "home": [
+      "actual finger invitations traverse both doors with continuous camera motion and keep the aperture in its own space",
+      "a calm held Byte can be carried into a doorway without escaping ordinary outer-wall squish",
+      "a physical toy can be dragged to a passage, accompany Byte, settle elsewhere, and survive reload",
+      "autonomous rest travels to the nook, makes a physical strand, and leaves a local memory after waking",
+      "Human Fingers can invite rest by leaving Byte calmly on his actual mat",
+      "Byte autonomously approaches and kicks a physical ball in the play space",
+      "the upstairs opportunity takes Byte to the loft, waits, and requires physical platform contact",
+      "a waiting platform stays in its loft while Byte can leave, sleep elsewhere and return to it",
+      "a found upstairs stone falls back into the home and Byte carries it to his nook",
+      "the repaired prank travels back to the aperture, schemes, dislodges its control and activates Earth mode",
+      "a platform left waiting upstairs does not suppress the downstairs gravity prank",
+      "phone inertia and microphone pressure act on physical belongings as well as Byte",
+      "a charging invitation travels to its visible warmth, while voice travel leaves phone forces active",
+      "Earth support remains coherent through carrying Byte into a neighboring space",
+      "opening the real capture aperture then leaving its room keeps sensing live without moving the aperture into a HUD",
+      "grabbing Byte interrupts a carrying trip and leaves the belonging physical in the current space",
+      "a planted player strand prevents departure and survives a doorway invitation",
+      "quiet sensory attention yields to a doorway trip while physical breath still changes momentum",
+      "Earth-grounded doorway travel uses an actual opening, and a ceiling does not become a sideways corridor",
+      "backgrounding releases an interrupted object hand, and resizing during passage safely recontains Byte"
+    ],
+    "loft": [
+      "actual ladder touch enters a separate loft; visit and idle never auto-launch",
+      "downstairs gravity control and sensory aperture stay downstairs",
+      "loft persists across reload at room scale with a usable waiting platform",
+      "floor hatch returns downstairs without playing the obby",
+      "physical ball can accompany Byte upstairs without activating the obby",
+      "the same belonging comes back down the ladder",
+      "actual player placement starts automatic bouncing; camera climbs completely outside the loft",
+      "outdoor held web stays physical and release retains velocity",
+      "a missed descent returns to the loft, normal scale and its waiting spring",
+      "after returning from outdoors the ladder still leads downstairs"
+    ],
+    "crystal": [
+      "separate loft stays a normal room before actual platform contact",
+      "physical placement supplies one decisive launch with no ordinary ledges",
+      "more than a readable half-second of actual clear sky separates house and crystal, with no ledges",
+      "first crystal ledge catches the launch and preserves ordinary bounce force",
+      "arbitrary screen placement attaches to material; held anchor stays fixed in world space",
+      "release retains both linear momentum and swing spin",
+      "slack crystal rope still never pushes",
+      "near crystal features move with world/camera, independently of 12% distant-sky travel",
+      "missed route returns to room-scale loft rather than auto-bouncing on the launcher",
+      "return resets the route and permits another clean launch",
+      "a released pre-surface hold cannot leave a fake empty-sky anchor",
+      "holding through clear sky can attach when the physical surface arrives",
+      "expedition fragment is discovered above the structure, preserving the existing physical possession"
+    ],
+    "care": [
+      "bathroom is physically left of nook, independently visitable and returns through the same doorway",
+      "physical bath lever fills retained water; grabbed Byte remains free; held sponge removes local mud and provokes a physical splash",
+      "shower head turns on, follows a real finger and wets Byte without filling bath; sponge shares the same washing process",
+      "the physical plug empties the bath and a portable sponge accompanies Byte through the bathroom doorway",
+      "dry rubbing does not magically wash; wet cleaning is body-local and does not commandeer body/rope physics",
+      "wet Byte shakes off real droplets outside the bathroom; expedition return leaves contextual dirt",
+      "fixture cancellation, hidden page and resize release care ownership without erasing persistent anchors",
+      "Earth down remains continuous in the bathroom while tilted water drains; there is no competing tub ground frame",
+      "older home history upgrades in place; sponge is portable and storage refusal remains playable"
+    ],
+    "kitchen": [
+      "kitchen extends the play room; all old room coordinates and compact door geometry stay intact",
+      "food uses the room rope: slack does nothing; taut web pulls both bodies; releasing leaves both velocities intact",
+      "an existing planted player strand prevents theft and survives kitchen cancellation",
+      "Human Fingers can interrupt the scheme, grab Byte and preserve ordinary release control",
+      "five viewport presentations retain high stock, readable scheme and a physically completed autonomous meal",
+      "repeated mud events spread new smears across the body; every HQ pose retains its original alpha silhouette",
+      "Earth orientation controls physical food and mouth alignment; it does not create a competing Byte kitchen floor"
+    ]
+  },
+  "additional_layout_checks": {
+    "viewports": [
+      [
+        320,
+        568
+      ],
+      [
+        360,
+        740
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        430,
+        932
+      ],
+      [
+        844,
+        390
+      ]
+    ],
+    "kitchen": "Each completed shared-rope autonomous feeding with high shelf and readable scheme.",
+    "bath": "Cutaway real water state, stopper/drain, and compact passages/nook separation retained."
+  },
+  "normal_raf_touch_routes": {
+    "kitchen": {
+      "script": "qa/kitchen-playthrough.cjs",
+      "overrides": "Read-only instrumentation; no autonomy/body writes or manual stepping.",
+      "runs": [
+        "Android Chrome mobile emulation with capture",
+        "6x CPU/software rendering without capture"
+      ],
+      "actions": [
+        "discover connected kitchen",
+        "natural autonomy selection",
+        "scheming before visible web",
+        "physical shelf theft",
+        "eat",
+        "offer biscuit at mouth",
+        "withdraw stops eating",
+        "return resumes eating",
+        "carry another biscuit through passage",
+        "reload retains bites/meals"
+      ],
+      "final_scheming_ms": 1283.3,
+      "meals": 2,
+      "food": [
+        {
+          "id": "biscuit-0",
+          "room": 5,
+          "bites": 0
+        },
+        {
+          "id": "biscuit-1",
+          "room": 5,
+          "bites": 0
+        },
+        {
+          "id": "biscuit-2",
+          "room": 2,
+          "bites": 4
+        }
+      ],
+      "errors": [],
+      "failed_asset_requests": []
+    },
+    "dirty_play_and_care": {
+      "script": "qa/care-playthrough.cjs",
+      "options": "BYTE_QA_DIRT_PLAY=1",
+      "overrides": "Competing idle opportunities suppressed; no body, water or dirt writes.",
+      "runs": [
+        "Normal Android touch and RAF with capture",
+        "6x CPU/software rendering without capture"
+      ],
+      "actions": [
+        "six physical grab/lift/drop cycles",
+        "hard-contact dirt accumulation",
+        "enter bathroom",
+        "fill real bath",
+        "place Byte",
+        "actual wet-sponge contact",
+        "physical splash",
+        "plug drain",
+        "move shower head",
+        "return nook"
+      ],
+      "dirty_events": 12,
+      "stamps_per_region": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "remaining_dirt": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "washed": true,
+      "splashes": 1,
+      "errors": []
+    },
+    "outdoor": {
+      "script": "qa/crystal-playthrough.cjs",
+      "overrides": "Competing opportunities suppressed, random fixed, trusted virtual accelerometer. No body/phase writes or stepping.",
+      "actions": [
+        "ladder upstairs",
+        "place Byte on loft spring",
+        "continuous launch",
+        "clear sky",
+        "crystal",
+        "held physical web",
+        "release",
+        "trusted tilt",
+        "miss and return loft",
+        "ladder downstairs"
+      ],
+      "samples": [
+        {
+          "name": "loft",
+          "room": 3,
+          "phase": "waiting",
+          "age": 0,
+          "x": 249.5999999999999,
+          "y": 747.888,
+          "cam": 0,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "roof",
+          "room": 3,
+          "phase": "launch",
+          "age": 0.096,
+          "x": 116.99999407226554,
+          "y": 207.0922361975459,
+          "cam": -113.62776380245413,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "clear-sky",
+          "room": 3,
+          "phase": "launch",
+          "age": 0.6633000000000014,
+          "x": 116.99999563040157,
+          "y": -1507.3660356326468,
+          "cam": -1828.0860356326468,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "crystal",
+          "room": 3,
+          "phase": "launch",
+          "age": 1.6041000000000014,
+          "x": 116.99999821438605,
+          "y": -3180.4366615287167,
+          "cam": -3501.1566615287165,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "swing",
+          "room": 3,
+          "phase": "climb",
+          "age": 2.359500000000005,
+          "x": 117.00000028915416,
+          "y": -3500.7817174918778,
+          "cam": -3821.5017174918776,
+          "web": true,
+          "found": false
+        },
+        {
+          "name": "tilt",
+          "room": 3,
+          "phase": "climb",
+          "age": 3.309400000000002,
+          "x": 251.5175227015848,
+          "y": -3566.448453491881,
+          "cam": -4041.2703354918785,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "return",
+          "room": 3,
+          "phase": "dropping",
+          "age": 0,
+          "x": 287.5508189996476,
+          "y": 478.95011520000077,
+          "cam": 0,
+          "web": false,
+          "found": false
+        },
+        {
+          "name": "downstairs",
+          "room": 2,
+          "phase": "waiting",
+          "age": 0,
+          "x": 249.5996015892391,
+          "y": 747.888,
+          "cam": 0,
+          "web": false,
+          "found": false
+        }
+      ],
+      "trusted_motion_events": 266,
+      "errors": []
+    }
+  },
+  "richer_dirt_presentation": {
+    "grubby": 1420,
+    "filthy": 12476,
+    "regions": [
+      {
+        "dirt": 1,
+        "stamps": 8
+      },
+      {
+        "dirt": 1,
+        "stamps": 8
+      },
+      {
+        "dirt": 1,
+        "stamps": 8
+      },
+      {
+        "dirt": 1,
+        "stamps": 8
+      },
+      {
+        "dirt": 1,
+        "stamps": 8
+      },
+      {
+        "dirt": 1,
+        "stamps": 8
+      }
+    ],
+    "errors": [
+      {
+        "mode": "idle",
+        "frameIndex": 0,
+        "max": 0,
+        "leak": 0
+      },
+      {
+        "mode": "idle",
+        "frameIndex": 2,
+        "max": 0,
+        "leak": 0
+      },
+      {
+        "mode": "idle",
+        "frameIndex": 4,
+        "max": 0,
+        "leak": 0
+      },
+      {
+        "mode": "scuttle",
+        "frameIndex": 0,
+        "max": 0,
+        "leak": 0
+      },
+      {
+        "mode": "scuttle",
+        "frameIndex": 1,
+        "max": 0,
+        "leak": 0
+      },
+      {
+        "mode": "scuttle",
+        "frameIndex": 2,
+        "max": 0,
+        "leak": 0
+      },
+      {
+        "mode": "scuttle",
+        "frameIndex": 3,
+        "max": 0,
+        "leak": 0
+      },
+      {
+        "mode": "scheming",
+        "frameIndex": 0,
+        "max": 0,
+        "leak": 0
+      }
+    ]
+  },
+  "alpha_evidence_explanation": "The per-pose max/leak fields are alpha comparisons, not failures. All eight poses have zero maximum alpha difference and zero outside-silhouette pixels.",
+  "performance": {
+    "conditions": "Chromium /usr/bin/chromium,390x844,DPR2,CPU6x,GPU disabled. Isolated browser runs. Frame statistics include every recorded interval; they are not Galaxy A06 measurements and vary with host load.",
+    "kitchen_before_cache": {
+      "frames": 532,
+      "average_fps": 17.27,
+      "p95_frame_gap_ms": 100,
+      "max_frame_gap_ms": 233.2,
+      "exit_ms": 387,
+      "max_pointer_delay_ms": 357.6,
+      "max_long_task_ms": 590,
+      "errors": []
+    },
+    "kitchen_matched_after_cache": {
+      "frames": 718,
+      "average_fps": 34.81,
+      "p95_frame_gap_ms": 50.1,
+      "max_frame_gap_ms": 266.7,
+      "exit_ms": 144,
+      "max_pointer_delay_ms": 219.6,
+      "max_long_task_ms": 234,
+      "errors": []
+    },
+    "kitchen_final": {
+      "frames": 877,
+      "average_fps": 49.54,
+      "p95_frame_gap_ms": 33.4,
+      "max_frame_gap_ms": 316.7,
+      "exit_ms": 140,
+      "max_pointer_delay_ms": 483.1,
+      "max_long_task_ms": 312,
+      "errors": []
+    },
+    "care_final": {
+      "frames": 878,
+      "average_fps": 26.19,
+      "p95_frame_gap_ms": 50.1,
+      "max_frame_gap_ms": 83.3,
+      "exit_ms": 166,
+      "max_pointer_delay_ms": 413,
+      "max_long_task_ms": 212,
+      "errors": []
+    },
+    "crystal_final_live_route": {
+      "frames": 198,
+      "average_fps": 29.93,
+      "p95_frame_gap_ms": 66.7,
+      "max_frame_gap_ms": 200.0,
+      "exit_ms": 189,
+      "max_pointer_delay_ms": 277.9,
+      "max_long_task_ms": 212,
+      "errors": []
+    },
+    "crystal_six_second_benchmark": [
+      {
+        "variant": "full",
+        "rate": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 35.11085469381027,
+        "medianFrameMs": 33.19999999999982,
+        "p95FrameMs": 50.09999999999991,
+        "medianRasterMs": 6,
+        "p95RasterMs": 28.599999994039536,
+        "cache": {
+          "skyBuilds": 12,
+          "tileBuilds": 11,
+          "opticalBuilds": 23,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "errors": []
+      }
+    ],
+    "crystal_cache_regression": {
+      "result": {
+        "warm": {
+          "skyBuilds": 1,
+          "tileBuilds": 5,
+          "opticalBuilds": 1,
+          "cachedTiles": 5,
+          "bitmapBytes": 6585040
+        },
+        "staticView": {
+          "skyBuilds": 1,
+          "tileBuilds": 5,
+          "opticalBuilds": 1,
+          "cachedTiles": 5,
+          "bitmapBytes": 6585040
+        },
+        "staticGradients": 0,
+        "patterns": 0,
+        "maxBytes": 9960040,
+        "maxCached": 8,
+        "maxDomBands": 5,
+        "final": {
+          "skyBuilds": 41,
+          "tileBuilds": 29,
+          "opticalBuilds": 81,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "camera": -15000
+      },
+      "resized": {
+        "cache": {
+          "skyBuilds": 42,
+          "tileBuilds": 35,
+          "opticalBuilds": 82,
+          "cachedTiles": 6,
+          "bitmapBytes": 3496956
+        },
+        "sameBounds": true
+      },
+      "errors": []
+    },
+    "render_ablation": "Before caching, removing food drawing reduced median completed raster work15.0ms to7.6ms. Biscuit clipping/paths/shadows were a substantial cost.",
+    "fix": "Four80x80 cached bite textures,102400bytes total; repeated food paths/shadows removed. Background and coating cached.",
+    "discarded_probe": "Unsupported no-body mode did not hide Byte; its ablation measurements were discarded."
+  },
+  "protected_source_unchanged": [
+    "crystal.js",
+    "room.js",
+    "assets/"
+  ],
+  "known_limits": [
+    "Three finite biscuits/four bites each; consumed supply persists. No replenishment in this candidate.",
+    "Autonomous theft is a screen-down domestic opportunity; manual feeding and food forces respect Earth/body geometry.",
+    "Displaced food may cause retrieval failure; no teleport or room cleanup.",
+    "Real sensor acquisition, haptics/sound, sustained handset performance, first-player feeding discoverability, theft creature read and bath payoff remain Human Eyes/Fingers validation."
+  ],
+  "qa_incident": "Legacy throw check once missed its timing window under concurrent browser load; isolated rerun passed with product physics unchanged.",
+  "full_local_artifacts": "/workspace/spider-byte-sunburn-v-qa (normal/constrained traces, videos and screenshots are local QA artifacts, not production assets)"
+}

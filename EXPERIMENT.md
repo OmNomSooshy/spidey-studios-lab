@@ -1,4 +1,8 @@
-# Current candidate: Sunburn VI — the little creature has opinions
+# Current candidate: Sunburn VII — pocket money, physical memories
+
+This isolated branch is `experiment/sunburn-vii-2026-10-07`, forked from Sunburn VI `cc46742bcdda538bee4733ec061cf1a666769c4a`. [Sunburn VII implementation and evidence](SUNBURN-VII.md) covers fresh Crystal runs, gameplay earning, separate physical trophies, permanent expressive hats and precise biscuit replenishment. Canonical and earlier experimental branches remain unchanged. The existing experimental phone origin and its local home history are retained.
+
+# Sunburn VI — the little creature has opinions
 
 This isolated branch is `experiment/sunburn-vi-2026-10-07`, forked from Sunburn V `4983f65d1db839998e18d9548d52e1b043de3e16`. [Sunburn VI performances and evidence](SUNBURN-VI.md) covers authored sleep/wake, broccoli refusal, biscuit satisfaction and wet annoyance. Canonical and earlier experimental source branches remain separate. The existing experimental phone URL and its saved home are retained.
 

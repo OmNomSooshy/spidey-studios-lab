@@ -293,7 +293,8 @@
     bodyW: () => bodyW(), bodyH: () => bodyH(), bodyGeometry, roomH: () => spriteH, floorY: () => floorY(), down: earthDown, voice, tactile });
   const kitchen = window.createByteKitchen({ctx,world,byte,life,earth,web,obby,autonomy,bathroom,home:()=>home,
     bodyH:()=>bodyH(),bodyGeometry,roomH:()=>spriteH,floorY:()=>floorY(),extents:bodyHalfExtents,voice,tactile,castFoodWeb,releaseFoodWeb});
-  const home = window.createByteHome({ ctx, world, byte, life, earth, web, obby, autonomy, bathroom, kitchen,
+  const economy = window.createByteEconomy({ ctx, world, byte, obby, life, home: () => home, bodyH: () => bodyH(), bodyW: () => bodyW(), voice, tactile });
+  const home = window.createByteHome({ ctx, world, byte, life, earth, web, obby, autonomy, bathroom, kitchen, economy,
     senses: room, bodyW: () => bodyW(), bodyH: () => bodyH(), roomW: () => spriteW, roomH: () => spriteH, extents: bodyHalfExtents, floorY: () => floorY(), wakeByte, voice,
     pranking: () => !['waiting', 'released'].includes(buttonWeb.phase), down: earthDown,
     restHere: beginRestHere, obbyHere: beginObbyHere, skyOpening: crystal.opening });
@@ -502,6 +503,8 @@
       life.nest.x *= sx; life.nest.y *= sy; life.nest.length *= bodyRatio;
       if (life.phase !== 'awake') wakeByte();
       obby.crystalBase *= sy; obby.launchX *= sx;
+      for (const p of economy.pickups) { p.x *= sx; p.y *= sy; }
+      economy.lastX *= sx; economy.lastY *= sy;
       obby.cameraY *= sy; obby.highestPlatformY *= sy;
       for (const platform of obby.platforms) { platform.x *= sx; platform.w *= sx; platform.y *= sy; }
       if (obby.fallingPlatform) {
@@ -1171,6 +1174,7 @@
   }
 
   function finishObby() {
+    economy.finish();
     obby.active = false;
     obby.phase = 'room';
     obby.idleTime = 0;
@@ -1193,11 +1197,12 @@
     if (!previous) return;
     const width = Math.min(Math.max(spriteW * .68, 82), Math.max(72, world.w - 24));
     const previousCenter = previous.x + previous.w * .5;
-    const center = clamp(previousCenter + (Math.random() - .5) * world.w * .58,
+    const center = clamp(previousCenter + (economy.random() - .5) * world.w * .58,
       width * .5 + 10, world.w - width * .5 - 10);
-    const y = previous.y - spriteH * (.88 + Math.random() * .14);
+    const y = previous.y - spriteH * (.88 + economy.random() * .14);
     obby.platforms.push({ x: center - width * .5, y, w: width, h: 18, crystal: true });
     obby.highestPlatformY = y;
+    economy.platform(obby.platforms.at(-1));
   }
   function fillPlatformsAhead() {
     const targetY = obby.cameraY - world.h * 1.35;
@@ -1228,6 +1233,7 @@
     wakeByte(); voice('boing'); tactile(.8); platform.pulse = 1;
     const targetX = platform.x + platform.w * .5;
     obby.hasLaunched = true;
+    economy.begin();
     obby.phase = 'launch';
     obby.launchAge = 0; obby.seeded = false;
     byte.y = platform.y - halfH();
@@ -1321,6 +1327,7 @@
       const y = obby.crystalBase - spriteH * 1.08;
       obby.platforms.push({ x: center - width * .5, y, w: width, h: 18, crystal: true });
       obby.highestPlatformY = y;
+      economy.platform(obby.platforms.at(-1));
       fillPlatformsAhead();
     }
     if (obby.seeded && (obby.phase === 'climb' || obby.phase === 'launch')) {
@@ -1329,6 +1336,7 @@
     }
     if (obby.phase === 'fall') obby.platforms = obby.platforms.filter(platform => platform.y - obby.cameraY > -world.h * .7);
     // Holding through the launch can meet the surface as it arrives; empty sky never gets a fake anchor.
+    economy.update(dt);
     if (obby.web.pending) attachObbyWeb(obby.web.screenX, obby.web.screenY);
   }
 
@@ -1685,7 +1693,7 @@
     drawOutside(t);
     ctx.restore();
     ctx.save(); if (obby.hasLaunched) crystal.applyView(); ctx.translate(obby.hasLaunched ? 0 : home.offset(3), obby.hasLaunched ? 0 : home.offsetY(3));
-    drawPlatforms(); ctx.restore();
+    drawPlatforms(); economy.draw(t); ctx.restore();
     ctx.save(); if (obby.hasLaunched) crystal.applyView(); ctx.translate(obby.hasLaunched ? 0 : home.offset(), obby.hasLaunched ? 0 : home.offsetY());
     drawNest();
 
@@ -1697,6 +1705,7 @@
       ctx.scale(byte.facing, 1);
       ctx.scale(squeezeX, squeezeY);
       ctx.drawImage(obby.hasLaunched ? frame : bathroom.present(frame, t), -frameW / 2, -bodyH() / 2, frameW, bodyH());
+      economy.drawHat(ctx, frameW, bodyH(), frame);
       ctx.restore();
     }
     // Keep a planted endpoint above Byte's opaque artwork so its hit target stays visible.
@@ -1724,7 +1733,7 @@
   });
   // Runtime handles are available only to an explicitly enabled local QA harness.
   if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probe')) {
-    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal, bathroom, kitchen };
+    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal, bathroom, kitchen, economy };
   }
 
   function loop(t) {

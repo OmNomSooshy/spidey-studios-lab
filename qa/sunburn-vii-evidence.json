@@ -1,0 +1,998 @@
+{
+  "candidate": "experiment/sunburn-vii-2026-10-07",
+  "base_commit": "cc46742bcdda538bee4733ec061cf1a666769c4a",
+  "recorded_utc": "2026-10-07T09:32:49.001070+00:00",
+  "classification": "IMPLEMENTED AND RUNTIME-REACHABLE in normal and constrained local mobile browsers; exact push/publication supplied at handoff; physical-phone/Human Eyes acceptance pending.",
+  "contract": {
+    "fresh repeated expedition topology": "runtime observed",
+    "upward collectible earning": "runtime observed",
+    "persistent wallet": "runtime observed",
+    "physical cumulative trophies independent of spending": "runtime observed",
+    "permanent purchase distinct from equip": "runtime observed",
+    "wear/remove/reload": "runtime observed",
+    "precise exhausted-biscuit replenishment": "runtime observed"
+  },
+  "regression": {
+    "passed": 106,
+    "known_inherited_failures": 1,
+    "suites": [
+      {
+        "suite": "mobile",
+        "checks": [
+          {
+            "name": "gentle hold closes eyes without moving Byte",
+            "pass": true
+          },
+          {
+            "name": "finger hold and movement retain scuttle authority",
+            "pass": true
+          },
+          {
+            "name": "all four dragged boundaries contain and compress visible body",
+            "pass": true
+          },
+          {
+            "name": "throw retains measured release momentum",
+            "pass": true
+          },
+          {
+            "name": "spool web plants, remains physical, and endpoint release preserves momentum",
+            "pass": true
+          },
+          {
+            "name": "slack player rope applies no push",
+            "pass": true
+          },
+          {
+            "name": "Byte makes a physical sleeping web and touch wakes him",
+            "pass": true
+          },
+          {
+            "name": "scheming pulls the gravity control down and activates Earth gravity without sensor consent",
+            "pass": true
+          },
+          {
+            "name": "continuous Earth vector supports non-bottom scuttle and corners",
+            "pass": true
+          },
+          {
+            "name": "first platform waits; player placement starts climb; web and fall return home",
+            "pass": true
+          }
+        ],
+        "errors": []
+      },
+      {
+        "suite": "device",
+        "checks": [
+          {
+            "name": "sensor consent belongs to puck, never creature touch; denial remains playable",
+            "pass": true
+          },
+          {
+            "name": "the gravity control toggles Earth mode on, receives motion and returns to screen mode",
+            "pass": true
+          },
+          {
+            "name": "missing hardware data times out safely; unsupported API gives readable fallback",
+            "pass": true
+          },
+          {
+            "name": "mute persists, and audio starts only after a gesture",
+            "pass": true
+          },
+          {
+            "name": "secondary fingers cannot take over a grab; touch cancellation plants room web",
+            "pass": true
+          },
+          {
+            "name": "backgrounding stops simulation and releases interrupted hands while keeping planted web",
+            "pass": true
+          },
+          {
+            "name": "portrait, landscape and desktop layouts keep visible body and puck contained",
+            "pass": true
+          },
+          {
+            "name": "rotation preserves proportional planted rope and stationary displaced puck",
+            "pass": true
+          },
+          {
+            "name": "a real held web redirects a missed platform into a landing, retaining useful release momentum",
+            "pass": true
+          },
+          {
+            "name": "Earth-supported scheming and aiming preserve the same body frame",
+            "pass": true
+          }
+        ],
+        "errors": []
+      },
+      {
+        "suite": "room",
+        "checks": [
+          {
+            "name": "real camera/mic streams are acquired by the window and stopped on close",
+            "pass": true
+          },
+          {
+            "name": "camera light centroid drives grounded travel without moving the body pivot",
+            "pass": true
+          },
+          {
+            "name": "a moving foreground is perceived separately from uniform exposure changes",
+            "pass": true
+          },
+          {
+            "name": "covering the camera physically retreats to a web; restored light wakes without resetting velocity",
+            "pass": true
+          },
+          {
+            "name": "darkness on an Earth-owned side uses supported dozing, with no incompatible sleeping strand",
+            "pass": true
+          },
+          {
+            "name": "harmonic voice earns attention; a sound attack adds real flight velocity; constant DC is ignored",
+            "pass": true
+          },
+          {
+            "name": "sustained turbulent microphone pressure lifts the existing body; silence lets it fall",
+            "pass": true
+          },
+          {
+            "name": "sound/breath preserve a player\u2019s planted tether and a held body retains finger authority",
+            "pass": true
+          },
+          {
+            "name": "Byte\u2019s own sound suppression cannot recursively trigger microphone reactions",
+            "pass": true
+          },
+          {
+            "name": "real broadband breath remains physical during Byte\u2019s own sound gate",
+            "pass": true
+          },
+          {
+            "name": "explicit media denial offers partial retry; audio-only capture remains useful",
+            "pass": true
+          },
+          {
+            "name": "backgrounding stops native capture tracks and never secretly reacquires them",
+            "pass": true
+          },
+          {
+            "name": "a late media grant after cancellation stops its tracks immediately",
+            "pass": true
+          },
+          {
+            "name": "charging event invites grounded basking and unplugging releases that response",
+            "pass": true
+          },
+          {
+            "name": "gyroscope acceleration and linear phone motion act independently of screen gravity",
+            "pass": true
+          },
+          {
+            "name": "camera light and voice intent travel along Earth-owned side ground, not the screen floor",
+            "pass": true
+          },
+          {
+            "name": "charging warmth follows the hardware bottom in landscape, independent of gravity",
+            "pass": true
+          },
+          {
+            "name": "null motion samples never claim a functioning sense or shut off camera and microphone",
+            "pass": true
+          }
+        ],
+        "errors": []
+      },
+      {
+        "suite": "home",
+        "checks": [
+          {
+            "name": "actual finger invitations traverse both doors with continuous camera motion and keep the aperture in its own space",
+            "pass": true
+          },
+          {
+            "name": "a calm held Byte can be carried into a doorway without escaping ordinary outer-wall squish",
+            "pass": true
+          },
+          {
+            "name": "a physical toy can be dragged to a passage, accompany Byte, settle elsewhere, and survive reload",
+            "pass": true
+          },
+          {
+            "name": "autonomous rest travels to the nook, makes a physical strand, and leaves a local memory after waking",
+            "pass": true
+          },
+          {
+            "name": "Human Fingers can invite rest by leaving Byte calmly on his actual mat",
+            "pass": true
+          },
+          {
+            "name": "Byte autonomously approaches and kicks a physical ball in the play space",
+            "pass": true
+          },
+          {
+            "name": "the upstairs opportunity takes Byte to the loft, waits, and requires physical platform contact",
+            "pass": true
+          },
+          {
+            "name": "a waiting platform stays in its loft while Byte can leave, sleep elsewhere and return to it",
+            "pass": true
+          },
+          {
+            "name": "a found upstairs stone falls back into the home and Byte carries it to his nook",
+            "pass": true
+          },
+          {
+            "name": "the repaired prank travels back to the aperture, schemes, dislodges its control and activates Earth mode",
+            "pass": true
+          },
+          {
+            "name": "a platform left waiting upstairs does not suppress the downstairs gravity prank",
+            "pass": true
+          },
+          {
+            "name": "phone inertia and microphone pressure act on physical belongings as well as Byte",
+            "pass": true
+          },
+          {
+            "name": "a charging invitation travels to its visible warmth, while voice travel leaves phone forces active",
+            "pass": true
+          },
+          {
+            "name": "Earth support remains coherent through carrying Byte into a neighboring space",
+            "pass": true
+          },
+          {
+            "name": "opening the real capture aperture then leaving its room keeps sensing live without moving the aperture into a HUD",
+            "pass": true
+          },
+          {
+            "name": "grabbing Byte interrupts a carrying trip and leaves the belonging physical in the current space",
+            "pass": true
+          },
+          {
+            "name": "a planted player strand prevents departure and survives a doorway invitation",
+            "pass": true
+          },
+          {
+            "name": "quiet sensory attention yields to a doorway trip while physical breath still changes momentum",
+            "pass": true
+          },
+          {
+            "name": "Earth-grounded doorway travel uses an actual opening, and a ceiling does not become a sideways corridor",
+            "pass": true
+          },
+          {
+            "name": "backgrounding releases an interrupted object hand, and resizing during passage safely recontains Byte",
+            "pass": true
+          }
+        ],
+        "errors": []
+      },
+      {
+        "suite": "upstairs",
+        "checks": [
+          "actual ladder touch enters a separate loft; visit and idle never auto-launch",
+          "downstairs gravity control and sensory aperture stay downstairs",
+          "loft persists across reload at room scale with a usable waiting platform",
+          "floor hatch returns downstairs without playing the obby",
+          "physical ball can accompany Byte upstairs without activating the obby",
+          "the same belonging comes back down the ladder",
+          "actual player placement starts automatic bouncing; camera climbs completely outside the loft",
+          "outdoor held web stays physical and release retains velocity",
+          "a missed descent returns to the loft, normal scale and its waiting spring",
+          "after returning from outdoors the ladder still leads downstairs"
+        ],
+        "errors": []
+      },
+      {
+        "suite": "crystal",
+        "checks": [
+          "separate loft stays a normal room before actual platform contact",
+          "physical placement supplies one decisive launch with no ordinary ledges",
+          "more than a readable half-second of actual clear sky separates house and crystal, with no ledges",
+          "first crystal ledge catches the launch and preserves ordinary bounce force",
+          "arbitrary screen placement attaches to material; held anchor stays fixed in world space",
+          "release retains both linear momentum and swing spin",
+          "slack crystal rope still never pushes",
+          "near crystal features move with world/camera, independently of 12% distant-sky travel",
+          "missed route returns to room-scale loft rather than auto-bouncing on the launcher",
+          "return resets the route and permits another clean launch",
+          "a released pre-surface hold cannot leave a fake empty-sky anchor",
+          "holding through clear sky can attach when the physical surface arrives",
+          "expedition fragment is discovered above the structure, preserving the existing physical possession"
+        ],
+        "errors": []
+      },
+      {
+        "suite": "care",
+        "checks": [
+          {
+            "name": "bathroom is physically left of nook, independently visitable and returns through the same doorway",
+            "pass": true
+          },
+          {
+            "name": "physical bath lever fills retained water; grabbed Byte remains free; held sponge removes local mud and provokes a physical splash",
+            "pass": true
+          },
+          {
+            "name": "shower head turns on, follows a real finger and wets Byte without filling bath; sponge shares the same washing process",
+            "pass": true
+          },
+          {
+            "name": "the physical plug empties the bath and a portable sponge accompanies Byte through the bathroom doorway",
+            "pass": true
+          },
+          {
+            "name": "dry rubbing does not magically wash; wet cleaning is body-local and does not commandeer body/rope physics",
+            "pass": true
+          },
+          {
+            "name": "wet Byte shakes off real droplets outside the bathroom; expedition return leaves contextual dirt",
+            "pass": true
+          },
+          {
+            "name": "fixture cancellation, hidden page and resize release care ownership without erasing persistent anchors",
+            "pass": true
+          },
+          {
+            "name": "Earth down remains continuous in the bathroom while tilted water drains; there is no competing tub ground frame",
+            "pass": true
+          },
+          {
+            "name": "older home history upgrades in place; sponge is portable and storage refusal remains playable",
+            "pass": true
+          }
+        ],
+        "errors": []
+      },
+      {
+        "suite": "kitchen",
+        "checks": [
+          {
+            "name": "kitchen extends the play room; all old room coordinates and compact door geometry stay intact",
+            "pass": true
+          },
+          {
+            "name": "food uses the room rope: slack does nothing; taut web pulls both bodies; releasing leaves both velocities intact",
+            "pass": true
+          },
+          {
+            "name": "an existing planted player strand prevents theft and survives kitchen cancellation",
+            "pass": true
+          },
+          {
+            "name": "Human Fingers can interrupt the scheme, grab Byte and preserve ordinary release control",
+            "pass": true
+          },
+          {
+            "name": "five viewport presentations retain high stock, readable scheme and a physically completed autonomous meal",
+            "pass": false,
+            "error": "AssertionError [ERR_ASSERTION]: Expected \"actual\" to be reference-equal to \"expected\":\n+ actual - expected\n\n  {\n+   height: 932,\n+   width: 430\n-   height: 390,\n-   width: 844\n  }\n\n    at /workspace/spider-byte-sunburn-vii/qa/kitchen-probe.cjs:11:926\n    at async check (/workspace/spider-byte-sunburn-vii/qa/kitchen-probe.cjs:6:35)\n    at async /workspace/spider-byte-sunburn-vii/qa/kitchen-probe.cjs:11:1"
+          },
+          {
+            "name": "repeated mud events spread new smears across the body; every HQ pose retains its original alpha silhouette",
+            "pass": true
+          },
+          {
+            "name": "Earth orientation controls physical food and mouth alignment; it does not create a competing Byte kitchen floor",
+            "pass": true
+          }
+        ],
+        "errors": []
+      },
+      {
+        "suite": "acting",
+        "checks": [
+          {
+            "name": "authored presentation leaves body state, dimensions, spool point and support geometry independent of source artwork",
+            "pass": true
+          },
+          {
+            "name": "rest uses its original physical web sequence while drowsy, tucked sleep and groggy waking become distinct readable poses",
+            "pass": true
+          },
+          {
+            "name": "physical grab, scuttle, scheming, player web and expedition override acting without a performance controller taking ownership",
+            "pass": true
+          },
+          {
+            "name": "healthy food is inspected before refusal, stays attached to the offering finger and is never consumed",
+            "pass": true
+          },
+          {
+            "name": "released broccoli uses physical body-contact projection/shove, remains in the world and never becomes a meal",
+            "pass": true
+          },
+          {
+            "name": "broccoli alone never becomes a desirable theft opportunity; remaining biscuits still use contextual scheming and the room rope",
+            "pass": true
+          },
+          {
+            "name": "actual held-biscuit bites produce satisfaction after eating; a grab immediately yields the performance to Fingers",
+            "pass": true
+          },
+          {
+            "name": "wet annoyance reuses the existing physical shake event and immediately gives way to grabbed-body authority",
+            "pass": true
+          },
+          {
+            "name": "every authored pose uses the existing dirt/wet coating and retains its exact transparent silhouette",
+            "pass": true
+          },
+          {
+            "name": "new opinion and sleeping poses remain contained/readable at five mobile viewport shapes",
+            "pass": true
+          }
+        ],
+        "errors": []
+      }
+    ]
+  },
+  "new_focused_checks": {
+    "checks": [
+      {
+        "name": "currency only comes from one-time physical contact with live expedition pickups; home, sky and grabbed-body paths never award",
+        "pass": true
+      },
+      {
+        "name": "fresh routes use a new seeded generator, with bounded known platform spacing independent of cosmetic ownership",
+        "pass": true
+      },
+      {
+        "name": "aborted/reloaded earning banks wallet and converts pending trophy history exactly once while preserving VI home history",
+        "pass": true
+      },
+      {
+        "name": "purchase charges once, grants permanent ownership without equipping; equip/remove has no price or physics authority",
+        "pass": true
+      },
+      {
+        "name": "trophy fragments are real grabbable persistent belongings, not a wallet or shop counter",
+        "pass": true
+      },
+      {
+        "name": "kitchen re-entry replenishes only genuinely exhausted normal biscuits, preserves meal/broccoli state and never duplicates stock",
+        "pass": true
+      },
+      {
+        "name": "a partial biscuit anywhere in the house prevents replenishment or repositioning of every surviving portion",
+        "pass": true
+      },
+      {
+        "name": "reload in an exhausted kitchen is not a leave-and-return and cannot silently replenish biscuits",
+        "pass": true
+      },
+      {
+        "name": "cosmetics draw in all existing HQ acting/scuttle states and mirror/deform in the same body frame without changing support bounds",
+        "pass": true
+      },
+      {
+        "name": "wallet and wardrobe stay operable at five mobile viewport sizes without overflow or overlapping the sensory aperture",
+        "pass": true
+      }
+    ],
+    "errors": []
+  },
+  "normal_touch_routes": {
+    "successful_expeditions": [
+      {
+        "collected": 6,
+        "bounces": 8,
+        "seed": 1704574366,
+        "route": [
+          {
+            "x": 67.59323999999998,
+            "w": 98.81352000000003,
+            "relativeY": 0
+          },
+          {
+            "x": 137.92849241059247,
+            "w": 98.81352000000003,
+            "relativeY": -177.297572849041
+          },
+          {
+            "x": 134.56348646373462,
+            "w": 98.81352000000003,
+            "relativeY": -349.3068924863155
+          },
+          {
+            "x": 66.20664129557062,
+            "w": 98.81352000000003,
+            "relativeY": -508.7341502159038
+          },
+          {
+            "x": 141.00804358103287,
+            "w": 98.81352000000003,
+            "relativeY": -669.8881105450073
+          },
+          {
+            "x": 98.20813550136026,
+            "w": 98.81352000000003,
+            "relativeY": -835.4329134852296
+          },
+          {
+            "x": 80.98071949940149,
+            "w": 98.81352000000003,
+            "relativeY": -1017.0464060077634
+          }
+        ]
+      },
+      {
+        "collected": 5,
+        "bounces": 3,
+        "seed": 3040846208,
+        "route": [
+          {
+            "x": 67.59323999999998,
+            "w": 98.81352000000003,
+            "relativeY": 0
+          },
+          {
+            "x": 10,
+            "w": 98.81352000000003,
+            "relativeY": -168.4142592541175
+          },
+          {
+            "x": 10,
+            "w": 98.81352000000003,
+            "relativeY": -332.9674964720775
+          },
+          {
+            "x": 10,
+            "w": 98.81352000000003,
+            "relativeY": -504.25584352423357
+          },
+          {
+            "x": 57.102991160517554,
+            "w": 98.81352000000003,
+            "relativeY": -663.8741745646298
+          },
+          {
+            "x": 10,
+            "w": 98.81352000000003,
+            "relativeY": -838.6113747970799
+          },
+          {
+            "x": 10,
+            "w": 98.81352000000003,
+            "relativeY": -1006.7824483393479
+          }
+        ]
+      }
+    ],
+    "purchase": {
+      "before": 6,
+      "after": 1,
+      "owned": [
+        "cloud-cap"
+      ],
+      "equipped": null
+    },
+    "final": {
+      "x": 156,
+      "y": 747.888,
+      "vx": 0,
+      "vy": 0,
+      "half": 89.7,
+      "w": 390,
+      "room": 3,
+      "launch": false,
+      "phase": "dropping",
+      "age": 0,
+      "camera": 0,
+      "balance": 6,
+      "collected": 0,
+      "seed": 0,
+      "trophies": 2,
+      "platforms": [],
+      "pickups": [],
+      "things": [
+        {
+          "id": "trophy-1",
+          "x": 359.7460016907376,
+          "y": 821,
+          "room": 3
+        },
+        {
+          "id": "trophy-2",
+          "x": 359.74841659237103,
+          "y": 821,
+          "room": 3
+        }
+      ],
+      "equipped": null,
+      "owned": [
+        "cloud-cap"
+      ]
+    },
+    "errors": []
+  },
+  "final_cached_constrained_route": {
+    "cpu_rate": 6,
+    "software_rendering": true,
+    "successful_runs": [
+      {
+        "number": 1,
+        "seed": 4273276401,
+        "route": [
+          {
+            "x": 67.59323999999998,
+            "w": 98.81352000000003,
+            "relativeY": 0
+          },
+          {
+            "x": 85.09317825447744,
+            "w": 98.81352000000003,
+            "relativeY": -172.20129973907478
+          },
+          {
+            "x": 10,
+            "w": 98.81352000000003,
+            "relativeY": -337.05734665900445
+          },
+          {
+            "x": 10,
+            "w": 98.81352000000003,
+            "relativeY": -516.0951924003098
+          },
+          {
+            "x": 10,
+            "w": 98.81352000000003,
+            "relativeY": -690.9661498828928
+          },
+          {
+            "x": 107.39255529330111,
+            "w": 98.81352000000003,
+            "relativeY": -863.7889667211907
+          },
+          {
+            "x": 33.15012111105026,
+            "w": 98.81352000000003,
+            "relativeY": -1027.2891592834744
+          }
+        ],
+        "collected": 6,
+        "bounces": 4,
+        "trusted_sensor_events": 514,
+        "returned_room": 3,
+        "wallet": 9,
+        "trophies": 1
+      },
+      {
+        "number": 2,
+        "seed": 3201706916,
+        "route": [
+          {
+            "x": 67.59323999999998,
+            "w": 98.81352000000003,
+            "relativeY": 0
+          },
+          {
+            "x": 96.1673718963468,
+            "w": 98.81352000000003,
+            "relativeY": -178.82700188284934
+          },
+          {
+            "x": 30.433216041577758,
+            "w": 98.81352000000003,
+            "relativeY": -351.5852820624973
+          },
+          {
+            "x": 12.711210684589823,
+            "w": 98.81352000000003,
+            "relativeY": -531.2118113161273
+          },
+          {
+            "x": 10,
+            "w": 98.81352000000003,
+            "relativeY": -708.8480065734893
+          },
+          {
+            "x": 10,
+            "w": 98.81352000000003,
+            "relativeY": -887.6213252962989
+          },
+          {
+            "x": 120.57184699601493,
+            "w": 98.81352000000003,
+            "relativeY": -1050.6892285184008
+          }
+        ],
+        "collected": 5,
+        "bounces": 5,
+        "trusted_sensor_events": 236,
+        "returned_room": 3,
+        "wallet": 9,
+        "trophies": 2
+      }
+    ],
+    "misses": [
+      {
+        "collected": 3,
+        "banked": 3,
+        "seed": 1134939264
+      }
+    ],
+    "purchase_not_equip": {
+      "before": 9,
+      "after": 4,
+      "owned": [
+        "cloud-cap"
+      ],
+      "equipped": null
+    },
+    "equipped_reload": "cloud-cap",
+    "final": {
+      "x": 156,
+      "y": 747.888,
+      "vx": 0,
+      "vy": 0,
+      "half": 89.7,
+      "bodyW": 145.31400000000002,
+      "bodyH": 179.4,
+      "spool": {
+        "x": 185.580847110163,
+        "y": 783.5277932041228
+      },
+      "w": 390,
+      "room": 3,
+      "launch": false,
+      "phase": "dropping",
+      "age": 0,
+      "camera": 0,
+      "balance": 9,
+      "collected": 0,
+      "seed": 0,
+      "trophies": 2,
+      "platforms": [],
+      "pickups": [],
+      "things": [
+        {
+          "id": "trophy-1",
+          "x": 360.0438155743822,
+          "y": 821,
+          "room": 3
+        },
+        {
+          "id": "trophy-2",
+          "x": 372,
+          "y": 821,
+          "room": 3
+        }
+      ],
+      "equipped": null,
+      "owned": [
+        "cloud-cap"
+      ]
+    },
+    "errors": [],
+    "failed_assets": []
+  },
+  "ordinary_touch_pantry": {
+    "initial": {
+      "room": 5,
+      "meals": 0,
+      "food": [
+        {
+          "id": "biscuit-0",
+          "x": 109.20000000000002,
+          "y": 287.84,
+          "bites": 4,
+          "room": 5
+        },
+        {
+          "id": "biscuit-1",
+          "x": 159.9,
+          "y": 287.84,
+          "bites": 4,
+          "room": 5
+        },
+        {
+          "id": "biscuit-2",
+          "x": 210.60000000000002,
+          "y": 287.84,
+          "bites": 4,
+          "room": 5
+        },
+        {
+          "id": "biscuit-vi",
+          "x": 243.75,
+          "y": 287.84,
+          "bites": 4,
+          "room": 5
+        }
+      ],
+      "broccoli": 4,
+      "mouth": {
+        "x": 86.89007392118644,
+        "y": 758.0713582679604
+      }
+    },
+    "empty": {
+      "room": 5,
+      "meals": 4,
+      "food": [
+        {
+          "id": "biscuit-0",
+          "x": 91.25847167968752,
+          "y": 751.0341833496093,
+          "bites": 0,
+          "room": 5
+        },
+        {
+          "id": "biscuit-1",
+          "x": 91.26797332763672,
+          "y": 754.3751257324218,
+          "bites": 0,
+          "room": 5
+        },
+        {
+          "id": "biscuit-2",
+          "x": 91.27910003662112,
+          "y": 750.840762939453,
+          "bites": 0,
+          "room": 5
+        },
+        {
+          "id": "biscuit-vi",
+          "x": 91.28985595703125,
+          "y": 752.6944006347655,
+          "bites": 0,
+          "room": 5
+        }
+      ],
+      "broccoli": 4,
+      "mouth": {
+        "x": 87.63911440719649,
+        "y": 757.008258034843
+      }
+    },
+    "replenished": {
+      "room": 5,
+      "meals": 4,
+      "food": [
+        {
+          "id": "biscuit-0",
+          "x": 109.20000000000002,
+          "y": 287.84,
+          "bites": 4,
+          "room": 5
+        },
+        {
+          "id": "biscuit-1",
+          "x": 154.05,
+          "y": 287.84,
+          "bites": 4,
+          "room": 5
+        },
+        {
+          "id": "biscuit-2",
+          "x": 198.9,
+          "y": 287.84,
+          "bites": 4,
+          "room": 5
+        },
+        {
+          "id": "biscuit-vi",
+          "x": 243.75,
+          "y": 287.84,
+          "bites": 4,
+          "room": 5
+        }
+      ],
+      "broccoli": 4,
+      "mouth": {
+        "x": 91.88161832354588,
+        "y": 751.2936427211941
+      }
+    },
+    "errors": []
+  },
+  "matched_constrained_rendering": {
+    "before_caching": [
+      {
+        "name": "VI",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 31.612546804984348,
+        "p95FrameMs": 50.09999999999991,
+        "medianCompletedRasterMs": 6,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 24,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 0,
+        "errors": []
+      },
+      {
+        "name": "VII",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 24.308440259700298,
+        "p95FrameMs": 66.60000000000036,
+        "medianCompletedRasterMs": 9.099999994039536,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      }
+    ],
+    "final": [
+      {
+        "name": "VI",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 32.84072249589491,
+        "p95FrameMs": 50,
+        "medianCompletedRasterMs": 5.9000000059604645,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 0,
+        "errors": []
+      },
+      {
+        "name": "VII",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 31.76551829970076,
+        "p95FrameMs": 50,
+        "medianCompletedRasterMs": 6.300000011920929,
+        "cache": {
+          "skyBuilds": 13,
+          "tileBuilds": 12,
+          "opticalBuilds": 25,
+          "cachedTiles": 8,
+          "bitmapBytes": 9960040
+        },
+        "pickups": 10,
+        "errors": []
+      }
+    ],
+    "new_cached_bitmap_bytes": 344704,
+    "crystal_max_tiles": 8
+  },
+  "known_limits": [
+    "Physical Galaxy A06 5G and Human Eyes acceptance remain pending.",
+    "Intermittent landscape autonomous food retrieval stalled in untouched VI; portrait normal feeding and replenishment pass. Existing kitchen physics is unchanged.",
+    "Home/wallet/ownership use existing-origin browser local storage, without cross-device sync.",
+    "Simple random ledge routes and a small physical fragment shelf are first-pass content, not a long-term campaign/collection solution.",
+    "Normal and constrained playthroughs suppress competing idle opportunities only; direct-state probes are separately identified."
+  ],
+  "iterations": [
+    "Small-screen wardrobe overflow corrected.",
+    "Low crouch/acting poses received coherent cosmetic head anchors.",
+    "Pickup receipt separated from run dots.",
+    "Measured SVG/vector per-frame cost prompted once-only rasterization.",
+    "Test storage fixtures made one-time; live breathing/falling no longer treated as frozen state.",
+    "Actual controller misses and return rebounds retained; retry waits for physical settling and targets away from spool."
+  ],
+  "unchanged_protected_sources": [
+    "crystal.js",
+    "room.js",
+    "bathroom.js",
+    "kitchen.js",
+    "all 13 existing HQ PNGs"
+  ],
+  "local_artifacts": "/workspace/spider-byte-sunburn-vii-qa"
+}

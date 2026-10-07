@@ -31,11 +31,25 @@ window.createByteHome = function createByteHome(api) {
   initial.push({id:'biscuit-vi',room:5,nx:.625,ny:.34,r:16,food:true,bites:4});
   initial.push({id:'broccoli',room:5,nx:.70,ny:.90,r:18,food:true,vegetable:true,bites:4});
   if (home.found) initial.push({ id: 'stone', room: 0, nx: .46, ny: .91, r: 15 });
+  for(let i=1;i<=api.economy.trophies;i++)initial.push({id:'trophy-'+i,trophy:true,room:2,nx:.14+((i-1)%4)*.073,ny:Math.max(.12,.30-Math.floor((i-1)/4)*.06),r:13});
   for (const seed of initial) {
     const saved = remembered?.things?.find(v => v.id === seed.id);
     const safe = saved && Number.isInteger(saved.room) && saved.room >= 0 && saved.room <= 5 && Number.isFinite(saved.nx) && Number.isFinite(saved.ny);
     home.things.push({ ...seed, ...(safe ? { room: saved.room, nx: clamp(saved.nx, .03, .97), ny: clamp(saved.ny, .03, .97) } : {}),
       ...(seed.food?{stock:!safe,bites:safe&&Number.isFinite(saved.bites)?clamp(Math.round(saved.bites),0,4):4}:{}), x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0, touch: 0 });
+  }
+  function ensureTrophies() {
+    for(let i=1;i<=api.economy.trophies;i++){
+      if(home.things.some(v=>v.id==='trophy-'+i))continue;
+      home.things.push({id:'trophy-'+i,trophy:true,room:3,x:clamp(byte.x+35+((i-1)%3)*22,18,world.w-18),y:api.floorY(),vx:0,vy:0,angle:0,spin:0,touch:0,r:13});
+    }save();
+  }
+  function replenishBiscuits() {
+    const biscuits=home.things.filter(v=>v.food&&!v.vegetable);
+    if(!biscuits.length||biscuits.some(v=>v.bites>0))return false;
+    const shelf=api.kitchen.geometry();
+    biscuits.forEach((v,i)=>Object.assign(v,{room:5,x:world.w*(.28+i*.115),y:shelf.shelfY-v.r,bites:4,onShelf:true,stock:false,inMouth:false,vx:0,vy:0,angle:0,spin:0,contact:0}));
+    save();return true;
   }
   function save() {
     if (!world.w || home.travel) return;
@@ -224,6 +238,11 @@ window.createByteHome = function createByteHome(api) {
       }
       api.bathroom.supportTool(v, previousY, dt);
       api.kitchen.supportTool(v,previousY);
+      if(v.trophy&&v.room===2&&!earth.enabled&&v.vy>=0&&v.x>world.w*.065+v.r*.5&&v.x<world.w*.43-v.r*.5){
+        for(let row=0;row<Math.min(3,Math.ceil(api.economy.trophies/4));row++){const top=world.h*(.33-row*.06);
+          if(previousY+v.r<=top+2&&v.y+v.r>=top){v.y=top-v.r;v.vy=0;v.vx*=.96;v.spin*=.95;break;}
+        }
+      }
       if (!earth.enabled && v.room === 2 && v.y > world.h - 45 && Math.abs(v.vy) < 160) {
         const lo = world.w * .43 + v.r, hi = world.w * .82 - v.r;
         if (v.x > lo - v.r && v.x < lo && v.vx < 0) { v.x = lo; v.vx = Math.abs(v.vx) * .45; }
@@ -261,7 +280,9 @@ window.createByteHome = function createByteHome(api) {
       byte.frameClock += dt; if (byte.frameClock > .095) { byte.frameClock = 0; byte.frame = (byte.frame + 1) % 4; }
       if (p >= 1) {
         home.room = tr.to; home.cameraX = to.x; home.cameraY = to.y; byte.x = tr.toX - to.x; byte.y = tr.toY - to.y;
-        home.travel = null; home.visits[home.room] = true; byte.mode = earth.enabled || Math.hypot(byte.vx, byte.vy) > 80 ? 'air' : 'idle';
+        home.travel = null; home.visits[home.room] = true;
+        if(tr.to===5&&tr.from!==5)replenishBiscuits();
+        byte.mode = earth.enabled || Math.hypot(byte.vx, byte.vy) > 80 ? 'air' : 'idle';
         life.curious = 1.5;
         if (home.journey?.target === home.room) arrive(home.journey.reason);
       }
@@ -375,6 +396,11 @@ window.createByteHome = function createByteHome(api) {
       ctx.fillStyle = '#9eab8938'; ctx.beginPath(); ctx.ellipse(w * .51, floor - 22, w * .23, 9, 0, 0, Math.PI * 2); ctx.fill();
     } else if (index === 2) {
       const hatch = stairsX();
+      // A small fragment shelf shares the playroom with the ladder; trophies remain loose belongings.
+      if(api.economy.trophies){for(let row=0;row<Math.min(3,Math.ceil(api.economy.trophies/4));row++){
+        const sy=h*(.33-row*.06);ctx.fillStyle='#816a4b';ctx.fillRect(w*.055,sy,w*.385,9);
+        ctx.fillStyle='#d2ba8c';ctx.fillRect(w*.055,sy,w*.385,3);ctx.fillStyle='#674f3944';ctx.fillRect(w*.08,sy+9,w*.025,14);ctx.fillRect(w*.385,sy+9,w*.025,14);
+      }}
       ctx.fillStyle = '#a18b68'; ctx.fillRect(0, 0, w, 25);
       ctx.fillStyle = '#4e6254'; ctx.fillRect(hatch - 82, 0, 164, 43);
       ctx.strokeStyle = '#8b7853'; ctx.lineWidth = 7; ctx.strokeRect(hatch - 84, -8, 168, 51);
@@ -453,7 +479,7 @@ window.createByteHome = function createByteHome(api) {
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) { if (home.hand) endHand(home.hand.id, true); save(); } });
   window.addEventListener('pagehide', save);
-  return Object.assign(home, { resize, space, offset, offsetY, stairsX, syncUI, portal, request, cancel, update, draw, drawThings, beginHand, moveHand, endHand, afterByteRelease, save, drop,
+  return Object.assign(home, { resize, space, offset, offsetY, stairsX, syncUI, portal, request, cancel, update, draw, drawThings, beginHand, moveHand, endHand, afterByteRelease, save, drop, ensureTrophies,
     rest() { if (home.room === 0) api.restHere(); else request(0, 'rest'); },
     obby() { if (home.room === 3) api.obbyHere(); else request(3, 'obby'); },
   });

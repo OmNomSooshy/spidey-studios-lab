@@ -45,7 +45,7 @@ fs.mkdirSync(out, { recursive: true });
       for (let i = 0; i < 14 && q.life.phase !== 'sleep'; i++) step(1);
       if (q.life.phase !== 'sleep') throw Error('missed rest ' + JSON.stringify({round,phase:q.life.phase,room:q.home.room,trip:q.home.journey,travel:q.home.travel,activity:q.home.activity,obby:q.obby,nest:q.life.nest,things:q.home.things,body:q.byte})); q.wakeByte();
       q.autonomy.choice = 'qa'; q.home.request(3, 'obby'); step(9);
-      q.obby.hasLaunched = true; q.obby.phase = 'fall'; q.obby.platforms = []; q.byte.mode = 'air'; q.byte.y = -q.world.h * 1.4; q.byte.vy = 550;
+      q.obby.hasLaunched = true; q.obby.seeded = true; q.obby.crystalBase = 0; q.obby.phase = 'fall'; q.obby.platforms = []; q.byte.mode = 'air'; q.byte.y = -q.world.h * 1.4; q.byte.vy = 550;
       step(12);
       q.finishObby(); q.wakeByte(); q.home.cancel(); q.home.travel = null;
     }

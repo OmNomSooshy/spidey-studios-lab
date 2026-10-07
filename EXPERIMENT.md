@@ -6,7 +6,7 @@ This is a noncanonical candidate on `experiment/sunburn-iii-2026-10-06`, forked 
 
 A home becomes meaningful when the creature goes somewhere for a reason, and when what happened there remains after he leaves. Three neighboring downstairs spaces, one upstairs loft, two movable belongings, one preferred sleeping place, and the existing world above are enough to test that now.
 
-The quiet nook is left of the aperture hall. The play space is to the right. Its full-height ladder connects to a separate loft directly above it. The obby begins in that upstairs room and continues outside through the roof. There is no room picker, travel menu, care panel, score, currency, or tutorial sequence.
+The quiet nook is left of the aperture hall. The play space is to the right. Its full-height ladder connects to a separate loft directly above it. Its spring launches Byte out through the roof; ordinary obby bouncing begins later on the outdoor crystal. There is no room picker, travel menu, care panel, score, currency, or tutorial sequence.
 
 ## What Human Fingers can discover
 
@@ -14,8 +14,8 @@ The quiet nook is left of the aperture hall. The play space is to the right. Its
 - Leave him calmly on the nook's mat. After a readable quiet opportunity he makes the existing physical sleeping strand, hangs, settles, and sleeps. Picking him up or the existing environmental stimuli can wake him. This is a bodily rest activity, not an energy refill button.
 - Grab, roll, throw, or move the cork ball. Drag it to a doorway and release; Byte takes it through the opening and puts it down in the next space. It can be brought to the nook or hall rather than being a play-room icon.
 - Touch the ladder in the play space, or carry Byte into it and release, to go upstairs. The camera follows his climb into a separate full-size loft. Bring a ball up, use the normal room web, or return downstairs through the floor hatch without starting the obby.
-- A spring platform descends on entering the loft and waits for real contact. Entering the room never auto-launches Byte. Place him onto it to bounce through the roof into open sky and the existing tilt/web climb. A missed descent returns him to the loft at normal room scale; the floor hatch then leads downstairs. The spring is available again without waiting for a random autonomous opportunity.
-- Find one blue stone sufficiently far above the roof. It has a real falling body and can return downstairs. Byte can pick it up, carry it through the hall, and leave it in his nook. Human Fingers can subsequently move it elsewhere.
+- A spring platform descends on entering the loft and waits for real contact. Entering the room never auto-launches Byte. Place him onto it for a decisive launch through the roof, an empty-sky beat, then the outdoor crystalline tilt/web climb. A missed descent returns him to the loft at normal room scale; the floor hatch then leads downstairs. The spring is available again without waiting for a random autonomous opportunity.
+- Find one blue stone sufficiently far up the crystal. It has a real falling body and can return downstairs. Byte can pick it up, carry it through the hall, and leave it in his nook. Human Fingers can subsequently move it elsewhere.
 - Return after a reload to the last occupied space and the belongings' last saved locations. A faint silk trace remains once Byte has slept in his nook. There is no absence punishment or simulated neglect.
 
 ## What Byte does independently
@@ -36,7 +36,7 @@ The sensing aperture is in the central hall. Its camera light patch is local the
 
 Camera/microphone/motion acquisition, permission handling, signal processing and background shutdown are inherited. No new sensor APIs or recording systems were added. Phone inertia and breath pressure also affect the loose belongings. Sensing can remain open while Byte is elsewhere or upstairs, but the aperture itself stays downstairs rather than following as HUD. The existing global mute utility remains available.
 
-The loft contains the platform arrival. Its floor hatch connects to the downstairs ladder; its roof opening connects to the outdoor obby. The loft walls and roof scroll below Byte on ascent and come back into view during descent. Open sky and clouds distinguish the outside from the interior. Existing platform support, automatic bounce, tilt steering, held screen-point rope and momentum-preserving release remain authoritative. The outdoor obby continues using the candidate's existing screen-relative climbing grammar. Earth-owned boundary ground inside the house is still continuous and never snapped to four directions.
+The loft contains the spring arrival. Its floor hatch connects to the downstairs ladder; its roof opening connects to the outdoors. A pitched roof and brief camera pullback make the house recede continuously before an empty-sky interval. Only afterward does the world-fixed crystal enter view with its mounted platforms. Existing platform support, ordinary automatic bounce, tilt steering, held screen-point rope and momentum-preserving release remain authoritative. The outdoor obby continues using the candidate's existing screen-relative climbing grammar. Earth-owned boundary ground inside the house is still continuous and never snapped to four directions. See [Crystal Sky pass](CRYSTAL-SKY.md) for implementation, QA evidence and remaining phone judgments.
 
 Room and obby body scales, HQ assets, spool origin, deployed player-rope length, grab/flick, deformation and collision forces retain their existing authority. The place uses a fixed room reference for furniture presentation, so shrinking traversal Byte does not shrink his home. Two narrow containment corrections account for impact deformation and late acting/scale changes before presentation; they do not reduce angular velocity, lock orientation, or change restitution.
 
@@ -97,6 +97,9 @@ node qa/sensor-stress-probe.cjs
 node qa/endurance-probe.cjs
 node qa/place-endurance.cjs
 node qa/place-playthrough.cjs
+node qa/crystal-probe.cjs
+node qa/crystal-playthrough.cjs
+node qa/crystal-layout.cjs
 ```
 
 Run suites sequentially for stable touch timing. Raw fixtures, videos, screenshots and logs are kept outside the checkout and deployment.

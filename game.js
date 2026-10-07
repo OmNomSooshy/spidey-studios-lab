@@ -18,8 +18,8 @@
   const obby = {
     active: false, phase: 'room', idleTime: 0, cameraY: 0,
     platforms: [], fallingPlatform: null, highestPlatformY: 0,
-    fallingTime: 0, hasLaunched: false, scale: .7,
-    web: { active: false, pointerId: null, anchorX: 0, anchorY: 0, length: 0 },
+    fallingTime: 0, hasLaunched: false, scale: .7, launchAge: 0, seeded: false, returning: false, crystalBase: 0, launchX: 0,
+    web: { active: false, pending: false, pointerId: null, anchorX: 0, anchorY: 0, screenX: 0, screenY: 0, length: 0 },
   };
   function loadFrames(prefix, count) {
     return Promise.all(Array.from({ length: count }, (_, i) => new Promise((resolve) => {
@@ -39,6 +39,7 @@
   }
 
   const world = { w: 0, h: 0, dpr: 1 };
+  const crystal = window.createCrystalSky({ ctx, world, obby });
   let spriteW = 180, spriteH = 222;
   const byte = {
     x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0,
@@ -177,6 +178,8 @@
   }
   function updateLife(dt) {
     const upstairsHere = obby.hasLaunched;
+    if (obby.returning && !upstairsHere && byte.mode === 'idle' && Math.hypot(byte.vx, byte.vy) < 50 &&
+        (earth.enabled ? earth.support.active : Math.abs(byte.y - floorY()) < 8)) obby.returning = false;
     life.scale += ((obby.hasLaunched ? obby.scale : 1) - life.scale) * (1 - Math.exp(-dt * 7));
     life.elapsed += dt;
     if (life.pendingFollow && byte.targetX !== null && !web.active && !upstairsHere && !byte.grabbed && (earth.enabled ? earth.support.active : byte.mode === 'idle' && byte.y >= floorY() - 8)) byte.mode = 'scuttle';
@@ -249,40 +252,8 @@
   function drawHabitat(t) {
     const w = world.w, h = world.h;
     const camera = obby.hasLaunched ? obby.cameraY : 0;
-    const altitude = clamp(-camera / (h * 3), 0, 1);
-    const mix = (a, b, v) => `rgb(${a.map((x, i) => Math.round(x + (b[i] - x) * v)).join(',')})`;
-    const sky = ctx.createLinearGradient(0, 0, 0, h);
     const darkness = room.state.open && room.state.camera && room.state.lastFrame > 0 ? clamp((.2 - room.state.brightness) / .2, 0, 1) : 0;
-    const dim = (day, night) => day.map((v, i) => v + (night[i] - v) * darkness);
-    sky.addColorStop(0, mix(dim([147,184,199], [38,53,59]), [63,109,143], altitude));
-    sky.addColorStop(.55, mix(dim([178,207,212], [49,65,67]), [130,169,187], altitude));
-    sky.addColorStop(1, mix(dim([203,222,220], [67,83,77]), [195,217,216], altitude));
-    ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
-    // The loft's roof recedes below; these clouds belong to the open air beyond it.
-    ctx.fillStyle = `rgba(247,246,227,${.4 * (1 - darkness) + .05})`;
-    for (let i = 0; i < 4; i++) {
-      const x = (i % 2 ? .82 : .15) * w + Math.sin(t * .00004 + i) * 16;
-      const y = ((i * h * .42 + camera * .2) % (h * 1.6) + h * 1.6) % (h * 1.6) - h * .3;
-      ctx.beginPath(); ctx.ellipse(x, y, w * .21, 15, 0, 0, Math.PI * 2); ctx.ellipse(x - 16, y - 8, w * .11, 19, 0, 0, Math.PI * 2); ctx.fill();
-    }
-    const roofY = -camera;
-    ctx.fillStyle = '#92774e'; ctx.fillRect(0, roofY - 14, 12, 14); ctx.fillRect(w * .56 + 16, roofY - 14, w * .44, 14);
-    const target = !obby.hasLaunched ? buttonTargetInCanvas() : { x: w * .72, y: -60 };
-    const glow = ctx.createRadialGradient(target.x, target.y, 0, target.x, target.y, w * 1.25);
-    glow.addColorStop(0, altitude > .5 ? '#ffe8ad25' : '#fff0bf70'); glow.addColorStop(1, '#fff0bf00');
-    ctx.fillStyle = glow; ctx.fillRect(0, 0, w, h);
-    for (const mote of life.motes) {
-      const x = mote.x * w + Math.sin(t * .00015 + mote.phase) * 12;
-      const y = (mote.y * h + t * .0025 + Math.sin(mote.phase) * camera * .05) % h;
-      ctx.fillStyle = altitude > .4 ? '#fff0cb45' : '#ae997327';
-      ctx.beginPath(); ctx.arc(x, y, 1 + (Math.sin(mote.phase) + 1) * .4, 0, Math.PI * 2); ctx.fill();
-    }
-    const floor = floorY() - camera + bodyH() * .48;
-    if (!earth.enabled && floor < h + 20 && floor > -20) {
-      ctx.fillStyle = '#a8b5a025'; ctx.fillRect(0, floor, w, h - floor);
-      ctx.strokeStyle = '#7f947d30'; ctx.lineWidth = 1;
-      ctx.beginPath(); ctx.moveTo(12, floor); ctx.lineTo(w - 12, floor); ctx.stroke();
-    }
+    crystal.drawSky(t, darkness);
     // A shadow follows the physically supporting edge instead of asserting a second floor.
     if (!obby.hasLaunched) {
       let x = byte.x, y = floorY() + bodyH() * .47, angle = 0;
@@ -315,7 +286,7 @@
   const home = window.createByteHome({ ctx, world, byte, life, earth, web, obby, autonomy,
     senses: room, bodyW: () => bodyW(), bodyH: () => bodyH(), roomW: () => spriteW, roomH: () => spriteH, extents: bodyHalfExtents, floorY: () => floorY(), wakeByte, voice,
     pranking: () => !['waiting', 'released'].includes(buttonWeb.phase), down: earthDown,
-    restHere: beginRestHere, obbyHere: beginObbyHere });
+    restHere: beginRestHere, obbyHere: beginObbyHere, skyOpening: crystal.opening });
   function openRoom(kind = 'both') {
     if (room.state.open || room.state.pending) {
       room.close(); stopMotionIfUnused();
@@ -520,13 +491,14 @@
       web.deployedLength *= bodyRatio; web.maxLength *= bodyRatio;
       life.nest.x *= sx; life.nest.y *= sy; life.nest.length *= bodyRatio;
       if (life.phase !== 'awake') wakeByte();
+      obby.crystalBase *= sy; obby.launchX *= sx;
       obby.cameraY *= sy; obby.highestPlatformY *= sy;
       for (const platform of obby.platforms) { platform.x *= sx; platform.w *= sx; platform.y *= sy; }
       if (obby.fallingPlatform) {
         obby.fallingPlatform.x *= sx; obby.fallingPlatform.w *= sx;
         obby.fallingPlatform.y *= sy; obby.fallingPlatform.targetY *= sy;
       }
-      if (obby.web.active) { obby.web.active = false; obby.web.pointerId = null; }
+      if (obby.web.active || obby.web.pending) { obby.web.active = false; obby.web.pending = false; obby.web.pointerId = null; }
       if (byte.grabbed) { byte.grabbed = false; byte.mode = 'air'; }
       life.pointer.active = false;
       if (web.active && !web.planted) { web.planted = true; web.pointerId = null; }
@@ -872,6 +844,20 @@
       if (y < -platform.h || y > world.h + platform.h) continue;
       const pulse = platform.pulse || 0;
       ctx.save(); ctx.translate(platform.x + platform.w / 2, y);
+      if (platform.crystal) {
+        // Embedded roots and fracture shadows attach the unchanged collision ledge to the plane.
+        ctx.fillStyle = '#3d748b3d'; ctx.beginPath(); ctx.moveTo(-platform.w * .58, 8); ctx.lineTo(-platform.w * .43, -8); ctx.lineTo(platform.w * .4, -6); ctx.lineTo(platform.w * .58, 9); ctx.lineTo(platform.w * .45, 24); ctx.lineTo(-platform.w * .4, 24); ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = '#e3fff0aa'; ctx.lineWidth = 1.3;
+        for (const side of [-1, 1]) { ctx.beginPath(); ctx.moveTo(side * platform.w * .45, 4); ctx.lineTo(side * platform.w * .6, -7); ctx.lineTo(side * platform.w * .66, -20); ctx.moveTo(side * platform.w * .6, -7); ctx.lineTo(side * platform.w * .7, -4); ctx.stroke(); }
+        const bottom = platform.h * (1 - pulse * .2);
+        const g = ctx.createLinearGradient(0, 0, 0, bottom);
+        g.addColorStop(0, '#c9efdf'); g.addColorStop(.3, '#9fcfca'); g.addColorStop(1, '#5d9aab');
+        ctx.fillStyle = g; ctx.strokeStyle = '#518495'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(-platform.w / 2, 0); ctx.lineTo(platform.w / 2, 0); ctx.lineTo(platform.w / 2 - 6, bottom); ctx.lineTo(-platform.w * .24, bottom + 3); ctx.lineTo(-platform.w / 2 + 4, bottom); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.strokeStyle = '#eefff2'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(-platform.w / 2 + 1, 0); ctx.lineTo(platform.w / 2 - 1, 0); ctx.stroke();
+        ctx.strokeStyle = '#d7f7e7aa'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-platform.w * .12, 1); ctx.lineTo(platform.w * .04, bottom); ctx.lineTo(platform.w * .22, bottom * .43); ctx.stroke();
+        ctx.restore(); continue;
+      }
       ctx.fillStyle = '#798c6628'; ctx.beginPath(); ctx.roundRect(-platform.w / 2 + 3, 5, platform.w, platform.h + 3, 7); ctx.fill();
       ctx.fillStyle = '#9b7043'; ctx.beginPath(); ctx.roundRect(-platform.w / 2, pulse * 3, platform.w, platform.h * (1 - pulse * .2), 6); ctx.fill();
       ctx.fillStyle = '#dfbb7b'; ctx.beginPath(); ctx.roundRect(-platform.w / 2, pulse * 3, platform.w, 6, 4); ctx.fill();
@@ -897,7 +883,14 @@
     ctx.strokeStyle = 'rgba(38,49,58,.88)'; ctx.lineWidth = 4; ctx.stroke();
     ctx.beginPath(); ctx.moveTo(x1, y1); ctx.quadraticCurveTo(midX, midY, x2, y2);
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
-    ctx.beginPath(); ctx.arc(x2, y2, 4, 0, Math.PI * 2);
+    if (shot >= 1) {
+      ctx.save(); ctx.translate(x2, y2); ctx.strokeStyle = '#dffff2'; ctx.lineWidth = 1.2;
+      const age = now() - tether.born, spread = 7 + Math.max(0, 1 - age / 300) * 8;
+      ctx.fillStyle = '#326f8455'; ctx.beginPath(); ctx.ellipse(0, 2, 8, 4, -.2, 0, Math.PI * 2); ctx.fill();
+      for (let i = 0; i < 5; i++) { const a = i * 2.39; ctx.beginPath(); ctx.moveTo(Math.cos(a) * 2, Math.sin(a) * 2); ctx.lineTo(Math.cos(a) * spread, Math.sin(a) * spread * .7); ctx.stroke(); }
+      ctx.strokeStyle = '#f2fff0'; ctx.beginPath(); ctx.ellipse(0, 0, 6, 4, -.2, 0, Math.PI * 2); ctx.stroke(); ctx.restore();
+    }
+    ctx.beginPath(); ctx.arc(x2, y2, 3, 0, Math.PI * 2);
     ctx.fillStyle = '#fff'; ctx.fill();
     ctx.restore();
   }
@@ -1151,7 +1144,9 @@
     obby.fallingPlatform = null;
     obby.fallingTime = 0;
     obby.hasLaunched = false;
-    obby.web.active = false;
+    obby.launchAge = 0; obby.seeded = false;
+    obby.returning = false;
+    obby.web.active = false; obby.web.pending = false;
     obby.web.pointerId = null;
     autonomy.choice = null;
     autonomy.idleTime = 0;
@@ -1166,7 +1161,7 @@
     const center = clamp(previousCenter + (Math.random() - .5) * world.w * .58,
       width * .5 + 10, world.w - width * .5 - 10);
     const y = previous.y - spriteH * (.88 + Math.random() * .14);
-    obby.platforms.push({ x: center - width * .5, y, w: width, h: 18 });
+    obby.platforms.push({ x: center - width * .5, y, w: width, h: 18, crystal: true });
     obby.highestPlatformY = y;
   }
   function fillPlatformsAhead() {
@@ -1184,33 +1179,41 @@
     obby.platforms = [];
     obby.fallingTime = 0;
     obby.hasLaunched = false;
-    obby.web.active = false;
+    obby.launchAge = 0; obby.seeded = false;
+    obby.web.active = false; obby.web.pending = false;
     startMotionListener();
     const width = Math.min(Math.max(spriteW * .94, 116), Math.max(80, world.w - 24));
     const x = clamp(world.w * .3 - width * .5, 8, Math.max(8, world.w - width - 8));
     obby.fallingPlatform = {
       x, y: -24, targetY: world.h * .62,
-      w: width, h: 18, vy: 0,
+      w: width, h: 18, vy: 0, launch: true,
     };
   }
   function launchFromFirstPlatform(platform) {
     wakeByte(); voice('boing'); tactile(.8); platform.pulse = 1;
     const targetX = platform.x + platform.w * .5;
     obby.hasLaunched = true;
-    obby.phase = 'climb';
+    obby.phase = 'launch';
+    obby.launchAge = 0; obby.seeded = false;
     byte.y = platform.y - halfH();
     byte.facing = targetX < byte.x ? -1 : 1;
     byte.mode = 'air';
     byte.targetX = byte.targetY = null;
     byte.vx = clamp(byte.vx + (targetX - byte.x) * .45, -330, 330);
-    byte.vy = -930;
+    // One actual spring impulse clears the entire house. Ordinary -930 bounces remain unchanged.
+    const launchSpeed = Math.max(Math.sqrt(2 * 1650 * world.h * 4.7), 1650 * 2.05);
+    byte.vy = -launchSpeed;
+    obby.launchX = targetX;
+    const clearTime = (launchSpeed - Math.sqrt(Math.max(0, launchSpeed ** 2 - 2 * 1650 * (byte.y + world.h * .88)))) / 1650;
+    const arriveTime = clearTime + .75;
+    obby.crystalBase = byte.y - launchSpeed * arriveTime + .5 * 1650 * arriveTime ** 2 - world.h * .38;
     byte.squash = .12;
     byte.stretch = .15;
     autonomy.choice = null;
     autonomy.idleTime = 0;
     document.body.classList.add('obby-away');
     obby.fallingTime = 0;
-    fillPlatformsAhead();
+    // The crystal and its first ledge are genuinely above the open-sky interval.
   }
   function updateAutonomy(dt) {
     if (obby.hasLaunched || home.travel || home.journey || home.activity || life.phase !== 'awake') return;
@@ -1255,7 +1258,7 @@
       platform.y += platform.vy * dt;
       if (platform.y >= platform.targetY) {
         platform.y = platform.targetY;
-        const landed = { x: platform.x, y: platform.y, w: platform.w, h: platform.h };
+        const landed = { x: platform.x, y: platform.y, w: platform.w, h: platform.h, launch: true };
         obby.fallingPlatform = null;
         obby.platforms.push(landed);
         obby.highestPlatformY = landed.y;
@@ -1265,33 +1268,42 @@
 
     if (!obby.hasLaunched) { obby.cameraY = 0; return; }
 
-    if (obby.hasLaunched && byte.vy > 80) {
+    obby.launchAge += dt;
+    if (byte.vy > 80) {
       obby.fallingTime += dt;
       if (obby.fallingTime > .82) obby.phase = 'fall';
-    } else {
-      obby.fallingTime = 0;
-    }
-    if (obby.phase === 'climb') {
-      fillPlatformsAhead();
-      obby.platforms = obby.platforms.filter(platform => platform.y < obby.cameraY + world.h * 1.8);
-    }
+    } else obby.fallingTime = 0;
 
     const screenY = byte.y - obby.cameraY;
     if (screenY < world.h * .38) obby.cameraY = byte.y - world.h * .38;
-    else if (screenY > world.h * .72 && obby.cameraY < 0) {
-      obby.cameraY = Math.min(0, byte.y - world.h * .72);
+    else if (screenY > world.h * .72 && obby.cameraY < 0) obby.cameraY = Math.min(0, byte.y - world.h * .72);
+
+    if (!obby.seeded && crystal.visible()) {
+      obby.seeded = true;
+      const width = Math.min(Math.max(spriteW * .68, 82), Math.max(72, world.w - 24));
+      const center = clamp(obby.launchX, width * .5 + 10, world.w - width * .5 - 10);
+      const y = obby.crystalBase - spriteH * 1.08;
+      obby.platforms.push({ x: center - width * .5, y, w: width, h: 18, crystal: true });
+      obby.highestPlatformY = y;
+      fillPlatformsAhead();
     }
-    if (obby.phase === 'fall') {
-      obby.platforms = obby.platforms.filter(platform => platform.y - obby.cameraY > -world.h * .7);
+    if (obby.seeded && (obby.phase === 'climb' || obby.phase === 'launch')) {
+      fillPlatformsAhead();
+      obby.platforms = obby.platforms.filter(platform => platform.y < obby.cameraY + world.h * 1.8);
     }
+    if (obby.phase === 'fall') obby.platforms = obby.platforms.filter(platform => platform.y - obby.cameraY > -world.h * .7);
+    // Holding through the launch can meet the surface as it arrives; empty sky never gets a fake anchor.
+    if (obby.web.pending) attachObbyWeb(obby.web.screenX, obby.web.screenY);
   }
+
   function landOnObbyPlatform(previousY) {
     if (!obby.active || home.room !== 3 || byte.vy <= 0) return;
+    if (!obby.hasLaunched && obby.returning) return;
     const previousBottom = previousY + halfH();
     const currentBottom = byte.y + halfH();
     const supportHalf = bodyW() * .18;
     const platform = obby.platforms.find(item =>
-      previousBottom <= item.y && currentBottom >= item.y
+      (!obby.hasLaunched || !item.launch) && previousBottom <= item.y && currentBottom >= item.y
       && Math.min(byte.x + supportHalf, item.x + item.w) - Math.max(byte.x - supportHalf, item.x) >= supportHalf * .9);
     if (!platform) return;
     if (!obby.hasLaunched) {
@@ -1312,6 +1324,9 @@
     const speed = Math.max(0, byte.vy);
     byte.y = floorY();
     finishObby();
+    // Keep the existing big landing rebound, without turning its recovery into an unasked relaunch.
+    // Settling or a deliberate grab rearms the loft spring; there is no cooldown timer.
+    obby.returning = true;
     if (speed > 135) {
       byte.vy = -speed * .31;
       byte.vx *= .83;
@@ -1324,6 +1339,16 @@
     }
   }
 
+  function attachObbyWeb(screenX, screenY) {
+    const point = crystal.unproject(screenX, screenY), tether = obby.web;
+    if (!crystal.contains(point.x, point.y)) return false;
+    const spool = spoolPosition();
+    tether.pending = false; tether.active = true; tether.born = now();
+    tether.anchorX = point.x; tether.anchorY = point.y;
+    tether.length = Math.hypot(point.x - spool.x, point.y - spool.y);
+    voice('web', .75);
+    return true;
+  }
   function beginDrag(e) {
     e.preventDefault();
     if (e.isPrimary === false) return;
@@ -1331,30 +1356,27 @@
     const px = e.clientX - rect.left, py = e.clientY - rect.top;
     if (home.travel) return;
     noticeTouch(px, py, e.pointerId);
-    if (web.active && web.planted && Math.hypot(px - web.anchorX, py - web.anchorY) <= 42) {
+    const point = obby.hasLaunched ? crystal.unproject(px, py) : { x: px, y: py };
+    if (web.active && web.planted && Math.hypot(point.x - web.anchorX, point.y - web.anchorY) <= 42) {
       // Releasing the web leaves Byte's current linear and angular momentum untouched.
       web.active = false;
       web.planted = false;
       web.pointerId = null;
       return;
     }
-    if (home.beginHand(px, py, e.pointerId)) { canvas.setPointerCapture(e.pointerId); return; }
+    if (home.beginHand(point.x, point.y - (obby.hasLaunched ? obby.cameraY : 0), e.pointerId)) { canvas.setPointerCapture(e.pointerId); return; }
     if (obby.hasLaunched) {
-      if (obby.web.active) return;
-      life.pointer.kind = 'obbyweb'; voice('web', .75);
-      const anchorX = px, anchorY = py + obby.cameraY;
-      const spool = spoolPosition();
-      obby.web.active = true; obby.web.born = now();
-      obby.web.pointerId = e.pointerId;
-      obby.web.anchorX = anchorX;
-      obby.web.anchorY = anchorY;
-      obby.web.length = Math.hypot(anchorX - spool.x, anchorY - spool.y);
+      if (obby.web.active || obby.web.pending) return;
+      life.pointer.kind = 'obbyweb';
+      Object.assign(obby.web, { pending: true, pointerId: e.pointerId, screenX: px, screenY: py });
+      attachObbyWeb(px, py);
       canvas.setPointerCapture(e.pointerId);
       return;
     }
     if (web.active && !web.planted) return;
     const spool = spoolPosition();
     if (!web.active && Math.hypot(px - spool.x, py - spool.y) <= Math.max(24, bodyH() * .13)) {
+      obby.returning = false;
       life.pointer.kind = 'web'; voice('web', .7);
       web.active = true;
       web.planted = false;
@@ -1370,6 +1392,7 @@
     const dx = px - byte.x, dy = py - byte.y;
     const inByte = Math.abs(dx) < bodyW() * .58 && Math.abs(dy) < bodyH() * .59;
     if (inByte) {
+      obby.returning = false;
       life.pointer.kind = 'byte'; life.pendingFollow = false;
       byte.grabbed = true;
       byte.targetX = byte.targetY = null;
@@ -1398,7 +1421,8 @@
   function moveDrag(e) {
     if (home.travel) return;
     const handRect = canvas.getBoundingClientRect();
-    if (home.moveHand(e.clientX - handRect.left, e.clientY - handRect.top, e.pointerId)) { e.preventDefault(); return; }
+    const handPoint = obby.hasLaunched ? crystal.unproject(e.clientX - handRect.left, e.clientY - handRect.top) : { x: e.clientX - handRect.left, y: e.clientY - handRect.top };
+    if (home.moveHand(handPoint.x, handPoint.y - (obby.hasLaunched ? obby.cameraY : 0), e.pointerId)) { e.preventDefault(); return; }
     if (byte.grabbed && e.pointerId !== life.pointer.id) return;
     if (life.pointer.active && e.pointerId === life.pointer.id) {
       const room = canvas.getBoundingClientRect();
@@ -1409,7 +1433,8 @@
       life.pointer.x = x; life.pointer.y = y; life.gazeX = x; life.gazeY = y; life.lastTouch = now();
       if (life.pointer.kind === 'follow' && !obby.hasLaunched) { e.preventDefault(); followTouch(x, y); life.curious = .7; return; }
     }
-    if (obby.web.active && e.pointerId === obby.web.pointerId) {
+    if ((obby.web.active || obby.web.pending) && e.pointerId === obby.web.pointerId) {
+      if (obby.web.pending) { obby.web.screenX = e.clientX - handRect.left; obby.web.screenY = e.clientY - handRect.top; }
       e.preventDefault();
       return;
     }
@@ -1440,8 +1465,8 @@
     }
     if (byte.grabbed && e.pointerId !== life.pointer.id) return;
     if (e.pointerId === life.pointer.id) { life.pointer.active = false; life.lastTouch = now(); life.curious = 1.7; }
-    if (obby.web.active && e.pointerId === obby.web.pointerId) {
-      obby.web.active = false;
+    if ((obby.web.active || obby.web.pending) && e.pointerId === obby.web.pointerId) {
+      obby.web.active = false; obby.web.pending = false;
       obby.web.pointerId = null;
       return;
     }
@@ -1601,15 +1626,17 @@
     home.syncUI();
     if (obby.hasLaunched) {
       drawHabitat(t);
-      ctx.save(); ctx.translate(0, -cameraY); home.draw(t); ctx.restore();
+      crystal.draw();
+      ctx.save(); crystal.applyView(); ctx.translate(0, -cameraY); home.draw(t); ctx.restore();
     } else home.draw(t);
     ctx.save();
+    if (obby.hasLaunched) crystal.applyView();
     ctx.translate(obby.hasLaunched ? 0 : home.offset(1), obby.hasLaunched ? 0 : home.offsetY(1));
     drawOutside(t);
     ctx.restore();
-    ctx.save(); ctx.translate(obby.hasLaunched ? 0 : home.offset(3), obby.hasLaunched ? 0 : home.offsetY(3));
+    ctx.save(); if (obby.hasLaunched) crystal.applyView(); ctx.translate(obby.hasLaunched ? 0 : home.offset(3), obby.hasLaunched ? 0 : home.offsetY(3));
     drawPlatforms(); ctx.restore();
-    ctx.save(); ctx.translate(obby.hasLaunched ? 0 : home.offset(), obby.hasLaunched ? 0 : home.offsetY());
+    ctx.save(); if (obby.hasLaunched) crystal.applyView(); ctx.translate(obby.hasLaunched ? 0 : home.offset(), obby.hasLaunched ? 0 : home.offsetY());
     drawNest();
 
     const { frame, frameW, bob, squeezeX, squeezeY, angle } = bodyGeometry(t);
@@ -1623,11 +1650,11 @@
       ctx.restore();
     }
     // Keep a planted endpoint above Byte's opaque artwork so its hit target stays visible.
-    drawWeb();
+    ctx.save(); ctx.translate(0, -cameraY); drawWeb(); ctx.restore();
     drawObbyWeb();
     drawButtonWeb();
     ctx.restore();
-    home.drawThings();
+    ctx.save(); if (obby.hasLaunched) crystal.applyView(); home.drawThings(); ctx.restore();
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -1636,7 +1663,7 @@
       life.returnAt = now(); life.pointer.active = false;
       if (byte.grabbed) { byte.grabbed = false; byte.mode = 'air'; }
       if (web.active && !web.planted) { web.planted = true; web.pointerId = null; }
-      obby.web.active = false; obby.web.pointerId = null;
+      obby.web.active = false; obby.web.pending = false; obby.web.pointerId = null;
       if (audio.ctx?.state === 'running') void audio.ctx.suspend();
     } else {
       if (life.phase === 'awake') { life.curious = 2; life.lastTouch = now(); }
@@ -1645,7 +1672,7 @@
   });
   // Runtime handles are available only to an explicitly enabled local QA harness.
   if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probe')) {
-    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home };
+    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal };
   }
 
   function loop(t) {

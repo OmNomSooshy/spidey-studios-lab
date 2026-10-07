@@ -97,7 +97,7 @@ const url = (process.env.BYTE_QA_URL || 'http://127.0.0.1:4191/') + '?probe';
     assert.equal(r.room,3);assert(r.active&&!r.launched);assert.equal(r.p.x,platform.x);assert.equal(r.p.y,platform.y);await context.close();
   });
   await check('a found upstairs stone falls back into the home and Byte carries it to his nook',async()=>{
-    const{context,page}=await open();await place(page,3);await page.evaluate(()=>{const q=__byteProbe;q.beginObby();q.obby.fallingPlatform=null;q.obby.active=true;q.obby.hasLaunched=true;q.obby.phase='fall';q.obby.platforms=[];q.obby.cameraY=-1400;q.byte.mode='air';q.byte.y=-q.world.h*1.4;q.byte.vy=500;});
+    const{context,page}=await open();await place(page,3);await page.evaluate(()=>{const q=__byteProbe;q.beginObby();q.obby.fallingPlatform=null;q.obby.active=true;q.obby.hasLaunched=true;q.obby.seeded=true;q.obby.crystalBase=0;q.obby.phase='fall';q.obby.platforms=[];q.obby.cameraY=-1400;q.byte.mode='air';q.byte.y=-q.world.h*1.4;q.byte.vy=500;});
     for (let i=0;i<150;i++) { await step(page,.2); if (await page.evaluate(()=>__byteProbe.home.stoneHome&&__byteProbe.home.room===0)) break; }
     const r=await page.evaluate(()=>({found:__byteProbe.home.found,home:__byteProbe.home.stoneHome,room:__byteProbe.home.room,stone:__byteProbe.home.things.find(v=>v.id==='stone'),obby:__byteProbe.obby.hasLaunched}));
     assert(r.found);assert(!r.obby);assert(r.home);assert.equal(r.room,0);assert.equal(r.stone.room,0);await page.screenshot({path:path.join(out,'treasure-home.png'),scale:'css'});await context.close();

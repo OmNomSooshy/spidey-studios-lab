@@ -110,10 +110,10 @@ const out=process.env.BYTE_QA_OUTPUT || require('node:path').join(require('node:
   await touch('touchStart',s.byte.x,s.byte.y-15);await touch('touchMove',s.p.x+s.p.w/2,s.p.y-s.half-17);await page.waitForTimeout(180);await touch('touchEnd');await advance(.6);
   let climb=await page.evaluate(()=>({active:__byteProbe.obby.hasLaunched,scale:__byteProbe.life.scale,hidden:document.body.classList.contains('obby-away'),camera:__byteProbe.obby.cameraY,y:__byteProbe.byte.y}));
   console.log('climb',climb);assert(climb.active);assert(climb.scale<.8);assert(climb.hidden);await shot('candidate-climb');
-  await touch('touchStart',80,150);await page.waitForTimeout(100);await advance(.8);
+  await advance(1.3);await touch('touchStart',80,150);await page.waitForTimeout(100);await advance(.8);
   assert(await page.evaluate(()=>__byteProbe.obby.web.active));await shot('candidate-climb-web');
   await page.evaluate(()=>{__byteProbe.byte.vx=145});await touch('touchEnd');assert(!await page.evaluate(()=>__byteProbe.obby.web.active));assert.equal(await page.evaluate(()=>__byteProbe.byte.vx),145);
-  await page.evaluate(()=>{const p=__byteProbe;p.obby.platforms=[];p.obby.phase='fall';p.byte.vy=900;p.byte.vx=0;p.byte.mode='air'});await advance(5);
+  await page.evaluate(()=>{const p=__byteProbe;p.obby.platforms=[];p.obby.phase='fall';p.byte.vy=900;p.byte.vx=0;p.byte.mode='air'});await advance(8);
   let home=await page.evaluate(()=>({active:__byteProbe.obby.active,scale:__byteProbe.life.scale,hidden:document.body.classList.contains('obby-away'),y:__byteProbe.byte.y,floor:__byteProbe.floorY()}));
   console.log('home',home);assert(!await page.evaluate(()=>__byteProbe.obby.hasLaunched));assert(home.scale>.98);assert(!home.hidden);assert(home.y>home.floor-80);await shot('candidate-return');
  });

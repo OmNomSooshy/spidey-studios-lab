@@ -171,7 +171,7 @@ window.createByteHome = function createByteHome(api) {
     save(); return true;
   }
   function findStone() {
-    if (home.found || !obby.hasLaunched || byte.y > -world.h * 1.25) return;
+    if (home.found || !obby.hasLaunched || !obby.seeded || byte.y > obby.crystalBase - world.h * 1.25) return;
     home.found = true;
     home.things.push({ id: 'stone', room: 3, x: clamp(byte.x + 45, 25, world.w - 25), y: byte.y - 80,
       vx: 40, vy: -150, angle: .2, spin: .6, r: 15, touch: 1, fromAbove: true });
@@ -362,6 +362,7 @@ window.createByteHome = function createByteHome(api) {
     } else {
       // A whole loft sits below the roof opening; the bounce route begins inside it.
       ctx.fillStyle = '#9abfc5'; ctx.fillRect(12, 0, w * .56, 48);
+      if (obby.hasLaunched) api.skyOpening(12, 0, w * .56, 48);
       ctx.strokeStyle = '#92774e'; ctx.lineWidth = 9; ctx.strokeRect(10, -8, w * .56 + 4, 60);
       ctx.strokeStyle = '#a88d5c'; ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(0, 72); ctx.lineTo(w * .73, h * .13); ctx.lineTo(w, 50); ctx.stroke();
       const wx = w * .65, wy = h * .29;
@@ -386,8 +387,30 @@ window.createByteHome = function createByteHome(api) {
   }
   function draw(t) {
     for (let index = 0; index < 4; index++) {
-      const ox = offset(index), oy = offsetY(index); if (ox < -world.w || ox > world.w) continue;
+      const ox = offset(index), oy = offsetY(index), screenY = oy - (obby.hasLaunched ? obby.cameraY : 0);
+      if (ox < -world.w || ox > world.w || screenY > world.h * 1.35 || screenY + world.h < 0) continue;
+      if (index === 3 && obby.hasLaunched) {
+        // The camera can now see the building above its old viewport boundary.
+        // Continue the loft into a pitched, open-skylight roof instead of clipping it at y=0.
+        ctx.save(); ctx.translate(ox, oy);
+        const w = world.w, rise = world.h * .14, ridge = w * .72;
+        ctx.beginPath(); ctx.moveTo(0, 1); ctx.lineTo(ridge, -rise); ctx.lineTo(w, 1); ctx.closePath(); ctx.clip();
+        ctx.beginPath(); ctx.rect(-20, -rise - 30, w + 40, rise + 90); ctx.rect(12, -rise - 8, w * .56, rise + 10); ctx.clip('evenodd');
+        ctx.fillStyle = '#c2ab80'; ctx.fillRect(0, -rise, w, rise + 2); ctx.restore();
+        ctx.save(); ctx.translate(ox, oy);
+        ctx.beginPath(); ctx.moveTo(-14, 6); ctx.lineTo(ridge, -rise - 12); ctx.lineTo(w + 14, 6);
+        ctx.lineTo(w + 14, 26); ctx.lineTo(ridge, -rise + 9); ctx.lineTo(-14, 26); ctx.closePath(); ctx.clip();
+        ctx.beginPath(); ctx.rect(-20, -rise - 30, w + 40, rise + 90); ctx.rect(12, -rise - 25, w * .56, rise + 60); ctx.clip('evenodd');
+        ctx.fillStyle = '#796c55'; ctx.fillRect(-14, -rise - 20, w + 28, rise + 60);
+        ctx.strokeStyle = '#b6a378'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-14, 6); ctx.lineTo(ridge, -rise - 12); ctx.lineTo(w + 14, 6); ctx.stroke();
+        ctx.strokeStyle = '#544e4044'; ctx.lineWidth = 2;
+        for (let x = -10; x < w + 20; x += 24) { ctx.beginPath(); ctx.moveTo(x, -rise - 20); ctx.lineTo(x + 16, 32); ctx.stroke(); }
+        ctx.restore();
+      }
       ctx.save(); ctx.translate(ox, oy); ctx.beginPath(); ctx.rect(0, 0, world.w, world.h); ctx.clip(); drawSpace(index, t); ctx.restore();
+      if (index === 3 && obby.hasLaunched) {
+        ctx.save(); ctx.translate(ox, oy); ctx.fillStyle = '#887653'; ctx.fillRect(0, 0, 7, world.h); ctx.fillRect(world.w - 7, 0, 7, world.h); ctx.restore();
+      }
     }
     ctx.save(); ctx.translate(offset(), offsetY()); ctx.fillStyle = '#364d3a24';
     if (!earth.enabled && Math.abs(byte.y - api.floorY()) < api.bodyH() * .7) { ctx.beginPath(); ctx.ellipse(byte.x, world.h - 26, api.bodyW() * .43, 6, 0, 0, Math.PI * 2); ctx.fill(); }

@@ -39,8 +39,8 @@ fs.mkdirSync(out,{recursive:true});
  await touch('touchStart',80,120);await page.waitForTimeout(110);await step(.25);assert(await page.evaluate(()=>__byteProbe.obby.web.active));
  const vx=await page.evaluate(()=>__byteProbe.byte.vx);await touch('touchEnd');assert(!await page.evaluate(()=>__byteProbe.obby.web.active));assert.equal(await page.evaluate(()=>__byteProbe.byte.vx),vx);checks.push('outdoor held web stays physical and release retains velocity');
  // A controlled missed route exercises physical falling and home-scale recovery without forcing return state.
- await page.evaluate(()=>{const q=__byteProbe;q.obby.platforms=[];q.obby.phase='fall';q.byte.vy=Math.max(300,q.byte.vy);});await step(7);
+ await page.evaluate(()=>{const q=__byteProbe;q.obby.platforms=[];q.obby.phase='fall';q.byte.vy=Math.max(300,q.byte.vy);});for(let i=0;i<120&&(await state()).launched;i++)await step(.1);await step(.7);
  s=await state();assert.equal(s.room,3);assert(!s.launched);assert(s.scale>.98);assert.equal(s.cameraY,-844);await snap('back-in-loft');checks.push('a missed descent returns to the loft, normal scale and its waiting spring');
- await tap(250,810);await step(4);assert.equal((await state()).room,2);await snap('back-downstairs');checks.push('after returning from outdoors the ladder still leads downstairs');
+ await tap(250,810);await step(6);assert.equal((await state()).room,2);await snap('back-downstairs');checks.push('after returning from outdoors the ladder still leads downstairs');
  assert(!errors.length);fs.writeFileSync(path.join(out,'upstairs-results.json'),JSON.stringify({checks,errors},null,2));console.log('PASS',checks);await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});

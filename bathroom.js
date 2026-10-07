@@ -33,19 +33,15 @@ window.createByteBathroom = function createByteBathroom(api) {
     const sky=wall.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#d5e3dc');sky.addColorStop(1,'#f0eee0');wall.fillStyle=sky;wall.fillRect(0,0,w,h);
     wall.strokeStyle='#faf8e9';wall.lineWidth=3;wall.beginPath();for(let x=0;x<w;x+=48){wall.moveTo(x,0);wall.lineTo(x,h*.88)}for(let y=0;y<h*.88;y+=58){wall.moveTo(0,y);wall.lineTo(w,y)}wall.stroke();
     wall.fillStyle='#b0c4bd';wall.fillRect(0,h*.88,w,h*.12);wall.strokeStyle='#dbe5d6';wall.lineWidth=2;wall.beginPath();for(let x=-h;x<w+h;x+=58){wall.moveTo(x,h*.88);wall.lineTo(x+80,h)}wall.stroke();
-    // A real doorway back into the nook, using the same arch/threshold language as home.
-    const top=Math.max(h*.39,h-10-api.bodyH()*2.2);
-    wall.fillStyle='#536d76';wall.strokeStyle='#9b9677';wall.lineWidth=6;wall.beginPath();wall.moveTo(w-94,h-10);wall.lineTo(w-94,top+80);wall.arc(w-14,top+80,80,Math.PI,0);wall.lineTo(w+66,h-10);wall.closePath();wall.fill();wall.stroke();
-    wall.fillStyle='#c4b69c';wall.fillRect(w-93,h-24,93,14);
-    wall.strokeStyle='#d9d9c7';wall.lineWidth=2;wall.beginPath();wall.moveTo(w-28,top+116);wall.quadraticCurveTo(w+10,top+165,w+48,top+112);wall.stroke();
+    window.drawBytePassage(wall,w,h,api.roomH(),'right','#536d76');
     // Round frosted window, quiet pipes, soap dish and the back of a generous ceramic tub.
     rect(wall,w*.075,h*.15,w*.24,h*.20,36,'#a7c8c7','#9aaea0');wall.strokeStyle='#f4f1d6';wall.lineWidth=5;wall.beginPath();wall.moveTo(w*.195,h*.17);wall.lineTo(w*.195,h*.34);wall.moveTo(w*.10,h*.25);wall.lineTo(w*.29,h*.25);wall.stroke();
     wall.strokeStyle='#a38b59';wall.lineWidth=9;wall.beginPath();wall.moveTo(g.pipeX,g.pipeY);wall.lineTo(g.pipeX,h*.57);wall.stroke();wall.strokeStyle='#e0d19c';wall.lineWidth=3;wall.stroke();
     rect(wall,g.dishX-29,g.dishY,58,8,4,'#9bbcb8','#769994');
     wall.strokeStyle='#a38b59';wall.lineWidth=8;wall.beginPath();wall.moveTo(g.tapX-12,g.tapY+32);wall.lineTo(g.tapX-12,g.tapY);wall.quadraticCurveTo(g.tapX-12,g.tapY-17,g.tapX+17,g.tapY-12);wall.lineTo(g.tapX+17,g.tapY+4);wall.stroke();
     wall.strokeStyle='#e5d6a8';wall.lineWidth=2;wall.stroke();
-    rect(wall,g.x-10,g.rim-13,g.w+20,g.bottom-g.rim+12,28,'#93b6b5','#759795');
-    wall.fillStyle='#62969b';wall.beginPath();wall.ellipse(g.x+g.w*.5,g.rim+6,g.w*.51,23,0,0,Math.PI*2);wall.fill();
+    rect(wall,g.x-10,g.rim-13,g.w+20,g.bottom-g.rim+12,28,'#dceae1','#759795');
+    wall.fillStyle='#bfdad4';wall.beginPath();wall.ellipse(g.x+g.w*.5,g.rim+6,g.w*.51,23,0,0,Math.PI*2);wall.fill();
     wall.fillStyle='#edf3e6';wall.beginPath();wall.ellipse(g.x+g.w*.5,g.rim,g.w*.54,20,0,0,Math.PI*2);wall.ellipse(g.x+g.w*.5,g.rim+3,g.w*.46,12,0,0,Math.PI*2);wall.fill('evenodd');
     wall.strokeStyle='#f4f4df';wall.lineWidth=5;wall.strokeRect(0,h*.88,w,3);
   }
@@ -96,7 +92,8 @@ window.createByteBathroom = function createByteBathroom(api) {
     if(!here())return false;
     const g=geometry();
     if(Math.hypot(x-(g.tapX-12),y-(g.tapY-24))<28){state.source=state.source==='bath'?null:'bath';state.draining=false;state.hand={kind:'tap',id,x,y};life.pointer.kind='fixture';api.voice('notice',.3);return true;}
-    if(Math.hypot(x-(g.x+g.w-14),y-(g.rim+3))<19){state.draining=!state.draining;state.source=null;state.hand={kind:'drain',id,x,y};life.pointer.kind='fixture';return true;}
+    const stopper=drainGeometry(g);
+    if(Math.hypot(x-stopper.handleX,y-stopper.handleY)<19||Math.hypot(x-stopper.x,y-stopper.plugY)<20){state.draining=!state.draining;state.source=null;state.hand={kind:'drain',id,x,y};life.pointer.kind='fixture';return true;}
     if(Math.hypot(x-state.head.x,y-state.head.y)<34){state.hand={kind:'head',id,x,y,startX:x,startY:y,wasOn:state.source==='shower',moved:false};state.source='shower';state.draining=false;life.pointer.kind='fixture';return true;}
     return false;
   }
@@ -186,18 +183,59 @@ window.createByteBathroom = function createByteBathroom(api) {
     }
     return coating;
   }
-  function foreground(t) {
-    const home=api.home();if(obby.hasLaunched||home.travel)return;
-    if(home.room===4){const g=geometry();
-      ctx.fillStyle=`rgba(116,180,179,${.04+state.puddle*.10})`;ctx.beginPath();ctx.ellipse(g.x+g.w*.55,world.h-17,g.w*.67,13,0,0,Math.PI*2);ctx.fill();
-      // The tub's front occludes submerged legs, but never grabs or snaps the creature.
-      ctx.save();ctx.beginPath();ctx.rect(g.x-12,g.rim+5,g.w+24,g.bottom-g.rim+16);ctx.clip();const shade=ctx.createLinearGradient(0,g.rim,0,g.bottom);shade.addColorStop(0,'#d6e8dc');shade.addColorStop(1,'#a8c6c0');rect(ctx,g.x-10,g.rim-10,g.w+20,g.bottom-g.rim+8,28,shade,'#82a3a1');ctx.restore();
-      ctx.strokeStyle='#f1f8e8';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(g.x-3,g.rim+4);ctx.quadraticCurveTo(g.x+g.w*.5,g.rim+20,g.x+g.w+3,g.rim+4);ctx.stroke();
-      ctx.fillStyle='#759b99';ctx.beginPath();ctx.ellipse(g.x+28,g.bottom+3,10,7,-.3,0,Math.PI*2);ctx.ellipse(g.x+g.w-28,g.bottom+3,10,7,.3,0,Math.PI*2);ctx.fill();
+  function drainGeometry(g=geometry()) {
+    return {x:g.x+g.w*.76,y:g.bottom-17,handleX:g.x+g.w-14,handleY:g.rim+3,
+      plugY:g.bottom-17-(state.draining?42:0)};
+  }
+  function drawBasinFront(t) {
+    const g=geometry(),drain=drainGeometry(g);
+    ctx.fillStyle=`rgba(116,180,179,${.04+state.puddle*.10})`;ctx.beginPath();ctx.ellipse(g.x+g.w*.55,world.h-17,g.w*.67,13,0,0,Math.PI*2);ctx.fill();
+    // A clear basin reveals the same surface used by waterAt and the existing buoyancy forces.
+    ctx.save();ctx.beginPath();ctx.roundRect(g.x-8,g.rim+4,g.w+16,g.bottom-g.rim-2,22);ctx.clip();
+    ctx.fillStyle='#eff8e51c';ctx.fillRect(g.x-8,g.rim+4,g.w+16,g.bottom-g.rim);
+    // Reveal the existing raised interior support rather than leaving an apparently floating dry body.
+    const supportY=g.bottom-api.roomH()*.30;
+    ctx.strokeStyle='#789f9770';ctx.lineWidth=2;ctx.beginPath();
+    ctx.moveTo(g.x+8,supportY+5);ctx.lineTo(g.x+g.w-8,supportY+5);
+    for(let x=g.x+16;x<g.x+g.w-8;x+=18){ctx.moveTo(x,supportY);ctx.lineTo(x+5,supportY+5)}ctx.stroke();
+    ctx.strokeStyle='#9ab5a766';ctx.lineWidth=3;ctx.beginPath();
+    for(const x of [g.x+25,g.x+g.w-25]){ctx.moveTo(x,supportY+5);ctx.lineTo(x,g.bottom-9)}ctx.stroke();
+    // Floor outlet + rubber stopper. The chain connects the rim handle to the actual drain.
+    ctx.fillStyle='#c7d8cf';ctx.strokeStyle='#75958d';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(drain.x,drain.y,14,7,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.fillStyle='#354c4d';ctx.beginPath();ctx.ellipse(drain.x,drain.y,10,4,0,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle='#bccfc1';ctx.lineWidth=1.3;ctx.beginPath();for(let i=-1;i<=1;i++){ctx.moveTo(drain.x-8,drain.y+i*2);ctx.lineTo(drain.x+8,drain.y+i*2)}ctx.stroke();
+    if(state.fill>.02){
+      ctx.fillStyle='#58afb44c';ctx.beginPath();ctx.moveTo(g.x+4,g.surface-api.down().x*14);ctx.lineTo(g.x+g.w-4,g.surface+api.down().x*14);ctx.lineTo(g.x+g.w-6,g.bottom-3);ctx.lineTo(g.x+6,g.bottom-3);ctx.closePath();ctx.fill();
+      const slope=api.down().x*14;ctx.strokeStyle='#3f939aa8';ctx.lineWidth=3;ctx.beginPath();
+      const bodyX=api.home().space(api.home().room).x+byte.x-api.home().space(4).x;
+      for(let i=0;i<=24;i++){const x=g.x+4+(g.w-8)*i/24,contact=Math.exp(-Math.pow((x-bodyX)/28,2))*clamp(byte.vy/100,-2,2);
+        const y=g.surface+slope*(i/12-1)+Math.sin(t*.005+i*.35)*1.5+contact;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke();
+      ctx.strokeStyle='#eaffec';ctx.lineWidth=1.4;ctx.stroke();
+      if(state.draining){ctx.strokeStyle='#e1fff0b0';ctx.lineWidth=1.4;for(let i=0;i<3;i++){ctx.beginPath();ctx.ellipse(drain.x,g.surface+4+i*3,15-i*4,3,Math.sin(t*.004)*.12,0,Math.PI*1.65);ctx.stroke();}}
     }
-    if(home.room===4){const g=geometry();ctx.strokeStyle='#acb58c';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(g.x+g.w-14,g.rim+5);ctx.quadraticCurveTo(g.x+g.w-22,g.rim+36,g.x+g.w-35,g.rim+25);ctx.stroke();ctx.fillStyle=state.draining?'#769796':'#617b72';ctx.beginPath();ctx.ellipse(g.x+g.w-14,g.rim+3,8,4,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#edf0d6';ctx.beginPath();ctx.arc(g.x+g.w-14,g.rim,5,0,Math.PI*2);ctx.stroke();}
+    ctx.restore();
+    // Clear front has a solid rim/base. Byte's wet body remains visible through it, with no physical changes.
+    ctx.strokeStyle='#89aaa3';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(g.x-10,g.rim+4,g.w+20,g.bottom-g.rim-4,25);ctx.stroke();
+    ctx.strokeStyle='#f1f8e8';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(g.x-3,g.rim+4);ctx.quadraticCurveTo(g.x+g.w*.5,g.rim+20,g.x+g.w+3,g.rim+4);ctx.stroke();
+    ctx.strokeStyle='#abc9bc';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(g.x+13,g.bottom-8);ctx.lineTo(g.x+g.w-13,g.bottom-8);ctx.stroke();
+    ctx.strokeStyle='#ffffff66';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(g.x+8,g.rim+27);ctx.lineTo(g.x+8,g.bottom-30);ctx.stroke();
+    ctx.fillStyle='#759b99';ctx.beginPath();ctx.ellipse(g.x+28,g.bottom+3,10,7,-.3,0,Math.PI*2);ctx.ellipse(g.x+g.w-28,g.bottom+3,10,7,.3,0,Math.PI*2);ctx.fill();
+    // Linked chain and raised stopper visibly agree with the live drain state.
+    ctx.strokeStyle='#a39d69';ctx.lineWidth=1.5;const controlX=(drain.handleX+drain.x)*.5+10;
+    ctx.beginPath();ctx.moveTo(drain.handleX,drain.handleY);ctx.quadraticCurveTo(controlX,drain.plugY-18,drain.x,drain.plugY-6);ctx.stroke();
+    const links=10;for(let i=0;i<=links;i++){const f=i/links,x=(1-f)*(1-f)*drain.handleX+2*(1-f)*f*controlX+f*f*drain.x,y=(1-f)*(1-f)*drain.handleY+2*(1-f)*f*(drain.plugY-18)+f*f*(drain.plugY-6);ctx.beginPath();ctx.ellipse(x,y,2,3.5,-.3,0,Math.PI*2);ctx.stroke();}
+    ctx.fillStyle='#344c49';ctx.strokeStyle='#142d2c';ctx.lineWidth=1.5;ctx.beginPath();ctx.ellipse(drain.x,drain.plugY,12,6,0,0,Math.PI*2);ctx.fill();ctx.stroke();
+    ctx.strokeStyle='#d3d8a4';ctx.lineWidth=2;ctx.beginPath();ctx.arc(drain.x,drain.plugY-5,4,Math.PI,Math.PI*2);ctx.stroke();
+    ctx.fillStyle='#aeb994';ctx.strokeStyle='#eff2cf';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(drain.handleX,drain.handleY,9,7,-.3,0,Math.PI*2);ctx.fill();ctx.stroke();
+  }
+  function foreground(t) {
+    const home=api.home();if(obby.hasLaunched)return;
+    // Same front/occlusion during passage as at rest; no transition-only cutaway.
+    const ox=home.offset(4),oy=home.offsetY(4);
+    if(ox>-world.w&&ox<world.w){ctx.save();ctx.translate(ox,oy);ctx.beginPath();ctx.rect(0,0,world.w,world.h);ctx.clip();drawBasinFront(t);ctx.restore();}
+    if(home.travel)return;
     for(const p of state.particles){if(p.room!==home.room)continue;ctx.fillStyle=p.muddy?'#93744c99':`rgba(205,247,238,${Math.min(1,p.life)})`;ctx.beginPath();ctx.ellipse(p.x,p.y,2.3,p.muddy?2:3.5,0,0,Math.PI*2);ctx.fill();}
   }
   window.addEventListener('pagehide',save);document.addEventListener('visibilitychange',()=>{if(document.hidden){state.hand=null;state.source=null;save();}});
-  return Object.assign(state,{geometry,save,resize,beginFrame,drawRoom,drawSponge,supportTool,begin,move,end,update,floorAt,afterPhysics,present,foreground,waterAt,point:downPoint,shakeAngle:()=>state.shake>0?Math.sin(state.time*58)*.065*state.shake/.75:0});
+  return Object.assign(state,{geometry,drainGeometry,save,resize,beginFrame,drawRoom,drawSponge,supportTool,begin,move,end,update,floorAt,afterPhysics,present,foreground,waterAt,point:downPoint,shakeAngle:()=>state.shake>0?Math.sin(state.time*58)*.065*state.shake/.75:0});
 };

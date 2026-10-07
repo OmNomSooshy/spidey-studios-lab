@@ -1,0 +1,517 @@
+{
+  "classification": "Implemented; browser runtime reachable. Human phone perception/performance acceptance pending.",
+  "parent_commit": "e75122482de0e687fc99d5cf44c5491f03fcce9b",
+  "changes": [
+    "Clear basin front and real water surface over submerged artwork",
+    "Existing raised interior support exposed without physics changes",
+    "Chain connects rim handle to raised stopper and floor outlet; actual stopper also operates unchanged drain",
+    "Consistent tub front during room travel",
+    "One compact edge-recess passage family with touch regions outside sleeping nook"
+  ],
+  "protected_checks": {
+    "results.json": {
+      "passed": 10,
+      "names": [
+        "gentle hold closes eyes without moving Byte",
+        "finger hold and movement retain scuttle authority",
+        "all four dragged boundaries contain and compress visible body",
+        "throw retains measured release momentum",
+        "spool web plants, remains physical, and endpoint release preserves momentum",
+        "slack player rope applies no push",
+        "Byte makes a physical sleeping web and touch wakes him",
+        "scheming pulls the gravity control down and activates Earth gravity without sensor consent",
+        "continuous Earth vector supports non-bottom scuttle and corners",
+        "first platform waits; player placement starts climb; web and fall return home"
+      ]
+    },
+    "extended-results.json": {
+      "passed": 10,
+      "names": [
+        "sensor consent belongs to puck, never creature touch; denial remains playable",
+        "the gravity control toggles Earth mode on, receives motion and returns to screen mode",
+        "missing hardware data times out safely; unsupported API gives readable fallback",
+        "mute persists, and audio starts only after a gesture",
+        "secondary fingers cannot take over a grab; touch cancellation plants room web",
+        "backgrounding stops simulation and releases interrupted hands while keeping planted web",
+        "portrait, landscape and desktop layouts keep visible body and puck contained",
+        "rotation preserves proportional planted rope and stationary displaced puck",
+        "a real held web redirects a missed platform into a landing, retaining useful release momentum",
+        "Earth-supported scheming and aiming preserve the same body frame"
+      ]
+    },
+    "care-results.json": {
+      "passed": 9,
+      "names": [
+        "bathroom is physically left of nook, independently visitable and returns through the same doorway",
+        "physical bath lever fills retained water; grabbed Byte remains free; held sponge removes local mud and provokes a physical splash",
+        "shower head turns on, follows a real finger and wets Byte without filling bath; sponge shares the same washing process",
+        "the physical plug empties the bath and a portable sponge accompanies Byte through the bathroom doorway",
+        "dry rubbing does not magically wash; wet cleaning is body-local and does not commandeer body/rope physics",
+        "wet Byte shakes off real droplets outside the bathroom; expedition return leaves contextual dirt",
+        "fixture cancellation, hidden page and resize release care ownership without erasing persistent anchors",
+        "Earth down remains continuous in the bathroom while tilted water drains; there is no competing tub ground frame",
+        "older home history upgrades in place; sponge is portable and storage refusal remains playable"
+      ]
+    },
+    "home-results.json": {
+      "passed": 20,
+      "names": [
+        "actual finger invitations traverse both doors with continuous camera motion and keep the aperture in its own space",
+        "a calm held Byte can be carried into a doorway without escaping ordinary outer-wall squish",
+        "a physical toy can be dragged to a passage, accompany Byte, settle elsewhere, and survive reload",
+        "autonomous rest travels to the nook, makes a physical strand, and leaves a local memory after waking",
+        "Human Fingers can invite rest by leaving Byte calmly on his actual mat",
+        "Byte autonomously approaches and kicks a physical ball in the play space",
+        "the upstairs opportunity takes Byte to the loft, waits, and requires physical platform contact",
+        "a waiting platform stays in its loft while Byte can leave, sleep elsewhere and return to it",
+        "a found upstairs stone falls back into the home and Byte carries it to his nook",
+        "the repaired prank travels back to the aperture, schemes, dislodges its control and activates Earth mode",
+        "a platform left waiting upstairs does not suppress the downstairs gravity prank",
+        "phone inertia and microphone pressure act on physical belongings as well as Byte",
+        "a charging invitation travels to its visible warmth, while voice travel leaves phone forces active",
+        "Earth support remains coherent through carrying Byte into a neighboring space",
+        "opening the real capture aperture then leaving its room keeps sensing live without moving the aperture into a HUD",
+        "grabbing Byte interrupts a carrying trip and leaves the belonging physical in the current space",
+        "a planted player strand prevents departure and survives a doorway invitation",
+        "quiet sensory attention yields to a doorway trip while physical breath still changes momentum",
+        "Earth-grounded doorway travel uses an actual opening, and a ceiling does not become a sideways corridor",
+        "backgrounding releases an interrupted object hand, and resizing during passage safely recontains Byte"
+      ]
+    },
+    "crystal-results.json": {
+      "passed": 13,
+      "names": [
+        "separate loft stays a normal room before actual platform contact",
+        "physical placement supplies one decisive launch with no ordinary ledges",
+        "more than a readable half-second of actual clear sky separates house and crystal, with no ledges",
+        "first crystal ledge catches the launch and preserves ordinary bounce force",
+        "arbitrary screen placement attaches to material; held anchor stays fixed in world space",
+        "release retains both linear momentum and swing spin",
+        "slack crystal rope still never pushes",
+        "near crystal features move with world/camera, independently of 12% distant-sky travel",
+        "missed route returns to room-scale loft rather than auto-bouncing on the launcher",
+        "return resets the route and permits another clean launch",
+        "a released pre-surface hold cannot leave a fake empty-sky anchor",
+        "holding through clear sky can attach when the physical surface arrives",
+        "expedition fragment is discovered above the structure, preserving the existing physical possession"
+      ]
+    }
+  },
+  "actual_touch_normal_RAF_bath_read": {
+    "samples": [
+      {
+        "name": "empty",
+        "fill": 0,
+        "surface": 809,
+        "draining": false,
+        "drain": {
+          "x": 236.18400000000003,
+          "y": 803,
+          "handleX": 274.6,
+          "handleY": 704.596,
+          "plugY": 803
+        },
+        "body": {
+          "x": 180.0000145608857,
+          "y": 680.068,
+          "vy": 0
+        },
+        "wet": 0
+      },
+      {
+        "name": "low",
+        "fill": 0.318478,
+        "surface": 777.342012888,
+        "draining": false,
+        "drain": {
+          "x": 236.18400000000003,
+          "y": 803,
+          "handleX": 274.6,
+          "handleY": 704.596,
+          "plugY": 803
+        },
+        "body": {
+          "x": 180.0000145608857,
+          "y": 680.068,
+          "vy": 0
+        },
+        "wet": 0
+      },
+      {
+        "name": "half",
+        "fill": 0.6056420000000002,
+        "surface": 748.796762632,
+        "draining": false,
+        "drain": {
+          "x": 236.18400000000003,
+          "y": 803,
+          "handleX": 274.6,
+          "handleY": 704.596,
+          "plugY": 803
+        },
+        "body": {
+          "x": 180.0000145608857,
+          "y": 680.068,
+          "vy": 0
+        },
+        "wet": 0
+      },
+      {
+        "name": "full",
+        "fill": 0.9852860000000007,
+        "surface": 711.058630456,
+        "draining": false,
+        "drain": {
+          "x": 236.18400000000003,
+          "y": 803,
+          "handleX": 274.6,
+          "handleY": 704.596,
+          "plugY": 803
+        },
+        "body": {
+          "x": 180.0000145608857,
+          "y": 680.068,
+          "vy": -128.2513310503175
+        },
+        "wet": 1
+      },
+      {
+        "name": "open-plug",
+        "fill": 0.9816300000000001,
+        "surface": 711.4220514799999,
+        "draining": true,
+        "drain": {
+          "x": 236.18400000000003,
+          "y": 803,
+          "handleX": 274.6,
+          "handleY": 704.596,
+          "plugY": 761
+        },
+        "body": {
+          "x": 180.0000145608857,
+          "y": 680.068,
+          "vy": -158.1826753328616
+        },
+        "wet": 1
+      },
+      {
+        "name": "draining",
+        "fill": 0.4408149999999994,
+        "surface": 765.1812257400001,
+        "draining": true,
+        "drain": {
+          "x": 236.18400000000003,
+          "y": 803,
+          "handleX": 274.6,
+          "handleY": 704.596,
+          "plugY": 761
+        },
+        "body": {
+          "x": 180.0000145608857,
+          "y": 680.068,
+          "vy": -10.672736903209676
+        },
+        "wet": 0.9959992000000004
+      },
+      {
+        "name": "drained",
+        "fill": 0,
+        "surface": 809,
+        "draining": false,
+        "drain": {
+          "x": 236.18400000000003,
+          "y": 803,
+          "handleX": 274.6,
+          "handleY": 704.596,
+          "plugY": 803
+        },
+        "body": {
+          "x": 180.0000145608857,
+          "y": 680.068,
+          "vy": -0.36531055079121705
+        },
+        "wet": 0.9863572000000005
+      }
+    ],
+    "nook": {
+      "inside": null,
+      "edge": 4
+    },
+    "layouts": [
+      {
+        "size": {
+          "width": 320,
+          "height": 568
+        },
+        "width": 17.6,
+        "top": 234.1599999999999,
+        "floor": 558,
+        "hitWidth": 27.200000000000003,
+        "nookLeft": 28.799999999999997,
+        "inside": null
+      },
+      {
+        "size": {
+          "width": 390,
+          "height": 844
+        },
+        "width": 21.45,
+        "top": 439.31999999999994,
+        "floor": 834,
+        "hitWidth": 33.150000000000006,
+        "nookLeft": 35.1,
+        "inside": null
+      },
+      {
+        "size": {
+          "width": 844,
+          "height": 390
+        },
+        "width": 23.1,
+        "top": 138.06,
+        "floor": 344,
+        "hitWidth": 35.7,
+        "nookLeft": 37.8,
+        "inside": null
+      }
+    ],
+    "errors": [],
+    "normalRAF": true,
+    "actualTouch": true
+  },
+  "care_viewports": [
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "g": {
+        "x": 57.599999999999994,
+        "w": 179.20000000000002,
+        "rim": 446.84799999999996,
+        "bottom": 544,
+        "surface": 454.84799999999996,
+        "tapX": 64,
+        "tapY": 323.76,
+        "dishX": 36.800000000000004,
+        "dishY": 346.48,
+        "mountX": 204.8,
+        "mountY": 136.32,
+        "pipeX": 208,
+        "pipeY": 65.32000000000001
+      },
+      "wet": 1,
+      "x": 150.39999999999998,
+      "y": 429.18399999999997,
+      "contained": true,
+      "room": 4,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 360,
+        "height": 740
+      },
+      "g": {
+        "x": 64.8,
+        "w": 201.60000000000002,
+        "rim": 606.704,
+        "bottom": 716,
+        "surface": 614.704,
+        "tapX": 72,
+        "tapY": 421.79999999999995,
+        "dishX": 41.4,
+        "dishY": 451.4,
+        "mountX": 230.4,
+        "mountY": 177.6,
+        "pipeX": 234,
+        "pipeY": 85.10000000000001
+      },
+      "wet": 1,
+      "x": 169.2,
+      "y": 586.8320000000001,
+      "contained": true,
+      "room": 4,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "g": {
+        "x": 70.2,
+        "w": 218.40000000000003,
+        "rim": 701.596,
+        "bottom": 820,
+        "surface": 709.596,
+        "tapX": 78,
+        "tapY": 481.08,
+        "dishX": 44.85,
+        "dishY": 514.84,
+        "mountX": 249.6,
+        "mountY": 202.56,
+        "pipeX": 253.5,
+        "pipeY": 97.06
+      },
+      "wet": 1,
+      "x": 183.29999999999998,
+      "y": 680.068,
+      "contained": true,
+      "room": 4,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "g": {
+        "x": 77.39999999999999,
+        "w": 240.8,
+        "rim": 777.452,
+        "bottom": 908,
+        "surface": 785.452,
+        "tapX": 86,
+        "tapY": 531.24,
+        "dishX": 49.45,
+        "dishY": 568.52,
+        "mountX": 275.2,
+        "mountY": 223.67999999999998,
+        "pipeX": 279.5,
+        "pipeY": 107.18
+      },
+      "wet": 1,
+      "x": 202.1,
+      "y": 753.716,
+      "contained": true,
+      "room": 4,
+      "errors": []
+    },
+    {
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "g": {
+        "x": 75.6,
+        "w": 235.20000000000002,
+        "rim": 256.08,
+        "bottom": 330,
+        "surface": 264.08,
+        "tapX": 84,
+        "tapY": 201.77999999999997,
+        "dishX": 48.300000000000004,
+        "dishY": 215.94,
+        "mountX": 268.8,
+        "mountY": 84.96,
+        "pipeX": 273,
+        "pipeY": 40.71
+      },
+      "wet": 1,
+      "x": 197.39999999999998,
+      "y": 242.64,
+      "contained": true,
+      "room": 4,
+      "errors": []
+    }
+  ],
+  "normal_RAF_care": {
+    "fps": 54.51,
+    "p95_frame_ms": 16.8,
+    "max_frame_ms": 116.7,
+    "browser_exit_ms": 617,
+    "errors": []
+  },
+  "constrained_RAF_care": {
+    "fps": 30.2,
+    "p95_frame_ms": 66.6,
+    "max_frame_ms": 200.0,
+    "browser_exit_ms": 121,
+    "errors": []
+  },
+  "constrained_RAF_crystal": {
+    "fps": 33.86,
+    "p95_frame_ms": 66.7,
+    "max_frame_ms": 133.4,
+    "browser_exit_ms": 195,
+    "errors": []
+  },
+  "crystal_cache": {
+    "result": {
+      "warm": {
+        "skyBuilds": 1,
+        "tileBuilds": 5,
+        "opticalBuilds": 1,
+        "cachedTiles": 5,
+        "bitmapBytes": 6585040
+      },
+      "staticView": {
+        "skyBuilds": 1,
+        "tileBuilds": 5,
+        "opticalBuilds": 1,
+        "cachedTiles": 5,
+        "bitmapBytes": 6585040
+      },
+      "staticGradients": 0,
+      "patterns": 0,
+      "maxBytes": 9960040,
+      "maxCached": 8,
+      "maxDomBands": 5,
+      "final": {
+        "skyBuilds": 41,
+        "tileBuilds": 29,
+        "opticalBuilds": 81,
+        "cachedTiles": 8,
+        "bitmapBytes": 9960040
+      },
+      "camera": -15000
+    },
+    "resized": {
+      "cache": {
+        "skyBuilds": 42,
+        "tileBuilds": 35,
+        "opticalBuilds": 82,
+        "cachedTiles": 6,
+        "bitmapBytes": 3496956
+      },
+      "sameBounds": true
+    },
+    "errors": []
+  },
+  "simulation_harness_correction": "The original mobile probe omitted containRoomBody(), which production RAF already calls. Its corner containment assertion failed once; simulation now includes that existing production step and all ten checks pass. Product physics unchanged.",
+  "source_unchanged": [
+    "game.js",
+    "room.js",
+    "crystal.js",
+    "assets"
+  ],
+  "limitations": [
+    "Browser emulation, virtual sensors and software CPU throttle are not Samsung Galaxy A06 5G validation.",
+    "Capture/inspection proves ordinary runtime presentation, not human perceptual acceptance.",
+    "Existing tub floor and buoyancy retained; this does not introduce freely floating new mechanics.",
+    "Emptying the bath automatically clears drain state/reseats plug as before.",
+    "Concurrent functional probes during care measurements can affect timings; isolated crystal rendering benchmark recorded separately."
+  ],
+  "isolated_crystal_rendering": [
+    {
+      "variant": "full",
+      "rate": 6,
+      "software": true,
+      "dpr": 2,
+      "fps": 42.598332532197375,
+      "medianFrameMs": 16.699999999999818,
+      "p95FrameMs": 33.40000000000009,
+      "medianRasterMs": 3.5,
+      "p95RasterMs": 11.299999997019768,
+      "cache": {
+        "skyBuilds": 12,
+        "tileBuilds": 11,
+        "opticalBuilds": 23,
+        "cachedTiles": 8,
+        "bitmapBytes": 9960040
+      },
+      "errors": []
+    }
+  ]
+}

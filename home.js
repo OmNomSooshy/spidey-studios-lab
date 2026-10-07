@@ -1,3 +1,17 @@
+/* Horizontal passages are seen edge-on; their authored footprint ends before room furniture begins. */
+window.bytePassageBounds = function(w, h, bodyH) {
+  return { width: Math.min(26, w * .055), top: Math.max(h * .39, h - 10 - bodyH * 2.2), floor: h - 10, hitWidth: Math.min(44, w * .085) };
+};
+window.drawBytePassage = function(p, w, h, bodyH, side, neighbor) {
+  const g = window.bytePassageBounds(w, h, bodyH), d = g.width;
+  p.save(); if (side === 'right') { p.translate(w, 0); p.scale(-1, 1); }
+  p.fillStyle = neighbor; p.beginPath(); p.moveTo(0, g.top + 18); p.lineTo(d, g.top); p.lineTo(d, g.floor); p.lineTo(0, h); p.closePath(); p.fill();
+  p.fillStyle = '#25383355'; p.fillRect(0, g.top + 18, d * .38, h - g.top);
+  p.fillStyle = '#c8b68b'; p.beginPath(); p.moveTo(0, g.floor + 2); p.lineTo(d, g.floor - 10); p.lineTo(d, g.floor); p.lineTo(0, h); p.closePath(); p.fill();
+  p.strokeStyle = '#927c58'; p.lineWidth = 3; p.beginPath(); p.moveTo(0, g.top + 18); p.lineTo(d, g.top); p.lineTo(d, g.floor); p.stroke();
+  p.strokeStyle = '#f5e7c078'; p.lineWidth = 1.2; p.beginPath(); p.moveTo(d - 3, g.top + 7); p.lineTo(d - 3, g.floor - 12); p.stroke();
+  p.restore();
+};
 /* Sunburn home: four downstairs spaces, one loft, and physical belongings. */
 window.createByteHome = function createByteHome(api) {
   const { ctx, world, byte, life, earth, web, obby, autonomy } = api;
@@ -61,12 +75,9 @@ window.createByteHome = function createByteHome(api) {
     if (obby.hasLaunched || home.travel || x < 0 || x > world.w || y > world.h) return null;
     if (home.room === 2 && Math.abs(x - stairsX()) < 40 && y > 45 && y < world.h - 12) return 3;
     if (home.room === 3) return Math.abs(x - stairsX()) < 67 && y > world.h - 72 ? 2 : null;
-    const top = Math.max(world.h * .39, world.h - 10 - api.bodyH() * 2.2);
-    const left = x < 90 && home.room < 3, right = x > world.w - 90 && (home.room < 2 || home.room === 4);
-    if (!left && !right) return null;
-    const distance = x - (left ? 16 : world.w - 16);
-    const archTop = top + 80 - Math.sqrt(Math.max(0, 80 * 80 - distance * distance));
-    if (y < archTop + 6) return null;
+    const passage = window.bytePassageBounds(world.w, world.h, api.bodyH());
+    const left = x < passage.hitWidth && home.room < 3, right = x > world.w - passage.hitWidth && (home.room < 2 || home.room === 4);
+    if ((!left && !right) || y < passage.top + 24) return null;
     if (left) return home.room === 0 ? 4 : home.room - 1;
     if (right) return home.room === 4 ? 0 : home.room + 1;
     return null;
@@ -330,18 +341,8 @@ window.createByteHome = function createByteHome(api) {
     ctx.strokeStyle = '#685d442e'; for (let x = 12; x < w; x += 58) { ctx.beginPath(); ctx.moveTo(x, floor - 16); ctx.lineTo(x - 13, h); ctx.stroke(); }
     ctx.strokeStyle = '#eee0b37a'; ctx.beginPath(); ctx.moveTo(0, floor - 17); ctx.lineTo(w, floor - 17); ctx.stroke();
     const top = Math.max(h * .39, floor - bH * 2.2), dh = floor - top;
-    if (index >= 0 && index < 3) {
-      arch(-64, top, 160, dh, index === 0 ? '#a9c9c7' : index === 1 ? '#5d7580' : '#e6dcc3', '#947e57');
-      ctx.fillStyle = index === 1 ? '#c3b0a2' : '#bdae80'; ctx.fillRect(0, floor - 14, 93, 14);
-      if (index === 0) { ctx.strokeStyle = '#e7f0dd'; ctx.lineWidth = 2; ctx.beginPath(); for (let y = top + 104; y < floor; y += 45) { ctx.moveTo(0, y); ctx.lineTo(87, y); } ctx.moveTo(43, top + 92); ctx.lineTo(43, floor); ctx.stroke(); }
-      else if (index === 1) { ctx.strokeStyle = '#dad9c77a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-18, top + 114); ctx.quadraticCurveTo(27, top + 174, 62, top + 115); ctx.stroke(); ctx.fillStyle = '#c7b9a277'; ctx.beginPath(); ctx.ellipse(18, floor - 21, 47, 10, 0, 0, Math.PI * 2); ctx.fill(); }
-      else { ctx.strokeStyle = '#c4a65f'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(16, top + 62, 17, 0, Math.PI * 2); ctx.stroke(); }
-    }
-    if (index < 2) {
-      arch(w - 96, top, 160, dh, index === 0 ? '#e6dcc3' : '#9aaf9a', '#947e57');
-      ctx.fillStyle = '#bdae80'; ctx.fillRect(w - 93, floor - 14, 93, 14);
-      if (index === 1) { ctx.strokeStyle = '#e1dcb98a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(w - 31, top + 45); ctx.lineTo(w - 31, top + 175); for (let yy = top + 60; yy < top + 175; yy += 25) { ctx.moveTo(w - 40, yy); ctx.lineTo(w - 21, yy); } ctx.stroke(); }
-    }
+    if (index < 3) window.drawBytePassage(ctx, w, h, bH, 'left', index === 0 ? '#a9c9c7' : index === 1 ? '#5d7580' : '#e6dcc3');
+    if (index < 2) window.drawBytePassage(ctx, w, h, bH, 'right', index === 0 ? '#e6dcc3' : '#9aaf9a');
     if (index === 0) {
       const cx = w * .34, cy = api.floorY() - bH * .34;
       arch(cx - w * .25, cy - bH * 1.05, w * .5, bH * 1.4, '#263f5099', '#758a85');
@@ -389,7 +390,7 @@ window.createByteHome = function createByteHome(api) {
       const next = nextRoom(home.journey.target), vertical = index === 3 || next === 3;
       ctx.fillStyle = `rgba(255,239,184,${.06 + Math.sin(t * .005) * .025})`;
       if (vertical) ctx.fillRect(stairsX() - 34, index === 3 ? floor - 36 : 43, 68, index === 3 ? 46 : floor - 67);
-      else ctx.fillRect(space(next).x < space(index).x ? 0 : w - 94, top, 94, dh);
+      else { const edge = window.bytePassageBounds(w, h, bH); ctx.fillRect(space(next).x < space(index).x ? 0 : w - edge.width, edge.top + 18, edge.width, floor - edge.top - 18); }
     }
   }
   function draw(t) {

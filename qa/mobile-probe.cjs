@@ -11,7 +11,7 @@ const out=process.env.BYTE_QA_OUTPUT || require('node:path').join(require('node:
  const cdp=await ctx.newCDPSession(page);
  async function touch(type,x,y){await cdp.send('Input.dispatchTouchEvent',{type,touchPoints:type==='touchEnd'?[]:[{x,y,id:1,radiusX:5,radiusY:5,force:1}]});}
  async function advance(seconds){return page.evaluate(seconds=>{
-  const p=__byteProbe,dt=1/120;for(let i=0;i<seconds/dt;i++){p.home.update(dt);p.update(dt,performance.now()+i*dt*1000);p.updateLife(dt);p.updateAutonomy(dt);p.updateButtonWeb(dt);p.updateObby(dt);p.updateButtonPhysics(dt)}p.draw(performance.now());
+  const p=__byteProbe,dt=1/120;for(let i=0;i<seconds/dt;i++){p.home.update(dt);p.update(dt,performance.now()+i*dt*1000);p.updateLife(dt);p.updateAutonomy(dt);p.updateButtonWeb(dt);p.updateObby(dt);p.updateButtonPhysics(dt);p.containRoomBody()}p.draw(performance.now());
   return {x:p.byte.x,y:p.byte.y,vx:p.byte.vx,vy:p.byte.vy,mode:p.byte.mode,phase:p.life.phase};
  },seconds)}
  async function reset(){await page.evaluate(()=>{

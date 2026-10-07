@@ -1,4 +1,4 @@
-/* Sunburn III: three authored spaces and two physical belongings, not a room framework. */
+/* Sunburn III: three downstairs spaces, one loft, and physical belongings. */
 window.createByteHome = function createByteHome(api) {
   const { ctx, world, byte, life, earth, web, obby, autonomy } = api;
   const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
@@ -6,16 +6,16 @@ window.createByteHome = function createByteHome(api) {
   let remembered;
   try { remembered = JSON.parse(localStorage.getItem(key)); } catch (_) {}
   const home = {
-    room: Number.isInteger(remembered?.room) ? clamp(remembered.room, 0, 2) : 1,
-    cameraX: 0, travel: null, journey: null, activity: null, hand: null, carried: null,
+    room: Number.isInteger(remembered?.room) ? clamp(remembered.room, 0, 3) : 1,
+    cameraX: 0, cameraY: 0, travel: null, journey: null, activity: null, hand: null, carried: null,
     slept: !!remembered?.slept, found: !!remembered?.found, stoneHome: !!remembered?.stoneHome,
-    time: 0, savedAt: 0, playCooldown: 0, restBeat: 0, visits: [false, true, false], things: [],
+    time: 0, savedAt: 0, playCooldown: 0, restBeat: 0, visits: [false, true, false, false], things: [],
   };
   const initial = [{ id: 'ball', room: 2, nx: .62, ny: .91, r: 20 }];
   if (home.found) initial.push({ id: 'stone', room: 0, nx: .46, ny: .91, r: 15 });
   for (const seed of initial) {
     const saved = remembered?.things?.find(v => v.id === seed.id);
-    const safe = saved && Number.isInteger(saved.room) && saved.room >= 0 && saved.room <= 2 && Number.isFinite(saved.nx) && Number.isFinite(saved.ny);
+    const safe = saved && Number.isInteger(saved.room) && saved.room >= 0 && saved.room <= 3 && Number.isFinite(saved.nx) && Number.isFinite(saved.ny);
     home.things.push({ ...seed, ...(safe ? { room: saved.room, nx: clamp(saved.nx, .03, .97), ny: clamp(saved.ny, .03, .97) } : {}), x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0, touch: 0 });
   }
   function save() {
@@ -35,19 +35,30 @@ window.createByteHome = function createByteHome(api) {
       v.x = clamp(v.x, v.r, world.w - v.r); v.y = clamp(v.y, v.r, world.h - v.r - 10);
     }
     if (interrupted && home.carried) drop();
-    home.cameraX = home.room * world.w; syncUI();
+    const p = space(home.room); home.cameraX = p.x; home.cameraY = p.y; syncUI();
   }
-  function offset(room = home.room) { return room * world.w - home.cameraX; }
+  function space(room) { return { x: Math.min(room, 2) * world.w, y: room === 3 ? -world.h : 0 }; }
+  function nextRoom(target) {
+    if (home.room === 3) return 2;
+    if (target === 3) return home.room === 2 ? 3 : home.room + 1;
+    return home.room + Math.sign(target - home.room);
+  }
+  const stairsX = () => world.w * .64;
+  function offset(room = home.room) { return space(room).x - home.cameraX; }
+  function offsetY(room = home.room) { return space(room).y - home.cameraY; }
   function syncUI() {
-    const hall = offset(1), away = obby.hasLaunched;
-    document.querySelector('#gravity-toggle').style.transform = `translateX(${hall}px)`;
-    document.querySelector('#gravity-status').style.transform = `translateX(${hall}px)`;
+    const hall = offset(1), hallY = offsetY(1), away = obby.hasLaunched;
+    document.querySelector('#gravity-toggle').style.transform = `translate(${hall}px,${hallY}px)`;
+    document.querySelector('#gravity-status').style.transform = `translate(${hall}px,${hallY}px)`;
     const port = document.querySelector('#room-port');
     port.style.left = away ? '' : `${world.w * .5 + hall}px`;
+    port.style.translate = `0 ${hallY}px`;
     port.style.pointerEvents = home.travel ? 'none' : '';
   }
   function portal(x, y) {
     if (obby.hasLaunched || home.travel || x < 0 || x > world.w || y > world.h) return null;
+    if (home.room === 2 && Math.abs(x - stairsX()) < 40 && y > 45 && y < world.h - 12) return 3;
+    if (home.room === 3) return Math.abs(x - stairsX()) < 67 && y > world.h - 72 ? 2 : null;
     const top = Math.max(world.h * .39, world.h - 10 - api.bodyH() * 2.2);
     const left = x < 90 && home.room > 0, right = x > world.w - 90 && home.room < 2;
     if (!left && !right) return null;
@@ -67,7 +78,12 @@ window.createByteHome = function createByteHome(api) {
     if (autonomy.choice === 'play' || autonomy.choice === 'wander') autonomy.choice = null;
   }
   function openingTarget(target) {
-    const dir = Math.sign(target - home.room), e = api.extents();
+    const next = nextRoom(target), e = api.extents();
+    if ((home.room === 2 && next === 3) || home.room === 3) {
+      if (earth.enabled && (!earth.support.active || earth.support.edge !== 'bottom')) return null;
+      return { x: stairsX(), y: earth.enabled ? world.h - e.y : api.floorY() };
+    }
+    const dir = Math.sign(next - home.room);
     const x = dir < 0 ? e.x + 12 : world.w - e.x - 12;
     if (!earth.enabled) return { x, y: api.floorY() };
     if (!earth.support.active) return null;
@@ -88,18 +104,20 @@ window.createByteHome = function createByteHome(api) {
     return true;
   }
   function startTravel(target) {
-    const dir = Math.sign(target - home.room), next = home.room + dir;
-    if (!dir || home.travel || web.active || obby.hasLaunched) return;
+    const next = nextRoom(target), from = space(home.room), to = space(next);
+    const vertical = from.y !== to.y, dir = vertical ? 1 : Math.sign(next - home.room);
+    if (target === home.room || home.travel || web.active || obby.hasLaunched) return;
     const e = api.extents();
-    const destination = dir > 0 ? e.x + 14 : world.w - e.x - 14;
-    home.travel = { from: home.room, to: next, elapsed: 0, duration: .88,
-      fromX: home.room * world.w + byte.x, toX: next * world.w + destination, y: byte.y, dir };
+    const destination = vertical ? stairsX() : dir > 0 ? e.x + 14 : world.w - e.x - 14;
+    home.travel = { from: home.room, to: next, elapsed: 0, duration: vertical ? 1.45 : .88, vertical,
+      fromX: from.x + byte.x, toX: to.x + destination, fromY: from.y + byte.y, toY: to.y + (vertical ? api.floorY() : byte.y), dir };
     byte.targetX = byte.targetY = null; byte.facing = dir; byte.mode = 'scuttle';
     life.pointer.active = false; life.pendingFollow = false;
     api.voice('notice', .35);
   }
   function arrive(reason) {
     home.activity = null; home.journey = null;
+    autonomy.idleTime = 0;
     if (reason === 'rest') api.restHere();
     else if (reason === 'obby') api.obbyHere();
     else if (reason === 'button') { autonomy.choice = 'button'; autonomy.idleTime = 0; }
@@ -118,7 +136,8 @@ window.createByteHome = function createByteHome(api) {
   }
   function afterByteRelease(x, y) {
     const next = portal(x, y);
-    const e = api.extents(), nearOpening = next < home.room ? byte.x - e.x : world.w - byte.x - e.x;
+    const e = api.extents(), vertical = next !== null && (next === 3 || home.room === 3);
+    const nearOpening = vertical ? Math.abs(byte.x - stairsX()) : next < home.room ? byte.x - e.x : world.w - byte.x - e.x;
     if (next === null || web.active || api.pranking() || nearOpening > 96) return;
     home.journey = { target: next, reason: 'visit', item: null }; startTravel(next);
   }
@@ -154,7 +173,7 @@ window.createByteHome = function createByteHome(api) {
   function findStone() {
     if (home.found || !obby.hasLaunched || byte.y > -world.h * 1.25) return;
     home.found = true;
-    home.things.push({ id: 'stone', room: 2, x: clamp(byte.x + 45, 25, world.w - 25), y: byte.y - 80,
+    home.things.push({ id: 'stone', room: 3, x: clamp(byte.x + 45, 25, world.w - 25), y: byte.y - 80,
       vx: 40, vy: -150, angle: .2, spin: .6, r: 15, touch: 1, fromAbove: true });
     life.curious = 2; api.voice('notice', .8); save();
   }
@@ -199,17 +218,21 @@ window.createByteHome = function createByteHome(api) {
   }
   function update(dt) {
     home.time += dt; home.playCooldown = Math.max(0, home.playCooldown - dt); syncUI();
+    // The loft can be visited independently; its spring platform is always available there.
+    if (home.room === 3 && !home.travel && !obby.active) api.obbyHere();
     if (life.phase === 'sleep' && home.room === 0 && !home.slept) { home.slept = true; save(); }
     findStone(); updateThings(dt);
     if (home.travel) {
       const tr = home.travel; tr.elapsed += dt;
       const p = clamp(tr.elapsed / tr.duration, 0, 1), ease = p * p * (3 - 2 * p);
-      home.cameraX = (tr.from + (tr.to - tr.from) * ease) * world.w;
-      byte.x = tr.fromX + (tr.toX - tr.fromX) * ease - tr.from * world.w;
-      byte.y = tr.y; byte.mode = 'scuttle'; byte.facing = tr.dir;
+      const from = space(tr.from), to = space(tr.to);
+      home.cameraX = from.x + (to.x - from.x) * ease;
+      home.cameraY = from.y + (to.y - from.y) * ease;
+      byte.x = tr.fromX + (tr.toX - tr.fromX) * ease - from.x;
+      byte.y = tr.fromY + (tr.toY - tr.fromY) * ease - from.y; byte.mode = 'scuttle'; byte.facing = tr.dir;
       byte.frameClock += dt; if (byte.frameClock > .095) { byte.frameClock = 0; byte.frame = (byte.frame + 1) % 4; }
       if (p >= 1) {
-        home.room = tr.to; home.cameraX = home.room * world.w; byte.x = tr.toX - home.cameraX;
+        home.room = tr.to; home.cameraX = to.x; home.cameraY = to.y; byte.x = tr.toX - to.x; byte.y = tr.toY - to.y;
         home.travel = null; home.visits[home.room] = true; byte.mode = earth.enabled || Math.hypot(byte.vx, byte.vy) > 80 ? 'air' : 'idle';
         life.curious = 1.5;
         if (home.journey?.target === home.room) arrive(home.journey.reason);
@@ -225,8 +248,7 @@ window.createByteHome = function createByteHome(api) {
       else if (byte.mode === 'idle' || earth.enabled && earth.support.active) { byte.targetX = target.x; byte.targetY = target.y; byte.mode = 'scuttle'; }
       return;
     }
-    const platformHere = obby.active && home.room === 2;
-    const free = !byte.grabbed && !home.hand && !life.pointer.active && !web.active && !obby.hasLaunched && !platformHere && life.phase === 'awake' && byte.mode === 'idle';
+    const free = !byte.grabbed && !home.hand && !life.pointer.active && !web.active && !obby.hasLaunched && life.phase === 'awake' && byte.mode === 'idle';
     const onMat = free && !home.activity && !autonomy.choice && !earth.enabled && home.room === 0 &&
       Math.abs(byte.x - world.w * .34) < api.bodyW() * .3 && Math.abs(byte.y - api.floorY()) < 12 && Math.hypot(byte.vx, byte.vy) < 45;
     home.restBeat = onMat ? home.restBeat + dt : 0;
@@ -241,7 +263,7 @@ window.createByteHome = function createByteHome(api) {
     if (free && stone && !home.stoneHome && home.room === stone.room && home.time > 4 && !home.activity && !earth.enabled) {
       home.activity = { kind: 'collect', elapsed: 0 };
     }
-    if (home.activity && !home.hand && !byte.grabbed && !web.active && !obby.hasLaunched && !platformHere && life.phase === 'awake') {
+    if (home.activity && !home.hand && !byte.grabbed && !web.active && !obby.hasLaunched && life.phase === 'awake') {
       const act = home.activity; act.elapsed += dt;
       const item = home.things.find(v => v.id === (act.kind === 'collect' ? 'stone' : 'ball'));
       if (!item || item.room !== home.room || act.elapsed > 12 || earth.enabled) { home.activity = null; autonomy.choice = null; home.playCooldown = 18; }
@@ -280,7 +302,7 @@ window.createByteHome = function createByteHome(api) {
     for (const v of home.things) {
       const screenX = offset(v.room);
       if (screenX > world.w || screenX < -world.w) continue;
-      ctx.save(); ctx.translate(screenX, -(obby.hasLaunched ? obby.cameraY : 0)); itemShape(v); ctx.restore();
+      ctx.save(); ctx.translate(screenX, offsetY(v.room) - (obby.hasLaunched ? obby.cameraY : 0)); itemShape(v); ctx.restore();
     }
   }
   function arch(x, y, w, h, fill, stroke) {
@@ -290,7 +312,7 @@ window.createByteHome = function createByteHome(api) {
   function drawSpace(index, t) {
     const w = world.w, h = world.h, floor = h - 10;
     const bH = api.roomH(), bW = api.roomW();
-    const palette = [['#506671', '#8a9b94', '#a8b09c'], ['#efe0ba', '#f5ecdb', '#dce4cf'], ['#b0c0a8', '#e0dbc0', '#c1bb9b']][index];
+    const palette = [['#506671', '#8a9b94', '#a8b09c'], ['#efe0ba', '#f5ecdb', '#dce4cf'], ['#b0c0a8', '#e0dbc0', '#c1bb9b'], ['#cfb58b', '#e6d6b7', '#cdbd98']][index];
     const dark = api.senses.state.open && api.senses.state.camera ? clamp((.2 - api.senses.state.brightness) / .2, 0, 1) : 0;
     const gradient = ctx.createLinearGradient(0, 0, 0, h);
     palette.forEach((p, i) => gradient.addColorStop(i * .5, p)); ctx.fillStyle = gradient; ctx.fillRect(0, 0, w, h);
@@ -302,7 +324,7 @@ window.createByteHome = function createByteHome(api) {
     ctx.strokeStyle = '#685d442e'; for (let x = 12; x < w; x += 58) { ctx.beginPath(); ctx.moveTo(x, floor - 16); ctx.lineTo(x - 13, h); ctx.stroke(); }
     ctx.strokeStyle = '#eee0b37a'; ctx.beginPath(); ctx.moveTo(0, floor - 17); ctx.lineTo(w, floor - 17); ctx.stroke();
     const top = Math.max(h * .39, floor - bH * 2.2), dh = floor - top;
-    if (index > 0) {
+    if (index > 0 && index < 3) {
       arch(-64, top, 160, dh, index === 1 ? '#5d7580' : '#e6dcc3', '#947e57');
       ctx.fillStyle = index === 1 ? '#c3b0a2' : '#bdae80'; ctx.fillRect(0, floor - 14, 93, 14);
       if (index === 1) { ctx.strokeStyle = '#dad9c77a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-18, top + 114); ctx.quadraticCurveTo(27, top + 174, 62, top + 115); ctx.stroke(); ctx.fillStyle = '#c7b9a277'; ctx.beginPath(); ctx.ellipse(18, floor - 21, 47, 10, 0, 0, Math.PI * 2); ctx.fill(); }
@@ -327,24 +349,47 @@ window.createByteHome = function createByteHome(api) {
       ctx.strokeStyle = '#c3af7b44'; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(w * .5, 63, 61, 0, Math.PI * 2); ctx.stroke();
       ctx.strokeStyle = '#a78c5544'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(w - 54, 90); ctx.quadraticCurveTo(w - 45, h * .22, w - 70, h * .23); ctx.stroke();
       ctx.fillStyle = '#9eab8938'; ctx.beginPath(); ctx.ellipse(w * .51, floor - 22, w * .23, 9, 0, 0, Math.PI * 2); ctx.fill();
-    } else {
-      const hatch = w * .61;
-      ctx.fillStyle = '#36514e'; ctx.fillRect(16, 0, w - 32, 43);
-      ctx.strokeStyle = '#8b7853'; ctx.lineWidth = 7; ctx.strokeRect(14, -8, w - 28, 51);
-      ctx.strokeStyle = '#e0cc96'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(hatch - 22, 39); ctx.lineTo(hatch - 22, h * .27); ctx.moveTo(hatch + 22, 39); ctx.lineTo(hatch + 22, h * .27); for (let yy = 59; yy < h * .27; yy += 27) { ctx.moveTo(hatch - 24, yy); ctx.lineTo(hatch + 24, yy); } ctx.stroke();
+    } else if (index === 2) {
+      const hatch = stairsX();
+      ctx.fillStyle = '#a18b68'; ctx.fillRect(0, 0, w, 25);
+      ctx.fillStyle = '#4e6254'; ctx.fillRect(hatch - 82, 0, 164, 43);
+      ctx.strokeStyle = '#8b7853'; ctx.lineWidth = 7; ctx.strokeRect(hatch - 84, -8, 168, 51);
+      ctx.strokeStyle = '#897348'; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(hatch - 29, 39); ctx.lineTo(hatch - 29, floor - 24); ctx.moveTo(hatch + 29, 39); ctx.lineTo(hatch + 29, floor - 24); ctx.stroke();
+      ctx.strokeStyle = '#e0cc96'; ctx.lineWidth = 6; ctx.beginPath(); for (let yy = 64; yy < floor - 25; yy += 38) { ctx.moveTo(hatch - 29, yy); ctx.lineTo(hatch + 29, yy); } ctx.stroke();
       ctx.fillStyle = '#988862'; ctx.fillRect(w * .43, floor - 35, w * .39, 27); ctx.fillStyle = '#6d705355'; ctx.fillRect(w * .45, floor - 30, w * .35, 22);
       ctx.strokeStyle = '#c4b383'; ctx.lineWidth = 3; ctx.strokeRect(w * .43, floor - 35, w * .39, 27);
       ctx.fillStyle = '#5d796555'; ctx.beginPath(); ctx.ellipse(w * .63, floor - 51, 37, 4, 0, 0, Math.PI * 2); ctx.fill();
+    } else {
+      // A whole loft sits below the roof opening; the bounce route begins inside it.
+      ctx.fillStyle = '#9abfc5'; ctx.fillRect(12, 0, w * .56, 48);
+      ctx.strokeStyle = '#92774e'; ctx.lineWidth = 9; ctx.strokeRect(10, -8, w * .56 + 4, 60);
+      ctx.strokeStyle = '#a88d5c'; ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(0, 72); ctx.lineTo(w * .73, h * .13); ctx.lineTo(w, 50); ctx.stroke();
+      const wx = w * .65, wy = h * .29;
+      ctx.save(); ctx.fillStyle = '#9abfc5'; ctx.beginPath(); ctx.roundRect(wx - 42, wy - 52, 84, 104, 42); ctx.fill(); ctx.clip();
+      ctx.fillStyle = '#a1b6a0'; ctx.beginPath(); ctx.moveTo(wx - 38, wy + 37); ctx.lineTo(wx - 12, wy - 7); ctx.lineTo(wx + 9, wy + 14); ctx.lineTo(wx + 36, wy - 20); ctx.lineTo(wx + 36, wy + 48); ctx.lineTo(wx - 38, wy + 48); ctx.closePath(); ctx.fill();
+      ctx.restore(); ctx.strokeStyle = '#aa8953'; ctx.lineWidth = 7; ctx.beginPath(); ctx.roundRect(wx - 42, wy - 52, 84, 104, 42); ctx.stroke();
+      ctx.strokeStyle = '#c3a471'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(wx, wy - 49); ctx.lineTo(wx, wy + 48); ctx.moveTo(wx - 38, wy); ctx.lineTo(wx + 38, wy); ctx.stroke();
+      ctx.fillStyle = '#9e8b68'; ctx.fillRect(w * .13, h * .4, w * .32, 9);
+      ctx.fillStyle = '#d4c29a'; ctx.beginPath(); ctx.ellipse(w * .28, h * .4 - 4, 24, 6, 0, 0, Math.PI * 2); ctx.fill();
+      const hatch = stairsX();
+      ctx.fillStyle = '#4e6254'; ctx.fillRect(hatch - 65, floor - 31, 130, 41);
+      ctx.strokeStyle = '#b99c68'; ctx.lineWidth = 5; ctx.strokeRect(hatch - 67, floor - 33, 134, 43);
+      ctx.strokeStyle = '#e0cc96'; ctx.lineWidth = 4; ctx.beginPath(); for (let yy = floor - 27; yy < floor + 10; yy += 13) { ctx.moveTo(hatch - 28, yy); ctx.lineTo(hatch + 28, yy); } ctx.stroke();
     }
     if (dark > 0) { ctx.fillStyle = `rgba(16,30,38,${dark * .57})`; ctx.fillRect(0, 0, w, h); }
-    if (home.journey && index === home.room) { const dir = Math.sign(home.journey.target - home.room); ctx.fillStyle = `rgba(255,239,184,${.06 + Math.sin(t * .005) * .025})`; ctx.fillRect(dir < 0 ? 0 : w - 94, top, 94, dh); }
+    if (home.journey && index === home.room) {
+      const next = nextRoom(home.journey.target), vertical = index === 3 || next === 3;
+      ctx.fillStyle = `rgba(255,239,184,${.06 + Math.sin(t * .005) * .025})`;
+      if (vertical) ctx.fillRect(stairsX() - 34, index === 3 ? floor - 36 : 43, 68, index === 3 ? 46 : floor - 67);
+      else ctx.fillRect(next < index ? 0 : w - 94, top, 94, dh);
+    }
   }
   function draw(t) {
-    for (let index = 0; index < 3; index++) {
-      const ox = offset(index); if (ox < -world.w || ox > world.w) continue;
-      ctx.save(); ctx.translate(ox, 0); ctx.beginPath(); ctx.rect(0, 0, world.w, world.h); ctx.clip(); drawSpace(index, t); ctx.restore();
+    for (let index = 0; index < 4; index++) {
+      const ox = offset(index), oy = offsetY(index); if (ox < -world.w || ox > world.w) continue;
+      ctx.save(); ctx.translate(ox, oy); ctx.beginPath(); ctx.rect(0, 0, world.w, world.h); ctx.clip(); drawSpace(index, t); ctx.restore();
     }
-    ctx.save(); ctx.translate(offset(), 0); ctx.fillStyle = '#364d3a24';
+    ctx.save(); ctx.translate(offset(), offsetY()); ctx.fillStyle = '#364d3a24';
     if (!earth.enabled && Math.abs(byte.y - api.floorY()) < api.bodyH() * .7) { ctx.beginPath(); ctx.ellipse(byte.x, world.h - 26, api.bodyW() * .43, 6, 0, 0, Math.PI * 2); ctx.fill(); }
     if (earth.enabled && !obby.hasLaunched) {
       const down = api.down(), distances = [];
@@ -361,8 +406,8 @@ window.createByteHome = function createByteHome(api) {
   }
   document.addEventListener('visibilitychange', () => { if (document.hidden) { if (home.hand) endHand(home.hand.id, true); save(); } });
   window.addEventListener('pagehide', save);
-  return Object.assign(home, { resize, offset, syncUI, portal, request, cancel, update, draw, drawThings, beginHand, moveHand, endHand, afterByteRelease, save, drop,
+  return Object.assign(home, { resize, space, offset, offsetY, stairsX, syncUI, portal, request, cancel, update, draw, drawThings, beginHand, moveHand, endHand, afterByteRelease, save, drop,
     rest() { if (home.room === 0) api.restHere(); else request(0, 'rest'); },
-    obby() { if (home.room === 2) api.obbyHere(); else request(2, 'obby'); },
+    obby() { if (home.room === 3) api.obbyHere(); else request(3, 'obby'); },
   });
 };

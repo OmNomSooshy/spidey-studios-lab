@@ -4,17 +4,18 @@ This is a noncanonical candidate on `experiment/sunburn-iii-2026-10-06`, forked 
 
 ## The thesis
 
-A home becomes meaningful when the creature goes somewhere for a reason, and when what happened there remains after he leaves. Three neighboring spaces, two movable belongings, one preferred sleeping place, and the existing world above are enough to test that now.
+A home becomes meaningful when the creature goes somewhere for a reason, and when what happened there remains after he leaves. Three neighboring downstairs spaces, one upstairs loft, two movable belongings, one preferred sleeping place, and the existing world above are enough to test that now.
 
-The quiet nook is left of the aperture hall. The play space and its open loft are to the right. Upstairs is physically above that play space. There is no room picker, travel menu, care panel, score, currency, or tutorial sequence.
+The quiet nook is left of the aperture hall. The play space is to the right. Its full-height ladder connects to a separate loft directly above it. The obby begins in that upstairs room and continues outside through the roof. There is no room picker, travel menu, care panel, score, currency, or tutorial sequence.
 
 ## What Human Fingers can discover
 
 - Invite Byte through the visible archway with a finger, or carry him into the opening and release. He walks there and the camera follows the passage. Pulling him past an ordinary outer boundary still produces containment and squish. A web planted in a room keeps him in that room until its endpoint is released.
 - Leave him calmly on the nook's mat. After a readable quiet opportunity he makes the existing physical sleeping strand, hangs, settles, and sleeps. Picking him up or the existing environmental stimuli can wake him. This is a bodily rest activity, not an energy refill button.
 - Grab, roll, throw, or move the cork ball. Drag it to a doorway and release; Byte takes it through the opening and puts it down in the next space. It can be brought to the nook or hall rather than being a play-room icon.
-- Encounter a descending platform in the play space. It waits for real contact. Leave it there, go elsewhere, and come back: the opportunity remains where it arrived. Place Byte onto it to bounce into the existing tilt/web climb.
-- Find one blue stone sufficiently far upstairs. It has a real falling body and can return downstairs. Byte can pick it up, carry it through the hall, and leave it in his nook. Human Fingers can subsequently move it elsewhere.
+- Touch the ladder in the play space, or carry Byte into it and release, to go upstairs. The camera follows his climb into a separate full-size loft. Bring a ball up, use the normal room web, or return downstairs through the floor hatch without starting the obby.
+- A spring platform descends on entering the loft and waits for real contact. Entering the room never auto-launches Byte. Place him onto it to bounce through the roof into open sky and the existing tilt/web climb. A missed descent returns him to the loft at normal room scale; the floor hatch then leads downstairs. The spring is available again without waiting for a random autonomous opportunity.
+- Find one blue stone sufficiently far above the roof. It has a real falling body and can return downstairs. Byte can pick it up, carry it through the hall, and leave it in his nook. Human Fingers can subsequently move it elsewhere.
 - Return after a reload to the last occupied space and the belongings' last saved locations. A faint silk trace remains once Byte has slept in his nook. There is no absence punishment or simulated neglect.
 
 ## What Byte does independently
@@ -35,7 +36,7 @@ The sensing aperture is in the central hall. Its camera light patch is local the
 
 Camera/microphone/motion acquisition, permission handling, signal processing and background shutdown are inherited. No new sensor APIs or recording systems were added. Phone inertia and breath pressure also affect the loose belongings. Sensing can remain open while Byte is elsewhere or upstairs, but the aperture itself stays downstairs rather than following as HUD. The existing global mute utility remains available.
 
-The skywell, not a Play button, contains the platform arrival. Its home walls scroll below Byte on ascent and come back into view during descent. Existing platform support, automatic bounce, tilt steering, held screen-point rope and momentum-preserving release remain authoritative. Upstairs continues using the candidate's existing screen-relative climbing grammar. Earth-owned boundary ground downstairs is still continuous and never snapped to four directions.
+The loft contains the platform arrival. Its floor hatch connects to the downstairs ladder; its roof opening connects to the outdoor obby. The loft walls and roof scroll below Byte on ascent and come back into view during descent. Open sky and clouds distinguish the outside from the interior. Existing platform support, automatic bounce, tilt steering, held screen-point rope and momentum-preserving release remain authoritative. The outdoor obby continues using the candidate's existing screen-relative climbing grammar. Earth-owned boundary ground inside the house is still continuous and never snapped to four directions.
 
 Room and obby body scales, HQ assets, spool origin, deployed player-rope length, grab/flick, deformation and collision forces retain their existing authority. The place uses a fixed room reference for furniture presentation, so shrinking traversal Byte does not shrink his home. Two narrow containment corrections account for impact deformation and late acting/scale changes before presentation; they do not reduce angular velocity, lock orientation, or change restitution.
 
@@ -47,7 +48,7 @@ Only the last room, object locations, first stone discovery/claim, and a slept-h
 
 ## Revisions and rejected directions
 
-- Rejected a room menu and a generalized home framework at design time. Built three authored spaces with actual trips and things already happening in them.
+- Rejected a room menu and a generalized home framework at design time. Built four authored spaces with actual trips and things already happening in them.
 - Kept a short authored doorway crossing instead of rewriting all established physics into a multi-screen solver. This is an explicit compromise, not a claim of unrestricted continuous architecture.
 - Expanded the initial narrow door hit region to agree with the visible curved opening. Neighboring room art initially bled across the portal; each room background is now clipped correctly.
 - Removed the inherited miniature sensing HUD upstairs. The aperture belongs downstairs; its acquired signals remain live until closed or backgrounded.
@@ -58,15 +59,21 @@ Only the last room, object locations, first stone discovery/claim, and a slept-h
 - An early test incorrectly required Byte to remain beside his returned stone. Revised the test to inspect its arrival and persistent location without removing his next independent choice.
 - A repeated-rest test incorrectly restarted a creature already hanging from his sleeping strand. It now lets the active rest routine finish rather than replacing its phase in the test.
 
+## Upstairs correction
+
+Management rejected the original "upstairs" as only the obby. It is now a separately visitable loft, with a usable ladder, floor hatch, room-scale physics and belongings. A waiting platform stays local to that room; it no longer suppresses normal life there or follows the camera before launch. The old climbing physics, support footprint, tilt and held-rope grammar remain unchanged. The stone comes back through the loft and ladder before crossing the downstairs hall.
+
+An actual-touch route check exposed an almost immediate autonomous departure after arrival, caused by reusing idle time accumulated before the trip. Arrival now restarts that idle opportunity timer. The authored-cycle endurance fixture now suppresses unrelated random selections during its prescribed cycles, then explicitly releases arbitration for the unscripted portion.
+
 ## Self-QA
 
-The final focused suites pass all 58 scenarios (10 creature, 10 device, 18 sensing, 20 place), alongside the six capture, motion, stress, endurance and playthrough runs. QA is opt-in only on localhost with `?probe`; production exposes no simulation handles.
+The initial candidate passed 58 focused scenarios and six extended runs. The upstairs correction reruns the 58 focused scenarios, the sensor stress, creature/place endurance and normal-frame playthrough, plus a dedicated 10-check ladder/loft/outdoor route probe. The correction runs include 60 seconds of combined sensor stress, 344 seconds of creature endurance and 556 seconds/66 passages through all four rooms. The route probe fixes random horizontal platform layout for reproducibility and supplies a controlled missed route; actual touch handlers, bounce, rope, scrolling and home-return solvers remain authoritative. QA is opt-in only on localhost with `?probe`; production exposes no simulation handles.
 
 - CDP touch checks cover grab/hold/flick, every squish boundary, player rope payout/plant/slack/release, sleep/wake, scheming and the repaired Earth prank, continuously varying support/corners, platform entry, traversal scale, real held-rope rescue and return home.
 - Device checks cover permissions and denial, missing sensor data, audio gesture/mute persistence, secondary pointers, cancellation, backgrounding, viewport changes, displaced-puck state, Earth-side aiming, and the obby rescue.
 - Sensing checks cover real stream acquisition/shutdown, camera centroids and foreground/exposure separation, dark sleep/light wake, side-ground light/voice/dozing, voice/noise/DC/echo handling, breath, player tether ownership, charger events, cancellation and null samples.
 - Place checks cover both doors, camera motion, carried Byte, carried and remembered belongings, mat rest, toy kicks, waiting-platform departure/return, stone return/claim, cross-space prank and platform coexistence, Earth-side doorway eligibility, sensory travel/forces, player-web blocking, interruptions and resize/background recovery.
-- An uninterrupted normal-animation-loop browser visit uses actual emulated touches only: arrive, visit nook, place Byte on mat, sleep/wake, return through hall, visit play space, bring the physical toy back and reload. It does not call routine or simulation functions.
+- An uninterrupted normal-animation-loop browser visit uses actual emulated touches only: arrive, visit nook, place Byte on mat, sleep/wake, return through hall, visit play space, use the ladder to visit the separate loft without launching, descend to the play space, bring the physical toy back and reload. It does not call routine or simulation functions.
 - A full browser capture pipeline uses reproducible video/audio fixtures through actual getUserMedia, camera pixels and Web Audio. Trusted virtual hardware emits DeviceMotion events. Combined sensor stress runs for 60 simulated seconds; separate inherited creature and place endurance runs exercise repeated autonomy and house/upstairs cycles for several minutes each.
 
 These are Chromium simulations, browser captures and virtual hardware, not actual Safari/iPhone or Android acceptance. Door discoverability, travel feel, sleep/carry readability, microphone direction/classification, real device sensor signs, and sustained phone performance/battery use need Human Eyes and Human Fingers. Fixture-based success does not claim physical-room accuracy.
@@ -83,6 +90,7 @@ node qa/mobile-probe.cjs
 node qa/device-probe.cjs
 node qa/room-probe.cjs
 node qa/home-probe.cjs
+node qa/upstairs-probe.cjs
 node qa/capture-probe.cjs
 node qa/phone-sensor-probe.cjs
 node qa/sensor-stress-probe.cjs
@@ -95,12 +103,12 @@ Run suites sequentially for stable touch timing. Raw fixtures, videos, screensho
 
 ## Accepted weaknesses and Management decisions
 
-The three spaces use the same bounded physics room while occupied. A roughly 0.88-second authored camera/body crossing pauses ordinary body integration and creature touch input; accumulated sensor momentum resumes on arrival. This needs a phone feel judgment. It is not a general continuous level solver, and a planted player anchor does not span rooms.
+The four spaces use the same bounded physics room while occupied. A roughly 0.88-second horizontal passage or 1.45-second ladder climb pauses ordinary body integration and creature touch input; accumulated sensor momentum resumes on arrival. This needs a phone feel judgment. It is not a general continuous level solver, and a planted player anchor does not span rooms.
 
-Carrying is an authored pickup with a rigid approximate hand attachment, not articulated hands or a second rope system. Props have simple circular boundaries and coarse body contact. Touching a loose object grabs it; upstairs, its small hit region therefore takes priority over a grapple anchor at that exact point. The loft ladder and most furniture are scenery; the mat, movable belongings, toy tray lip, sleeping strand and platforms provide the actual affordances. There is no furniture collision mesh or wall adhesion.
+Carrying is an authored pickup with a rigid approximate hand attachment, not articulated hands or a second rope system. Props have simple circular boundaries and coarse body contact. Touching a loose object grabs it; upstairs, its small hit region therefore takes priority over a grapple anchor at that exact point. The ladder and floor hatch are authored physical passages; most furniture is scenery; the mat, movable belongings, toy tray lip, sleeping strand and platforms provide the actual affordances. There is no furniture collision mesh or wall adhesion.
 
-A visit may be declined under Earth gravity when the supporting boundary cannot physically lead to that doorway. Human Fingers can still carry Byte into the opening. Automatic trips do not invent wall crawling or airborne steering to overcome the current ground frame.
+A visit may be declined under Earth gravity when the supporting boundary cannot physically lead to that doorway or ladder foot. Human Fingers can still carry Byte into the opening and release. Automatic trips do not invent wall crawling or airborne steering to overcome the current ground frame.
 
-The home plan, room-bound sensing control, mat invitation, toy-carry grammar, and one-time stone claim are experiments for Management to evaluate, not new canon. Sensor limitations from Through the Glass remain, including device-dependent exposure, breath classification, hardware-bottom assumptions and absent Battery Status on Safari. Sleeping still reuses the approved closed-eye pose and existing physical strand, rather than new sleep artwork.
+The home plan, ladder route, room-bound sensing control, mat invitation, toy-carry grammar, and one-time stone claim are experiments for Management to evaluate, not new canon. Sensor limitations from Through the Glass remain, including device-dependent exposure, breath classification, hardware-bottom assumptions and absent Battery Status on Safari. Sleeping still reuses the approved closed-eye pose and existing physical strand, rather than new sleep artwork.
 
 The strongest observation from building it: a sleeping pose reads as a state; going to his spot, making a strand, waking and leaving evidence reads as a life. An object that can remain somewhere after both the finger and Byte have left does more for place than another labeled room. Whether Lilli finds those relationships without explanation is the next evidence.

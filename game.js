@@ -176,7 +176,7 @@
     byte.spin += lever * impulse * inverseInertia;
   }
   function updateLife(dt) {
-    const upstairsHere = obby.hasLaunched || (obby.active && home.room === 2);
+    const upstairsHere = obby.hasLaunched;
     life.scale += ((obby.hasLaunched ? obby.scale : 1) - life.scale) * (1 - Math.exp(-dt * 7));
     life.elapsed += dt;
     if (life.pendingFollow && byte.targetX !== null && !web.active && !upstairsHere && !byte.grabbed && (earth.enabled ? earth.support.active : byte.mode === 'idle' && byte.y >= floorY() - 8)) byte.mode = 'scuttle';
@@ -223,7 +223,7 @@
     } else if (life.phase === 'sleep' && life.elapsed > 12) {
       voice('sleep', .3); life.elapsed = 0;
     }
-    if (life.phase !== 'awake' && (earth.enabled || obby.hasLaunched || (obby.active && home.room === 2) || web.active)) wakeByte();
+    if (life.phase !== 'awake' && (earth.enabled || obby.hasLaunched || web.active)) wakeByte();
     if (earth.enabled) gravityButton.style.setProperty('--down-angle', `${earthBodyAngle() * 180 / Math.PI}deg`);
     else gravityButton.style.setProperty('--down-angle', '0deg');
   }
@@ -254,10 +254,19 @@
     const sky = ctx.createLinearGradient(0, 0, 0, h);
     const darkness = room.state.open && room.state.camera && room.state.lastFrame > 0 ? clamp((.2 - room.state.brightness) / .2, 0, 1) : 0;
     const dim = (day, night) => day.map((v, i) => v + (night[i] - v) * darkness);
-    sky.addColorStop(0, mix(dim([176,192,168], [38,53,59]), [39,71,74], altitude));
-    sky.addColorStop(.55, mix(dim([224,219,192], [49,65,67]), [82,113,112], altitude));
-    sky.addColorStop(1, mix(dim([193,187,155], [67,83,77]), [154,178,154], altitude));
+    sky.addColorStop(0, mix(dim([147,184,199], [38,53,59]), [63,109,143], altitude));
+    sky.addColorStop(.55, mix(dim([178,207,212], [49,65,67]), [130,169,187], altitude));
+    sky.addColorStop(1, mix(dim([203,222,220], [67,83,77]), [195,217,216], altitude));
     ctx.fillStyle = sky; ctx.fillRect(0, 0, w, h);
+    // The loft's roof recedes below; these clouds belong to the open air beyond it.
+    ctx.fillStyle = `rgba(247,246,227,${.4 * (1 - darkness) + .05})`;
+    for (let i = 0; i < 4; i++) {
+      const x = (i % 2 ? .82 : .15) * w + Math.sin(t * .00004 + i) * 16;
+      const y = ((i * h * .42 + camera * .2) % (h * 1.6) + h * 1.6) % (h * 1.6) - h * .3;
+      ctx.beginPath(); ctx.ellipse(x, y, w * .21, 15, 0, 0, Math.PI * 2); ctx.ellipse(x - 16, y - 8, w * .11, 19, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    const roofY = -camera;
+    ctx.fillStyle = '#92774e'; ctx.fillRect(0, roofY - 14, 12, 14); ctx.fillRect(w * .56 + 16, roofY - 14, w * .44, 14);
     const target = !obby.hasLaunched ? buttonTargetInCanvas() : { x: w * .72, y: -60 };
     const glow = ctx.createRadialGradient(target.x, target.y, 0, target.x, target.y, w * 1.25);
     glow.addColorStop(0, altitude > .5 ? '#ffe8ad25' : '#fff0bf70'); glow.addColorStop(1, '#fff0bf00');
@@ -298,8 +307,6 @@
       ctx.beginPath(); ctx.arc(life.pointer.x, life.pointer.y, 12 + Math.sin(t * .005) * 2, 0, Math.PI * 2); ctx.stroke();
       ctx.restore();
     }
-    ctx.strokeStyle = '#756f5022'; ctx.lineWidth = 12;
-    ctx.strokeRect(0, 0, w, h);
   }
 
 
@@ -399,7 +406,7 @@
       if (life.pointer.active || Math.hypot(byte.vx, byte.vy) > 180 || sensed.brightness > .19 || sensed.level > .018 || outside.wind > .04) outside.dozing = false;
       else outside.duck = Math.max(outside.duck, .55);
     }
-    const unoccupied = !byte.grabbed && !life.pointer.active && !web.active && !obby.hasLaunched && !(obby.active && home.room === 2) && !home.travel && !home.journey && !home.activity && (buttonWeb.phase === 'waiting' || buttonWeb.phase === 'released');
+    const unoccupied = !byte.grabbed && !life.pointer.active && !web.active && !obby.hasLaunched && !home.travel && !home.journey && !home.activity && (buttonWeb.phase === 'waiting' || buttonWeb.phase === 'released');
     if (sensed.camera && sensed.darkFor > 3 && unoccupied && life.phase === 'awake' && !outside.dozing && byte.mode === 'idle' && t - Math.max(outside.stimulusAt, life.lastTouch) > 2200) {
       autonomy.choice = null; autonomy.idleTime = 0;
       outside.dream = true;
@@ -1169,6 +1176,7 @@
   }
   function beginObby() { home.obby(); }
   function beginObbyHere() {
+    if (home.room !== 3 || obby.active) return;
     obby.active = true;
     obby.phase = 'dropping';
     obby.idleTime = 0;
@@ -1179,7 +1187,7 @@
     obby.web.active = false;
     startMotionListener();
     const width = Math.min(Math.max(spriteW * .94, 116), Math.max(80, world.w - 24));
-    const x = clamp(byte.x - width * .5 + world.w * .24, 8, Math.max(8, world.w - width - 8));
+    const x = clamp(world.w * .3 - width * .5, 8, Math.max(8, world.w - width - 8));
     obby.fallingPlatform = {
       x, y: -24, targetY: world.h * .62,
       w: width, h: 18, vy: 0,
@@ -1205,7 +1213,7 @@
     fillPlatformsAhead();
   }
   function updateAutonomy(dt) {
-    if (obby.hasLaunched || (obby.active && home.room === 2) || home.travel || home.journey || home.activity || life.phase !== 'awake') return;
+    if (obby.hasLaunched || home.travel || home.journey || home.activity || life.phase !== 'awake') return;
     const idle = byte.mode === 'idle' && !byte.grabbed && !web.active && !life.pointer.active;
     if (!idle) {
       if (autonomy.choice === 'obby' || (autonomy.choice === 'button' && buttonWeb.phase === 'waiting')) autonomy.choice = null;
@@ -1255,6 +1263,8 @@
       }
     }
 
+    if (!obby.hasLaunched) { obby.cameraY = 0; return; }
+
     if (obby.hasLaunched && byte.vy > 80) {
       obby.fallingTime += dt;
       if (obby.fallingTime > .82) obby.phase = 'fall';
@@ -1276,7 +1286,7 @@
     }
   }
   function landOnObbyPlatform(previousY) {
-    if (!obby.active || home.room !== 2 || byte.vy <= 0) return;
+    if (!obby.active || home.room !== 3 || byte.vy <= 0) return;
     const previousBottom = previousY + halfH();
     const currentBottom = byte.y + halfH();
     const supportHalf = bodyW() * .18;
@@ -1594,12 +1604,12 @@
       ctx.save(); ctx.translate(0, -cameraY); home.draw(t); ctx.restore();
     } else home.draw(t);
     ctx.save();
-    ctx.translate(obby.hasLaunched ? 0 : home.offset(1), 0);
+    ctx.translate(obby.hasLaunched ? 0 : home.offset(1), obby.hasLaunched ? 0 : home.offsetY(1));
     drawOutside(t);
     ctx.restore();
-    ctx.save(); ctx.translate(obby.hasLaunched ? 0 : home.offset(2), 0);
+    ctx.save(); ctx.translate(obby.hasLaunched ? 0 : home.offset(3), obby.hasLaunched ? 0 : home.offsetY(3));
     drawPlatforms(); ctx.restore();
-    ctx.save(); ctx.translate(obby.hasLaunched ? 0 : home.offset(), 0);
+    ctx.save(); ctx.translate(obby.hasLaunched ? 0 : home.offset(), obby.hasLaunched ? 0 : home.offsetY());
     drawNest();
 
     const { frame, frameW, bob, squeezeX, squeezeY, angle } = bodyGeometry(t);

@@ -30,7 +30,7 @@ const url = (process.env.BYTE_QA_URL || 'http://127.0.0.1:4191/') + '?probe';
     }, seconds);
   }
   async function place(page, room, x = 150) {
-    await page.evaluate(({room,x}) => { const q = __byteProbe; q.home.cancel(); q.home.travel=q.home.journey=q.home.activity=null; q.home.room=room; q.home.cameraX=room*q.world.w;
+    await page.evaluate(({room,x}) => { const q = __byteProbe; q.home.cancel(); q.home.travel=q.home.journey=q.home.activity=null; q.home.room=room; const pos=q.home.space(room);q.home.cameraX=pos.x;q.home.cameraY=pos.y;
       q.wakeByte(); q.stopEarthGravity(); q.finishObby(); q.life.pointer.active=false; q.autonomy.choice='qa';
       Object.assign(q.byte,{x,y:q.floorY(),vx:0,vy:0,angle:0,spin:0,mode:'idle',targetX:null,targetY:null,grabbed:false}); q.draw(performance.now()); }, {room,x});
   }
@@ -80,26 +80,26 @@ const url = (process.env.BYTE_QA_URL || 'http://127.0.0.1:4191/') + '?probe';
     const{context,page}=await open();await place(page,2,100);await page.evaluate(()=>{__byteProbe.autonomy.choice='play'});const trace=await step(page,9);
     assert(trace.some(v=>v.ballVy<-250));assert(trace.some(v=>v.ballY<780));assert.equal(await page.evaluate(()=>__byteProbe.home.room),2);await context.close();
   });
-  await check('the upstairs opportunity takes Byte to the skywell, waits, and requires physical platform contact',async()=>{
-    const{context,page,touch}=await open();await page.evaluate(()=>__byteProbe.beginObby());await step(page,5);
+  await check('the upstairs opportunity takes Byte to the loft, waits, and requires physical platform contact',async()=>{
+    const{context,page,touch}=await open();await page.evaluate(()=>__byteProbe.beginObby());await step(page,8);
     let r=await page.evaluate(()=>({room:__byteProbe.home.room,phase:__byteProbe.obby.phase,launched:__byteProbe.obby.hasLaunched,p:__byteProbe.obby.platforms[0],byte:{x:__byteProbe.byte.x,y:__byteProbe.byte.y},half:__byteProbe.halfH()}));
-    assert.equal(r.room,2);assert.equal(r.phase,'waiting');assert(!r.launched&&r.p);await page.screenshot({path:path.join(out,'skywell-waiting.png'),scale:'css'});
+    assert.equal(r.room,3);assert.equal(r.phase,'waiting');assert(!r.launched&&r.p);await page.screenshot({path:path.join(out,'loft-waiting.png'),scale:'css'});
     await touch('touchStart',r.byte.x,r.byte.y-20);await touch('touchMove',r.p.x+r.p.w*.5,r.p.y-r.half-20);await page.waitForTimeout(180);await touch('touchEnd');await step(page,.7);
     assert(await page.evaluate(()=>__byteProbe.obby.hasLaunched));await context.close();
   });
-  await check('a waiting platform stays in its skywell while Byte can leave, sleep elsewhere and return to it',async()=>{
-    const {context,page,touch}=await open();await place(page,2);await page.evaluate(()=>__byteProbe.beginObby());await step(page,1);
+  await check('a waiting platform stays in its loft while Byte can leave, sleep elsewhere and return to it',async()=>{
+    const {context,page,touch}=await open();await place(page,3);await page.evaluate(()=>__byteProbe.beginObby());await step(page,1);
     const platform=await page.evaluate(()=>({...__byteProbe.obby.platforms[0]}));
-    await touch('touchStart',75,630);await touch('touchEnd');await step(page,4);assert.equal(await page.evaluate(()=>__byteProbe.home.room),1);
+    await touch('touchStart',250,810);await touch('touchEnd');await step(page,4);assert.equal(await page.evaluate(()=>__byteProbe.home.room),2);
     await page.evaluate(()=>__byteProbe.beginRest());await step(page,9);assert.equal(await page.evaluate(()=>__byteProbe.life.phase),'sleep');
-    await page.evaluate(()=>{__byteProbe.wakeByte();__byteProbe.home.request(2)});await step(page,7);
+    await page.evaluate(()=>{__byteProbe.wakeByte();__byteProbe.home.request(3)});await step(page,9);
     const r=await page.evaluate(()=>({room:__byteProbe.home.room,active:__byteProbe.obby.active,launched:__byteProbe.obby.hasLaunched,p:__byteProbe.obby.platforms[0]}));
-    assert.equal(r.room,2);assert(r.active&&!r.launched);assert.equal(r.p.x,platform.x);assert.equal(r.p.y,platform.y);await context.close();
+    assert.equal(r.room,3);assert(r.active&&!r.launched);assert.equal(r.p.x,platform.x);assert.equal(r.p.y,platform.y);await context.close();
   });
   await check('a found upstairs stone falls back into the home and Byte carries it to his nook',async()=>{
-    const{context,page}=await open();await place(page,2);await page.evaluate(()=>{const q=__byteProbe;q.beginObby();q.obby.fallingPlatform=null;q.obby.active=true;q.obby.hasLaunched=true;q.obby.phase='fall';q.obby.platforms=[];q.obby.cameraY=-1400;q.byte.mode='air';q.byte.y=-q.world.h*1.4;q.byte.vy=500;});
-    for (let i=0;i<100;i++) { await step(page,.2); if (await page.evaluate(()=>__byteProbe.home.stoneHome&&__byteProbe.home.room===0)) break; }
-    const r=await page.evaluate(()=>({found:__byteProbe.home.found,home:__byteProbe.home.stoneHome,room:__byteProbe.home.room,stone:__byteProbe.home.things.find(v=>v.id==='stone'),obby:__byteProbe.obby.active}));
+    const{context,page}=await open();await place(page,3);await page.evaluate(()=>{const q=__byteProbe;q.beginObby();q.obby.fallingPlatform=null;q.obby.active=true;q.obby.hasLaunched=true;q.obby.phase='fall';q.obby.platforms=[];q.obby.cameraY=-1400;q.byte.mode='air';q.byte.y=-q.world.h*1.4;q.byte.vy=500;});
+    for (let i=0;i<150;i++) { await step(page,.2); if (await page.evaluate(()=>__byteProbe.home.stoneHome&&__byteProbe.home.room===0)) break; }
+    const r=await page.evaluate(()=>({found:__byteProbe.home.found,home:__byteProbe.home.stoneHome,room:__byteProbe.home.room,stone:__byteProbe.home.things.find(v=>v.id==='stone'),obby:__byteProbe.obby.hasLaunched}));
     assert(r.found);assert(!r.obby);assert(r.home);assert.equal(r.room,0);assert.equal(r.stone.room,0);await page.screenshot({path:path.join(out,'treasure-home.png'),scale:'css'});await context.close();
   });
   await check('the repaired prank travels back to the aperture, schemes, dislodges its control and activates Earth mode',async()=>{
@@ -107,7 +107,7 @@ const url = (process.env.BYTE_QA_URL || 'http://127.0.0.1:4191/') + '?probe';
     const r=await page.evaluate(()=>({room:__byteProbe.home.room,loose:__byteProbe.buttonBody.loose,earth:__byteProbe.earth.enabled,phase:__byteProbe.buttonWeb.phase}));assert.equal(r.room,1);assert(r.loose&&r.earth);assert.equal(r.phase,'released');await context.close();
   });
   await check('a platform left waiting upstairs does not suppress the downstairs gravity prank',async()=>{
-    const {context,page}=await open();await place(page,2);await page.evaluate(()=>__byteProbe.beginObby());await step(page,1);
+    const {context,page}=await open();await place(page,3);await page.evaluate(()=>__byteProbe.beginObby());await step(page,1);
     await page.evaluate(()=>__byteProbe.home.request(1));await step(page,4);await page.evaluate(()=>{__byteProbe.autonomy.choice='button'});await step(page,9);
     const r=await page.evaluate(()=>({platform:__byteProbe.obby.platforms.length,active:__byteProbe.obby.active,launched:__byteProbe.obby.hasLaunched,earth:__byteProbe.earth.enabled,loose:__byteProbe.buttonBody.loose}));
     assert(r.active&&!r.launched&&r.platform===1&&r.earth&&r.loose);await context.close();

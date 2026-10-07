@@ -15,7 +15,7 @@ const out=process.env.BYTE_QA_OUTPUT || require('node:path').join(require('node:
   return {x:p.byte.x,y:p.byte.y,vx:p.byte.vx,vy:p.byte.vy,mode:p.byte.mode,phase:p.life.phase};
  },seconds)}
  async function reset(){await page.evaluate(()=>{
- const p=__byteProbe;p.home.cancel();p.home.travel=p.home.journey=p.home.activity=null;p.home.room=1;p.home.cameraX=p.world.w;p.paused=true;p.stopEarthGravity();p.finishObby();p.wakeByte();p.life.scale=1;p.life.welcomed=true;p.life.pet=0;p.life.curious=0;p.life.pendingFollow=false;p.life.phase='awake';p.life.pointer.active=false;p.life.nest.active=false;p.life.nest.fade=0;
+ const p=__byteProbe;p.home.cancel();p.home.travel=p.home.journey=p.home.activity=null;p.home.room=1;p.home.cameraX=p.world.w;p.home.cameraY=0;p.paused=true;p.stopEarthGravity();p.finishObby();p.wakeByte();p.life.scale=1;p.life.welcomed=true;p.life.pet=0;p.life.curious=0;p.life.pendingFollow=false;p.life.phase='awake';p.life.pointer.active=false;p.life.nest.active=false;p.life.nest.fade=0;
  Object.assign(p.byte,{x:p.world.w*.45,y:p.floorY(),vx:0,vy:0,angle:0,spin:0,mode:'idle',grabbed:false,squash:0,stretch:0,wallSquish:0,grabSquishX:0,grabSquishY:0,targetX:null,targetY:null});p.web.active=false;p.web.planted=false;p.autonomy.choice='qa-hold';p.buttonWeb.phase='waiting';p.buttonWeb.idleTime=0;p.buttonBody.loose=false;p.buttonBody.stationary=false;
  const b=document.querySelector('#gravity-toggle');b.classList.remove('gravity-loose');b.style.left='';b.style.top='';b.style.right='';b.style.bottom='';
  });await advance(.02)}
@@ -72,7 +72,7 @@ const out=process.env.BYTE_QA_OUTPUT || require('node:path').join(require('node:
  });
  await reset();
  await check('Byte makes a physical sleeping web and touch wakes him',async()=>{
-  await page.evaluate(()=>{__byteProbe.home.room=0;__byteProbe.home.cameraX=0;__byteProbe.autonomy.choice='rest';__byteProbe.beginRest()});
+  await page.evaluate(()=>{__byteProbe.home.room=0;__byteProbe.home.cameraX=0;__byteProbe.home.cameraY=0;__byteProbe.autonomy.choice='rest';__byteProbe.beginRest()});
   const trace=[];for(let i=0;i<12;i++){trace.push(await advance(.4));}
   console.log('resttrace',JSON.stringify(trace));
   const s=await page.evaluate(()=>({phase:__byteProbe.life.phase,active:__byteProbe.life.nest.active,y:__byteProbe.byte.y,floor:__byteProbe.floorY(),frame:__byteProbe.bodyGeometry().frame.src}));
@@ -104,7 +104,7 @@ const out=process.env.BYTE_QA_OUTPUT || require('node:path').join(require('node:
  });
  await reset();
  await check('first platform waits; player placement starts climb; web and fall return home',async()=>{
-  await page.evaluate(()=>{__byteProbe.home.room=2;__byteProbe.home.cameraX=__byteProbe.world.w*2;__byteProbe.beginObby()});await advance(2);
+  await page.evaluate(()=>{__byteProbe.home.room=3;__byteProbe.home.cameraX=__byteProbe.world.w*2;__byteProbe.home.cameraY=-__byteProbe.world.h;__byteProbe.beginObby()});await advance(2);
   let s=await page.evaluate(()=>({phase:__byteProbe.obby.phase,launched:__byteProbe.obby.hasLaunched,p:__byteProbe.obby.platforms[0],byte:{x:__byteProbe.byte.x,y:__byteProbe.byte.y},half:__byteProbe.halfH()}));
   assert.equal(s.phase,'waiting');assert(!s.launched);await shot('candidate-platform');
   await touch('touchStart',s.byte.x,s.byte.y-15);await touch('touchMove',s.p.x+s.p.w/2,s.p.y-s.half-17);await page.waitForTimeout(180);await touch('touchEnd');await advance(.6);
@@ -115,7 +115,7 @@ const out=process.env.BYTE_QA_OUTPUT || require('node:path').join(require('node:
   await page.evaluate(()=>{__byteProbe.byte.vx=145});await touch('touchEnd');assert(!await page.evaluate(()=>__byteProbe.obby.web.active));assert.equal(await page.evaluate(()=>__byteProbe.byte.vx),145);
   await page.evaluate(()=>{const p=__byteProbe;p.obby.platforms=[];p.obby.phase='fall';p.byte.vy=900;p.byte.vx=0;p.byte.mode='air'});await advance(5);
   let home=await page.evaluate(()=>({active:__byteProbe.obby.active,scale:__byteProbe.life.scale,hidden:document.body.classList.contains('obby-away'),y:__byteProbe.byte.y,floor:__byteProbe.floorY()}));
-  console.log('home',home);assert(!home.active);assert(home.scale>.98);assert(!home.hidden);assert(home.y>home.floor-80);await shot('candidate-return');
+  console.log('home',home);assert(!await page.evaluate(()=>__byteProbe.obby.hasLaunched));assert(home.scale>.98);assert(!home.hidden);assert(home.y>home.floor-80);await shot('candidate-return');
  });
  console.log('PAGE_ERRORS',JSON.stringify(errors));console.log('FAILED_REQUESTS',JSON.stringify(failures));
  fs.writeFileSync(`${out}/results.json`,JSON.stringify({results,errors,failures},null,2));await browser.close();

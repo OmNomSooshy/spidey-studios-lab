@@ -13,13 +13,14 @@ fs.mkdirSync(out, { recursive: true });
   await page.waitForSelector('#arrival.ready');
   const result = await page.evaluate(() => {
     const q = __byteProbe; q.paused = true; q.life.welcomed = true;
-    let seconds = 0, trips = 0, maxPlatforms = 0;
+    let seconds = 0, trips = 0, maxPlatforms = 0, authoredCycles = true;
     const phases = new Set(), rooms = new Set(), seen = new Set();
     function step(duration) {
       const dt = 1 / 120;
       for (let i = 0; i < duration / dt; i++) {
         const before = q.home.room;
         q.home.update(dt); q.update(dt, performance.now()); q.updateLife(dt);
+        if (authoredCycles && !q.autonomy.choice) q.autonomy.choice = 'qa';
         q.updateAutonomy(dt); q.updateButtonWeb(dt); q.updateObby(dt); q.updateButtonPhysics(dt);q.containRoomBody();
         seconds += dt; if (q.home.room !== before) trips++;
         rooms.add(q.home.room); phases.add(q.life.phase); seen.add(q.autonomy.choice);
@@ -43,13 +44,13 @@ fs.mkdirSync(out, { recursive: true });
       if (q.life.phase === 'awake') q.beginRest();
       for (let i = 0; i < 14 && q.life.phase !== 'sleep'; i++) step(1);
       if (q.life.phase !== 'sleep') throw Error('missed rest ' + JSON.stringify({round,phase:q.life.phase,room:q.home.room,trip:q.home.journey,travel:q.home.travel,activity:q.home.activity,obby:q.obby,nest:q.life.nest,things:q.home.things,body:q.byte})); q.wakeByte();
-      q.autonomy.choice = 'qa'; q.home.request(2, 'obby'); step(6);
+      q.autonomy.choice = 'qa'; q.home.request(3, 'obby'); step(9);
       q.obby.hasLaunched = true; q.obby.phase = 'fall'; q.obby.platforms = []; q.byte.mode = 'air'; q.byte.y = -q.world.h * 1.4; q.byte.vy = 550;
       step(12);
       q.finishObby(); q.wakeByte(); q.home.cancel(); q.home.travel = null;
     }
     // Quiet autonomous opportunities are allowed to choose freely; sleep is interrupted by a world nudge.
-    q.autonomy.choice = null;
+    authoredCycles = false; q.autonomy.choice = null;
     for (let cycle = 0; cycle < 10; cycle++) {
       step(18);
       q.wakeByte(); if (q.obby.active && !q.obby.hasLaunched) q.home.request(1);
@@ -61,7 +62,7 @@ fs.mkdirSync(out, { recursive: true });
     return { seconds, trips, rooms: [...rooms], phases: [...phases], choices: [...seen], maxPlatforms,
       renderMs: (performance.now() - start) / 180, saved, found: q.home.found, stoneHome: q.home.stoneHome };
   });
-  assert(result.trips >= 24); assert.equal(result.rooms.length, 3); assert(result.found && result.stoneHome); assert(result.maxPlatforms < 40); assert(!errors.length);
+  assert(result.trips >= 24); assert.equal(result.rooms.length, 4); assert(result.found && result.stoneHome); assert(result.maxPlatforms < 40); assert(!errors.length);
   await page.screenshot({ path: path.join(out, 'place-endurance-final.png'), scale: 'css' });
   fs.writeFileSync(path.join(out, 'place-endurance-results.json'), JSON.stringify({ result, errors }, null, 2));
   console.log('PASS repeated house routines, carried belongings, upstairs returns and unscripted opportunities remain finite.', result);

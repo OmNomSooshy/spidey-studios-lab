@@ -1,6 +1,6 @@
 (() => {
   const canvas = document.querySelector('#scene');
-  const ctx = canvas.getContext('2d', { alpha: false });
+  const ctx = canvas.getContext('2d');
   const assets = { idle: null, blink: null, curious: null, walk: [], scheming: null };
   const gravityButton = document.querySelector('#gravity-toggle');
   const gravityLabel = document.querySelector('#gravity-label');
@@ -1625,6 +1625,9 @@
     const cameraY = obby.hasLaunched ? obby.cameraY : 0;
     home.syncUI();
     if (obby.hasLaunched) {
+      // Outdoor scenery has its own cached composited layers; only physical foreground
+      // objects are repainted into this native-DPR, transparent surface.
+      ctx.clearRect(0, 0, world.w, world.h);
       drawHabitat(t);
       crystal.draw();
       ctx.save(); crystal.applyView(); ctx.translate(0, -cameraY); home.draw(t); ctx.restore();

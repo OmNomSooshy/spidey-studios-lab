@@ -100,9 +100,12 @@ node qa/place-playthrough.cjs
 node qa/crystal-probe.cjs
 node qa/crystal-playthrough.cjs
 node qa/crystal-layout.cjs
+node qa/crystal-cache.cjs
 ```
 
 Run suites sequentially for stable touch timing. Raw fixtures, videos, screenshots and logs are kept outside the checkout and deployment.
+
+The initial Crystal Sky build failed on Management's Galaxy A06 5G using Chrome. See [Crystal performance correction](CRYSTAL-PERFORMANCE.md) for constrained before/after evidence and the replacement cached renderer. Local performance results do not clear that physical-target blocker without Human Fingers confirmation.
 
 ## Accepted weaknesses and Management decisions
 

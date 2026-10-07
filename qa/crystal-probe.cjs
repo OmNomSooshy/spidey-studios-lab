@@ -43,5 +43,5 @@ const out=process.env.BYTE_QA_OUTPUT||'/tmp/byte-crystal-qa';fs.mkdirSync(out,{r
  await page.evaluate(()=>{const q=__byteProbe;q.obby.web.active=false;q.obby.phase='climb';q.obby.cameraY=q.obby.crystalBase-1500;q.byte.y=q.obby.crystalBase-1300;q.byte.vy=-300;q.home.update(.01);q.draw(performance.now())});
  assert(await page.evaluate(()=>__byteProbe.home.found));await snap('fragment');checks.push('expedition fragment is discovered above the structure, preserving the existing physical possession');
  const render=await page.evaluate(()=>{const q=__byteProbe,start=performance.now();for(let i=0;i<120;i++)q.draw(start+i*16.7);return(performance.now()-start)/120});
- assert(!errors.length);fs.writeFileSync(path.join(out,'crystal-results.json'),JSON.stringify({checks,errors,renderMs:render,pureSkySeconds:pure.at(-1).age-pure[0].age},null,2));console.log('PASS',checks,'render ms',render);await browser.close();
+ assert(!errors.length);fs.writeFileSync(path.join(out,'crystal-results.json'),JSON.stringify({checks,errors,drawLoopSubmissionMs:render,pureSkySeconds:pure.at(-1).age-pure[0].age},null,2));console.log('PASS',checks,'draw-loop submission ms (not completed paint/FPS)',render);await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});

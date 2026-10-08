@@ -35,22 +35,16 @@ window.createByteBathroom = function createByteBathroom(api) {
     const g=geometry();state.head={x:g.mountX,y:g.mountY,vx:0,vy:0};
     backdrop.width=Math.ceil(world.w*.75);backdrop.height=Math.ceil(world.h*.75);
     wall.setTransform(.75,0,0,.75,0,0);const w=world.w,h=world.h;
-    wall.fillStyle='#d9e6df';wall.fillRect(0,0,w,h);
-    const sky=wall.createLinearGradient(0,0,0,h);sky.addColorStop(0,'#d5e3dc');sky.addColorStop(1,'#f0eee0');wall.fillStyle=sky;wall.fillRect(0,0,w,h);
-    wall.strokeStyle='#faf8e9';wall.lineWidth=3;wall.beginPath();for(let x=0;x<w;x+=48){wall.moveTo(x,0);wall.lineTo(x,h*.88)}for(let y=0;y<h*.88;y+=58){wall.moveTo(0,y);wall.lineTo(w,y)}wall.stroke();
-    wall.fillStyle='#b0c4bd';wall.fillRect(0,h*.88,w,h*.12);wall.strokeStyle='#dbe5d6';wall.lineWidth=2;wall.beginPath();for(let x=-h;x<w+h;x+=58){wall.moveTo(x,h*.88);wall.lineTo(x+80,h)}wall.stroke();
-    api.home().details?.paintDecor(wall,4);
+    const art=window.ByteWorldArt;art.base(wall,4,w,h);api.home().details?.paintDecor(wall,4);
     window.drawBytePassage(wall,w,h,api.roomH(),'right','#536d76');
-    // Round frosted window, quiet pipes, soap dish and the back of a generous ceramic tub.
-    rect(wall,w*.075,h*.15,w*.24,h*.20,36,'#a7c8c7','#9aaea0');wall.strokeStyle='#f4f1d6';wall.lineWidth=5;wall.beginPath();wall.moveTo(w*.195,h*.17);wall.lineTo(w*.195,h*.34);wall.moveTo(w*.10,h*.25);wall.lineTo(w*.29,h*.25);wall.stroke();
-    wall.strokeStyle='#a38b59';wall.lineWidth=9;wall.beginPath();wall.moveTo(g.pipeX,g.pipeY);wall.lineTo(g.pipeX,h*.57);wall.stroke();wall.strokeStyle='#e0d19c';wall.lineWidth=3;wall.stroke();
-    rect(wall,g.dishX-29,g.dishY,58,8,4,'#9bbcb8','#769994');
-    wall.strokeStyle='#a38b59';wall.lineWidth=8;wall.beginPath();wall.moveTo(g.tapX-12,g.tapY+32);wall.lineTo(g.tapX-12,g.tapY);wall.quadraticCurveTo(g.tapX-12,g.tapY-17,g.tapX+17,g.tapY-12);wall.lineTo(g.tapX+17,g.tapY+4);wall.stroke();
-    wall.strokeStyle='#e5d6a8';wall.lineWidth=2;wall.stroke();
-    rect(wall,g.x-10,g.rim-13,g.w+20,g.bottom-g.rim+12,28,'#dceae1','#759795');
-    wall.fillStyle='#bfdad4';wall.beginPath();wall.ellipse(g.x+g.w*.5,g.rim+6,g.w*.51,23,0,0,Math.PI*2);wall.fill();
-    wall.fillStyle='#edf3e6';wall.beginPath();wall.ellipse(g.x+g.w*.5,g.rim,g.w*.54,20,0,0,Math.PI*2);wall.ellipse(g.x+g.w*.5,g.rim+3,g.w*.46,12,0,0,Math.PI*2);wall.fill('evenodd');
-    wall.strokeStyle='#f4f4df';wall.lineWidth=5;wall.strokeRect(0,h*.88,w,3);
+    art.rect(wall,'round-window',w*.075,h*.15,w*.24,h*.20);
+    wall.strokeStyle='#857251';wall.lineWidth=9;wall.beginPath();wall.moveTo(g.pipeX,g.pipeY);wall.lineTo(g.pipeX,h*.57);wall.stroke();wall.strokeStyle='#e4d4a0';wall.lineWidth=3;wall.stroke();
+    art.rect(wall,'dish',g.dishX-29,g.dishY-4,58,12);
+    art.rect(wall,'tap',g.tapX-21,g.tapY-22,54,55);
+    art.shadow(wall,g.x+g.w*.5,g.bottom+5,g.w*1.25,25);
+    // Open-front dimensional ceramic keeps the old real water/cutaway contract.
+    art.rect(wall,'tub',g.x-11,g.rim-13,g.w+22,g.bottom-g.rim+24);
+
   }
   function beginFrame() {
     resize();const visible=here();document.body.classList.toggle('bathroom-here',visible);return visible;
@@ -64,16 +58,15 @@ window.createByteBathroom = function createByteBathroom(api) {
     if(state.source==='bath'){ctx.strokeStyle='#d2f8e4cc';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(g.tapX+17,g.tapY+4);ctx.quadraticCurveTo(g.tapX+21,g.rim-50,g.tapX+28,g.surface+8);ctx.stroke();}
     const head=state.head;
     ctx.strokeStyle='#789aa0';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(g.pipeX,g.pipeY+20);ctx.bezierCurveTo(g.pipeX-55,head.y+70,head.x+44,head.y+75,head.x,head.y);ctx.stroke();ctx.strokeStyle='#c6d8d0';ctx.lineWidth=2;ctx.stroke();
-    ctx.save();ctx.translate(head.x,head.y);ctx.rotate(-.25);rect(ctx,-24,-9,48,18,8,state.source==='shower'?'#bce6e3':'#a8c9c7','#608d91');ctx.strokeStyle='#eef9e4';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-19,7);ctx.lineTo(19,7);ctx.stroke();ctx.restore();
+    ctx.save();ctx.translate(head.x,head.y);ctx.rotate(-.25);window.ByteWorldArt.rect(ctx,'shower',-24,-9,48,18);if(state.source==='shower'){ctx.strokeStyle='#d5fff5';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-19,7);ctx.lineTo(19,7);ctx.stroke();}ctx.restore();
     if(state.fill>.02){const slope=api.down().x*14;ctx.fillStyle='#85c9c487';ctx.beginPath();ctx.moveTo(g.x+4,g.surface-slope);ctx.lineTo(g.x+g.w-4,g.surface+slope);ctx.lineTo(g.x+g.w-6,g.bottom-3);ctx.lineTo(g.x+6,g.bottom-3);ctx.closePath();ctx.fill();
       ctx.strokeStyle='#d7fff0';ctx.lineWidth=2;ctx.beginPath();for(let i=0;i<=12;i++){const x=g.x+4+(g.w-8)*i/12,y=g.surface+slope*(i/6-1)+Math.sin(t*.005+i*.7)*2;i?ctx.lineTo(x,y):ctx.moveTo(x,y)}ctx.stroke();}
     if(state.source==='shower'){
       const down=api.down(),length=world.h*.69;ctx.strokeStyle='#7fbac9bd';ctx.lineWidth=2;ctx.beginPath();for(let i=0;i<18;i++){const f=(t*.00075+i*.061)%1,s=(i%5-2)*(9+f*7),x=head.x+down.x*length*f+down.y*s,y=head.y+8+down.y*length*f-down.x*s;ctx.moveTo(x,y);ctx.lineTo(x+down.x*13,y+down.y*13)}ctx.stroke();
     }
   }
-  function drawSponge(v) {
-    rect(ctx,-23,-13,46,26,9,'#f1cf7c','#b59046');ctx.strokeStyle='#f7e5a6';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(-17,-8);ctx.lineTo(15,-8);ctx.stroke();ctx.fillStyle='#ad85443b';for(let i=0;i<7;i++){ctx.beginPath();ctx.arc(Math.sin(i*2.4)*16,Math.cos(i*3.1)*8,2,0,Math.PI*2);ctx.fill();}
-  }
+  function drawSponge(v) {window.ByteWorldArt.item(ctx,'sponge',46,26);}
+
   function supportTool(v,previousY,dt) {
     if(v.room!==4)return;
     const g=geometry();if(v.id==='sponge'&&(!earth.enabled||api.down().y>.5)&&v.vy>0&&previousY+v.r<=g.dishY&&v.y+v.r>=g.dishY&&Math.abs(v.x-g.dishX)<30){v.y=g.dishY-v.r;v.vy=0;v.vx*=.8;}

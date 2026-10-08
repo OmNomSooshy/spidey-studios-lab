@@ -24,37 +24,20 @@ window.createByteKitchen = function(api) {
     cancel();state.width=world.w;state.height=world.h;
     backdrop.width=Math.ceil(world.w*.75);backdrop.height=Math.ceil(world.h*.75);wall.setTransform(.75,0,0,.75,0,0);
     const w=world.w,h=world.h,g=geometry();
-    const light=wall.createLinearGradient(0,0,0,h);light.addColorStop(0,'#ead1a8');light.addColorStop(.67,'#f3e6cf');light.addColorStop(1,'#c6aa7f');wall.fillStyle=light;wall.fillRect(0,0,w,h);
-    wall.strokeStyle='#bd926a30';wall.lineWidth=1;for(let x=12;x<w;x+=44){wall.beginPath();wall.moveTo(x,0);wall.lineTo(x,h);wall.stroke()}
-    box(wall,w*.71,h*.13,w*.20,h*.24,32,'#bdd2ba','#ba9671');wall.strokeStyle='#fff2cf';wall.lineWidth=4;wall.beginPath();wall.moveTo(w*.81,h*.14);wall.lineTo(w*.81,h*.36);wall.moveTo(w*.72,h*.25);wall.lineTo(w*.90,h*.25);wall.stroke();
-    // Pantry shelf is too high for an ordinary scuttle. The open tin is genuinely stocked.
-    wall.fillStyle='#9d7955';wall.fillRect(g.shelfX,g.shelfY,g.shelfW,12);wall.fillStyle='#ddc09a';wall.fillRect(g.shelfX,g.shelfY,g.shelfW,3);
-    wall.strokeStyle='#a78961';wall.lineWidth=5;wall.beginPath();for(const x of [g.shelfX+17,g.shelfX+g.shelfW-17]){wall.moveTo(x,g.shelfY+10);wall.lineTo(x,g.shelfY+35);wall.lineTo(x+15,g.shelfY+10)}wall.stroke();
-    box(wall,g.shelfX+8,g.shelfY-15,g.shelfW-16,17,5,'#8ca298','#627b70');wall.strokeStyle='#d8e0bc';wall.lineWidth=2;wall.strokeRect(g.shelfX+13,g.shelfY-10,g.shelfW-26,6);
-    box(wall,g.shelfX+9,g.shelfY-62,g.shelfW-18,45,7,'#9aafa0','#718b7e');
-    wall.strokeStyle='#d3dbc0';wall.lineWidth=2;wall.strokeRect(g.shelfX+16,g.shelfY-55,g.shelfW-32,29);
-    wall.strokeStyle='#ad8860';wall.lineWidth=3;wall.beginPath();wall.moveTo(w*.24,h*.52);wall.lineTo(w*.59,h*.52);wall.stroke();
-    for(let i=0;i<3;i++){const x=w*(.29+i*.11);wall.strokeStyle='#9b7f65';wall.lineWidth=2;wall.beginPath();wall.arc(x,h*.53,5,Math.PI,Math.PI*2);wall.lineTo(x+5,h*.59);wall.stroke();wall.fillStyle=i===1?'#7c9384':'#ba9b73';wall.beginPath();wall.ellipse(x,h*.61,i===1?14:7,18,0,0,Math.PI*2);wall.fill()}
-    wall.fillStyle='#a68b68';wall.fillRect(0,h-27,w,27);wall.strokeStyle='#795f4138';wall.beginPath();for(let x=-50;x<w;x+=44){wall.moveTo(x,h-26);wall.lineTo(x+30,h)}wall.stroke();
-    // A low table puts an offered or fallen biscuit at face height without immobilising Byte.
-    wall.fillStyle='#ab7a4e';wall.fillRect(g.tableX+14,g.tableY+9,9,h-g.tableY-21);wall.fillRect(g.tableX+g.tableW-23,g.tableY+9,9,h-g.tableY-21);
-    box(wall,g.tableX,g.tableY,g.tableW,12,6,'#c39c69','#9b754a');wall.fillStyle='#ead7af';wall.beginPath();wall.ellipse(w*.48,g.tableY-1,g.tableW*.34,6,0,0,Math.PI*2);wall.fill();wall.strokeStyle='#f2e6ca';wall.lineWidth=2;wall.stroke();
-    wall.fillStyle='#9ebdb4';wall.beginPath();wall.ellipse(w*.77,g.tableY-2,w*.09,6,0,0,Math.PI*2);wall.fill();wall.strokeStyle='#e5eee0';wall.lineWidth=2;wall.stroke();
-    wall.strokeStyle='#d9b58c';wall.lineWidth=1;wall.setLineDash([3,4]);wall.beginPath();wall.moveTo(g.tableX+8,g.tableY+8);wall.lineTo(g.tableX+g.tableW-8,g.tableY+8);wall.stroke();wall.setLineDash([]);
+    const art=window.ByteWorldArt;art.base(wall,5,w,h);
+    art.rect(wall,'window',w*.71,h*.13,w*.20,h*.24);
+    art.rect(wall,'shelf',g.shelfX,g.shelfY-2,g.shelfW,35);
+    art.rect(wall,'pantry',g.shelfX+8,g.shelfY-62,g.shelfW-16,64);
+    for(let i=0;i<3;i++){const x=w*(.29+i*.11);art.rect(wall,i===1?'dish':'towel',x-10,h*.53,20,h*.10);}
+    art.shadow(wall,g.tableX+g.tableW*.5,h-18,g.tableW*1.1,24);
+    art.rect(wall,'table',g.tableX,g.tableY-1,g.tableW,h-g.tableY-12);
     api.home().details?.paintDecor(wall,5);
-    window.drawBytePassage(wall,w,h,api.roomH(),'left','#b0c0a8');
-    if(!foodFrames.length)for(let bites=1;bites<=4;bites++){
-      const frame=document.createElement('canvas');frame.width=frame.height=80;
-      const p=frame.getContext('2d');p.setTransform(2,0,0,2,40,40);paintFood(p,{r:16,bites});foodFrames[bites]=frame;
-    }
-    if(!vegetableFrame){
-      vegetableFrame=document.createElement('canvas');vegetableFrame.width=vegetableFrame.height=88;
-      const p=vegetableFrame.getContext('2d');p.setTransform(2,0,0,2,44,44);
-      p.fillStyle='#b8ca7b';p.beginPath();p.moveTo(-6,17);p.lineTo(6,17);p.lineTo(5,0);p.lineTo(12,-8);p.lineTo(-13,-8);p.lineTo(-5,1);p.closePath();p.fill();
-      p.strokeStyle='#6d934e';p.lineWidth=1.5;
-      for(const [x,y,r] of [[-10,-3,8],[10,-3,8],[0,-9,10]]){const g=p.createRadialGradient(x-3,y-4,1,x,y,r);g.addColorStop(0,'#8cba68');g.addColorStop(1,'#416b45');p.fillStyle=g;p.beginPath();p.arc(x,y,r,0,Math.PI*2);p.fill();p.stroke()}
-      p.fillStyle='#b4ca7b';for(let i=0;i<15;i++){p.beginPath();p.arc(Math.sin(i*2.4)*12,-6+Math.cos(i*3.7)*7,1,0,Math.PI*2);p.fill()}
-    }
+    window.drawBytePassage(wall,w,h,api.roomH(),'left','#c1bb9b');
+    window.drawBytePassage(wall,w,h,api.roomH(),'right','#b4c796');
+    // Existing bite authority stays in the same cached food frames.
+    for(let bites=1;bites<=4;bites++)foodFrames[bites]=art.foodFrame('biscuit',bites);
+    vegetableFrame=art.foodFrame('broccoli',4);
+
   }
   function beginFrame(){resize();const visible=here();document.body.classList.toggle('kitchen-here',visible);return visible}
   function drawRoom(){if(!here())ctx.drawImage(backdrop,0,0,world.w,world.h)}
@@ -69,7 +52,7 @@ window.createByteKitchen = function(api) {
     ctx.fillStyle='#ac674a';ctx.beginPath();ctx.arc(0,0,r*.42,0,Math.PI*2);ctx.fill();ctx.fillStyle='#eac382';for(let i=0;i<8;i++){const a=i*Math.PI/4;ctx.beginPath();ctx.arc(Math.cos(a)*r*.65,Math.sin(a)*r*.65,1.4,0,Math.PI*2);ctx.fill()}ctx.restore();
   }
   function drawFood(v){const size=(v.r+4)*2;let frame=v.vegetable?vegetableFrame:foodFrames[v.bites];
-    if(v.treat){const item=window.byteTreasures.find(t=>t.id===v.treat),key=v.treat+':'+v.bites;frame=treatFrames.get(key);if(!frame&&item?.image?.naturalWidth){frame=document.createElement('canvas');frame.width=frame.height=80;const p=frame.getContext('2d');p.drawImage(item.image,48,0,160,160,0,0,80,80);p.globalCompositeOperation='destination-out';for(let i=0;i<item.portions-v.bites;i++){p.beginPath();p.arc(63,23+i*15,13,0,Math.PI*2);p.fill();}treatFrames.set(key,frame);}}
+    if(v.treat){const item=window.byteTreasures.find(t=>t.id===v.treat);frame=window.ByteWorldArt.foodFrame(v.treat,v.bites,item?.portions||4);}
     if(frame)ctx.drawImage(frame,-size*.5,-size*.5,size,size);
     if(v.silkWrapped)api.home().unseen?.drawWrap(v,size);
   }

@@ -56,8 +56,7 @@ window.createCrystalSky = function createCrystalSky({ ctx, world, obby }) {
       const x = (hash(row, i) * 1.5 - .25) * w + Math.sin(t * .000025 + i + row) * 10;
       const y = row * period + i * h * .44 - distantCamera;
       const size = w * (.22 + hash(row + 4, i) * .19);
-      paint.fillStyle = `rgba(253,249,229,${(.28 + hash(row, i + 8) * .2) * (1 - darkness) + .035})`;
-      paint.beginPath(); paint.ellipse(x, y, size, 13, 0, 0, Math.PI * 2); paint.ellipse(x - size * .23, y - 9, size * .52, 24, 0, 0, Math.PI * 2); paint.ellipse(x + size * .28, y - 5, size * .4, 18, 0, 0, Math.PI * 2); paint.fill();
+      paint.save();paint.globalAlpha=(.38+hash(row,i+8)*.22)*(1-darkness)+.035;window.ByteWorldArt.rect(paint,'cloud',x-size,y-28,size*2,56);paint.restore();
     }
   }
   function presentSky(target, camera, top = 0, shiftX = 0, shiftY = 0) {
@@ -117,6 +116,8 @@ window.createCrystalSky = function createCrystalSky({ ctx, world, obby }) {
       if (hash(row, col + 4) > .5) { triangle(target, stencil, [a, b, c], row, col, 0); triangle(target, stencil, [b, d, c], row, col, 1); }
       else { triangle(target, stencil, [a, b, d], row, col, 0); triangle(target, stencil, [a, d, c], row, col, 1); }
     }
+    // Baked crystalline relief shares the trophy/ledge material, masked into existing facets once per tile.
+    target.save();target.globalCompositeOperation='source-atop';target.globalAlpha=.14;window.ByteWorldArt.rect(target,'ice-relief',x,y,w,h);target.restore();
     if (!row) {
       target.beginPath(); for (let col = 0; col < 5; col++) { const p = point(0, col); col ? target.lineTo(p.x, p.y) : target.moveTo(p.x, p.y); }
       target.strokeStyle = '#c9f7eb'; target.lineWidth = 3; target.stroke();

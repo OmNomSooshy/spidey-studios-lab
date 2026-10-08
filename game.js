@@ -903,6 +903,7 @@
       if (y < -platform.h || y > world.h + platform.h) continue;
       const pulse = platform.pulse || 0;
       ctx.save(); ctx.translate(platform.x + platform.w / 2, y);
+      if(window.ByteWorldArt.ready){const a=window.ByteWorldArt; a.shadow(ctx,2,platform.h+8,platform.w*1.2,13); a.rect(ctx,platform.crystal?'ledge':'spring',-platform.w/2,pulse*3,platform.w,platform.h*(1-pulse*.2)+4);ctx.restore();continue;}
       if (platform.crystal) {
         // Embedded roots and fracture shadows attach the unchanged collision ledge to the plane.
         ctx.fillStyle = '#3d748b3d'; ctx.beginPath(); ctx.moveTo(-platform.w * .58, 8); ctx.lineTo(-platform.w * .43, -8); ctx.lineTo(platform.w * .4, -6); ctx.lineTo(platform.w * .58, 9); ctx.lineTo(platform.w * .45, 24); ctx.lineTo(-platform.w * .4, 24); ctx.closePath(); ctx.fill();
@@ -1819,6 +1820,7 @@
     loadFrames('hq/scuttle', 4),
     loadImage('assets/hq/scheming.png'),
     Promise.all(actingNames.map(name => loadImage(`assets/hq/${name}.png`))),
+    window.ByteWorldArt.promise,
   ]).then(([idle, blink, curious, walk, scheming, acting]) => {
     assets.idle = idle; assets.blink = blink; assets.curious = curious; assets.walk = walk;
     assets.scheming = scheming;
@@ -1830,5 +1832,5 @@
     home.unseen.start();
     document.querySelector('#arrival').classList.add('ready');
     requestAnimationFrame(loop);
-  });
+  }).catch(error=>{console.error(error);document.querySelector('#arrival').textContent='Byte’s home could not arrive. Reload to try again.';});
 })();

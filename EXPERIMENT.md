@@ -1,3 +1,7 @@
+# Current candidate: Sunburn X — surprise through relationships
+
+This isolated branch is `experiment/sunburn-x-2026-10-07`, based on Human-Eyes-validated IX `d15bdff58452b925471f69fb274f9ba45df5760a`. [Sunburn X judgment and evidence](SUNBURN-X.md) covers an unsolicited physical care request, web-assisted fetch cheating, a real bedtime companion, and quiet/noisy sleeping-household interaction. Canonical and earlier branches are unchanged; the existing private experimental phone origin retains saved life. Previous campaign records follow.
+
 # Current candidate: Sunburn IX — deepen the life
 
 This isolated branch is `experiment/sunburn-ix-2026-10-07`, based on VIII's trunk-placement correction `c5e417bdb9c21e54b3395556f8ee75496d0219c4`. [Sunburn IX implementation and evidence](SUNBURN-IX.md) covers contextual dreaming, six renewable physical treats, four authored performances, and connections across care, food, play, clothing and history. The existing private experimental phone origin and saved life are retained. Canonical and earlier experimental branches are unchanged. The previous campaign records follow.

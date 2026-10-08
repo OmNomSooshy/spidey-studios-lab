@@ -77,7 +77,7 @@ const out=process.env.BYTE_QA_OUTPUT || require('node:path').join(require('node:
   console.log('resttrace',JSON.stringify(trace));
   const s=await page.evaluate(()=>({phase:__byteProbe.life.phase,active:__byteProbe.life.nest.active,y:__byteProbe.byte.y,floor:__byteProbe.floorY(),frame:__byteProbe.bodyGeometry().frame.src}));
   assert.equal(s.phase,'sleep');assert(s.active);assert(s.y<s.floor-30);assert(s.frame.endsWith('/asleep.png'));await shot('candidate-sleep');
-  await page.evaluate(()=>{__byteProbe.byte.vx=90});await touch('touchStart',330,680);
+  await page.evaluate(()=>{__byteProbe.byte.vx=90});await touch('touchStart',195,200);
   const waking=await page.evaluate(()=>({active:__byteProbe.life.nest.active,phase:__byteProbe.life.phase,vx:__byteProbe.byte.vx}));
   assert(!waking.active);assert.equal(waking.phase,'awake');assert.equal(waking.vx,90);await touch('touchEnd');
  });

@@ -2,7 +2,7 @@
   const canvas = document.querySelector('#scene');
   const ctx = canvas.getContext('2d');
   const assets = { idle: null, blink: null, curious: null, walk: [], scheming: null };
-  const actingNames = ['drowsy', 'asleep', 'waking', 'refusal', 'satisfied', 'rummaging', 'expectant', 'anticipation', 'sour', 'proud', 'fresh'];
+  const actingNames = ['drowsy', 'asleep', 'waking', 'refusal', 'satisfied', 'rummaging', 'expectant', 'anticipation', 'sour', 'proud', 'fresh', 'sniff', 'huffy'];
   const gravityButton = document.querySelector('#gravity-toggle');
   const gravityLabel = document.querySelector('#gravity-label');
   const gravityStatus = document.querySelector('#gravity-status');
@@ -124,19 +124,19 @@
       voice('wake', .65);
     }
   }
-  function noticeTouch(x, y, id) {
+  function noticeTouch(x, y, id, quiet = false) {
     outside.dozing = false; outside.dream = false; outside.powerInvite = false; outside.bask = 0;
     home.cancel(home.possessions.answerAt(x,y));
-    life.waking = 0;
+    if (!quiet) life.waking = 0;
     unlockAudio();
-    wakeByte();
+    if (!quiet) wakeByte();
     life.lastTouch = now();
     life.interactions++;
     life.welcomed = true;
     life.curious = .8;
     life.gazeX = x; life.gazeY = y;
     Object.assign(life.pointer, { active: true, id, kind: '', x, y, startX: x, startY: y, movedAt: now(), speed: 0 });
-    if (now() - life.noticeAt > 4500 && Math.hypot(x - byte.x, y - byte.y) > spriteH * .8) {
+    if (!quiet && now() - life.noticeAt > 4500 && Math.hypot(x - byte.x, y - byte.y) > spriteH * .8) {
       voice('notice', .7); life.noticeAt = now();
     }
   }
@@ -208,6 +208,7 @@
       byte.targetY = floorY(); byte.mode = 'scuttle'; life.curious = 2;
     }
     if (life.phase === 'nest-walk' && byte.mode === 'idle') {
+      if(life.sleepmate){if(home.carried?.id===life.sleepmate)home.drop();life.sleepmate=null;home.save();}
       life.phase = 'nest-cast'; life.elapsed = 0; life.curious = .7;
       life.nest.x = byte.x + bodyW() * .205;
       life.nest.y = Math.max(bodyH() * .7, floorY() - bodyH() * 1.25);
@@ -296,10 +297,11 @@
     bodyH:()=>bodyH(),bodyGeometry,roomH:()=>spriteH,floorY:()=>floorY(),extents:bodyHalfExtents,voice,tactile,castFoodWeb,releaseFoodWeb});
   const economy = window.createByteEconomy({ ctx, world, byte, obby, life, home: () => home, bodyH: () => bodyH(), bodyW: () => bodyW(), voice, tactile });
   const home = window.createByteHome({ ctx, world, byte, life, earth, web, obby, autonomy, bathroom, kitchen, economy,
-    senses: room, bodyW: () => bodyW(), bodyH: () => bodyH(), roomW: () => spriteW, roomH: () => spriteH, extents: bodyHalfExtents, floorY: () => floorY(), wakeByte, voice,
+    senses: room, bodyW: () => bodyW(), bodyH: () => bodyH(), roomW: () => spriteW, roomH: () => spriteH, extents: bodyHalfExtents, floorY: () => floorY(), wakeByte, voice, castFoodWeb, releaseFoodWeb,
     pranking: () => !['waiting', 'released'].includes(buttonWeb.phase), down: earthDown,
     restHere: beginRestHere, obbyHere: beginObbyHere, skyOpening: crystal.opening });
   const details=window.createByteLifeDetails({ctx,world,byte,life,home,bathroom,kitchen,economy,obby,earth,web,bodyW:()=>bodyW(),bodyH:()=>bodyH(),floorY:()=>floorY(),roomH:()=>spriteH});home.details=details;
+  home.household=window.createByteHousehold({world,byte,life,home,bathroom,earth,web,obby,autonomy,voice,wakeByte,castFoodWeb,releaseFoodWeb,bodyW:()=>bodyW(),bodyH:()=>bodyH(),floorY:()=>floorY(),extents:bodyHalfExtents});
   function openRoom(kind = 'both') {
     if (room.state.open || room.state.pending) {
       room.close(); stopMotionIfUnused();
@@ -560,6 +562,7 @@
       if (life.phase === 'sleep' || outside.dozing || life.phase === 'settling' && life.elapsed > 1.15 && Math.hypot(byte.vx, byte.vy) < 110) pose = 'asleep';
       else if (life.phase === 'nest-cast' || life.phase === 'settling') pose = 'drowsy';
       else if (kitchen.refusal > 0 || bathroom.shake > 0) pose = 'refusal';
+      else if(home.household.huffy>0)pose='huffy';
       else if (life.waking > 0) pose = 'waking';
       else if(kitchen.sour>0)pose='sour';
       else if(kitchen.anticipation>0)pose='anticipation';
@@ -567,6 +570,7 @@
       else if(details.fresh>0)pose='fresh';
       else if(details.proud>0&&byte.mode==='idle')pose='proud';
       if(!pose&&home.possessions.pose)pose=home.possessions.pose;
+      if(!pose&&home.household.pose)pose=home.household.pose;
       if (pose) frame = assets[pose] || frame;
     }
     const frameW = bodyW();
@@ -1276,6 +1280,7 @@
     autonomy.idleTime += dt;
     if (autonomy.idleTime < 7.2) return;
     autonomy.idleTime = 0;
+    if(home.household.opportunity()){home.household.start();return;}
     if(home.possessions.opportunity()){home.possessions.start();return;}
     if(kitchen.opportunity()){kitchen.start();return;}
     const opportunities = [];
@@ -1407,7 +1412,8 @@
     const rect = canvas.getBoundingClientRect();
     const px = e.clientX - rect.left, py = e.clientY - rect.top;
     if (home.travel) return;
-    noticeTouch(px, py, e.pointerId);
+    const quiet = life.phase === 'sleep' || life.phase === 'settling';
+    noticeTouch(px, py, e.pointerId, quiet);
     const point = obby.hasLaunched ? crystal.unproject(px, py) : { x: px, y: py };
     if (web.active && web.planted && Math.hypot(point.x - web.anchorX, point.y - web.anchorY) <= 42) {
       // Releasing the web leaves Byte's current linear and angular momentum untouched.
@@ -1418,6 +1424,8 @@
     }
     if (bathroom.begin(px, py, e.pointerId)) { canvas.setPointerCapture(e.pointerId); return; }
     if (home.beginHand(point.x, point.y - (obby.hasLaunched ? obby.cameraY : 0), e.pointerId)) { canvas.setPointerCapture(e.pointerId); return; }
+    // Objects and fixtures belong to the house too. Quiet tidying is not touching Byte.
+    if (quiet) wakeByte();
     if (obby.hasLaunched) {
       if (obby.web.active || obby.web.pending) return;
       life.pointer.kind = 'obbyweb';

@@ -43,7 +43,7 @@ window.createBytePossessions=function(api){
     if(Math.abs(x-g.x)<g.w*.6&&y>g.y-g.h*.55&&y<g.y+g.h*.6){cancel();withdraw();api.voice('notice',.3);return true;}return false;}
   function onGrab(v){if(state.act?.item===v&&state.act.phase==='invite'){state.act.phase='human';state.act.elapsed=0;state.pose=null;}v.pressed=0;v.lastHandX=v.x;v.lastHandY=v.y;}
   function onMove(v,hand){const distance=Math.hypot(v.x-v.lastHandX,v.y-v.lastHandY);if(v.id==='pinwheel')v.wheelSpin=Math.min(40,(v.wheelSpin||0)+distance*.15);
-    if(v.id==='rattle'&&distance>4&&(v.rattleAt===undefined||state.time-v.rattleAt>.10)){v.rattleAt=state.time;v.shakes=(v.shakes||0)+1;api.voice('notice',.25);spark(v);}v.lastHandX=v.x;v.lastHandY=v.y;}
+    if(v.id==='rattle'&&distance>4&&(v.rattleAt===undefined||state.time-v.rattleAt>.10)){v.rattleAt=state.time;v.shakes=(v.shakes||0)+1;api.voice('notice',.25);spark(v);home.household?.noise(v,distance/12);}v.lastHandX=v.x;v.lastHandY=v.y;}
   function canAnswer(v){return state.act?.item===v&&['invite','human'].includes(state.act.phase)}
   function answerAt(x,y){return state.act?.phase==='invite'&&Math.hypot(x-state.act.item.x,y-state.act.item.y)<40;}
   function spark(v,color='#e7d5a7'){for(let i=0;i<5&&state.effects.length<24;i++)state.effects.push({x:v.x,y:v.y,room:v.room,vx:Math.sin(i*2.4)*65,vy:-90-Math.cos(i*2.4)*25,age:0,color});}
@@ -57,12 +57,17 @@ window.createBytePossessions=function(api){
     if(v.id==='rattle'&&v.shakes>0){api.voice('notice',.45);spark(v);}
     if(state.act?.item===v&&state.act.phase==='human'){state.answered++;state.act.phase=['pinwheel','rattle'].includes(v.id)?'respond':'chase';state.act.elapsed=0;state.pose=null;life.curious=2;api.voice('notice',.65);}
     save();}
-  function cancel(){state.pose=null;if(state.act){if(home.carried===state.act.item)api.drop();state.act=null;if(home.activity?.kind==='possession')home.activity=null;byte.targetX=byte.targetY=null;if(byte.mode==='scuttle')byte.mode=earth.enabled?'air':'idle';state.cooldown=18;autonomy.choice=null;autonomy.idleTime=0;}}
+  function cancel(){state.pose=null;if(state.act){if(web.food===state.act.item)api.releaseFoodWeb();if(home.carried===state.act.item)api.drop();state.act=null;if(home.activity?.kind==='possession')home.activity=null;byte.targetX=byte.targetY=null;if(byte.mode==='scuttle'||byte.mode==='scheming')byte.mode=earth.enabled?'air':'idle';state.cooldown=18;autonomy.choice=null;autonomy.idleTime=0;}}
   function opportunity(){return state.cooldown<=0&&!earth.enabled&&!obby.hasLaunched&&!home.travel&&!home.journey&&!home.activity&&life.phase==='awake'&&(home.room===2||home.things.some(v=>!v.stored&&v.room===home.room&&(v.toy||v.id==='ball')))&&!home.hand&&!web.active&&!byte.grabbed;}
   function start(){if(!opportunity()&&!(home.room===2&&!home.activity&&!earth.enabled&&state.cooldown<=0))return false;
     const ids=ownedToys().filter(id=>home.room===2||(!ensureToy(id).stored&&ensureToy(id).room===home.room));if(!ids.length)return false;const stored=ids.filter(id=>ensureToy(id).stored);const chooseTrophy=home.room===2&&storedTrophies()>0&&state.turn%5===4;
     const eligible=stored.length?stored:ids.filter(id=>ensureToy(id).room===home.room);if(!chooseTrophy&&!eligible.length)return false;const id=chooseTrophy?null:eligible[state.turn%eligible.length];state.turn++;save();
     state.act={phase:chooseTrophy?'to-cabinet':ensureToy(id).stored?'to-chest':'seek',item:chooseTrophy?null:ensureToy(id),elapsed:0,cycles:0,originX:world.w*.48};home.activity={kind:'possession'};autonomy.choice=null;state.cooldown=35;return true;}
+  function bedtime(){const recent=home.details?.recent;if(home.room!==2||recent?.kind!=='toy'||state.act||home.activity||home.hand||web.active||earth.enabled||byte.grabbed)return false;
+    const v=home.things.find(v=>v.id===recent.id&&!v.stored&&v.room===2&&(v.toy||v.id==='ball'));
+    if(!v||Math.abs(v.y-byte.y)>api.bodyH()*.7||Math.hypot(v.vx,v.vy)>120)return false;
+    state.act={phase:'seek',item:v,elapsed:0,cycles:0,bedtime:true};home.activity={kind:'possession'};autonomy.choice=null;return true;}
+  function bedArrive(){state.act=null;state.pose=null;home.activity=null;life.sleepmate=home.carried?.id;state.cooldown=35;}
   function seek(x){const ex=api.extents().x,target=clamp(x,ex+4,world.w-ex-4);if(Math.abs(byte.x-target)<14){byte.targetX=byte.targetY=null;if(byte.mode==='scuttle')byte.mode='idle';return true;}
     if(byte.mode==='idle'||byte.mode==='scuttle'){byte.targetX=target;byte.targetY=api.floorY();byte.mode='scuttle';}return false;}
   function invite(act){const v=act.item;byte.facing=byte.x>world.w*.55?-1:1;api.drop();v.room=home.room;v.vx=byte.facing*95;v.vy=Math.min(0,byte.vy)-40;v.spin=byte.facing*2;
@@ -74,7 +79,7 @@ window.createBytePossessions=function(api){
         if(v.id==='pinwheel')v.wheelSpin=Math.min(40,(v.wheelSpin||0)+Math.hypot(v.x-(v.lastHandX||v.x),v.y-(v.lastHandY||v.y))*.15);v.lastHandX=v.x;v.lastHandY=v.y;}}
     for(const e of state.effects){e.age+=dt;e.x+=e.vx*dt;e.y+=e.vy*dt;}state.effects=state.effects.filter(e=>e.age<.6);
     const act=state.act;if(!act)return;
-    if(byte.grabbed||web.active||obby.hasLaunched||life.phase!=='awake'||earth.enabled){cancel();return;}
+    if(byte.grabbed||web.active&&web.food!==act.item||obby.hasLaunched||life.phase!=='awake'||earth.enabled){cancel();return;}
     if(home.travel||home.journey)return;
     if(!home.activity)home.activity={kind:'possession'};
     act.elapsed+=dt;if(act.elapsed>38){cancel();return;}
@@ -84,11 +89,20 @@ window.createBytePossessions=function(api){
       if(act.elapsed>1.9){if(act.phase==='inspect'){act.item=withdraw(true);state.trophyVisits++;}else act.item=takeOut(act.item.id,true);
         if(!act.item){finish();return;}home.carried=act.item;act.phase=act.item.trophy?'rock-carry':'present';act.elapsed=0;}return;}
     if(act.phase==='rock-carry'){if(seek(world.w*.42)){home.activity=null;state.act=null;state.cooldown=45;home.request(0,'visit',act.item);}return;}
+    if(act.phase==='fetch-thought'){if(act.elapsed>1.15){byte.mode='idle';api.castFoodWeb(act.item);act.phase='fetch-reel';act.elapsed=0;api.voice('web',.6);}return;}
+    if(act.phase==='fetch-reel'){const v=act.item;if(v.stored||v.room!==home.room||web.food!==v){cancel();return;}
+      web.progress=Math.min(1,act.elapsed/.25);web.reel=web.progress===1?140:0;web.deployedLength=Math.max(18,web.deployedLength-web.reel*dt);
+      life.gazeX=v.x;life.gazeY=v.y;
+      if(act.elapsed>.35&&Math.hypot(v.x-byte.x,v.y-byte.y)<api.bodyH()*.6){api.releaseFoodWeb();home.carried=v;act.phase='present';act.elapsed=0;act.cycles++;state.fetches=(state.fetches||0)+1;}return;}
     if(act.phase==='seek'||act.phase==='chase'){const v=act.item;if(v.stored||v.room!==home.room){finish();return;}
+      // A high throw gives his existing food-retrieval rope a second, very Byte-like purpose.
+      if(act.phase==='chase'&&!act.cheated&&['ball','comet-ball','ring-toy'].includes(v.id)&&act.elapsed>.35&&v.y<byte.y-api.bodyH()*.55&&['idle','scuttle'].includes(byte.mode)){
+        act.cheated=true;act.phase='fetch-thought';act.elapsed=0;byte.targetX=byte.targetY=null;byte.mode='scheming';return;}
       life.gazeX=v.x;life.gazeY=v.y;const side=v.x<byte.x?-1:1;seek(v.x-side*api.bodyW()*.36);
       if(Math.abs(v.x-byte.x)<api.bodyW()*.58+v.r&&Math.abs(v.y-byte.y)<api.bodyH()*.7&&Math.hypot(v.vx,v.vy)<420&&!home.hand){
         byte.targetX=byte.targetY=null;if(byte.mode==='scuttle')byte.mode='idle';if(v.id==='ring-toy'&&act.phase==='chase'){v.vx=(v.x<world.w*.5?1:-1)*220;v.vy=-35;v.spin=v.vx/v.r;act.phase='invite';act.elapsed=0;state.pose='expectant';state.invitations++;api.voice('pet',.5);}else{home.carried=v;act.phase='present';act.elapsed=0;}act.cycles++;}return;}
-    if(act.phase==='present'){if(seek(act.originX)){if(act.elapsed>.5)invite(act);}return;}
+    if(act.phase==='bed-trip')return;
+    if(act.phase==='present'){if(act.bedtime){act.phase='bed-trip';home.request(0,'rest-buddy',act.item);return;}if(seek(act.originX)){if(act.elapsed>.5)invite(act);}return;}
     if(act.phase==='respond'){state.pose='expectant';const v=act.item;
       if(act.elapsed>.55&&!act.replied){act.replied=true;act.cycles++;if(v.id==='pinwheel'){v.wheelSpin=Math.min(40,(v.wheelSpin||0)+22);spark(v,'#bfd9c5');api.voice('pet',.6);}
         else{api.voice('notice',.6);byte.squash=Math.max(byte.squash,.12);spark(v);}}
@@ -125,5 +139,5 @@ window.createBytePossessions=function(api){
     else{if(v.id==='frog-toy')ctx.scale(1+(v.pressed||0)*.22,1-(v.pressed||0)*.3);ctx.drawImage(texture,-v.r*1.5,-v.r*.94,v.r*3,v.r*1.875);}ctx.restore();return true;}
   function drawEffects(){for(const e of state.effects){if(e.room!==home.room||obby.hasLaunched)continue;ctx.globalAlpha=1-e.age/.6;ctx.fillStyle=e.color;ctx.fillRect(e.x-1,e.y-1,3,3);}ctx.globalAlpha=1;}
   window.addEventListener('pagehide',save);
-  return Object.assign(state,{chest,wardrobe,cabinet,ownedToys,storedTrophies,loose,acquired,takeOut,putAway,withdraw,deposit,historyChanged,hitFixture,onGrab,onMove,onRelease,answerAt,canAnswer,cancel,opportunity,start,update,drawFixtures,drawToy,drawEffects,save,drawer});
+  return Object.assign(state,{chest,wardrobe,cabinet,ownedToys,storedTrophies,loose,acquired,takeOut,putAway,withdraw,deposit,historyChanged,hitFixture,onGrab,onMove,onRelease,answerAt,canAnswer,cancel,opportunity,start,bedtime,bedArrive,update,drawFixtures,drawToy,drawEffects,save,drawer});
 };

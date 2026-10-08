@@ -13,7 +13,7 @@ window.createByteUnseen=function(api){
   function lease(visible){const t=Date.now(),leases=read(leaseKey)||{};for(const k of Object.keys(leases))if(t-leases[k]>20000)delete leases[k];
     if(visible)leases[id]=t;else delete leases[id];try{localStorage.setItem(leaseKey,JSON.stringify(leases))}catch(_){}}
   function anotherViewer(){return Object.entries(read(leaseKey)||{}).some(([k,t])=>k!==id&&Date.now()-t<12000);}
-  function free(){return life.phase==='awake'&&byte.mode==='idle'&&Math.hypot(byte.vx,byte.vy)<12&&Math.abs(byte.y-api.floorY())<12&&
+  function free(){return !api.away?.()&&life.phase==='awake'&&byte.mode==='idle'&&Math.hypot(byte.vx,byte.vy)<12&&Math.abs(byte.y-api.floorY())<12&&
     !byte.grabbed&&!life.pointer.active&&!life.pendingFollow&&!life.nest.active&&!outside.dozing&&!outside.dream&&!outside.bask&&
     !home.hand&&!home.carried&&!home.travel&&!home.journey&&!home.activity&&!web.active&&!earth.enabled&&!obby.hasLaunched&&
     !bathroom.hand&&!bathroom.source&&!bathroom.draining&&!api.pranking()&&!document.querySelector('dialog[open]');}
@@ -82,7 +82,7 @@ window.createByteUnseen=function(api){
     // Chrome may be killed without pagehide. Never leave an old idle proof valid
     // after a real grab or an autonomous transition into sleep/carry/other work.
     if(state.pending?.free&&!free())protect();
-    let changed=false;for(const t of state.traces)if(!t.seen&&t.room===home.room&&!home.travel&&!obby.hasLaunched){t.seen=true;changed=true;}if(changed)save();
+    let changed=false;for(const t of state.traces)if(!t.seen&&!api.away?.()&&t.room===home.room&&!home.travel&&!obby.hasLaunched){t.seen=true;changed=true;}if(changed)save();
     if(Date.now()-state.checkpointAt>4000){state.checkpointAt=Date.now();lease(true);if(free())capture('checkpoint');else protect();}}
   function handled(v){if(v.silkWrapped){v.silkWrapped=false;home.save();} }
   function released(v,cancelled){if(!cancelled&&v.vegetable&&v.refusedInHand&&!home.journey&&Math.hypot(v.x-byte.x,v.y-byte.y)<api.bodyH()*.65)v.unseenOrigin='offered';v.refusedInHand=false;}

@@ -302,7 +302,13 @@
     restHere: beginRestHere, obbyHere: beginObbyHere, skyOpening: crystal.opening });
   const details=window.createByteLifeDetails({ctx,world,byte,life,home,bathroom,kitchen,economy,obby,earth,web,bodyW:()=>bodyW(),bodyH:()=>bodyH(),floorY:()=>floorY(),roomH:()=>spriteH});home.details=details;
   home.household=window.createByteHousehold({world,byte,life,home,bathroom,earth,web,obby,autonomy,voice,wakeByte,castFoodWeb,releaseFoodWeb,bodyW:()=>bodyW(),bodyH:()=>bodyH(),floorY:()=>floorY(),extents:bodyHalfExtents});
-  home.unseen=window.createByteUnseen({ctx,world,byte,life,home,kitchen,bathroom,details,earth,web,obby,outside,bodyW:()=>bodyW(),bodyH:()=>bodyH(),floorY:()=>floorY(),pranking:()=>!['waiting','released'].includes(buttonWeb.phase)});
+  home.unseen=window.createByteUnseen({ctx,world,byte,life,home,kitchen,bathroom,details,earth,web,obby,outside,bodyW:()=>bodyW(),bodyH:()=>bodyH(),floorY:()=>floorY(),away:()=>backyard.active,pranking:()=>!['waiting','released'].includes(buttonWeb.phase)});
+  const gardenApi={ctx,world,byte,life,home,assets,economy,bathroom,obby,web,earth,senses:room,extents:bodyHalfExtents,roomH:()=>spriteH,floorY:()=>floorY(),wakeByte,voice,tactile};
+  const backyard=window.createByteBackyard(gardenApi);
+  const screenWeb=window.createByteScreenWeb({ctx,world,byte,life,home,web,obby,garden:backyard,voice,tactile,spoolPosition,
+    busy:()=>!['waiting','released'].includes(buttonWeb.phase)||(!backyard.active&&(autonomy.choice||byte.mode!=='idle'&&byte.mode!=='scheming'))||
+      (backyard.active&&(backyard.play.phase!=='idle'||!!backyard.care||backyard.actor.z>8||Math.hypot(backyard.actor.vx,backyard.actor.vy)>30||!!backyard.hand||backyard.actor.grabbed||!!backyard.actor.target||!!backyard.actor.carry||backyard.rope.active||!backyard.onScreen()))});
+  gardenApi.screenWeb=screenWeb;
   function openRoom(kind = 'both') {
     if (room.state.open || room.state.pending) {
       room.close(); stopMotionIfUnused();
@@ -527,8 +533,10 @@
       }
       resetEarthSupport();
     }
+    if(oldW&&oldH)screenWeb.resize(world.w/oldW,world.h/oldH);
     home.resize(oldW, oldH);
     kitchen.resize();
+    backyard.resize();
     const extent = bodyHalfExtents();
     byte.x = clamp(byte.x || world.w * .4, extent.x, world.w - extent.x);
     if (!obby.hasLaunched) byte.y = clamp(byte.y || floorY(), extent.y, Math.min(floorY(), world.h - extent.y));
@@ -574,6 +582,7 @@
       if(!pose&&home.household.pose)pose=home.household.pose;
       if (pose) frame = assets[pose] || frame;
     }
+    if(screenWeb.proud>0&&!pose&&byte.mode==='idle'&&!byte.grabbed&&life.phase==='awake'&&!obby.hasLaunched&&!web.active&&life.pet<=.45&&life.reactionBlink<=0&&!outside.dozing&&!outside.bask)frame=assets.proud;
     const frameW = bodyW();
     const bob = moving ? Math.sin(t * .018) * 3 : (byte.mode === 'idle' ? Math.sin(byte.idlePhase) * 2 : 0);
     const horizontalSquish = Math.max(byte.wallSquish, byte.grabSquishX);
@@ -1269,6 +1278,7 @@
     // The crystal and its first ledge are genuinely above the open-sky interval.
   }
   function updateAutonomy(dt) {
+    if(backyard.pending||screenWeb.phase==='scheming'||screenWeb.phase==='shot')return;
     if (obby.hasLaunched || home.travel || home.journey || home.activity || life.phase !== 'awake') return;
     const idle = byte.mode === 'idle' && !byte.grabbed && !web.active && !life.pointer.active;
     if (!idle) {
@@ -1285,6 +1295,7 @@
     if(home.possessions.opportunity()){home.possessions.start();return;}
     if(kitchen.opportunity()){kitchen.start();return;}
     const opportunities = [];
+    if(screenWeb.phase==='waiting'&&screenWeb.clock>screenWeb.nextAt)opportunities.push('screenweb','screenweb');
     if (buttonWeb.phase === 'waiting' && !buttonBody.loose) opportunities.push('button');
     if (!obby.active) opportunities.push('obby');
     if (home.playCooldown <= 0 && !earth.enabled) opportunities.push('play');
@@ -1292,6 +1303,7 @@
     if (life.roughness > .25 && !obby.active) opportunities.push('obby');
     if (!earth.enabled) { opportunities.push('rest'); if (life.roughness < .15) opportunities.push('rest'); }
     autonomy.choice = opportunities[Math.floor(Math.random() * opportunities.length)];
+    if(autonomy.choice==='screenweb'){autonomy.choice=null;screenWeb.start();}
     if (autonomy.choice === 'rest') beginRest();
     obby.idleTime = 0;
     buttonWeb.idleTime = 0;
@@ -1407,12 +1419,23 @@
     voice('web', .75);
     return true;
   }
+  // Only the new recessed exit needs this extra disambiguation: empty source-canvas
+  // corners are scenery, while the actual rotated/deformed creature keeps grab authority.
+  const exitHitMasks=new WeakMap();
+  function paintedBodyAt(x,y){const g=bodyGeometry(),frame=g.frame;if(!frame?.naturalWidth)return false;
+    let mask=exitHitMasks.get(frame);if(!mask){const c=document.createElement('canvas');c.width=frame.naturalWidth;c.height=frame.naturalHeight;const p=c.getContext('2d');p.drawImage(frame,0,0);mask={w:c.width,h:c.height,data:p.getImageData(0,0,c.width,c.height).data};exitHitMasks.set(frame,mask);}
+    const dx=x-byte.x,dy=y-byte.y-g.bob,c=Math.cos(g.angle),sn=Math.sin(g.angle),lx=(dx*c+dy*sn)/(g.squeezeX*byte.facing),ly=(-dx*sn+dy*c)/g.squeezeY;
+    const ix=Math.floor((lx/g.frameW+.5)*mask.w),iy=Math.floor((ly/bodyH()+.5)*mask.h);return ix>=0&&ix<mask.w&&iy>=0&&iy<mask.h&&mask.data[(iy*mask.w+ix)*4+3]>25;
+  }
   function beginDrag(e) {
     e.preventDefault();
     if (e.isPrimary === false) return;
     const rect = canvas.getBoundingClientRect();
     const px = e.clientX - rect.left, py = e.clientY - rect.top;
     if (home.travel) return;
+    if(screenWeb.begin(px,py,e.pointerId)){canvas.setPointerCapture(e.pointerId);return;}
+    screenWeb.cancel();
+    if(backyard.active){backyard.begin(px,py,e.pointerId);canvas.setPointerCapture(e.pointerId);return;}
     const quiet = life.phase === 'sleep' || life.phase === 'settling';
     noticeTouch(px, py, e.pointerId, quiet);
     const point = obby.hasLaunched ? crystal.unproject(px, py) : { x: px, y: py };
@@ -1452,7 +1475,8 @@
       return;
     }
     const dx = px - byte.x, dy = py - byte.y;
-    const inByte = Math.abs(dx) < bodyW() * .58 && Math.abs(dy) < bodyH() * .59;
+    const atExit=home.room===5&&px>world.w-backyard.door().w&&py>backyard.door().top+24;
+    const inByte = Math.abs(dx) < bodyW() * .58 && Math.abs(dy) < bodyH() * .59&&(!atExit||paintedBodyAt(px,py));
     if (inByte) {
       obby.returning = false;
       life.pointer.kind = 'byte'; life.pendingFollow = false;
@@ -1465,6 +1489,7 @@
       byte.lastSamples = [{ x: px, y: py, t: now() }];
       canvas.setPointerCapture(e.pointerId);
     } else {
+      if(backyard.indoorBegin(px,py))return;
       life.pointer.kind = 'follow';
       followTouch(px, py);
     }
@@ -1481,6 +1506,10 @@
     web.anchorX = nextX; web.anchorY = nextY;
   }
   function moveDrag(e) {
+    const bounds=canvas.getBoundingClientRect(),gx=e.clientX-bounds.left,gy=e.clientY-bounds.top;
+    if(screenWeb.move(gx,gy,e.pointerId)){e.preventDefault();return;}
+    if(backyard.active&&backyard.move(gx,gy,e.pointerId)){e.preventDefault();return;}
+    if(backyard.active)return;
     if (home.travel) return;
     const handRect = canvas.getBoundingClientRect();
     const handPoint = obby.hasLaunched ? crystal.unproject(e.clientX - handRect.left, e.clientY - handRect.top) : { x: e.clientX - handRect.left, y: e.clientY - handRect.top };
@@ -1522,6 +1551,9 @@
     byte.lastSamples = byte.lastSamples.filter(p => t - p.t < 120).slice(-6);
   }
   function endDrag(e) {
+    if(e.type==='pointerup'&&Number.isFinite(e.clientX)&&Number.isFinite(e.clientY)){const r=canvas.getBoundingClientRect();if(screenWeb.hand?.id===e.pointerId)screenWeb.move(e.clientX-r.left,e.clientY-r.top,e.pointerId);else if(backyard.active&&backyard.hand?.id===e.pointerId)backyard.move(e.clientX-r.left,e.clientY-r.top,e.pointerId);}
+    if(screenWeb.end(e.pointerId)||backyard.active&&backyard.end(e.pointerId,e.type!=='pointerup')){if(canvas.hasPointerCapture(e.pointerId))canvas.releasePointerCapture(e.pointerId);return;}
+    if(backyard.active)return;
     if (bathroom.end(e.pointerId, e.type !== 'pointerup')) {
       if (canvas.hasPointerCapture(e.pointerId)) canvas.releasePointerCapture(e.pointerId);
       return;
@@ -1563,7 +1595,7 @@
     byte.mode = 'air';
     byte.squash = .13;
     byte.lastSamples = [];
-    if (e.type === 'pointerup') { const r = canvas.getBoundingClientRect(); home.afterByteRelease(e.clientX - r.left, e.clientY - r.top); }
+    if (e.type === 'pointerup') { const r = canvas.getBoundingClientRect(); home.afterByteRelease(e.clientX - r.left, e.clientY - r.top);backyard.afterRelease(e.clientX-r.left,e.clientY-r.top); }
   }
 
   canvas.addEventListener('pointerdown', beginDrag);
@@ -1692,6 +1724,7 @@
   }
 
   function draw(t) {
+    if(backyard.active){backyard.draw(t);screenWeb.draw();return;}
     const bathHere=bathroom.beginFrame(),kitchenHere=kitchen.beginFrame();
     if (!obby.hasLaunched && (bathHere||kitchenHere)) ctx.clearRect(0, 0, world.w, world.h);
     const cameraY = obby.hasLaunched ? obby.cameraY : 0;
@@ -1735,6 +1768,8 @@
     kitchen.foreground(t);
     details.foreground(t);
     home.unseen.foreground();
+    backyard.doorway();
+    screenWeb.draw();
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -1752,7 +1787,7 @@
   });
   // Runtime handles are available only to an explicitly enabled local QA harness.
   if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probe')) {
-    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal, bathroom, kitchen, economy, details };
+    window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal, bathroom, kitchen, economy, details, backyard, screenWeb };
   }
 
   function loop(t) {
@@ -1761,6 +1796,7 @@
     if (document.hidden) { requestAnimationFrame(loop); return; }
     if (window.__byteProbe?.paused) { draw(t); requestAnimationFrame(loop); return; }
     room.sample(t);
+    if(backyard.active){backyard.update(dt);home.unseen.update();screenWeb.update(dt);draw(t);requestAnimationFrame(loop);return;}
     updateOutside(dt, t);
     home.update(dt);
     home.unseen.update();
@@ -1771,6 +1807,8 @@
     updateObby(dt);
     updateButtonPhysics(dt);
     containRoomBody();
+    backyard.update(dt);
+    screenWeb.update(dt);
     draw(t);
     requestAnimationFrame(loop);
   }
@@ -1788,6 +1826,7 @@
     resize();
     byte.x = world.w * .4; byte.y = floorY(); byte.blinkAt = now() + 1400;
     if (!idle || !walk.every(Boolean) || !acting.every(Boolean)) { document.querySelector('#arrival').textContent = 'Byte could not arrive. Reload to try again.'; return; }
+    backyard.ready();
     home.unseen.start();
     document.querySelector('#arrival').classList.add('ready');
     requestAnimationFrame(loop);

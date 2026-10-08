@@ -1,0 +1,2893 @@
+{
+  "classification": "IMPLEMENTED AND RUNTIME-REACHABLE in software browser; target handset / Human Eyes acceptance pending.",
+  "branch": "experiment/sunburn-xii-2026-10-08",
+  "parent": "a41c5b2b22586c20dd851b3423f595593b0e23d7",
+  "physical_handset_tested": false,
+  "target": "Samsung Galaxy A06 5G / Chrome",
+  "native_touch": {
+    "status": "software browser touch, not handset acceptance",
+    "checks": [
+      {
+        "name": "Connected kitchen door",
+        "actual": "Trusted tap, indoor scuttle to door, entry; no direct enter call"
+      },
+      {
+        "name": "Camera has no leash",
+        "before": {
+          "a": {
+            "x": 180,
+            "y": 250,
+            "z": 0,
+            "vx": 0,
+            "vy": 0,
+            "vz": 0,
+            "angle": 0,
+            "spin": 0,
+            "squash": 0,
+            "facing": 1,
+            "frame": 0,
+            "clock": 0,
+            "target": null,
+            "grabbed": false,
+            "carry": null,
+            "pose": null,
+            "poseTime": 0
+          },
+          "c": {
+            "x": -64,
+            "y": 210
+          }
+        },
+        "after": {
+          "a": {
+            "x": 180,
+            "y": 250,
+            "z": 0,
+            "vx": 0,
+            "vy": 0,
+            "vz": 0,
+            "angle": 0,
+            "spin": 0,
+            "squash": 0,
+            "facing": 1,
+            "frame": 0,
+            "clock": 0,
+            "target": null,
+            "grabbed": false,
+            "carry": null,
+            "pose": null,
+            "poseTime": 0
+          },
+          "c": {
+            "x": -64,
+            "y": 750
+          },
+          "visible": false
+        }
+      },
+      {
+        "name": "Actual distance homecoming/call",
+        "call": {
+          "x": 210,
+          "y": 600,
+          "target": {
+            "x": 1059.547619047619,
+            "y": 1134.547619047619
+          },
+          "before": {
+            "x": 180,
+            "y": 250
+          }
+        },
+        "path": [
+          {
+            "x": 201.83051427608146,
+            "y": 271.95461508542553,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 222.98123675580905,
+            "y": 293.22557393451905,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 241.82169308740342,
+            "y": 312.17313337186687,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 265.3678334347232,
+            "y": 335.8531274175959,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 286.5687519704265,
+            "y": 357.17456767421885,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 307.77904483199853,
+            "y": 378.50543554732093,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 330.1545134567184,
+            "y": 401.0081029054588,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 351.3572873816594,
+            "y": 422.33140909872577,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 373.7329026404354,
+            "y": 444.8342239244961,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 394.9356102814543,
+            "y": 466.15746345703417,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 416.1383542786786,
+            "y": 487.4807395524533,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 438.52153978360286,
+            "y": 509.9911676592573,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 459.7166652617242,
+            "y": 531.3067819262694,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 479.75084674636724,
+            "y": 551.4548525344276,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 502.09247315567836,
+            "y": 573.923485292943,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          },
+          {
+            "x": 524.4748461167168,
+            "y": 596.43309623676,
+            "target": {
+              "x": 1059.547619047619,
+              "y": 1134.547619047619,
+              "reason": "call"
+            }
+          }
+        ],
+        "arrival": {
+          "x": 1047.4821455691392,
+          "y": 1127.903886609188
+        }
+      },
+      {
+        "name": "Grab/throw garden body",
+        "thrown": {
+          "x": 1059.230066047445,
+          "y": 1008.047880552545,
+          "z": 48.182031364634284,
+          "vx": -82.55714697241908,
+          "vy": -372.93027286769325,
+          "vz": 55.40319598364413,
+          "angle": 0.04898734958297761,
+          "spin": 0.5663792560738341,
+          "squash": 0,
+          "facing": 1,
+          "frame": 0,
+          "clock": 12.937599999999954,
+          "target": null,
+          "grabbed": false,
+          "carry": null,
+          "pose": null,
+          "poseTime": 1.7666000000000022,
+          "detour": null
+        }
+      },
+      {
+        "name": "Physical seed planting and poured water growth",
+        "flower": {
+          "id": 0,
+          "x": 340,
+          "y": 370,
+          "stage": 3,
+          "water": 0,
+          "shown": false,
+          "color": "#ef8da4"
+        }
+      },
+      {
+        "name": "Decoration physical placement",
+        "furnishing": {
+          "id": "bench",
+          "kind": "bench",
+          "x": 839.7219412131218,
+          "y": 1154.9813268835724,
+          "r": 45,
+          "z": 0,
+          "vx": -0.000992959760054995,
+          "vy": 0.8747975486078144,
+          "vz": 0,
+          "angle": 0
+        }
+      },
+      {
+        "name": "Reload retains place/plant/object and XI vetoes indoor history",
+        "saved": {
+          "flower": {
+            "id": 0,
+            "x": 340,
+            "y": 370,
+            "stage": 3,
+            "water": 0,
+            "shown": false,
+            "color": "#ef8da4"
+          },
+          "bench": {
+            "id": "bench",
+            "kind": "bench",
+            "x": 839.7219246306938,
+            "y": 1154.9959360026342,
+            "r": 45,
+            "z": 0,
+            "vx": 0,
+            "vy": 0,
+            "vz": 0,
+            "angle": 0
+          },
+          "actor": {
+            "x": 998.2012349991224,
+            "y": 732.3661322085735,
+            "z": 0,
+            "vx": 0,
+            "vy": 0,
+            "vz": 0,
+            "angle": 0,
+            "spin": 0,
+            "squash": 0,
+            "facing": 1,
+            "frame": 0,
+            "clock": 0,
+            "target": null,
+            "grabbed": false,
+            "carry": null,
+            "pose": null,
+            "poseTime": 0
+          },
+          "camera": {
+            "x": -4.239997863769531,
+            "y": 703.9799499511719
+          }
+        }
+      },
+      {
+        "name": "Flower-owned offscreen invitation, camera remains voluntary",
+        "invite": {
+          "actor": {
+            "x": 400.4561512136596,
+            "y": 416.58051976731633,
+            "z": 0,
+            "vx": -30.016822369272035,
+            "vy": -15.85773081627388,
+            "vz": 0,
+            "angle": 0,
+            "spin": 0,
+            "squash": 0,
+            "facing": -1,
+            "frame": 3,
+            "clock": 6.797700000000028,
+            "target": null,
+            "grabbed": false,
+            "carry": null,
+            "pose": "curious",
+            "poseTime": 6,
+            "detour": null
+          },
+          "invitation": {
+            "x": 400.9975524525617,
+            "y": 416.8665392201581,
+            "flower": 0,
+            "born": 7.9436000000000355
+          },
+          "point": {
+            "x": 202.89876454531293,
+            "y": 45,
+            "knobX": 203.39731048388353,
+            "knobY": 103.99789362296873
+          },
+          "camera": {
+            "x": -8.239997863769531,
+            "y": 857.2799682617188
+          }
+        },
+        "afterDrag": {
+          "x": -14.842689514160156,
+          "y": 311.2778625488281
+        }
+      },
+      {
+        "name": "Physical garden-to-kitchen return",
+        "actual": "Tap at house step, body traversed actual ground before indoor return"
+      },
+      {
+        "name": "Byte retrieves/presents/waits \u2192 human throws \u2192 chase/carry/return \u2192 invites again",
+        "invitation": {
+          "play": {
+            "phase": "wait",
+            "home": {
+              "x": 610,
+              "y": 760
+            },
+            "answered": 0,
+            "returns": 1
+          },
+          "actor": {
+            "x": 604.5915649400029,
+            "y": 754.2259384169854,
+            "z": 0,
+            "vx": 0.004279277438168256,
+            "vy": 0.0046464958770489895,
+            "vz": 0,
+            "angle": 0,
+            "spin": 0,
+            "squash": 0,
+            "facing": -1,
+            "frame": 1,
+            "clock": 6.615200000000033,
+            "target": null,
+            "grabbed": false,
+            "carry": null,
+            "pose": "expectant",
+            "poseTime": 18.300000000000043,
+            "detour": null
+          },
+          "ball": {
+            "id": "ball",
+            "kind": "ball",
+            "x": 675.0756073640446,
+            "y": 804.3012960662129,
+            "r": 19,
+            "z": 0,
+            "vx": 4.742636407669575,
+            "vy": 4.742636407669575,
+            "vz": 0,
+            "angle": 0
+          }
+        },
+        "result": {
+          "play": {
+            "phase": "wait",
+            "home": {
+              "x": 610,
+              "y": 760
+            },
+            "answered": 1,
+            "returns": 2
+          },
+          "actor": {
+            "x": 609.4841725172358,
+            "y": 746.9621873544622,
+            "z": 0,
+            "vx": 1.3414904933801908,
+            "vy": 33.90688224818175,
+            "vz": 0,
+            "angle": 0,
+            "spin": 0,
+            "squash": 0,
+            "facing": -1,
+            "frame": 0,
+            "clock": 17.930099999999857,
+            "target": null,
+            "grabbed": false,
+            "carry": null,
+            "pose": "expectant",
+            "poseTime": 20,
+            "detour": null
+          }
+        }
+      },
+      {
+        "name": "Scheming interrupted by real fingers",
+        "shots": 0
+      },
+      {
+        "name": "Elastic deformation \u2192 progressive attachment break \u2192 full peel \u2192 proud \u2192 physical removal",
+        "attached": {
+          "shots": 1,
+          "anchors": 8
+        },
+        "tension": {
+          "anchors": 7,
+          "hand": {
+            "id": 3,
+            "node": 0,
+            "x": -4.079999923706055,
+            "y": 314.239990234375,
+            "dx": 1.8310546892053026e-06,
+            "dy": -5.493164053405053e-06,
+            "travel": 122.06554256305756,
+            "lastX": -4.079999923706055,
+            "lastY": 314.239990234375
+          },
+          "nodes": [
+            {
+              "x": -4.0799980926513655,
+              "y": 314.23998474121095,
+              "attached": false
+            },
+            {
+              "x": 70.82308276032786,
+              "y": 253.44761137638125,
+              "attached": false
+            },
+            {
+              "x": 136.48621166118045,
+              "y": 231.0921445560528,
+              "attached": false
+            },
+            {
+              "x": 206,
+              "y": 214.24,
+              "attached": true
+            },
+            {
+              "x": 242.41178133174844,
+              "y": 218.2320159812172,
+              "attached": false
+            },
+            {
+              "x": 292.87882128907063,
+              "y": 214.0768492614978,
+              "attached": false
+            },
+            {
+              "x": 346.08000000000004,
+              "y": 214.24,
+              "attached": true
+            },
+            {
+              "x": 46.147861270245535,
+              "y": 285.8781805642505,
+              "attached": false
+            },
+            {
+              "x": 85.36225333274493,
+              "y": 299.2476116413102,
+              "attached": false
+            },
+            {
+              "x": 138.34109065584806,
+              "y": 287.60304076749867,
+              "attached": false
+            },
+            {
+              "x": 190.42891135955895,
+              "y": 279.68447499918904,
+              "attached": false
+            },
+            {
+              "x": 241.03419917650356,
+              "y": 275.8351059899787,
+              "attached": false
+            },
+            {
+              "x": 290.7733418257662,
+              "y": 274.4569042143462,
+              "attached": false
+            },
+            {
+              "x": 335.8285101341769,
+              "y": 271.5396185119336,
+              "attached": false
+            },
+            {
+              "x": 65.92,
+              "y": 329.24,
+              "attached": true
+            },
+            {
+              "x": 101.70041336784749,
+              "y": 346.36605389888024,
+              "attached": false
+            },
+            {
+              "x": 148.68296139481578,
+              "y": 340.868344368341,
+              "attached": false
+            },
+            {
+              "x": 196.94102598798378,
+              "y": 335.18294912583553,
+              "attached": false
+            },
+            {
+              "x": 245.56185946446953,
+              "y": 332.1323064950593,
+              "attached": false
+            },
+            {
+              "x": 294.4949903181926,
+              "y": 329.4798306585421,
+              "attached": false
+            },
+            {
+              "x": 346.08000000000004,
+              "y": 329.24,
+              "attached": true
+            },
+            {
+              "x": 68.22754570543268,
+              "y": 390.91225432895266,
+              "attached": false
+            },
+            {
+              "x": 109.64767495084897,
+              "y": 400.3576195159033,
+              "attached": false
+            },
+            {
+              "x": 154.40098213929238,
+              "y": 395.9615314693746,
+              "attached": false
+            },
+            {
+              "x": 202.55144453733587,
+              "y": 390.6414748789397,
+              "attached": false
+            },
+            {
+              "x": 249.26478551056795,
+              "y": 388.7048717504346,
+              "attached": false
+            },
+            {
+              "x": 296.4322135230067,
+              "y": 387.4873083131359,
+              "attached": false
+            },
+            {
+              "x": 342.4893018433591,
+              "y": 385.92894123543056,
+              "attached": false
+            },
+            {
+              "x": 65.92,
+              "y": 444.24,
+              "attached": true
+            },
+            {
+              "x": 111.5028157498808,
+              "y": 456.8645150876648,
+              "attached": false
+            },
+            {
+              "x": 159.9800661200661,
+              "y": 454.79234835245916,
+              "attached": false
+            },
+            {
+              "x": 206,
+              "y": 444.24,
+              "attached": true
+            },
+            {
+              "x": 252.44519713205156,
+              "y": 445.8680772227375,
+              "attached": false
+            },
+            {
+              "x": 298.9005749935105,
+              "y": 444.1088845322696,
+              "attached": false
+            },
+            {
+              "x": 346.08000000000004,
+              "y": 444.24,
+              "attached": true
+            }
+          ]
+        },
+        "peeled": {
+          "broken": 8,
+          "proud": 3.4667999999999997,
+          "anchors": 0
+        }
+      }
+    ],
+    "errors": [],
+    "fixtures": [
+      "Kitchen starting room; competing indoor autonomy suppressed during connection test.",
+      "Garden nextInterest deferred only during isolated gesture/plant/decor/peel checks; native RAF and trusted CDP touch remain authoritative."
+    ]
+  },
+  "additional_touch_and_physics": {
+    "results": [
+      {
+        "name": "Independent pan 320x568",
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "camera": {
+          "x": 6,
+          "y": 482.63999938964844
+        }
+      },
+      {
+        "name": "Independent pan 360x800",
+        "viewport": {
+          "width": 360,
+          "height": 800
+        },
+        "camera": {
+          "x": 6,
+          "y": 594
+        }
+      },
+      {
+        "name": "Independent pan 412x824",
+        "viewport": {
+          "width": 412,
+          "height": 824
+        },
+        "camera": {
+          "x": 6,
+          "y": 605.5199890136719
+        }
+      },
+      {
+        "name": "Independent pan 430x932",
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "camera": {
+          "x": 6,
+          "y": 657.3599853515625
+        }
+      },
+      {
+        "name": "Independent pan 844x390",
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "camera": {
+          "x": 6,
+          "y": 379.91998291015625
+        }
+      },
+      {
+        "name": "Actual spool/plant/tap/reload and isolated rope laws",
+        "planted": {
+          "active": true,
+          "planted": true,
+          "x": 257.1889717465355,
+          "y": 135.19197772798083,
+          "z": 0,
+          "length": 126.07345764216417
+        },
+        "anchored": {
+          "r": {
+            "active": true,
+            "planted": true,
+            "x": 257.1889717465355,
+            "y": 135.19197772798083,
+            "z": 0,
+            "length": 126.07345764216417
+          },
+          "actor": {
+            "x": 180,
+            "y": 250,
+            "z": 0,
+            "vx": 0,
+            "vy": 0,
+            "vz": 0,
+            "angle": 0,
+            "spin": 0,
+            "squash": 0,
+            "facing": 1,
+            "frame": 0,
+            "clock": 0,
+            "target": null,
+            "grabbed": false,
+            "carry": null,
+            "pose": null,
+            "poseTime": 0
+          },
+          "p": {
+            "x": 367.59759521484375,
+            "y": 383.2799987792969
+          }
+        },
+        "laws": {
+          "before": {
+            "x": 500,
+            "y": 500,
+            "z": 50,
+            "vx": 90,
+            "vy": -55,
+            "vz": 25
+          },
+          "slack": {
+            "x": 500,
+            "y": 500,
+            "z": 50,
+            "vx": 90,
+            "vy": -55,
+            "vz": 25
+          },
+          "taut": {
+            "x": 651.6744137803398,
+            "y": 509.3588507514248,
+            "z": 0,
+            "vx": 90,
+            "vy": -55,
+            "vz": 25
+          },
+          "release": {
+            "vx": 90,
+            "vy": -55,
+            "vz": 25
+          }
+        },
+        "fixture": "Slack/taut velocity comparison uses explicit physical starting states and direct solver call after real touch lifecycle."
+      },
+      {
+        "name": "Actual offscreen can retrieval, watering, bloom and voluntary invitation",
+        "before": {
+          "can": {
+            "id": "can",
+            "kind": "can",
+            "x": 255,
+            "y": 265,
+            "r": 22,
+            "z": 0,
+            "vx": 0,
+            "vy": 0,
+            "vz": 0,
+            "angle": 0
+          },
+          "flower": {
+            "id": 1,
+            "x": 450,
+            "y": 370,
+            "stage": 1,
+            "water": 0,
+            "shown": false,
+            "color": "#ef8da4"
+          },
+          "actor": {
+            "x": 180,
+            "y": 250,
+            "z": 0,
+            "vx": 0,
+            "vy": 0,
+            "vz": 0,
+            "angle": 0,
+            "spin": 0,
+            "squash": 0,
+            "facing": 1,
+            "frame": 0,
+            "clock": 0,
+            "target": null,
+            "grabbed": false,
+            "carry": null,
+            "pose": null,
+            "poseTime": 0
+          },
+          "camera": {
+            "x": 0,
+            "y": 882
+          }
+        },
+        "after": {
+          "can": {
+            "id": "can",
+            "kind": "can",
+            "x": 421.2020579268023,
+            "y": 366.79344665095726,
+            "r": 22,
+            "z": 37,
+            "vx": 4.80177152550691e-12,
+            "vy": 3.2091126386222116e-12,
+            "vz": -27.2,
+            "angle": 0
+          },
+          "flower": {
+            "id": 1,
+            "x": 450,
+            "y": 370,
+            "stage": 3,
+            "water": 0,
+            "shown": true,
+            "color": "#ef8da4"
+          },
+          "actor": {
+            "x": 403.2020579268023,
+            "y": 368.79344665095726,
+            "z": 0,
+            "vx": 4.144511453712791e-12,
+            "vy": 2.769853587654853e-12,
+            "vz": 0,
+            "angle": 0,
+            "spin": 0,
+            "squash": 0,
+            "facing": 1,
+            "frame": 3,
+            "clock": 2.5997999999999992,
+            "target": null,
+            "grabbed": false,
+            "carry": null,
+            "pose": "proud",
+            "poseTime": 3.968,
+            "detour": null
+          },
+          "invitation": {
+            "x": 403.2020579268021,
+            "y": 368.79344665095715,
+            "flower": 1,
+            "born": 8.625100000000037
+          },
+          "camera": {
+            "x": 0,
+            "y": 882
+          }
+        },
+        "fixture": "Only a planted seed and distant camera are set; no actor relocation, time stepping, pose or water-growth writes."
+      },
+      {
+        "name": "Actual body carry/drop onto spring mushroom",
+        "body": {
+          "x": 854.9999709356399,
+          "y": 454.9999709356399,
+          "z": 23.08336299999989,
+          "vx": 0,
+          "vy": 0,
+          "vz": 401.6950000000003,
+          "angle": 0,
+          "spin": 0,
+          "squash": 0.2866130804615069,
+          "facing": 1,
+          "frame": 0,
+          "clock": 0,
+          "target": null,
+          "grabbed": false,
+          "carry": null,
+          "pose": null,
+          "poseTime": 0
+        },
+        "fixture": "Initial actor beside mushroom and camera above it; contact/launch are native physics after trusted carry/drop."
+      },
+      {
+        "name": "Outdoor observation cannot fabricate/observe an XI indoor trace",
+        "xi": {
+          "seen": false,
+          "free": false,
+          "away": true
+        }
+      },
+      {
+        "name": "Autonomous walking actually leaves the viewport",
+        "origin": {
+          "x": 180,
+          "y": 250,
+          "camera": {
+            "x": -64,
+            "y": 210
+          }
+        },
+        "distant": {
+          "actor": {
+            "x": 196.11792709388445,
+            "y": 591.2343289594356,
+            "z": 0,
+            "vx": 4.350965514571459,
+            "vy": 92.11474831982152,
+            "vz": 0,
+            "angle": 0,
+            "spin": 0,
+            "squash": 0,
+            "facing": -1,
+            "frame": 0,
+            "clock": 3.4818999999999973,
+            "target": {
+              "x": 219.1424415567715,
+              "y": 1078.6887451877444,
+              "reason": "wander"
+            },
+            "grabbed": false,
+            "carry": null,
+            "pose": null,
+            "poseTime": 0,
+            "detour": null
+          },
+          "camera": {
+            "x": -64,
+            "y": 210
+          }
+        },
+        "continued": {
+          "x": 204.62956144230148,
+          "y": 771.4350345658129
+        },
+        "fixture": "Opportunity selection is fixtured to a wandering turn; full real travel, no body coordinate writes."
+      }
+    ],
+    "errors": [],
+    "method": "Trusted CDP touch/native RAF; actor/plant/sensor starting arrangements explicitly fixtured where identified. Not physical handset evidence."
+  },
+  "normal_startup_and_controls": {
+    "checks": [
+      {
+        "name": "Ordinary app with no probe: hall \u2192 playroom \u2192 kitchen \u2192 actual rear passage \u2192 backyard and pan",
+        "fixture": "None. Real touch, normal startup and native RAF."
+      },
+      {
+        "name": "Visible Byte beside exit keeps grab authority; empty sprite corner selects passage",
+        "painted": {
+          "x": 377.45985524785374,
+          "y": 746.7706444808695
+        },
+        "doorway": {
+          "x": 397.992,
+          "y": 617.528,
+          "w": 35.02,
+          "h": 392.9440000000001,
+          "top": 397.0559999999999
+        },
+        "fixture": "Actor parked beside exit; source alpha locates an actual visible body pixel. Both actions are trusted touch."
+      },
+      {
+        "name": "Attached prank preserves sound/shop/close controls; pointer cancellation releases fingers and retains web",
+        "attachments": 8,
+        "fixture": "Only the next opportunity and competing garden interest are scheduled; mesh is produced by native autonomy/anticipation/shot."
+      }
+    ],
+    "errors": [],
+    "authority": "software browser; physical phone acceptance pending"
+  },
+  "inherited_regression": [
+    {
+      "suite": "device-probe",
+      "exit": 0,
+      "seconds": 30.41
+    },
+    {
+      "suite": "room-probe",
+      "exit": 0,
+      "seconds": 35.96
+    },
+    {
+      "suite": "home-probe",
+      "exit": 0,
+      "seconds": 45.04
+    },
+    {
+      "suite": "upstairs-probe",
+      "exit": 0,
+      "seconds": 6.33
+    },
+    {
+      "suite": "crystal-probe",
+      "exit": 0,
+      "seconds": 6.28
+    },
+    {
+      "suite": "care-probe",
+      "exit": 0,
+      "seconds": 36.25
+    },
+    {
+      "suite": "acting-probe",
+      "exit": 0,
+      "seconds": 25.26
+    },
+    {
+      "suite": "bath-read-probe",
+      "exit": 0,
+      "seconds": 15.13
+    },
+    {
+      "suite": "crystal-cache",
+      "exit": 0,
+      "seconds": 3.08
+    },
+    {
+      "suite": "possessions-probe",
+      "exit": 0,
+      "seconds": 42.6
+    },
+    {
+      "suite": "mobile-probe",
+      "exit": 0,
+      "seconds": 7.82
+    },
+    {
+      "suite": "sunburn-ix-probe",
+      "exit": 0,
+      "seconds": 28.21
+    },
+    {
+      "suite": "sunburn-x-probe",
+      "exit": 0,
+      "seconds": 12.1
+    },
+    {
+      "suite": "sunburn-xi-probe",
+      "exit": 0,
+      "seconds": 88.8
+    },
+    {
+      "suite": "trunk-placement",
+      "exit": 0,
+      "seconds": 17.56
+    },
+    {
+      "suite": "kitchen-probe",
+      "exit": 0,
+      "method": "Deterministic harness only; product unchanged.",
+      "details": {
+        "checks": [
+          {
+            "name": "kitchen extends the play room; all old room coordinates and compact door geometry stay intact",
+            "pass": true
+          },
+          {
+            "name": "food uses the room rope: slack does nothing; taut web pulls both bodies; releasing leaves both velocities intact",
+            "pass": true
+          },
+          {
+            "name": "an existing planted player strand prevents theft and survives kitchen cancellation",
+            "pass": true
+          },
+          {
+            "name": "Human Fingers can interrupt the scheme, grab Byte and preserve ordinary release control",
+            "pass": true
+          },
+          {
+            "name": "five viewport presentations retain high stock, readable scheme and a physically completed autonomous meal",
+            "pass": true
+          },
+          {
+            "name": "repeated mud events spread new smears across the body; every HQ pose retains its original alpha silhouette",
+            "pass": true
+          },
+          {
+            "name": "Earth orientation controls physical food and mouth alignment; it does not create a competing Byte kitchen floor",
+            "pass": true
+          }
+        ],
+        "errors": []
+      }
+    }
+  ],
+  "final_regression_initial": [
+    {
+      "suite": "mobile-probe",
+      "exit": 0,
+      "seconds": 7.94
+    },
+    {
+      "suite": "sunburn-xi-probe",
+      "exit": 0,
+      "seconds": 82.75
+    },
+    {
+      "suite": "trunk-placement",
+      "exit": 1,
+      "seconds": 7.47
+    }
+  ],
+  "trunk_baseline_replay": {
+    "results": [
+      {
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "geometry": {
+          "c": {
+            "x": 86.4,
+            "y": 496,
+            "w": 76.8,
+            "h": 54
+          },
+          "door": 27.200000000000003,
+          "ladder": 204.8,
+          "w": 320,
+          "h": 568,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      },
+      {
+        "viewport": {
+          "width": 360,
+          "height": 740
+        },
+        "geometry": {
+          "c": {
+            "x": 97.2,
+            "y": 668,
+            "w": 86.39999999999999,
+            "h": 54
+          },
+          "door": 30.6,
+          "ladder": 230.4,
+          "w": 360,
+          "h": 740,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      },
+      {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "geometry": {
+          "c": {
+            "x": 105.30000000000001,
+            "y": 772,
+            "w": 93.6,
+            "h": 54
+          },
+          "door": 33.150000000000006,
+          "ladder": 249.6,
+          "w": 390,
+          "h": 844,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        },
+        "ordinaryRoute": {
+          "thrown": {
+            "stored": false,
+            "vx": 344.45768769900917,
+            "vy": -1124.5530392526477,
+            "journey": null,
+            "room": 2,
+            "carried": null
+          },
+          "physicalDeposit": true,
+          "storedReload": true,
+          "retrieval": true,
+          "ladderCarry": true,
+          "loftReload": true
+        }
+      },
+      {
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "geometry": {
+          "c": {
+            "x": 116.10000000000001,
+            "y": 860,
+            "w": 103.2,
+            "h": 54
+          },
+          "door": 36.550000000000004,
+          "ladder": 275.2,
+          "w": 430,
+          "h": 932,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      },
+      {
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "geometry": {
+          "c": {
+            "x": 113.4,
+            "y": 282,
+            "w": 100.8,
+            "h": 54
+          },
+          "door": 35.7,
+          "ladder": 268.8,
+          "w": 420,
+          "h": 354,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      }
+    ],
+    "errors": [],
+    "method": "normal RAF/trusted touch; initial room/ownership fixtures only"
+  },
+  "trunk_candidate_replay": {
+    "results": [
+      {
+        "viewport": {
+          "width": 320,
+          "height": 568
+        },
+        "geometry": {
+          "c": {
+            "x": 86.4,
+            "y": 496,
+            "w": 76.8,
+            "h": 54
+          },
+          "door": 27.200000000000003,
+          "ladder": 204.8,
+          "w": 320,
+          "h": 568,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      },
+      {
+        "viewport": {
+          "width": 360,
+          "height": 740
+        },
+        "geometry": {
+          "c": {
+            "x": 97.2,
+            "y": 668,
+            "w": 86.39999999999999,
+            "h": 54
+          },
+          "door": 30.6,
+          "ladder": 230.4,
+          "w": 360,
+          "h": 740,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      },
+      {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "geometry": {
+          "c": {
+            "x": 105.30000000000001,
+            "y": 772,
+            "w": 93.6,
+            "h": 54
+          },
+          "door": 33.150000000000006,
+          "ladder": 249.6,
+          "w": 390,
+          "h": 844,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        },
+        "ordinaryRoute": {
+          "thrown": {
+            "stored": false,
+            "vx": 349.87893464994477,
+            "vy": -1142.251816063055,
+            "journey": null,
+            "room": 2,
+            "carried": null
+          },
+          "physicalDeposit": true,
+          "storedReload": true,
+          "retrieval": true,
+          "ladderCarry": true,
+          "loftReload": true
+        }
+      },
+      {
+        "viewport": {
+          "width": 430,
+          "height": 932
+        },
+        "geometry": {
+          "c": {
+            "x": 116.10000000000001,
+            "y": 860,
+            "w": 103.2,
+            "h": 54
+          },
+          "door": 36.550000000000004,
+          "ladder": 275.2,
+          "w": 430,
+          "h": 932,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      },
+      {
+        "viewport": {
+          "width": 844,
+          "height": 390
+        },
+        "geometry": {
+          "c": {
+            "x": 113.4,
+            "y": 282,
+            "w": 100.8,
+            "h": 54
+          },
+          "door": 35.7,
+          "ladder": 268.8,
+          "w": 420,
+          "h": 354,
+          "portals": [
+            null,
+            null,
+            null
+          ],
+          "open": null
+        }
+      }
+    ],
+    "errors": [],
+    "method": "normal RAF/trusted touch; initial room/ownership fixtures only"
+  },
+  "performance": {
+    "draft": {
+      "method": "Serial Chromium, software rendering, 1x / 6x CPU, real native RAF, actual input and browser exit. Proxy only; Samsung Galaxy A06 5G remains Human Fingers validation.",
+      "results": [
+        {
+          "scene": "XI-home",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 59.394510185171114,
+          "p95FrameMs": 16.799999999999727,
+          "maxInputMs": 48,
+          "inputSamples": [
+            25.900000005960464,
+            35.69999998807907,
+            42.900000005960464,
+            48,
+            44.30000001192093,
+            44.5,
+            43.5,
+            41.70000001788139,
+            44.39999997615814,
+            29.900000005960464
+          ],
+          "exitMs": 54,
+          "maxStorageWriteMs": 0.30000001192092896,
+          "taskSeconds": 1.948594,
+          "longTasks": [
+            72
+          ],
+          "web": null,
+          "errors": []
+        },
+        {
+          "scene": "XII-home",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 58.777609404417504,
+          "p95FrameMs": 16.799999999999272,
+          "maxInputMs": 49.599999994039536,
+          "inputSamples": [
+            34.099999994039536,
+            49.599999994039536,
+            40.19999998807907,
+            42.5,
+            41.79999998211861,
+            43.19999998807907,
+            43.099999994039536,
+            46.099999994039536,
+            43.69999998807907,
+            33
+          ],
+          "exitMs": 53,
+          "maxStorageWriteMs": 0.09999999403953552,
+          "taskSeconds": 1.814378,
+          "longTasks": [],
+          "garden": {
+            "bytes": 0,
+            "builds": 0
+          },
+          "web": {
+            "nodes": 0,
+            "links": 0,
+            "broken": 0
+          },
+          "errors": []
+        },
+        {
+          "scene": "XII-return-home",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 59.54120959428896,
+          "p95FrameMs": 16.700000000000728,
+          "maxInputMs": 48,
+          "inputSamples": [
+            23.599999994039536,
+            36.099999994039536,
+            44.099999994039536,
+            45.400000005960464,
+            48,
+            42.30000001192093,
+            44.89999997615814,
+            45.89999997615814,
+            45.400000005960464,
+            36.099999994039536
+          ],
+          "exitMs": 41,
+          "maxStorageWriteMs": 0.3999999761581421,
+          "taskSeconds": 1.920493,
+          "longTasks": [],
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1
+          },
+          "web": {
+            "nodes": 0,
+            "links": 0,
+            "broken": 0
+          },
+          "errors": []
+        },
+        {
+          "scene": "XII-garden",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 60.002455343441156,
+          "p95FrameMs": 16.700000000000728,
+          "maxInputMs": 46.20000001788139,
+          "inputSamples": [
+            40.30000001192093,
+            36.400000005960464,
+            46.20000001788139,
+            43.30000001192093,
+            45.80000001192093,
+            45.89999997615814,
+            45.5,
+            46.19999998807907,
+            45.900000005960464,
+            35.89999997615814
+          ],
+          "exitMs": 38,
+          "maxStorageWriteMs": 0.10000002384185791,
+          "taskSeconds": 3.326791,
+          "longTasks": [],
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1
+          },
+          "web": {
+            "nodes": 0,
+            "links": 0,
+            "broken": 0
+          },
+          "errors": []
+        },
+        {
+          "scene": "XII-web",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 59.849076242518876,
+          "p95FrameMs": 16.799999999999272,
+          "maxInputMs": 45.79999998211861,
+          "inputSamples": [
+            32.39999997615814,
+            39.19999998807907,
+            42.39999997615814,
+            43,
+            45.099999994039536,
+            45.79999998211861,
+            36.60000002384186,
+            45.70000001788139,
+            45.69999998807907,
+            39.19999998807907
+          ],
+          "exitMs": 50,
+          "maxStorageWriteMs": 0.19999998807907104,
+          "taskSeconds": 3.556762,
+          "longTasks": [],
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1
+          },
+          "web": {
+            "nodes": 35,
+            "links": 82,
+            "broken": 1
+          },
+          "errors": []
+        },
+        {
+          "scene": "XI-home",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 32.63979554987638,
+          "p95FrameMs": 50,
+          "maxInputMs": 181.5,
+          "inputSamples": [
+            73.89999997615814,
+            148.69999998807907,
+            134.69999998807907,
+            178.2000000178814,
+            181.5,
+            89.7999999821186,
+            91.59999999403954,
+            70.59999999403954,
+            101.7999999821186,
+            108.5
+          ],
+          "exitMs": 244,
+          "maxStorageWriteMs": 5,
+          "taskSeconds": 7.128739,
+          "longTasks": [
+            99,
+            70,
+            56,
+            96,
+            76,
+            86,
+            96
+          ],
+          "web": null,
+          "errors": []
+        },
+        {
+          "scene": "XII-home",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 33.1004563637388,
+          "p95FrameMs": 50,
+          "maxInputMs": 203.5,
+          "inputSamples": [
+            64,
+            203.5,
+            140.5,
+            45.80000001192093,
+            78,
+            60.39999997615814,
+            79.60000002384186,
+            41.70000001788139,
+            31.799999982118607,
+            107.30000001192093
+          ],
+          "exitMs": 278,
+          "maxStorageWriteMs": 3.2999999821186066,
+          "taskSeconds": 6.982195,
+          "longTasks": [
+            97,
+            54,
+            74,
+            207,
+            77,
+            90,
+            81,
+            93,
+            76
+          ],
+          "garden": {
+            "bytes": 0,
+            "builds": 0
+          },
+          "web": {
+            "nodes": 0,
+            "links": 0,
+            "broken": 0
+          },
+          "errors": []
+        },
+        {
+          "scene": "XII-return-home",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 27.456705463214707,
+          "p95FrameMs": 50,
+          "maxInputMs": 358.10000002384186,
+          "inputSamples": [
+            358.10000002384186,
+            220.5,
+            90,
+            71.09999999403954,
+            38.400000005960464,
+            44,
+            63.900000005960464,
+            57.599999994039536,
+            50.69999998807907,
+            64.2999999821186
+          ],
+          "exitMs": 297,
+          "maxStorageWriteMs": 8.900000005960464,
+          "taskSeconds": 7.543717,
+          "longTasks": [
+            117,
+            57,
+            54,
+            51,
+            263,
+            202,
+            66,
+            170,
+            414,
+            57
+          ],
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1
+          },
+          "web": {
+            "nodes": 0,
+            "links": 0,
+            "broken": 0
+          },
+          "errors": []
+        },
+        {
+          "scene": "XII-garden",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 13.391017717346518,
+          "p95FrameMs": 133.30000000000018,
+          "maxInputMs": 352.2999999821186,
+          "inputSamples": [
+            229.59999999403954,
+            127.7000000178814,
+            202.90000000596046,
+            352.2999999821186,
+            157.69999998807907,
+            92.2999999821186,
+            83,
+            86.69999998807907,
+            78.30000001192093,
+            67.7000000178814
+          ],
+          "exitMs": 203,
+          "maxStorageWriteMs": 1.7000000178813934,
+          "taskSeconds": 7.85066,
+          "longTasks": [
+            58,
+            58,
+            58,
+            60,
+            56,
+            52,
+            53,
+            60,
+            63,
+            54,
+            63,
+            58,
+            57,
+            53,
+            68,
+            56,
+            59,
+            59,
+            53,
+            63,
+            57,
+            53,
+            55,
+            54,
+            62,
+            57,
+            57,
+            55,
+            62,
+            68,
+            63,
+            62,
+            57,
+            54,
+            55,
+            63,
+            56,
+            58,
+            52,
+            51,
+            56,
+            71,
+            55,
+            50,
+            61,
+            52,
+            54,
+            54,
+            61,
+            58,
+            53,
+            60,
+            53,
+            51,
+            53,
+            52,
+            50,
+            58,
+            59,
+            61,
+            60,
+            56,
+            52,
+            50,
+            54,
+            53,
+            64,
+            50,
+            56,
+            55,
+            546,
+            64,
+            73,
+            79,
+            63,
+            69,
+            166,
+            321,
+            87,
+            66,
+            60,
+            60,
+            61,
+            61,
+            50,
+            54,
+            64,
+            53,
+            53,
+            54,
+            52,
+            51,
+            74,
+            72,
+            56,
+            67,
+            65,
+            53,
+            278,
+            138
+          ],
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1
+          },
+          "web": {
+            "nodes": 0,
+            "links": 0,
+            "broken": 0
+          },
+          "errors": []
+        },
+        {
+          "scene": "XII-web",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 11.495269254576003,
+          "p95FrameMs": 133.40000000000146,
+          "maxInputMs": 312.59999999403954,
+          "inputSamples": [
+            312.59999999403954,
+            177.90000000596046,
+            252.40000000596046,
+            261.60000002384186,
+            143.7000000178814,
+            156,
+            134.40000000596046,
+            258.90000000596046,
+            271.60000002384186,
+            180.69999998807907
+          ],
+          "exitMs": 264,
+          "maxStorageWriteMs": 0.20000001788139343,
+          "taskSeconds": 7.987024,
+          "longTasks": [
+            66,
+            85,
+            133,
+            70,
+            92,
+            124,
+            53,
+            68,
+            76,
+            73,
+            75,
+            75,
+            73,
+            80,
+            76,
+            72,
+            86,
+            158,
+            170,
+            200,
+            80,
+            84,
+            89,
+            76,
+            83,
+            75,
+            76,
+            78,
+            83,
+            71,
+            78,
+            82,
+            78,
+            76,
+            92,
+            82,
+            147,
+            94,
+            76,
+            82,
+            80,
+            81,
+            90,
+            76,
+            80,
+            90,
+            68,
+            74,
+            85,
+            78,
+            73,
+            75,
+            68,
+            78,
+            85,
+            88,
+            87,
+            107,
+            89,
+            87,
+            81,
+            90,
+            89,
+            79,
+            85,
+            89,
+            87,
+            101,
+            85,
+            106,
+            102,
+            86,
+            87,
+            84,
+            85,
+            72,
+            64,
+            58,
+            72,
+            90,
+            75,
+            82,
+            78,
+            69,
+            76,
+            79,
+            87,
+            70,
+            79
+          ],
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1
+          },
+          "web": {
+            "nodes": 35,
+            "links": 82,
+            "broken": 1
+          },
+          "errors": []
+        }
+      ]
+    },
+    "ablation": {
+      "cpu": 6,
+      "software": true,
+      "method": "Temporary browser-only omissions to isolate rendering cost; not candidate features.",
+      "results": [
+        {
+          "variant": "full",
+          "fps": 6.835962224979112,
+          "p95": 516.6000000000004
+        },
+        {
+          "variant": "no-landscape-blit",
+          "fps": 17.14383679067375,
+          "p95": 100
+        },
+        {
+          "variant": "no-vectors",
+          "fps": 10.857763300760046,
+          "p95": 166.6999999999989
+        },
+        {
+          "variant": "no-body-blit",
+          "fps": 11.374623215605988,
+          "p95": 183.39999999999964
+        },
+        {
+          "variant": "no-presentation",
+          "fps": 59.716771881931436,
+          "p95": 16.799999999999272
+        }
+      ]
+    },
+    "final_scene_samples": [
+      {
+        "scene": "XI-home",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 59.3978598633698,
+        "p95FrameMs": 16.700000000000728,
+        "maxInputMs": 44.19999998807907,
+        "inputSamples": [
+          33.80000001192093,
+          24.599999994039536,
+          43.400000005960464,
+          39.5,
+          39.900000005960464,
+          39.39999997615814,
+          44.19999998807907,
+          42.80000001192093,
+          39.29999998211861,
+          38.900000005960464
+        ],
+        "exitMs": 96,
+        "maxStorageWriteMs": 1.100000023841858,
+        "taskSeconds": 2.948131,
+        "longTasks": [
+          100
+        ],
+        "web": null,
+        "errors": []
+      },
+      {
+        "scene": "XII-home",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 59.23845002900851,
+        "p95FrameMs": 16.799999999999727,
+        "maxInputMs": 63.20000001788139,
+        "inputSamples": [
+          25,
+          63.20000001788139,
+          43.10000002384186,
+          39.80000001192093,
+          43.80000001192093,
+          45.80000001192093,
+          42.099999994039536,
+          43.400000005960464,
+          45.80000001192093,
+          34.400000005960464
+        ],
+        "exitMs": 61,
+        "maxStorageWriteMs": 0.19999998807907104,
+        "taskSeconds": 2.6201950000000003,
+        "longTasks": [],
+        "garden": {
+          "bytes": 0,
+          "builds": 0,
+          "textureBytes": 0,
+          "textures": 0,
+          "foregroundPaints": 0,
+          "mountedSprites": 0,
+          "spriteBytes": 163072
+        },
+        "web": {
+          "nodes": 0,
+          "links": 0,
+          "broken": 0,
+          "paint": {
+            "paints": 0,
+            "bytes": 0
+          }
+        },
+        "errors": []
+      },
+      {
+        "scene": "XII-return-home",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 59.235160518077464,
+        "p95FrameMs": 16.800000000000182,
+        "maxInputMs": 46.60000002384186,
+        "inputSamples": [
+          31.299999982118607,
+          44.099999994039536,
+          29,
+          45.599999994039536,
+          43.60000002384186,
+          45.5,
+          45.39999997615814,
+          46.60000002384186,
+          45.29999998211861,
+          34.30000001192093
+        ],
+        "exitMs": 57,
+        "maxStorageWriteMs": 0.20000001788139343,
+        "taskSeconds": 1.9744439999999999,
+        "longTasks": [],
+        "garden": {
+          "bytes": 9408000,
+          "builds": 1,
+          "textureBytes": 0,
+          "textures": 0,
+          "foregroundPaints": 0,
+          "mountedSprites": 0,
+          "spriteBytes": 163072
+        },
+        "web": {
+          "nodes": 0,
+          "links": 0,
+          "broken": 0,
+          "paint": {
+            "paints": 0,
+            "bytes": 0
+          }
+        },
+        "errors": []
+      },
+      {
+        "scene": "XII-garden",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 60.00251319426991,
+        "p95FrameMs": 16.700000000000728,
+        "maxInputMs": 39.400000005960464,
+        "inputSamples": [
+          10.400000005960464,
+          39.400000005960464,
+          27.5,
+          30.200000017881393,
+          28.599999994039536,
+          29.399999976158142,
+          27.80000001192093,
+          27.700000017881393,
+          16.69999998807907,
+          17.30000001192093
+        ],
+        "exitMs": 56,
+        "maxStorageWriteMs": 0.30000001192092896,
+        "taskSeconds": 0.388457,
+        "longTasks": [],
+        "garden": {
+          "bytes": 9408000,
+          "builds": 1,
+          "textureBytes": 475200,
+          "textures": 3,
+          "foregroundPaints": 11,
+          "mountedSprites": 14,
+          "spriteBytes": 3132224
+        },
+        "web": {
+          "nodes": 0,
+          "links": 0,
+          "broken": 0,
+          "paint": {
+            "paints": 0,
+            "bytes": 0
+          }
+        },
+        "errors": []
+      },
+      {
+        "scene": "XII-web",
+        "cpu": 1,
+        "software": true,
+        "dpr": 2,
+        "fps": 59.845438552400104,
+        "p95FrameMs": 16.799999999999272,
+        "maxInputMs": 31.399999976158142,
+        "inputSamples": [
+          15,
+          28.099999994039536,
+          28.799999982118607,
+          31.399999976158142,
+          22.5,
+          23.100000023841858,
+          22.299999982118607,
+          21.900000005960464,
+          22.799999982118607,
+          12.800000011920929
+        ],
+        "exitMs": 56,
+        "maxStorageWriteMs": 0.4000000059604645,
+        "taskSeconds": 0.540444,
+        "longTasks": [],
+        "garden": {
+          "bytes": 9408000,
+          "builds": 1,
+          "textureBytes": 475200,
+          "textures": 3,
+          "foregroundPaints": 4,
+          "mountedSprites": 14,
+          "spriteBytes": 3132224
+        },
+        "web": {
+          "nodes": 35,
+          "links": 82,
+          "broken": 1,
+          "paint": {
+            "paints": 61,
+            "bytes": 2121800
+          }
+        },
+        "errors": []
+      },
+      {
+        "scene": "XI-home",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 24.52121975944546,
+        "p95FrameMs": 66.70000000000073,
+        "maxInputMs": 242.40000000596046,
+        "inputSamples": [
+          128.09999999403954,
+          242.40000000596046,
+          167.40000000596046,
+          82.90000000596046,
+          179.19999998807907,
+          146.09999999403954,
+          48.5,
+          69.90000000596046,
+          46,
+          69.2000000178814
+        ],
+        "exitMs": 284,
+        "maxStorageWriteMs": 2.5,
+        "taskSeconds": 7.2527289999999995,
+        "longTasks": [
+          122,
+          54,
+          55,
+          55,
+          93,
+          89,
+          178,
+          58,
+          139,
+          53,
+          115,
+          108,
+          53,
+          59
+        ],
+        "web": null,
+        "errors": []
+      },
+      {
+        "scene": "XII-home",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 23.05777544870955,
+        "p95FrameMs": 83.20000000000073,
+        "maxInputMs": 264,
+        "inputSamples": [
+          264,
+          235.59999999403954,
+          173.69999998807907,
+          203.59999999403954,
+          129,
+          171.09999999403954,
+          77.5,
+          60.400000005960464,
+          58.70000001788139,
+          72.2000000178814
+        ],
+        "exitMs": 310,
+        "maxStorageWriteMs": 4.200000017881393,
+        "taskSeconds": 7.668053,
+        "longTasks": [
+          172,
+          64,
+          51,
+          103,
+          72,
+          60,
+          101,
+          156,
+          53,
+          55,
+          147,
+          70,
+          132,
+          139,
+          52,
+          55
+        ],
+        "garden": {
+          "bytes": 0,
+          "builds": 0,
+          "textureBytes": 0,
+          "textures": 0,
+          "foregroundPaints": 0,
+          "mountedSprites": 0,
+          "spriteBytes": 163072
+        },
+        "web": {
+          "nodes": 0,
+          "links": 0,
+          "broken": 0,
+          "paint": {
+            "paints": 0,
+            "bytes": 0
+          }
+        },
+        "errors": []
+      },
+      {
+        "scene": "XII-return-home",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 28.733608462329393,
+        "p95FrameMs": 50.100000000000364,
+        "maxInputMs": 124.5,
+        "inputSamples": [
+          109.90000000596046,
+          124.5,
+          64.90000000596046,
+          86.89999997615814,
+          93,
+          71.5,
+          54.900000005960464,
+          53.30000001192093,
+          86.40000000596046,
+          87.30000001192093
+        ],
+        "exitMs": 256,
+        "maxStorageWriteMs": 1.5999999940395355,
+        "taskSeconds": 7.031566,
+        "longTasks": [
+          149,
+          59,
+          53,
+          121,
+          54,
+          57,
+          55,
+          51,
+          102,
+          236,
+          186
+        ],
+        "garden": {
+          "bytes": 9408000,
+          "builds": 1,
+          "textureBytes": 0,
+          "textures": 0,
+          "foregroundPaints": 0,
+          "mountedSprites": 0,
+          "spriteBytes": 163072
+        },
+        "web": {
+          "nodes": 0,
+          "links": 0,
+          "broken": 0,
+          "paint": {
+            "paints": 0,
+            "bytes": 0
+          }
+        },
+        "errors": []
+      },
+      {
+        "scene": "XII-garden",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 45.40084164133335,
+        "p95FrameMs": 33.30000000000109,
+        "maxInputMs": 399.5,
+        "inputSamples": [
+          146.59999999403954,
+          228.5,
+          32.5,
+          59.30000001192093,
+          99.7000000178814,
+          399.5,
+          43.400000005960464,
+          29.599999994039536,
+          48.70000001788139,
+          23.599999994039536
+        ],
+        "exitMs": 419,
+        "maxStorageWriteMs": 13.099999994039536,
+        "taskSeconds": 3.707176,
+        "longTasks": [
+          89,
+          218,
+          58,
+          61,
+          61,
+          403,
+          64,
+          56,
+          60,
+          57
+        ],
+        "garden": {
+          "bytes": 9408000,
+          "builds": 1,
+          "textureBytes": 475200,
+          "textures": 3,
+          "foregroundPaints": 11,
+          "mountedSprites": 14,
+          "spriteBytes": 3132224
+        },
+        "web": {
+          "nodes": 0,
+          "links": 0,
+          "broken": 0,
+          "paint": {
+            "paints": 0,
+            "bytes": 0
+          }
+        },
+        "errors": []
+      },
+      {
+        "scene": "XII-web",
+        "cpu": 6,
+        "software": true,
+        "dpr": 2,
+        "fps": 51.28577655092256,
+        "p95FrameMs": 50,
+        "maxInputMs": 104.80000001192093,
+        "inputSamples": [
+          35.79999998211861,
+          75.7000000178814,
+          102.09999999403954,
+          79.2000000178814,
+          84.7000000178814,
+          59.19999998807907,
+          71,
+          104.80000001192093,
+          56.400000005960464,
+          61.19999998807907
+        ],
+        "exitMs": 372,
+        "maxStorageWriteMs": 2.300000011920929,
+        "taskSeconds": 3.126463,
+        "longTasks": [
+          55,
+          69,
+          63,
+          52,
+          57,
+          59,
+          51,
+          54
+        ],
+        "garden": {
+          "bytes": 9408000,
+          "builds": 1,
+          "textureBytes": 475200,
+          "textures": 3,
+          "foregroundPaints": 4,
+          "mountedSprites": 14,
+          "spriteBytes": 3132224
+        },
+        "web": {
+          "nodes": 35,
+          "links": 82,
+          "broken": 1,
+          "paint": {
+            "paints": 51,
+            "bytes": 2121800
+          }
+        },
+        "errors": []
+      }
+    ],
+    "actual_motion_1x": {
+      "method": "Serial native RAF, trusted continuous touch, software Chromium at the selected CPU rate/DPR2. Initial camera/actor arrangements are fixtures, movement is physical. Handset acceptance pending.",
+      "results": [
+        {
+          "mode": "walk",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 59.44305355469461,
+          "p95FrameMs": 16.799999999999272,
+          "maxInputMs": 51.30000001192093,
+          "exitMs": 58,
+          "travel": 227.88594299385744,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 370,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "pan",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 52.917081811136946,
+          "p95FrameMs": 16.800000000000182,
+          "maxInputMs": 186.80000001192093,
+          "exitMs": 75,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 85,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "peel",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 54.397475292749775,
+          "p95FrameMs": 16.799999999999272,
+          "maxInputMs": 101,
+          "exitMs": 74,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 475200,
+            "textures": 3,
+            "foregroundPaints": 5,
+            "mountedSprites": 14,
+            "spriteBytes": 3132224
+          },
+          "web": {
+            "broken": 8,
+            "peeled": 1,
+            "paint": {
+              "paints": 283,
+              "bytes": 2121800
+            }
+          },
+          "errors": []
+        }
+      ]
+    },
+    "actual_motion_6x_prior_complete": {
+      "method": "Serial native RAF, trusted continuous touch, software Chromium at 6x CPU/DPR2. Initial camera/actor arrangements are fixtures, movement is physical. Handset acceptance pending.",
+      "results": [
+        {
+          "mode": "walk",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 12.688098089670467,
+          "p95FrameMs": 183.30000000000018,
+          "maxInputMs": 398.80000001192093,
+          "exitMs": 299,
+          "travel": 203.41153791065386,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 104,
+            "mountedSprites": 18,
+            "spriteBytes": 2972864
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "pan",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 33.51532515271096,
+          "p95FrameMs": 50.100000000000364,
+          "maxInputMs": 147.5,
+          "exitMs": 280,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 86,
+            "mountedSprites": 18,
+            "spriteBytes": 2972864
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "peel",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 14.44316276184291,
+          "p95FrameMs": 133.29999999999927,
+          "maxInputMs": 654.5999999940395,
+          "exitMs": 604,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 475200,
+            "textures": 3,
+            "foregroundPaints": 5,
+            "mountedSprites": 14,
+            "spriteBytes": 2613824
+          },
+          "web": {
+            "broken": 8,
+            "peeled": 1,
+            "paint": {
+              "paints": 167,
+              "bytes": 2121800
+            }
+          },
+          "errors": []
+        }
+      ]
+    },
+    "actual_motion_6x_final_partial": {
+      "method": "Serial native RAF, trusted continuous touch, software Chromium at the selected CPU rate/DPR2. Initial camera/actor arrangements are fixtures, movement is physical. Handset acceptance pending.",
+      "results": [
+        {
+          "mode": "walk",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 15.061900738400498,
+          "p95FrameMs": 100,
+          "maxInputMs": 229.80000001192093,
+          "exitMs": 339,
+          "travel": 201.67535336830485,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 121,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "pan",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 29.759016658579977,
+          "p95FrameMs": 66.69999999999982,
+          "maxInputMs": 186.90000000596046,
+          "exitMs": 292,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 86,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        }
+      ]
+    },
+    "excluded_host_stall": {
+      "method": "Serial Chromium, software rendering, 1x / 6x CPU, real native RAF, actual input and browser exit. Proxy only; Samsung Galaxy A06 5G remains Human Fingers validation.",
+      "results": [
+        {
+          "scene": "XI-home",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 25.4386086187112,
+          "p95FrameMs": 16.80000000000291,
+          "maxInputMs": 2290.699999988079,
+          "inputSamples": [
+            68.5,
+            56.69999998807907,
+            67.30000001192093,
+            2290.699999988079,
+            39.099999994039536,
+            58.10000002384186,
+            118.5,
+            36.80000001192093,
+            40.69999998807907,
+            32.5
+          ],
+          "exitMs": 60,
+          "maxStorageWriteMs": 1.699999988079071,
+          "taskSeconds": 9.795515,
+          "longTasks": [
+            180,
+            5049,
+            1117,
+            974,
+            173,
+            64,
+            107
+          ],
+          "web": null,
+          "errors": []
+        }
+      ]
+    },
+    "excluded_overlap": {
+      "method": "Serial native RAF, trusted continuous touch, software Chromium at 6x CPU/DPR2. Initial camera/actor arrangements are fixtures, movement is physical. Handset acceptance pending.",
+      "results": [
+        {
+          "mode": "walk",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 20.814595914171914,
+          "p95FrameMs": 66.70000000000073,
+          "maxInputMs": 157.5,
+          "exitMs": 335,
+          "travel": 227.1275678725959,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 156,
+            "mountedSprites": 18,
+            "spriteBytes": 2972864
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "pan",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 23.57227043822994,
+          "p95FrameMs": 100,
+          "maxInputMs": 331.80000001192093,
+          "exitMs": 322,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 86,
+            "mountedSprites": 18,
+            "spriteBytes": 2972864
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "peel",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 11.50300788111486,
+          "p95FrameMs": 200.09999999999854,
+          "maxInputMs": 527.5,
+          "exitMs": 344,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 475200,
+            "textures": 3,
+            "foregroundPaints": 5,
+            "mountedSprites": 14,
+            "spriteBytes": 2613824
+          },
+          "web": {
+            "broken": 8,
+            "peeled": 1,
+            "paint": {
+              "paints": 166,
+              "bytes": 2121800
+            }
+          },
+          "errors": []
+        }
+      ]
+    }
+  },
+  "known_limits": [
+    "Actual handset feel/sensors/performance pending.",
+    "Extreme 6x software active traversal/peeling remains slower than idle; all absolute samples retained.",
+    "Last performance fixture timed out waiting for prank activation; no product-error exception recorded. Earlier native full prank/peel and controls tests pass.",
+    "One native reciprocal replay did not recognize release impulse; subsequent full real throw/chase/return passed.",
+    "Final trunk probe delayed release 465 ms past last move, beyond existing flick window; unchanged XI baseline and XII replay both subsequently pass.",
+    "Last proud-pose priority guard is syntax-checked; full earlier prank passes preceded that small guard.",
+    "Outdoor starter props are separate from indoor purchased inventory; cross-door inventory transport not introduced.",
+    "Garden reload retains position, plants, placement and planted rope, not airborne velocity or unfinished intention."
+  ],
+  "authority": "Software Chromium/native RAF/trusted touch and explicit fixtures, not Human Fingers. No production browser QA.",
+  "cutoff": "Management requested immediate push at quota boundary. No additional content or QA campaign."
+}

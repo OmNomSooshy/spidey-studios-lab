@@ -136,3 +136,12 @@ body.obby-away #crystal-wallet:after { color:#effff0; text-shadow:0 1px 4px #274
 .collection-note { text-align:center; margin:20px 0 0; }
 
 #shop-caption { margin:0 0 10px; color:#7a816b; font:12px/1.5 Georgia,serif; text-align:center; }
+
+/* The house stays home while the viewpoint is in the garden. */
+.backyard-away #gravity-toggle,.backyard-away #gravity-status,.backyard-away #room-port { visibility:hidden; pointer-events:none; }
+.backyard-away #kitchen-scenery,.backyard-away #bathroom-scenery,.backyard-away #crystal-scenery,.backyard-away #crystal-sky { visibility:hidden; }
+
+#backyard-scenery { position:absolute; inset:0; z-index:0; display:none; overflow:hidden; background:#d6e4cf; pointer-events:none; }
+body.backyard-away #backyard-scenery { display:block; }
+
+#screen-web-silk { position:absolute; inset:0; z-index:1; display:none; pointer-events:none; }

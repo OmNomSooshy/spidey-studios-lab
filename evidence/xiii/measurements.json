@@ -1,0 +1,4919 @@
+{
+  "classification": "IMPLEMENTED AND RUNTIME-REACHABLE in software browser; Human Eyes / Galaxy A06 5G Chrome validation pending",
+  "baseline": "0352eecb8ee3bd481afb455d276ec18e832c3c6d",
+  "method": "Serial local software-browser evidence; no actual target handset. Fixtures vs native activity distinguished in each probe. Known failing original harnesses and matched replays retained.",
+  "performance": {
+    "before-active-1": {
+      "method": "Serial native RAF/Chrome software compositor at DPR2, selected CPU rate. Browser fixtures set initial physical state; activity then runs at native time. RGBA counts are allocations, not measured GPU residency; JS heap is CDP. Not Galaxy handset acceptance.",
+      "results": [
+        {
+          "mode": "home",
+          "cpu": 1,
+          "arrivalMs": 2071,
+          "fps": 49.84112134458119,
+          "p95FrameMs": 33.399999999999636,
+          "maxInputMs": 99.40000000596046,
+          "jsHeapUsed": 5017492,
+          "jsHeapTotal": 9551872,
+          "canvasBytes": 7559504,
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 310,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 131
+        },
+        {
+          "mode": "bath",
+          "cpu": 1,
+          "arrivalMs": 1884,
+          "fps": 59.540293547493775,
+          "p95FrameMs": 16.700000000000728,
+          "maxInputMs": 0,
+          "jsHeapUsed": 4730900,
+          "jsHeapTotal": 9027584,
+          "canvasBytes": 7559504,
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 388,
+          "state": {
+            "water": 0.65,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 89
+        },
+        {
+          "mode": "crystal",
+          "cpu": 1,
+          "arrivalMs": 2261,
+          "fps": 56.16511931251438,
+          "p95FrameMs": 33.30000000000018,
+          "maxInputMs": 0,
+          "jsHeapUsed": 4900804,
+          "jsHeapTotal": 9551872,
+          "canvasBytes": 7929968,
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 6,
+            "tileBuilds": 4,
+            "opticalBuilds": 3,
+            "cachedTiles": 4,
+            "bitmapBytes": 5629416
+          },
+          "bounces": 0,
+          "pathSamples": 367,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 55
+        },
+        {
+          "mode": "gardening",
+          "cpu": 1,
+          "arrivalMs": 1891,
+          "fps": 59.65188489460334,
+          "p95FrameMs": 16.799999999999727,
+          "maxInputMs": 83.2000000178814,
+          "jsHeapUsed": 5057912,
+          "jsHeapTotal": 9289728,
+          "canvasBytes": 19172496,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 129,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 342,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 2,
+                "water": 0.917966
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 580,
+              "y": 570,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 81
+        },
+        {
+          "mode": "fetch",
+          "cpu": 1,
+          "arrivalMs": 1830,
+          "fps": 59.69506284905458,
+          "p95FrameMs": 16.799999999999272,
+          "maxInputMs": 0,
+          "jsHeapUsed": 4505552,
+          "jsHeapTotal": 9289728,
+          "canvasBytes": 18985296,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 298,
+            "mountedSprites": 17,
+            "spriteBytes": 3116864
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 389,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "wait",
+              "home": {
+                "x": 475,
+                "y": 660
+              },
+              "answered": 0,
+              "returns": 1
+            },
+            "actor": {
+              "x": 479.91572040933596,
+              "y": 663.6444824510368,
+              "z": 0,
+              "vx": -3.2364452680116835e-07,
+              "vy": -2.399479691737318e-07,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": -1,
+              "frame": 3,
+              "clock": 2.9461999999999993,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": "expectant",
+              "poseTime": 16.350199999999965,
+              "detour": null
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 80
+        },
+        {
+          "mode": "mushroom",
+          "cpu": 1,
+          "arrivalMs": 1757,
+          "fps": 59.34571757356567,
+          "p95FrameMs": 16.799999999999727,
+          "maxInputMs": 45.099999994039536,
+          "jsHeapUsed": 4847604,
+          "jsHeapTotal": 6930432,
+          "canvasBytes": 17892816,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 158400,
+            "textures": 1,
+            "foregroundPaints": 335,
+            "mountedSprites": 7,
+            "spriteBytes": 1649984
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 6,
+          "pathSamples": 362,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 855.00000726609,
+              "y": 455.00000726609005,
+              "z": 54.185339000000134,
+              "vx": 0,
+              "vy": 0,
+              "vz": 330.8899999999997,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0.1738743921757663,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 74
+        }
+      ]
+    },
+    "after-active-1": {
+      "method": "Serial native RAF/Chrome software compositor at DPR2, selected CPU rate. Browser fixtures set initial physical state; activity then runs at native time. RGBA counts are allocations, not measured GPU residency; JS heap is CDP. Not Galaxy handset acceptance.",
+      "results": [
+        {
+          "mode": "home",
+          "cpu": 1,
+          "arrivalMs": 3571,
+          "fps": 46.81447292508036,
+          "p95FrameMs": 33.400000000000546,
+          "maxInputMs": 115.09999999403954,
+          "jsHeapUsed": 5584380,
+          "jsHeapTotal": 9814016,
+          "canvasBytes": 7559504,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 2291544,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 285,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 74
+        },
+        {
+          "mode": "bath",
+          "cpu": 1,
+          "arrivalMs": 2651,
+          "fps": 59.84799532293301,
+          "p95FrameMs": 16.799999999999272,
+          "maxInputMs": 0,
+          "jsHeapUsed": 3569832,
+          "jsHeapTotal": 9814016,
+          "canvasBytes": 7559504,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 390,
+          "state": {
+            "water": 0.65,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 77
+        },
+        {
+          "mode": "crystal",
+          "cpu": 1,
+          "arrivalMs": 2702,
+          "fps": 58.471476022102834,
+          "p95FrameMs": 16.800000000000182,
+          "maxInputMs": 0,
+          "jsHeapUsed": 4473988,
+          "jsHeapTotal": 7454720,
+          "canvasBytes": 7929968,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 2291544,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 6,
+            "tileBuilds": 4,
+            "opticalBuilds": 3,
+            "cachedTiles": 4,
+            "bitmapBytes": 5629416
+          },
+          "bounces": 0,
+          "pathSamples": 383,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 117
+        },
+        {
+          "mode": "gardening",
+          "cpu": 1,
+          "arrivalMs": 3049,
+          "fps": 60.002463444246985,
+          "p95FrameMs": 16.700000000000728,
+          "maxInputMs": 47,
+          "jsHeapUsed": 4997392,
+          "jsHeapTotal": 9289728,
+          "canvasBytes": 16645776,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 131,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 342,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 2,
+                "water": 0.9179660000000005
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 580,
+              "y": 570,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "scuttle"
+          },
+          "errors": [],
+          "exitMs": 100
+        },
+        {
+          "mode": "fetch",
+          "cpu": 1,
+          "arrivalMs": 4551,
+          "fps": 37.84790067233872,
+          "p95FrameMs": 50,
+          "maxInputMs": 0,
+          "jsHeapUsed": 5177796,
+          "jsHeapTotal": 6406144,
+          "canvasBytes": 16458576,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 252,
+            "mountedSprites": 17,
+            "spriteBytes": 3116864
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 247,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "wait",
+              "home": {
+                "x": 475,
+                "y": 660
+              },
+              "answered": 0,
+              "returns": 1
+            },
+            "actor": {
+              "x": 479.9734626802241,
+              "y": 663.6892192513188,
+              "z": 0,
+              "vx": -0.0013244986670618382,
+              "vy": -0.0009824881160968196,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": -1,
+              "frame": 2,
+              "clock": 2.9060000000000006,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": "expectant",
+              "poseTime": 18.0214,
+              "detour": null
+            },
+            "mode": "scuttle"
+          },
+          "errors": [],
+          "exitMs": 85
+        },
+        {
+          "mode": "mushroom",
+          "cpu": 1,
+          "arrivalMs": 6162,
+          "fps": 56.88711105282141,
+          "p95FrameMs": 33.19999999999982,
+          "maxInputMs": 56.5,
+          "jsHeapUsed": 5149204,
+          "jsHeapTotal": 9027584,
+          "canvasBytes": 15366096,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 158400,
+            "textures": 1,
+            "foregroundPaints": 321,
+            "mountedSprites": 7,
+            "spriteBytes": 1649984
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 6,
+          "pathSamples": 348,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 855.00000726609,
+              "y": 455.00000726609005,
+              "z": 42.45978249999973,
+              "vx": 0,
+              "vy": 0,
+              "vz": 359.1950000000006,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0.21232819229160016,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 207
+        }
+      ]
+    },
+    "before-active-repeat": {
+      "method": "Serial native RAF/Chrome software compositor at DPR2, selected CPU rate. Browser fixtures set initial physical state; activity then runs at native time. RGBA counts are allocations, not measured GPU residency; JS heap is CDP. Not Galaxy handset acceptance.",
+      "results": [
+        {
+          "mode": "home",
+          "cpu": 1,
+          "arrivalMs": 2550,
+          "fps": 33.52207104425477,
+          "p95FrameMs": 50.099999999998545,
+          "maxInputMs": 171,
+          "jsHeapUsed": 4554608,
+          "jsHeapTotal": 9814016,
+          "canvasBytes": 7559504,
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 239,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 135
+        },
+        {
+          "mode": "bath",
+          "cpu": 1,
+          "arrivalMs": 2243,
+          "fps": 60.003084991516275,
+          "p95FrameMs": 16.700000000000728,
+          "maxInputMs": 0,
+          "jsHeapUsed": 5065828,
+          "jsHeapTotal": 9289728,
+          "canvasBytes": 7559504,
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 390,
+          "state": {
+            "water": 0.65,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 73
+        },
+        {
+          "mode": "crystal",
+          "cpu": 1,
+          "arrivalMs": 2425,
+          "fps": 57.534204315836554,
+          "p95FrameMs": 16.800000000000182,
+          "maxInputMs": 0,
+          "jsHeapUsed": 5009224,
+          "jsHeapTotal": 9551872,
+          "canvasBytes": 7929968,
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 6,
+            "tileBuilds": 4,
+            "opticalBuilds": 3,
+            "cachedTiles": 4,
+            "bitmapBytes": 5629416
+          },
+          "bounces": 0,
+          "pathSamples": 374,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 76
+        },
+        {
+          "mode": "gardening",
+          "cpu": 1,
+          "arrivalMs": 2220,
+          "fps": 58.59581207108921,
+          "p95FrameMs": 16.799999999999272,
+          "maxInputMs": 39.599999994039536,
+          "jsHeapUsed": 4940764,
+          "jsHeapTotal": 9814016,
+          "canvasBytes": 19172496,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 128,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 334,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 2,
+                "water": 0.8952540000000002
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 580,
+              "y": 570,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 74
+        },
+        {
+          "mode": "fetch",
+          "cpu": 1,
+          "arrivalMs": 1891,
+          "fps": 60.003084991516275,
+          "p95FrameMs": 16.799999999999272,
+          "maxInputMs": 0,
+          "jsHeapUsed": 4518596,
+          "jsHeapTotal": 9289728,
+          "canvasBytes": 18985296,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 297,
+            "mountedSprites": 17,
+            "spriteBytes": 3116864
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 390,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "wait",
+              "home": {
+                "x": 475,
+                "y": 660
+              },
+              "answered": 0,
+              "returns": 1
+            },
+            "actor": {
+              "x": 479.9486959859259,
+              "y": 663.6689751179002,
+              "z": 0,
+              "vx": -3.2364331530691536e-07,
+              "vy": -2.399499980799145e-07,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": -1,
+              "frame": 3,
+              "clock": 2.9470999999999985,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": "expectant",
+              "poseTime": 16.35019999999996,
+              "detour": null
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 71
+        },
+        {
+          "mode": "mushroom",
+          "cpu": 1,
+          "arrivalMs": 1726,
+          "fps": 59.83791159112952,
+          "p95FrameMs": 16.700000000000728,
+          "maxInputMs": 43.19999998807907,
+          "jsHeapUsed": 4834524,
+          "jsHeapTotal": 6668288,
+          "canvasBytes": 17892816,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 158400,
+            "textures": 1,
+            "foregroundPaints": 338,
+            "mountedSprites": 7,
+            "spriteBytes": 1649984
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 6,
+          "pathSamples": 365,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 855.00000726609,
+              "y": 455.00000726609005,
+              "z": 65.000017,
+              "vx": 0,
+              "vy": 0,
+              "vz": 302.5000000000001,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0.14229938090920966,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 99
+        }
+      ]
+    },
+    "after-active-repeat": {
+      "method": "Serial native RAF/Chrome software compositor at DPR2, selected CPU rate. Browser fixtures set initial physical state; activity then runs at native time. RGBA counts are allocations, not measured GPU residency; JS heap is CDP. Not Galaxy handset acceptance.",
+      "results": [
+        {
+          "mode": "home",
+          "cpu": 1,
+          "arrivalMs": 3072,
+          "fps": 50.626438251086675,
+          "p95FrameMs": 33.399999999999636,
+          "maxInputMs": 99.59999999403954,
+          "jsHeapUsed": 4324012,
+          "jsHeapTotal": 9814016,
+          "canvasBytes": 7559504,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 2291544,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 298,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 95
+        },
+        {
+          "mode": "bath",
+          "cpu": 1,
+          "arrivalMs": 3089,
+          "fps": 59.54029354749377,
+          "p95FrameMs": 16.700000000000728,
+          "maxInputMs": 0,
+          "jsHeapUsed": 3553136,
+          "jsHeapTotal": 9027584,
+          "canvasBytes": 7559504,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 388,
+          "state": {
+            "water": 0.65,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 72
+        },
+        {
+          "mode": "crystal",
+          "cpu": 1,
+          "arrivalMs": 2941,
+          "fps": 55.07861780362472,
+          "p95FrameMs": 33.30000000000109,
+          "maxInputMs": 0,
+          "jsHeapUsed": 4335752,
+          "jsHeapTotal": 6668288,
+          "canvasBytes": 7929968,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 2291544,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 13,
+            "tileBuilds": 4,
+            "opticalBuilds": 12,
+            "cachedTiles": 4,
+            "bitmapBytes": 5629416
+          },
+          "bounces": 0,
+          "pathSamples": 359,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 101
+        },
+        {
+          "mode": "gardening",
+          "cpu": 1,
+          "arrivalMs": 4096,
+          "fps": 59.30136673860028,
+          "p95FrameMs": 16.700000000000728,
+          "maxInputMs": 58.20000001788139,
+          "jsHeapUsed": 4954780,
+          "jsHeapTotal": 9289728,
+          "canvasBytes": 16645776,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 129,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 339,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 2,
+                "water": 0.9066100000000005
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 580,
+              "y": 570,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 74
+        },
+        {
+          "mode": "fetch",
+          "cpu": 1,
+          "arrivalMs": 2841,
+          "fps": 35.449020931802835,
+          "p95FrameMs": 50,
+          "maxInputMs": 0,
+          "jsHeapUsed": 4943140,
+          "jsHeapTotal": 6144000,
+          "canvasBytes": 16458576,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 242,
+            "mountedSprites": 17,
+            "spriteBytes": 3116864
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 232,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "wait",
+              "home": {
+                "x": 475,
+                "y": 660
+              },
+              "answered": 0,
+              "returns": 1
+            },
+            "actor": {
+              "x": 479.99504685533174,
+              "y": 663.7038393352709,
+              "z": 0,
+              "vx": -0.01887036337094779,
+              "vy": -0.013992424721592475,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": -1,
+              "frame": 2,
+              "clock": 2.931299999999999,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": "expectant",
+              "poseTime": 18.55079999999999,
+              "detour": null
+            },
+            "mode": "scuttle"
+          },
+          "errors": [],
+          "exitMs": 102
+        },
+        {
+          "mode": "mushroom",
+          "cpu": 1,
+          "arrivalMs": 7819,
+          "fps": 45.91117778080822,
+          "p95FrameMs": 33.29999999999927,
+          "maxInputMs": 368.5,
+          "jsHeapUsed": 4824552,
+          "jsHeapTotal": 7192576,
+          "canvasBytes": 15366096,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 158400,
+            "textures": 1,
+            "foregroundPaints": 282,
+            "mountedSprites": 7,
+            "spriteBytes": 1649984
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 5,
+          "pathSamples": 304,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 855.00000726609,
+              "y": 455.00000726609005,
+              "z": 115.98496850000014,
+              "vx": 0,
+              "vy": 0,
+              "vz": 92.29499999999908,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0.032269843439879715,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 81
+        }
+      ]
+    },
+    "before-active-6": {
+      "method": "Serial native RAF/Chrome software compositor at DPR2, selected CPU rate. Browser fixtures set initial physical state; activity then runs at native time. RGBA counts are allocations, not measured GPU residency; JS heap is CDP. Not Galaxy handset acceptance.",
+      "results": [
+        {
+          "mode": "home",
+          "cpu": 6,
+          "arrivalMs": 2181,
+          "fps": 6.081771613801233,
+          "p95FrameMs": 233.29999999999973,
+          "maxInputMs": 554.5999999940395,
+          "jsHeapUsed": 4974680,
+          "jsHeapTotal": 6406144,
+          "canvasBytes": 7559504,
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 98,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "air"
+          },
+          "errors": [],
+          "exitMs": 542
+        },
+        {
+          "mode": "bath",
+          "cpu": 6,
+          "arrivalMs": 2038,
+          "fps": 12.000369242130528,
+          "p95FrameMs": 116.60000000000036,
+          "maxInputMs": 0,
+          "jsHeapUsed": 4812040,
+          "jsHeapTotal": 6144000,
+          "canvasBytes": 7559504,
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 79,
+          "state": {
+            "water": 0.65,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 835
+        },
+        {
+          "mode": "crystal",
+          "cpu": 6,
+          "arrivalMs": 3110,
+          "fps": 12.615966890779577,
+          "p95FrameMs": 116.60000000000036,
+          "maxInputMs": 0,
+          "jsHeapUsed": 6100068,
+          "jsHeapTotal": 7979008,
+          "canvasBytes": 8509712,
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 13,
+            "tileBuilds": 4,
+            "opticalBuilds": 23,
+            "cachedTiles": 4,
+            "bitmapBytes": 5629416
+          },
+          "bounces": 0,
+          "pathSamples": 83,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "scuttle"
+          },
+          "errors": [],
+          "exitMs": 437
+        },
+        {
+          "mode": "gardening",
+          "cpu": 6,
+          "arrivalMs": 2609,
+          "fps": 6.713662302786171,
+          "p95FrameMs": 449.89999999999964,
+          "maxInputMs": 777.9000000059605,
+          "jsHeapUsed": 5708268,
+          "jsHeapTotal": 7716864,
+          "canvasBytes": 19172496,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 46,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 49,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 1,
+                "water": 0.45696000000000003
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 580,
+              "y": 570,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 623
+        },
+        {
+          "mode": "fetch",
+          "cpu": 6,
+          "arrivalMs": 3845,
+          "fps": 2.0800998447925503,
+          "p95FrameMs": 2116.6000000000004,
+          "maxInputMs": 0,
+          "jsHeapUsed": 4812764,
+          "jsHeapTotal": 6930432,
+          "canvasBytes": 18985296,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 18,
+            "mountedSprites": 17,
+            "spriteBytes": 3116864
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 14,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "fetch",
+              "home": {
+                "x": 475,
+                "y": 660
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 491.76208599833916,
+              "y": 699.4889734658917,
+              "z": 0,
+              "vx": 80.01705653191269,
+              "vy": 37.341293048225836,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 1,
+              "clock": 0.5120000000000002,
+              "target": {
+                "x": 600,
+                "y": 750,
+                "reason": "fetch"
+              },
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0,
+              "detour": null
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 527
+        },
+        {
+          "mode": "mushroom",
+          "cpu": 6,
+          "arrivalMs": 3052,
+          "fps": 14.52662161308659,
+          "p95FrameMs": 166.8000000000011,
+          "maxInputMs": 201.5,
+          "jsHeapUsed": 6010640,
+          "jsHeapTotal": 8241152,
+          "canvasBytes": 17892816,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 158400,
+            "textures": 1,
+            "foregroundPaints": 66,
+            "mountedSprites": 7,
+            "spriteBytes": 1649984
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 2,
+          "pathSamples": 93,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 855.00000726609,
+              "y": 455.00000726609005,
+              "z": 118.82400000000004,
+              "vx": 0,
+              "vy": 0,
+              "vz": -113.99999999999989,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0.0075227604707814606,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "scuttle"
+          },
+          "errors": [],
+          "exitMs": 675
+        }
+      ]
+    },
+    "after-active-6": {
+      "method": "Serial native RAF/Chrome software compositor at DPR2, selected CPU rate. Browser fixtures set initial physical state; activity then runs at native time. RGBA counts are allocations, not measured GPU residency; JS heap is CDP. Not Galaxy handset acceptance.",
+      "results": [
+        {
+          "mode": "home",
+          "cpu": 6,
+          "arrivalMs": 4804,
+          "fps": 6.910574507953806,
+          "p95FrameMs": 216.69999999999982,
+          "maxInputMs": 652.3999999761581,
+          "jsHeapUsed": 4336032,
+          "jsHeapTotal": 5095424,
+          "canvasBytes": 7559504,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 2291544,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 105,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "air"
+          },
+          "errors": [],
+          "exitMs": 912
+        },
+        {
+          "mode": "bath",
+          "cpu": 6,
+          "arrivalMs": 9711,
+          "fps": 4.831369615360638,
+          "p95FrameMs": 1150,
+          "maxInputMs": 0,
+          "jsHeapUsed": 3879636,
+          "jsHeapTotal": 5881856,
+          "canvasBytes": 7559504,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 32,
+          "state": {
+            "water": 0.65,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 707
+        },
+        {
+          "mode": "crystal",
+          "cpu": 6,
+          "arrivalMs": 4920,
+          "fps": 4.987220248114208,
+          "p95FrameMs": 366.60000000000036,
+          "maxInputMs": 0,
+          "jsHeapUsed": 5166768,
+          "jsHeapTotal": 7716864,
+          "canvasBytes": 7929968,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 2291544,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 0,
+            "builds": 0,
+            "textureBytes": 0,
+            "textures": 0,
+            "foregroundPaints": 0,
+            "mountedSprites": 0,
+            "spriteBytes": 163072
+          },
+          "crystal": {
+            "skyBuilds": 6,
+            "tileBuilds": 4,
+            "opticalBuilds": 3,
+            "cachedTiles": 4,
+            "bitmapBytes": 5629416
+          },
+          "bounces": 0,
+          "pathSamples": 33,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 180,
+              "y": 250,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "idle"
+          },
+          "errors": [],
+          "exitMs": 692
+        },
+        {
+          "mode": "gardening",
+          "cpu": 6,
+          "arrivalMs": 3075,
+          "fps": 14.194006258266397,
+          "p95FrameMs": 150,
+          "maxInputMs": 366.7000000178814,
+          "jsHeapUsed": 5164428,
+          "jsHeapTotal": 6406144,
+          "canvasBytes": 16645776,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 85,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 89,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 1,
+                "water": 0.8921600000000001
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 580,
+              "y": 570,
+              "z": 0,
+              "vx": 0,
+              "vy": 0,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "scuttle"
+          },
+          "errors": [],
+          "exitMs": 621
+        },
+        {
+          "mode": "fetch",
+          "cpu": 6,
+          "arrivalMs": 2809,
+          "fps": 10.20660645799827,
+          "p95FrameMs": 150.10000000000036,
+          "maxInputMs": 0,
+          "jsHeapUsed": 4600132,
+          "jsHeapTotal": 6406144,
+          "canvasBytes": 16458576,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 74,
+            "mountedSprites": 17,
+            "spriteBytes": 3116864
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 0,
+          "pathSamples": 67,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "return",
+              "home": {
+                "x": 475,
+                "y": 660
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 540.9239263991967,
+              "y": 708.6810593343085,
+              "z": 0,
+              "vx": -71.15398116310656,
+              "vy": -52.54728785348896,
+              "vz": 0,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0,
+              "facing": -1,
+              "frame": 3,
+              "clock": 2.210700000000002,
+              "target": {
+                "x": 475,
+                "y": 660,
+                "reason": "return"
+              },
+              "grabbed": false,
+              "carry": {
+                "id": "ball",
+                "kind": "ball",
+                "x": 558.9239263991967,
+                "y": 706.6810593343085,
+                "r": 19,
+                "z": 37,
+                "vx": -71.15398116310656,
+                "vy": -52.54728785348896,
+                "vz": 0,
+                "angle": 0
+              },
+              "pose": null,
+              "poseTime": 0,
+              "detour": null
+            },
+            "mode": "scuttle"
+          },
+          "errors": [],
+          "exitMs": 738
+        },
+        {
+          "mode": "mushroom",
+          "cpu": 6,
+          "arrivalMs": 2835,
+          "fps": 15.94795597732548,
+          "p95FrameMs": 100,
+          "maxInputMs": 209.69999998807907,
+          "jsHeapUsed": 4673680,
+          "jsHeapTotal": 5881856,
+          "canvasBytes": 15366096,
+          "art": {
+            "decodedBytes": 22894744,
+            "assets": 63,
+            "roomCacheBytes": 763848,
+            "foodCacheBytes": 184320
+          },
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 158400,
+            "textures": 1,
+            "foregroundPaints": 79,
+            "mountedSprites": 7,
+            "spriteBytes": 1649984
+          },
+          "crystal": {
+            "skyBuilds": 0,
+            "tileBuilds": 0,
+            "opticalBuilds": 0,
+            "cachedTiles": 0,
+            "bitmapBytes": 540000
+          },
+          "bounces": 2,
+          "pathSamples": 102,
+          "state": {
+            "water": 0,
+            "plants": [
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              },
+              {
+                "stage": 0,
+                "water": 0
+              }
+            ],
+            "play": {
+              "phase": "idle",
+              "home": {
+                "x": 610,
+                "y": 760
+              },
+              "answered": 0,
+              "returns": 0
+            },
+            "actor": {
+              "x": 855.00000726609,
+              "y": 455.00000726609005,
+              "z": 10.290959999999952,
+              "vx": 0,
+              "vy": 0,
+              "vz": -454.51000000000005,
+              "angle": 0,
+              "spin": 0,
+              "squash": 0.0006799970320073765,
+              "facing": 1,
+              "frame": 0,
+              "clock": 0,
+              "target": null,
+              "grabbed": false,
+              "carry": null,
+              "pose": null,
+              "poseTime": 0
+            },
+            "mode": "scuttle"
+          },
+          "errors": [],
+          "exitMs": 595
+        }
+      ]
+    },
+    "before-motion-1": {
+      "method": "Serial native RAF, trusted continuous touch, software Chromium at the selected CPU rate/DPR2. Initial camera/actor arrangements are fixtures, movement is physical. Handset acceptance pending.",
+      "results": [
+        {
+          "mode": "walk",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 57.07842018070193,
+          "p95FrameMs": 16.800000000000182,
+          "maxInputMs": 57.69999998807907,
+          "exitMs": 84,
+          "travel": 227.87286609476016,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 356,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "pan",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 59.27365480383821,
+          "p95FrameMs": 16.799999999999272,
+          "maxInputMs": 73.90000000596046,
+          "exitMs": 118,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 85,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "peel",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 40.19717152749253,
+          "p95FrameMs": 50.099999999998545,
+          "maxInputMs": 466.7999999821186,
+          "exitMs": 107,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 475200,
+            "textures": 3,
+            "foregroundPaints": 5,
+            "mountedSprites": 14,
+            "spriteBytes": 3132224
+          },
+          "web": {
+            "broken": 8,
+            "peeled": 1,
+            "paint": {
+              "paints": 286,
+              "bytes": 2121800
+            }
+          },
+          "errors": []
+        }
+      ]
+    },
+    "after-motion-1": {
+      "method": "Serial native RAF, trusted continuous touch, software Chromium at the selected CPU rate/DPR2. Initial camera/actor arrangements are fixtures, movement is physical. Handset acceptance pending.",
+      "results": [
+        {
+          "mode": "walk",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 59.29964588837053,
+          "p95FrameMs": 16.799999999999272,
+          "maxInputMs": 48.19999998807907,
+          "exitMs": 74,
+          "travel": 227.84433377147778,
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 363,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "pan",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 59.76382488479262,
+          "p95FrameMs": 16.700000000000728,
+          "maxInputMs": 63.5,
+          "exitMs": 107,
+          "travel": 0,
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 85,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": []
+        },
+        {
+          "mode": "peel",
+          "cpu": 1,
+          "software": true,
+          "dpr": 2,
+          "fps": 50.18704396459129,
+          "p95FrameMs": 33.400000000001455,
+          "maxInputMs": 223.69999998807907,
+          "exitMs": 370,
+          "travel": 0,
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 475200,
+            "textures": 3,
+            "foregroundPaints": 5,
+            "mountedSprites": 14,
+            "spriteBytes": 3132224
+          },
+          "web": {
+            "broken": 8,
+            "peeled": 1,
+            "paint": {
+              "paints": 284,
+              "bytes": 2121800
+            }
+          },
+          "errors": []
+        }
+      ]
+    },
+    "before-motion-6-complete": {
+      "method": "Serial native RAF, trusted continuous touch, software Chromium at the selected CPU rate/DPR2. Initial camera/actor arrangements are fixtures, movement is physical. Handset acceptance pending.",
+      "results": [
+        {
+          "mode": "walk",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 11.434633973830014,
+          "p95FrameMs": 166.6999999999989,
+          "maxInputMs": 350,
+          "exitMs": 309,
+          "travel": 156.162445433201,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 95,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": [],
+          "responsive": true
+        },
+        {
+          "mode": "pan",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 12.329273805772841,
+          "p95FrameMs": 116.69999999999982,
+          "maxInputMs": 4266.5999999940395,
+          "exitMs": 1087,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 86,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": [],
+          "responsive": false
+        },
+        {
+          "mode": "peel",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 7.800853819479695,
+          "p95FrameMs": 233.3000000000029,
+          "maxInputMs": 669.8000000119209,
+          "exitMs": 522,
+          "travel": 0,
+          "garden": {
+            "bytes": 9408000,
+            "builds": 1,
+            "textureBytes": 475200,
+            "textures": 3,
+            "foregroundPaints": 5,
+            "mountedSprites": 14,
+            "spriteBytes": 3132224
+          },
+          "web": {
+            "broken": 8,
+            "peeled": 1,
+            "paint": {
+              "paints": 156,
+              "bytes": 2121800
+            }
+          },
+          "errors": [],
+          "responsive": true
+        }
+      ]
+    },
+    "after-motion-6": {
+      "method": "Serial native RAF, trusted continuous touch, software Chromium at the selected CPU rate/DPR2. Initial camera/actor arrangements are fixtures, movement is physical. Handset acceptance pending.",
+      "results": [
+        {
+          "mode": "walk",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 10.400475450306299,
+          "p95FrameMs": 166.59999999999854,
+          "maxInputMs": 327.80000001192093,
+          "exitMs": 613,
+          "travel": 138.55549366480565,
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 88,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": [],
+          "responsive": true
+        },
+        {
+          "mode": "pan",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 20.928094454659824,
+          "p95FrameMs": 99.89999999999964,
+          "maxInputMs": 331.5,
+          "exitMs": 407,
+          "travel": 0,
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 792000,
+            "textures": 5,
+            "foregroundPaints": 86,
+            "mountedSprites": 18,
+            "spriteBytes": 3491264
+          },
+          "web": {
+            "broken": 0,
+            "peeled": 0,
+            "paint": {
+              "paints": 0,
+              "bytes": 0
+            }
+          },
+          "errors": [],
+          "responsive": true
+        },
+        {
+          "mode": "peel",
+          "cpu": 6,
+          "software": true,
+          "dpr": 2,
+          "fps": 11.071453457312964,
+          "p95FrameMs": 133.40000000000146,
+          "maxInputMs": 301.80000001192093,
+          "exitMs": 563,
+          "travel": 0,
+          "garden": {
+            "bytes": 6881280,
+            "builds": 1,
+            "textureBytes": 475200,
+            "textures": 3,
+            "foregroundPaints": 5,
+            "mountedSprites": 14,
+            "spriteBytes": 3132224
+          },
+          "web": {
+            "broken": 8,
+            "peeled": 1,
+            "paint": {
+              "paints": 156,
+              "bytes": 2121800
+            }
+          },
+          "errors": [],
+          "responsive": true
+        }
+      ]
+    },
+    "render-isolation": [
+      {
+        "intervention": "original",
+        "fps": 58.3153016282246,
+        "play": {
+          "phase": "wait",
+          "home": {
+            "x": 475,
+            "y": 660
+          },
+          "answered": 0,
+          "returns": 1
+        },
+        "cache": {
+          "bytes": 6881280,
+          "builds": 1,
+          "textureBytes": 792000,
+          "textures": 5,
+          "foregroundPaints": 296,
+          "mountedSprites": 17,
+          "spriteBytes": 3116864
+        }
+      },
+      {
+        "intervention": "native-raster",
+        "fps": 58.01405195242541,
+        "play": {
+          "phase": "wait",
+          "home": {
+            "x": 475,
+            "y": 660
+          },
+          "answered": 0,
+          "returns": 1
+        },
+        "cache": {
+          "bytes": 6881280,
+          "builds": 1,
+          "textureBytes": 792000,
+          "textures": 5,
+          "foregroundPaints": 306,
+          "mountedSprites": 17,
+          "spriteBytes": 3116864
+        }
+      },
+      {
+        "intervention": "hidden-terrain",
+        "fps": 58.92824258793199,
+        "play": {
+          "phase": "wait",
+          "home": {
+            "x": 475,
+            "y": 660
+          },
+          "answered": 0,
+          "returns": 1
+        },
+        "cache": {
+          "bytes": 6881280,
+          "builds": 1,
+          "textureBytes": 792000,
+          "textures": 5,
+          "foregroundPaints": 298,
+          "mountedSprites": 17,
+          "spriteBytes": 3116864
+        }
+      },
+      {
+        "intervention": "original",
+        "fps": 58.3184093309455,
+        "play": {
+          "phase": "wait",
+          "home": {
+            "x": 475,
+            "y": 660
+          },
+          "answered": 0,
+          "returns": 1
+        },
+        "cache": {
+          "bytes": 6881280,
+          "builds": 1,
+          "textureBytes": 792000,
+          "textures": 5,
+          "foregroundPaints": 291,
+          "mountedSprites": 17,
+          "spriteBytes": 3116864
+        }
+      }
+    ],
+    "rate-isolation": [
+      {
+        "intervention": "rate-one",
+        "fps": 44.195503721322794,
+        "play": {
+          "phase": "wait",
+          "home": {
+            "x": 475,
+            "y": 660
+          },
+          "answered": 0,
+          "returns": 1
+        },
+        "cache": {
+          "bytes": 6881280,
+          "builds": 1,
+          "textureBytes": 792000,
+          "textures": 5,
+          "foregroundPaints": 286,
+          "mountedSprites": 17,
+          "spriteBytes": 3116864
+        }
+      },
+      {
+        "intervention": "original",
+        "fps": 55.117028260836385,
+        "play": {
+          "phase": "wait",
+          "home": {
+            "x": 475,
+            "y": 660
+          },
+          "answered": 0,
+          "returns": 1
+        },
+        "cache": {
+          "bytes": 6881280,
+          "builds": 1,
+          "textureBytes": 792000,
+          "textures": 5,
+          "foregroundPaints": 296,
+          "mountedSprites": 17,
+          "spriteBytes": 3116864
+        }
+      }
+    ]
+  },
+  "regressions": {
+    "initial_suites": [
+      {
+        "suite": "sunburn-xii-playthrough",
+        "code": 0,
+        "seconds": 150.2,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/sunburn-xii-playthrough.log"
+      },
+      {
+        "suite": "sunburn-xii-extra",
+        "code": 0,
+        "seconds": 79.4,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/sunburn-xii-extra.log"
+      },
+      {
+        "suite": "sunburn-xii-reachability",
+        "code": 1,
+        "seconds": 28.2,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/sunburn-xii-reachability.log"
+      },
+      {
+        "suite": "device-probe",
+        "code": 0,
+        "seconds": 112.7,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/device-probe.log"
+      },
+      {
+        "suite": "room-probe",
+        "code": 0,
+        "seconds": 139.6,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/room-probe.log"
+      },
+      {
+        "suite": "home-probe",
+        "code": 0,
+        "seconds": 119.5,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/home-probe.log"
+      },
+      {
+        "suite": "upstairs-probe",
+        "code": 0,
+        "seconds": 11.7,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/upstairs-probe.log"
+      },
+      {
+        "suite": "crystal-probe",
+        "code": 0,
+        "seconds": 10.8,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/crystal-probe.log"
+      },
+      {
+        "suite": "care-probe",
+        "code": 0,
+        "seconds": 59.9,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/care-probe.log"
+      },
+      {
+        "suite": "kitchen-probe",
+        "code": 1,
+        "seconds": 60.6,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/kitchen-probe.log"
+      },
+      {
+        "suite": "acting-probe",
+        "code": 0,
+        "seconds": 70.6,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/acting-probe.log"
+      },
+      {
+        "suite": "bath-read-probe",
+        "code": 0,
+        "seconds": 26.3,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/bath-read-probe.log"
+      },
+      {
+        "suite": "crystal-cache",
+        "code": 0,
+        "seconds": 9.6,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/crystal-cache.log"
+      },
+      {
+        "suite": "possessions-probe",
+        "code": 1,
+        "seconds": 191.1,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/possessions-probe.log"
+      },
+      {
+        "suite": "mobile-probe",
+        "code": 0,
+        "seconds": 15.3,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/mobile-probe.log"
+      },
+      {
+        "suite": "sunburn-ix-probe",
+        "code": 0,
+        "seconds": 51.3,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/sunburn-ix-probe.log"
+      },
+      {
+        "suite": "sunburn-x-probe",
+        "code": 0,
+        "seconds": 36.3,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/sunburn-x-probe.log"
+      },
+      {
+        "suite": "sunburn-xi-probe",
+        "code": 1,
+        "seconds": 221.0,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/sunburn-xi-probe.log"
+      },
+      {
+        "suite": "trunk-placement",
+        "code": 1,
+        "seconds": 18.2,
+        "log": "/workspace/spider-byte-sunburn-xiii-qa/regression/trunk-placement.log"
+      }
+    ],
+    "final-validation": [
+      {
+        "name": "before-final-captures",
+        "code": 0
+      },
+      {
+        "name": "before-active-1",
+        "code": 0
+      },
+      {
+        "name": "before-motion-1",
+        "code": 0
+      },
+      {
+        "name": "before-active-6",
+        "code": 0
+      },
+      {
+        "name": "before-motion-6",
+        "code": 1
+      },
+      {
+        "name": "after-final-captures",
+        "code": 0
+      },
+      {
+        "name": "after-active-1",
+        "code": 0
+      },
+      {
+        "name": "after-motion-1",
+        "code": 0
+      },
+      {
+        "name": "after-active-6",
+        "code": 0
+      },
+      {
+        "name": "after-motion-6",
+        "code": 0
+      },
+      {
+        "name": "reachability-baseline",
+        "code": 0
+      },
+      {
+        "name": "reachability-final",
+        "code": 0
+      },
+      {
+        "name": "kitchen-final",
+        "code": 1
+      },
+      {
+        "name": "possessions-final",
+        "code": 0
+      }
+    ],
+    "targeted-final": [
+      {
+        "name": "before-active-repeat",
+        "code": 0
+      },
+      {
+        "name": "after-active-repeat",
+        "code": 0
+      },
+      {
+        "name": "before-motion-6-complete",
+        "code": 0
+      },
+      {
+        "name": "xi-baseline-diagnostic",
+        "code": 1
+      },
+      {
+        "name": "xi-final-diagnostic",
+        "code": 0
+      },
+      {
+        "name": "kitchen-baseline-diagnostic",
+        "code": 0
+      },
+      {
+        "name": "kitchen-final-diagnostic",
+        "code": 0
+      },
+      {
+        "name": "trunk-final",
+        "code": 1
+      },
+      {
+        "name": "mushroom-native",
+        "code": 0
+      }
+    ],
+    "last-checks": [
+      {
+        "name": "rate-isolation",
+        "code": 0
+      },
+      {
+        "name": "xi-baseline-stationary",
+        "code": 0
+      },
+      {
+        "name": "trunk-baseline-final",
+        "code": 1
+      },
+      {
+        "name": "trunk-candidate-final",
+        "code": 1
+      }
+    ],
+    "territories-baseline": {
+      "thrown": {
+        "vx": 412.12121212121207,
+        "vy": -412.12121212121207,
+        "stored": false,
+        "journey": null
+      },
+      "physicalTrunkDeposit": true,
+      "storedReload": true,
+      "uiRetrieval": true,
+      "physicalLadderCarry": true,
+      "loftReload": true,
+      "errors": [],
+      "method": "Explicit initial loose-object/Byte placement separates pickup from furniture and other actors; competing autonomous opportunities suppressed. All gestures trusted touch; all release, storage, carry/navigation and persistence controllers original, travel at native time."
+    },
+    "territories-candidate": {
+      "thrown": {
+        "vx": 411.1245466130712,
+        "vy": -411.1245466130712,
+        "stored": false,
+        "journey": null
+      },
+      "physicalTrunkDeposit": true,
+      "storedReload": true,
+      "uiRetrieval": true,
+      "physicalLadderCarry": true,
+      "loftReload": true,
+      "errors": [],
+      "method": "Explicit initial loose-object/Byte placement separates pickup from furniture and other actors; competing autonomous opportunities suppressed. All gestures trusted touch; all release, storage, carry/navigation and persistence controllers original, travel at native time."
+    },
+    "mushroom-native": {
+      "before": {
+        "bounces": [
+          {
+            "t": 5993.3,
+            "x": 854.9999709356399,
+            "y": 454.9999709356399,
+            "vz": 430
+          },
+          {
+            "t": 7076.5,
+            "x": 854.9999709356399,
+            "y": 454.9999709356399,
+            "vz": 430
+          },
+          {
+            "t": 8126.6,
+            "x": 854.9999709356399,
+            "y": 454.9999709356399,
+            "vz": 430
+          },
+          {
+            "t": 9443.2,
+            "x": 854.9999709356399,
+            "y": 454.9999709356399,
+            "vz": 430
+          }
+        ],
+        "actor": {
+          "x": 854.9999709356399,
+          "y": 454.9999709356399,
+          "z": 69.667939,
+          "vx": 0,
+          "vy": 0,
+          "vz": 290.6,
+          "angle": 0,
+          "spin": 0,
+          "squash": 0.13083449853091328,
+          "facing": 1,
+          "frame": 0,
+          "clock": 0,
+          "target": null,
+          "grabbed": false,
+          "carry": null,
+          "pose": null,
+          "poseTime": 0
+        },
+        "camera": {
+          "x": 320,
+          "y": 566.68
+        }
+      },
+      "after": {
+        "bounces": [
+          {
+            "t": 5993.3,
+            "x": 854.9999709356399,
+            "y": 454.9999709356399,
+            "vz": 430
+          },
+          {
+            "t": 7076.5,
+            "x": 854.9999709356399,
+            "y": 454.9999709356399,
+            "vz": 430
+          },
+          {
+            "t": 8126.6,
+            "x": 854.9999709356399,
+            "y": 454.9999709356399,
+            "vz": 430
+          },
+          {
+            "t": 9443.2,
+            "x": 854.9999709356399,
+            "y": 454.9999709356399,
+            "vz": 430
+          },
+          {
+            "t": 10809.8,
+            "x": 854.6959680728584,
+            "y": 454.9999710063251,
+            "vz": 430
+          }
+        ],
+        "actor": {
+          "x": 736.7900986390614,
+          "y": 454.99999842120036,
+          "z": 0,
+          "vx": -0.0191099958747398,
+          "vy": 4.443359441183294e-09,
+          "vz": 0,
+          "angle": 0,
+          "spin": 0,
+          "squash": 2.975069833616189e-06,
+          "facing": -1,
+          "frame": 2,
+          "clock": 0.6547000000000011,
+          "target": null,
+          "grabbed": false,
+          "carry": null,
+          "pose": "curious",
+          "poseTime": 0.7019999999999954,
+          "detour": null
+        },
+        "camera": {
+          "x": 320,
+          "y": 566.68
+        }
+      },
+      "errors": [],
+      "method": "Initial placement beside mushroom/camera and competing-opportunity suppression only. Trusted carry/drop, native repeated contacts, then real background tap and actual physical travel. Recording is interaction evidence, not a performance sample."
+    },
+    "kitchen-baseline-diagnostic": {
+      "grubby": 1420,
+      "filthy": 12476,
+      "regions": [
+        {
+          "dirt": 1,
+          "stamps": 8
+        },
+        {
+          "dirt": 1,
+          "stamps": 8
+        },
+        {
+          "dirt": 1,
+          "stamps": 8
+        },
+        {
+          "dirt": 1,
+          "stamps": 8
+        },
+        {
+          "dirt": 1,
+          "stamps": 8
+        },
+        {
+          "dirt": 1,
+          "stamps": 8
+        }
+      ],
+      "errors": [
+        {
+          "mode": "idle",
+          "frameIndex": 0,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "idle",
+          "frameIndex": 2,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "idle",
+          "frameIndex": 4,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "scuttle",
+          "frameIndex": 0,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "scuttle",
+          "frameIndex": 1,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "scuttle",
+          "frameIndex": 2,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "scuttle",
+          "frameIndex": 3,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "scheming",
+          "frameIndex": 0,
+          "max": 0,
+          "leak": 0
+        }
+      ]
+    },
+    "kitchen-final-diagnostic": {
+      "grubby": 1420,
+      "filthy": 12476,
+      "regions": [
+        {
+          "dirt": 1,
+          "stamps": 8
+        },
+        {
+          "dirt": 1,
+          "stamps": 8
+        },
+        {
+          "dirt": 1,
+          "stamps": 8
+        },
+        {
+          "dirt": 1,
+          "stamps": 8
+        },
+        {
+          "dirt": 1,
+          "stamps": 8
+        },
+        {
+          "dirt": 1,
+          "stamps": 8
+        }
+      ],
+      "errors": [
+        {
+          "mode": "idle",
+          "frameIndex": 0,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "idle",
+          "frameIndex": 2,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "idle",
+          "frameIndex": 4,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "scuttle",
+          "frameIndex": 0,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "scuttle",
+          "frameIndex": 1,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "scuttle",
+          "frameIndex": 2,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "scuttle",
+          "frameIndex": 3,
+          "max": 0,
+          "leak": 0
+        },
+        {
+          "mode": "scheming",
+          "frameIndex": 0,
+          "max": 0,
+          "leak": 0
+        }
+      ]
+    },
+    "xi-baseline-stationary": {
+      "checks": [
+        {
+          "name": "aftermath toys remain literally touchable clear of the mute control and travel targets on five viewport sizes",
+          "pass": true
+        }
+      ],
+      "errors": [],
+      "method": "explicit contradiction/provenance fixtures with saved proof timestamp advanced; not handset or actual absence evidence"
+    },
+    "xi-final-diagnostic": {
+      "checks": [
+        {
+          "name": "aftermath toys remain literally touchable clear of the mute control and travel targets on five viewport sizes",
+          "pass": true
+        }
+      ],
+      "errors": [],
+      "method": "explicit contradiction/provenance fixtures with saved proof timestamp advanced; not handset or actual absence evidence"
+    },
+    "possessions-final": {
+      "checks": [
+        {
+          "name": "43 permanent choices plus six treats, five compatible wearable layers and five genuinely different new toy verbs; legacy ownership migrates",
+          "pass": true
+        },
+        {
+          "name": "shop purchases never equip; physical wardrobe manages combinable owned clothes without repurchase or physics changes",
+          "pass": true
+        },
+        {
+          "name": "physical chest instantiates/stores possessions and persistence retains ownership and presence",
+          "pass": true
+        },
+        {
+          "name": "autonomous approach/search/retrieve uses authored rummaging and actually introduces a stored object; grab interrupts without taking physical authority",
+          "pass": true
+        },
+        {
+          "name": "invitation is answered by touching/throwing its real toy; Byte chases and brings it back with momentum physics",
+          "pass": true
+        },
+        {
+          "name": "frog compression/release, pinwheel swipe/breath and rattle shake have interrogable physical effects",
+          "pass": true
+        },
+        {
+          "name": "10000 trophies have bounded simulation, withdrawal/deposit conserve history and wallet, loose fragments survive reload",
+          "pass": true
+        },
+        {
+          "name": "VII display migration preserves moved fragments and stored bath tools across reload",
+          "pass": true
+        },
+        {
+          "name": "toy release onto the loft hatch yields to established carry navigation",
+          "pass": true
+        },
+        {
+          "name": "five-in-one-run trophy rule is unchanged; wallet spending cannot consume stored or loose history",
+          "pass": true
+        },
+        {
+          "name": "Byte can withdraw a real trophy, carry it physically and take it into his nook",
+          "pass": true
+        },
+        {
+          "name": "clothing/contact caches remain bounded and no cosmetic changes physical bounds in any HQ acting state",
+          "pass": true
+        },
+        {
+          "name": "wardrobe does not intersect the authored nook; compact passages, shop and chest remain operable at five sizes",
+          "pass": true
+        }
+      ],
+      "errors": []
+    }
+  },
+  "captures": {
+    "before": {
+      "errors": [],
+      "method": "Explicit room/camera/platform fixtures; native browser rendering. Not interaction or handset acceptance."
+    },
+    "after": {
+      "errors": [],
+      "method": "Explicit room/camera/platform fixtures; native browser rendering. Not interaction or handset acceptance."
+    }
+  },
+  "authority": {
+    "status": "PASS",
+    "method": "Source authority comparison complements runtime tests; it cannot prove runtime reachability or handset feel.",
+    "baseline": "0352eecb8ee3bd481afb455d276ec18e832c3c6d",
+    "results": [
+      {
+        "file": "home.js",
+        "unchanged": [
+          "ensureTrophies",
+          "replenishBiscuits",
+          "save",
+          "resize",
+          "space",
+          "nextRoom",
+          "offset",
+          "offsetY",
+          "syncUI",
+          "portal",
+          "cancel",
+          "openingTarget",
+          "request",
+          "startTravel",
+          "arrive",
+          "drop",
+          "afterByteRelease",
+          "beginHand",
+          "moveHand",
+          "endHand",
+          "findStone",
+          "updateThings",
+          "update",
+          "drawThings",
+          "arch"
+        ],
+        "changedPresentation": [
+          "itemShape",
+          "drawSpace",
+          "draw"
+        ]
+      },
+      {
+        "file": "game.js",
+        "unchanged": [
+          "loadFrames",
+          "loadImage",
+          "syncSoundButton",
+          "unlockAudio",
+          "voice",
+          "tactile",
+          "wakeByte",
+          "noticeTouch",
+          "followTouch",
+          "beginRest",
+          "beginRestHere",
+          "solveNestTether",
+          "updateLife",
+          "drawNest",
+          "drawHabitat",
+          "openRoom",
+          "reactToRoom",
+          "roomGroundPoint",
+          "groundDistance",
+          "seekRoomPoint",
+          "roomLightPoint",
+          "roomPowerPoint",
+          "updateOutside",
+          "drawOutside",
+          "resize",
+          "bodyGeometry",
+          "bodyHalfExtents",
+          "containRoomBody",
+          "constrainGrabbedByte",
+          "earthDown",
+          "resetEarthSupport",
+          "updateEarthBoundaryContacts",
+          "resolveEarthBoundaries",
+          "earthBodyAngle",
+          "moveEarthScuttle",
+          "updateEarthMotion",
+          "spoolPosition",
+          "solveWebTether",
+          "castFoodWeb",
+          "releaseFoodWeb",
+          "solveObbyWeb",
+          "drawWeb",
+          "drawObbyWeb",
+          "buttonTargetInCanvas",
+          "drawButtonWeb",
+          "setGravityButton",
+          "stopEarthGravity",
+          "startMotionListener",
+          "stopMotionIfUnused",
+          "requestEarthPermission",
+          "readEarthGravity",
+          "enableEarthGravity",
+          "toggleGravity",
+          "dislodgeGravityButton",
+          "updateButtonPhysics",
+          "updateButtonWeb",
+          "finishObby",
+          "spawnPlatformAbove",
+          "fillPlatformsAhead",
+          "beginObby",
+          "beginObbyHere",
+          "launchFromFirstPlatform",
+          "updateAutonomy",
+          "updateObby",
+          "landOnObbyPlatform",
+          "landBackHome",
+          "attachObbyWeb",
+          "paintedBodyAt",
+          "beginDrag",
+          "moveWebAnchor",
+          "moveDrag",
+          "endDrag",
+          "update",
+          "impact",
+          "draw",
+          "loop"
+        ],
+        "changedPresentation": [
+          "drawPlatforms"
+        ]
+      },
+      {
+        "file": "bathroom.js",
+        "unchanged": [
+          "stain",
+          "geometry",
+          "save",
+          "rect",
+          "beginFrame",
+          "supportTool",
+          "downPoint",
+          "waterAt",
+          "emit",
+          "dirtyFeet",
+          "foodMess",
+          "begin",
+          "move",
+          "end",
+          "update",
+          "paintCoat",
+          "floorAt",
+          "afterPhysics",
+          "present",
+          "drainGeometry",
+          "drawBasinFront",
+          "foreground"
+        ],
+        "changedPresentation": [
+          "resize",
+          "drawRoom",
+          "drawSponge"
+        ]
+      },
+      {
+        "file": "kitchen.js",
+        "unchanged": [
+          "geometry",
+          "mouth",
+          "save",
+          "box",
+          "beginFrame",
+          "drawRoom",
+          "paintFood",
+          "deliver",
+          "supportTool",
+          "carry",
+          "cancel",
+          "opportunity",
+          "start",
+          "bite",
+          "update",
+          "hiding",
+          "foreground"
+        ],
+        "changedPresentation": [
+          "resize",
+          "drawFood"
+        ]
+      },
+      {
+        "file": "backyard.js",
+        "unchanged": [
+          "project",
+          "unproject",
+          "save",
+          "cameraBounds",
+          "ui",
+          "enter",
+          "leave",
+          "doorway",
+          "entryTarget",
+          "indoorBegin",
+          "afterRelease",
+          "ready",
+          "idleIndoor",
+          "bodyPoint",
+          "hitByte",
+          "spoolWorld",
+          "spoolPoint",
+          "follow",
+          "releaseCarry",
+          "begin",
+          "move",
+          "ropePay",
+          "end",
+          "contact",
+          "solveRope",
+          "pick",
+          "interest",
+          "update",
+          "onScreen",
+          "invitationPoint",
+          "path",
+          "texture",
+          "placed",
+          "drawItem",
+          "drawFlower",
+          "drawActor",
+          "drawRope",
+          "resize",
+          "suspend"
+        ],
+        "changedPresentation": [
+          "cache",
+          "building (removed painter)",
+          "paintItem",
+          "paintFlower",
+          "draw"
+        ]
+      },
+      {
+        "file": "possessions.js",
+        "unchanged": [
+          "save",
+          "loose",
+          "storedTrophies",
+          "ensureToy",
+          "acquired",
+          "takeOut",
+          "putAway",
+          "withdraw",
+          "deposit",
+          "historyChanged",
+          "renderChest",
+          "hitFixture",
+          "onGrab",
+          "onMove",
+          "canAnswer",
+          "answerAt",
+          "spark",
+          "onRelease",
+          "cancel",
+          "opportunity",
+          "start",
+          "bedtime",
+          "bedArrive",
+          "seek",
+          "invite",
+          "finish",
+          "update",
+          "box",
+          "drawEffects"
+        ],
+        "changedPresentation": [
+          "drawFixtures",
+          "drawToy"
+        ]
+      },
+      {
+        "file": "life-details.js",
+        "unchanged": [
+          "note",
+          "selectDream",
+          "boast",
+          "update",
+          "texture",
+          "icon",
+          "drawDream",
+          "foreground",
+          "roomDecoration"
+        ],
+        "changedPresentation": [
+          "paintDecor"
+        ]
+      },
+      {
+        "file": "crystal.js",
+        "unchanged": [
+          "view",
+          "project",
+          "unproject",
+          "applyView",
+          "resize",
+          "presentSky",
+          "drawSky",
+          "opening",
+          "point",
+          "edgeAt",
+          "contains",
+          "visible",
+          "triangle",
+          "rows",
+          "rebuildOptics",
+          "draw"
+        ],
+        "changedPresentation": [
+          "rebuildSky",
+          "tile"
+        ]
+      },
+      {
+        "file": "household.js",
+        "unchanged": [
+          "seek",
+          "cancel",
+          "opportunity",
+          "start",
+          "arrive",
+          "noise",
+          "update"
+        ],
+        "changedPresentation": []
+      },
+      {
+        "file": "unseen.js",
+        "unchanged": [
+          "save",
+          "lease",
+          "anotherViewer",
+          "free",
+          "capture",
+          "empty",
+          "coveredBySound",
+          "choices",
+          "resolve",
+          "start",
+          "protect",
+          "update",
+          "handled",
+          "released",
+          "wipe",
+          "drawWrap",
+          "residue",
+          "foreground",
+          "cacheStats"
+        ],
+        "changedPresentation": []
+      },
+      {
+        "file": "room.js",
+        "unchanged": [
+          "sync",
+          "close",
+          "open",
+          "processPixels",
+          "processAudio",
+          "processBattery",
+          "batteryChanged",
+          "processMotion",
+          "sample"
+        ],
+        "changedPresentation": []
+      },
+      {
+        "file": "screen-web.js",
+        "unchanged": [
+          "surface",
+          "eligible",
+          "start",
+          "cancel",
+          "mesh",
+          "begin",
+          "move",
+          "end",
+          "update",
+          "draw",
+          "resize"
+        ],
+        "changedPresentation": []
+      },
+      {
+        "file": "economy.js",
+        "unchanged": [
+          "save",
+          "sync",
+          "flash",
+          "random",
+          "begin",
+          "platform",
+          "finish",
+          "update",
+          "gem",
+          "nameOf",
+          "headFrame",
+          "topTexture",
+          "contactTexture",
+          "drawWearables",
+          "drawHat",
+          "bodyPresentation",
+          "drawPreview",
+          "equip",
+          "renderShop",
+          "openWardrobe"
+        ],
+        "changedPresentation": [
+          "draw"
+        ]
+      }
+    ]
+  }
+}

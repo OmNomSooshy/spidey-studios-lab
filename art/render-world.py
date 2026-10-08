@@ -55,10 +55,12 @@ def line(points,r,m):
 def ring(x,y,z,r,thick,m,rotation=(0,0,0)):
  bpy.ops.mesh.primitive_torus_add(major_radius=r,minor_radius=thick,major_segments=40,minor_segments=8,location=(x,y,z),rotation=rotation);return mat(bpy.context.object,m)
 def fixture(name):
- original=name
  if name.endswith('-yellow') or name.endswith('-blue'):
-  name,color=name.rsplit('-',1);pink.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(*({'yellow':(.92,.64,.15),'blue':(.30,.58,.82)}[color]),1)
- else:pink.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(.60,.24,.34,1)
+  name,color=name.rsplit('-',1);color={'yellow':(.92,.64,.15),'blue':(.30,.58,.82)}[color]
+ else:color=(.60,.24,.34)
+ pink.node_tree.nodes.get('Principled BSDF').inputs['Base Color'].default_value=(*color,1)
+ ramp=next(n for n in pink.node_tree.nodes if n.type=='VALTORGB').color_ramp
+ ramp.elements[0].color=(*(v*.78 for v in color),1);ramp.elements[1].color=(*(min(1,v*1.15) for v in color),1)
  if name=='bench':
   for x in [-.65,.65]:box(x,0,.24,.12,.55,.48,wood);box(x,.19,.65,.12,.1,.8,wood)
   for y in [-.16,.05,.25]:box(0,y,.48,1.55,.18,.10,woodlight)
@@ -310,14 +312,14 @@ def terrain():
   if i%4==0:ball(-x,y,.025,.025,.035,.02,woodlight)
   else:line([(-x,y,.014),(-x+.025,y,.06)],.006,leaf)
  light()
- look=Vector((-6.07142857,6.07142857,0));direction=Vector((-20,20,17.4495))
+ look=Vector((-5.119047619,5.119047619,0));direction=Vector((-20,20,17.4495))
  bpy.ops.object.camera_add(location=look+direction);cam=bpy.context.object;cam.rotation_euler=(-direction).to_track_quat('-Z','Y').to_euler();cam.data.type='ORTHO';cam.data.ortho_scale=2100/113.13708499;S.camera=cam
- S.render.resolution_x=1680;S.render.resolution_y=896;S.render.resolution_percentage=100;S.cycles.samples=32;S.render.filepath=os.path.join(OUT,'terrain.png');bpy.ops.render.render(write_still=True)
- metadata['terrain']={'w':1680,'h':896,'display':[2100,1120],'groundOrigin':[1050,50],'projection':[.8,.42]}
+ S.render.resolution_x=1680;S.render.resolution_y=1024;S.render.resolution_percentage=100;S.cycles.samples=32;S.render.filepath=os.path.join(OUT,'terrain.png');bpy.ops.render.render(write_still=True)
+ metadata['terrain']={'w':1680,'h':1024,'display':[2100,1280],'groundOrigin':[1050,210],'projection':[.8,.42]}
  print('ASSET terrain',flush=True)
 
 names=sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else []
-allnames=['bench','can','lantern','pot','mushroom','hoop','seed','ball','bed0','bed1','bed2','bed3','tree','house','wardrobe','chest','chest-open','cabinet','nook','mat','ladder','hatch','beam','window','round-window','shelf','pantry','table','tub','tap','shower','dish','sponge','towel','biscuit','broccoli','stone','spring','ledge','frog-toy','rattle','ring-toy','pinwheel','picture','wall','floor','tiles','passage']
+allnames=['bench','can','lantern','pot','mushroom','hoop','seed','ball','bed0','bed1','bed2','bed3','tree','house','wardrobe','chest','chest-open','cabinet','nook','mat','ladder','hatch','beam','window','round-window','shelf','pantry','table','tub','tap','shower','dish','sponge','towel','biscuit','broccoli','stone','spring','ledge','frog-toy','rattle','ring-toy','pinwheel','picture','wall','floor','tiles','passage','terrain','bed2-yellow','bed3-yellow','bed2-blue','bed3-blue','seed-yellow','seed-blue','jam-star','sour-moon','fizz-berry','honey-knot','pink-cloud','carrot-curl','cloud','ice-relief']
 for name in names or allnames:
  if name=='terrain':terrain()
  else:render(name)

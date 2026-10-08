@@ -50,7 +50,7 @@ window.createByteEconomy = function(api) {
     p.fillStyle='#ecfff4';p.beginPath();p.moveTo(0,-r);p.lineTo(-r*.7,-r*.3);p.lineTo(0,r*.1);p.closePath();p.fill();
     p.strokeStyle='#d8faf0';p.beginPath();p.moveTo(0,-r);p.lineTo(0,r*.1);p.lineTo(r*.7,-r*.3);p.moveTo(0,r*.1);p.lineTo(0,r);p.stroke();p.restore();}
   function draw(t){if(!state.active)return;for(const p of state.pickups){const y=p.y-obby.cameraY;if(p.taken||y< -30||y>world.h+30)continue;
-    const glint=(Math.sin(t*.003+p.phase)+1)*.5;ctx.drawImage(gemTexture,p.x-14,y-16,28,38);if(glint>.88){ctx.strokeStyle='#effff4';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x+11,y-13);ctx.lineTo(p.x+19,y-13);ctx.moveTo(p.x+15,y-17);ctx.lineTo(p.x+15,y-9);ctx.stroke();}}
+    const glint=(Math.sin(t*.003+p.phase)+1)*.5;if(window.ByteWorldArt.ready)window.ByteWorldArt.rect(ctx,'stone',p.x-14,y-16,28,38);else ctx.drawImage(gemTexture,p.x-14,y-16,28,38);if(glint>.88){ctx.strokeStyle='#effff4';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(p.x+11,y-13);ctx.lineTo(p.x+19,y-13);ctx.moveTo(p.x+15,y-17);ctx.lineTo(p.x+15,y-9);ctx.stroke();}}
     for(const s of state.sparks){ctx.globalAlpha=1-s.age/.5;ctx.fillStyle='#e9fff1';ctx.fillRect(s.x-1,s.y-obby.cameraY-1,2,2);}ctx.globalAlpha=1;}
   function nameOf(frame){return frame?.src?.split('/').pop()||'idle.png';}
   function headFrame(frame,w,h){const n=nameOf(frame),side=n.startsWith('scuttle-'),low=n==='asleep.png';

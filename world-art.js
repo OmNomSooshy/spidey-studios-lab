@@ -6,7 +6,7 @@ window.ByteWorldArt=(()=>{
    // Drop transparent framing once. Physical runtime dimensions never come from this crop.
    const sx=Math.max(0,Math.floor(r[0]*img.width)-3),sy=Math.max(0,Math.floor(r[1]*img.height)-3),sw=Math.min(img.width-sx,Math.ceil(r[2]*img.width)+6),sh=Math.min(img.height-sy,Math.ceil(r[3]*img.height)+6);
    if(typeof createImageBitmap==='function')bitmap=await createImageBitmap(img,sx,sy,sw,sh);else{bitmap=document.createElement('canvas');bitmap.width=sw;bitmap.height=sh;bitmap.getContext('2d').drawImage(img,sx,sy,sw,sh,0,0,sw,sh);}
-   images.set(name,bitmap);bytes+=sw*sh*4;img.src='';resolve();}catch(e){reject(e)}};img.onerror=()=>reject(new Error('World art failed: '+name));img.src='assets/world/'+name+'.png';})}
+   images.set(name,bitmap);bytes+=sw*sh*4;img.src='';resolve();}catch(e){reject(e)}};img.onerror=()=>reject(new Error('World art failed: '+name));img.src='assets/world/'+name+'.webp';})}
  const promise=fetch('assets/world/frames.json').then(r=>{if(!r.ok)throw Error('Missing world frames');return r.json()}).then(f=>{frames=f;return Promise.all(names.map(load))}).then(()=>{ready=true;});
  function rect(p,name,x,y,w,h){const im=images.get(name);if(!im)return false;p.drawImage(im,x,y,w,h);return true;}
  const shade=document.createElement('canvas');shade.width=128;shade.height=48;const sp=shade.getContext('2d');sp.translate(64,24);sp.scale(1,.375);const sg=sp.createRadialGradient(0,0,1,0,0,60);sg.addColorStop(0,'#293c3e52');sg.addColorStop(1,'#293c3e00');sp.fillStyle=sg;sp.fillRect(-64,-64,128,128);
@@ -24,7 +24,7 @@ window.ByteWorldArt=(()=>{
    if(index===0){const cx=w*.34,cy=floorY-bH*.34;shadow(q,cx,floor-15,w*.60,30);for(const x of [cx-w*.22,cx+w*.22])rect(q,'beam',x-5,cy+bH*.30,10,Math.max(10,floor-25-(cy+bH*.30)));rect(q,'nook',cx-w*.25,cy-bH*1.05,w*.5,bH*1.4);rect(q,'mat',cx-w*.21,floor-34,w*.42,27);}
    if(index===1){rect(q,'round-window',w*.5-63,0,126,128);shadow(q,w*.51,floor-22,w*.46,18);}
    if(index===2){rect(q,'hatch',stairs-82,-7,164,50);shadow(q,stairs,floor-22,90,20);rect(q,'ladder',stairs-35,39,70,floor-62);}
-   if(index===3){q.fillStyle='#accbd0';q.fillRect(12,0,w*.56,48);rect(q,'beam',6,43,w*.58,10);q.save();q.translate(w*.37,h*.1);q.rotate(.13);rect(q,'beam',-w*.39,-9,w*.80,18);q.restore();q.save();q.translate(w*.86,h*.095);q.rotate(-.14);rect(q,'beam',-w*.15,-9,w*.3,18);q.restore();rect(q,'window',w*.65-50,h*.29-58,100,120);rect(q,'shelf',w*.13,h*.40-7,w*.32,22);rect(q,'dish',w*.215,h*.40-11,w*.13,11);rect(q,'hatch',stairs-65,floor-34,130,45);}
+   if(index===3){q.fillStyle='#accbd0';q.fillRect(12,0,w*.56,48);rect(q,'beam',6,43,w*.58,10);q.save();q.translate(0,72);q.rotate(Math.atan2(h*.13-72,w*.73));rect(q,'beam',0,-9,Math.hypot(w*.73,h*.13-72),18);q.restore();q.save();q.translate(w*.73,h*.13);q.rotate(Math.atan2(50-h*.13,w*.27));rect(q,'beam',0,-9,Math.hypot(w*.27,50-h*.13),18);q.restore();rect(q,'window',w*.65-50,h*.29-58,100,120);rect(q,'shelf',w*.13,h*.40-7,w*.32,22);rect(q,'dish',w*.215,h*.40-11,w*.13,11);rect(q,'hatch',stairs-65,floor-34,130,45);}
    rooms.set(key,c);if(rooms.size>6){const oldest=rooms.keys().next().value;rooms.delete(oldest);}
   }p.drawImage(c,0,0,w,h);}
  function item(p,name,w,h){return rect(p,name,-w*.5,-h*.5,w,h)}

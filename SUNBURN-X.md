@@ -63,7 +63,7 @@ Completed measurements on this machine (software Chromium, DPR 2):
 
 These are small samples with scheduling variability, especially the extreme sleep case; no X speed-up is claimed. Crystal has the exact same eight cached tiles and bitmap budget in all four passes.
 
-Completed regression evidence: all 12 inherited suites, all seven IX-specific checks, five X physical-simulation checks, 63 dressed/coated pose combinations, five-size independent floor/trunk/ladder verbs, all five normal-RAF reciprocal toy families, actual bath/shower/contact washing/splash/drain/return, and two fresh normal-RAF sensor-steered expeditions with five pickups and one permanent trophy each, plus two legitimate misses. Currency, ownership/equipment and returned fragments survive reload. No local browser error or failed runtime asset request remained.
+Completed regression evidence: all 12 inherited suites, all seven IX-specific checks, five X physical-simulation checks, 63 dressed/coated pose combinations, five-size independent floor/trunk/ladder verbs, all five normal-RAF reciprocal toy families, actual bath/shower/contact washing/splash/drain/return, and two fresh normal-RAF sensor-steered expeditions with five pickups and one permanent trophy each. Miss/fall return is additionally checked in the protected simulation; these two normal-RAF runs both completed successfully. Currency, ownership/equipment and returned fragments survive reload. No local browser error or failed runtime asset request remained.
 
 ## Rejected and deferred
 

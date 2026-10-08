@@ -1,0 +1,6 @@
+# Android build/signing work belongs outside the release source.
+android/local.properties
+android/build/
+*.jks
+*.keystore
+*.p12

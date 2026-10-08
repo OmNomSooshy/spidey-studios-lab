@@ -21,7 +21,7 @@
     button.classList.toggle('open', state.open);
     button.classList.toggle('pending', state.pending);
     button.setAttribute('aria-pressed', String(state.open));
-    button.setAttribute('aria-label', state.open ? 'Close Byte’s camera and microphone window' : 'Let Byte see light, hear this room and feel the phone');
+    button.setAttribute('aria-label', state.open ? 'Close Bob’s camera and microphone window' : 'Let Bob see light, hear this room and feel the phone');
     caption.innerHTML = message || (state.open
       ? `<span>${state.camera && state.mic ? 'His window is open' : state.camera ? 'He can see the light' : state.mic ? 'He can hear you' : state.motion ? 'He can feel the phone' : 'Waiting for phone motion'}</span><small>On this phone only · tap the window to close</small>`
       : '<span>Open his window</span><small>Camera + mic + motion · on this phone only</small>');

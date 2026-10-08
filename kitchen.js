@@ -58,7 +58,7 @@ window.createByteKitchen = function(api) {
   }
   function deliver(item){if(item.category!=='food'||!world.w)return false;const h=api.home(),g=geometry();let id;do{id='treat-'+(++state.serial)+'-'+item.id}while(h.things.some(v=>v.id===id));
     const v={id,treat:item.id,food:true,bites:item.portions,r:18,room:5,nx:.77,ny:0,x:world.w*(.77+Math.sin(state.serial*2.4)*.045),y:g.tableY-18,vx:0,vy:0,angle:Math.sin(state.serial)*.2,spin:0,touch:0};h.things.push(v);save();
-    // A shop can remain open while Byte starts a room trip. Preserve this delivery even
+    // A shop can remain open while Bob starts a room trip. Preserve this delivery even
     // while normal home-position saving waits for that transition to finish.
     if(h.travel){try{const remembered=JSON.parse(localStorage.getItem('byte-sunburn-home-v1'))||{};remembered.things=remembered.things||[];remembered.things.push({id:v.id,treat:v.treat,room:5,nx:v.x/world.w,ny:v.y/world.h,bites:v.bites});localStorage.setItem('byte-sunburn-home-v1',JSON.stringify(remembered));}catch(_){} }
     return v;
@@ -141,7 +141,7 @@ window.createByteKitchen = function(api) {
           if(state.opinionTime>.5&&state.time>=(v.refuseAfter||0)){
             state.refusal=1.45;state.rejected++;v.refuseAfter=state.time+2.8;
             if(held)v.refusedInHand=true;
-            // A real little shove; Fingers still owns a held vegetable, Byte can back away.
+            // A real little shove; Fingers still owns a held vegetable, Bob can back away.
             const b=api.bodyGeometry(t),nx=Math.cos(b.angle)*byte.facing,ny=Math.sin(b.angle)*byte.facing;
             if(!held){v.unseenOrigin='byte';v.vx+=nx*180;v.vy+=ny*180-65;v.onShelf=false;}
             if(!earth.enabled||earth.support.active){byte.vx-=nx*155;byte.vy-=ny*155;if(!earth.enabled)byte.mode='air';}

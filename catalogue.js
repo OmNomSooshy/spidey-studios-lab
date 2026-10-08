@@ -27,7 +27,7 @@ window.byteTreasures = [
   {
     "id": "captain",
     "category": "head",
-    "name": "Captain Byte",
+    "name": "Captain Bob",
     "price": 9,
     "description": "Captain of the bath.",
     "src": "assets/cosmetics/captain.svg"

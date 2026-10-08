@@ -1,0 +1,22 @@
+{
+  "pass": true,
+  "baseline": "72cab43ca61a6b29fbdbc92118faaff18fdbd5a2",
+  "method": "All original runtime JS ASTs identical after mandatory player-facing name normalization and the explicit Android-only QA gate; all source artwork and CSS byte-identical. Native/compat code is new and requires separate Android runtime validation.",
+  "controllers": [
+    "backyard.js",
+    "bathroom.js",
+    "catalogue.js",
+    "crystal.js",
+    "economy.js",
+    "game.js",
+    "home.js",
+    "household.js",
+    "kitchen.js",
+    "life-details.js",
+    "possessions.js",
+    "room.js",
+    "screen-web.js",
+    "unseen.js",
+    "world-art.js"
+  ]
+}

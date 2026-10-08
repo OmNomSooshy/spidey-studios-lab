@@ -1,0 +1,10 @@
+<resources>
+  <color name="home_background">#efe7d8</color>
+  <color name="icon_background">#294d4a</color>
+  <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+    <item name="android:fontFamily">sans</item><item name="android:windowLightStatusBar">false</item>
+    <item name="android:statusBarColor">#294d4a</item><item name="android:navigationBarColor">#294d4a</item>
+    <item name="android:windowBackground">@color/home_background</item><item name="android:colorAccent">#396b61</item>
+  </style>
+  <string name="import_save">Bring browser save</string>
+</resources>

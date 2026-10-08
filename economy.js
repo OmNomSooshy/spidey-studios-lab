@@ -98,7 +98,7 @@ window.createByteEconomy = function(api) {
     drawWearables(ink,182,224,idle,gear);ink.restore();if(['toy','food'].includes(item?.category)&&item.texture)ink.drawImage(item.texture,155,172,75,47);}
   function equip(id){const item=catalogue.find(v=>v.id===id);if(!item||['toy','food'].includes(item.category)||!state.owned.includes(id))return false;
     if(state.gear[item.category]===id)delete state.gear[item.category];else state.gear[item.category]=id;state.equipped=state.gear.head||null;save();return true;}
-  function renderShop(){sync();title.textContent=view==='wardrobe'?'Byte’s wardrobe':'Little Treasures';eyebrow.textContent=view==='wardrobe'?'BESIDE THE NOOK':'SMALL THINGS. BIG PERSONALITY.';
+  function renderShop(){sync();title.textContent=view==='wardrobe'?'Bob’s wardrobe':'Little Treasures';eyebrow.textContent=view==='wardrobe'?'BESIDE THE NOOK':'SMALL THINGS. BIG PERSONALITY.';
     tabs.replaceChildren();const names={head:'Headwear',eyes:'Eyewear',contacts:'Eyes',top:'Clothes',accessory:'Extras',toy:'Toys',food:'Treats'};
     for(const [cat,label]of Object.entries(names)){if(view==='wardrobe'&&['toy','food'].includes(cat))continue;const b=document.createElement('button');b.type='button';b.textContent=label;b.classList.toggle('selected',cat===category);b.onclick=()=>{category=cat;renderShop()};tabs.append(b);}
     if(catalogue.find(v=>v.id===showing)?.category!==category)showing=state.gear[category]||catalogue.find(v=>v.category===category&&(view!=='wardrobe'||state.owned.includes(v.id)))?.id;

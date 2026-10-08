@@ -180,7 +180,7 @@ window.createByteBathroom = function createByteBathroom(api) {
   function afterPhysics() {
     if(!here()||byte.grabbed||earth.enabled||byte.mode==='scheming')return;
     const g=geometry(),h=api.bodyH(),inside=byte.x>g.x+api.bodyW()*.12&&byte.x<g.x+g.w-api.bodyW()*.12;
-    // The tub has an interior bottom. It supports the body; holding Byte still permits placing/lifting him.
+    // The tub has an interior bottom. It supports the body; holding Bob still permits placing/lifting him.
     const bottom=g.bottom-h*.30,foot=byte.y+h*.48;
     if(inside&&foot>bottom){const incoming=byte.vy;byte.y=bottom-h*.48;
       if(incoming>150){byte.vy=-incoming*.18;byte.squash=Math.max(byte.squash,Math.min(.25,incoming/2400));byte.mode='air';}
@@ -230,7 +230,7 @@ window.createByteBathroom = function createByteBathroom(api) {
       if(state.draining){ctx.strokeStyle='#e1fff0b0';ctx.lineWidth=1.4;for(let i=0;i<3;i++){ctx.beginPath();ctx.ellipse(drain.x,g.surface+4+i*3,15-i*4,3,Math.sin(t*.004)*.12,0,Math.PI*1.65);ctx.stroke();}}
     }
     ctx.restore();
-    // Clear front has a solid rim/base. Byte's wet body remains visible through it, with no physical changes.
+    // Clear front has a solid rim/base. Bob's wet body remains visible through it, with no physical changes.
     ctx.strokeStyle='#89aaa3';ctx.lineWidth=3;ctx.beginPath();ctx.roundRect(g.x-10,g.rim+4,g.w+20,g.bottom-g.rim-4,25);ctx.stroke();
     ctx.strokeStyle='#f1f8e8';ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(g.x-3,g.rim+4);ctx.quadraticCurveTo(g.x+g.w*.5,g.rim+20,g.x+g.w+3,g.rim+4);ctx.stroke();
     ctx.strokeStyle='#abc9bc';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(g.x+13,g.bottom-8);ctx.lineTo(g.x+g.w-13,g.bottom-8);ctx.stroke();

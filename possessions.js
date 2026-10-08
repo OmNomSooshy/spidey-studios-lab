@@ -9,7 +9,7 @@ window.createBytePossessions=function(api){
   const textures=new Map();for(const item of catalogue){const image=new Image();image.src=item.src;image.onload=()=>{const c=document.createElement('canvas');c.width=128;c.height=80;c.getContext('2d').drawImage(image,0,0,128,80);textures.set(item.id,c)};}
   const wheelTexture=document.createElement('canvas');wheelTexture.width=wheelTexture.height=128;const wheelInk=wheelTexture.getContext('2d');wheelInk.translate(64,64);
   for(const color of ['#b77d6b','#8ba59c','#d9bc77','#8499b2']){wheelInk.fillStyle=color;wheelInk.strokeStyle='#4d6658';wheelInk.lineWidth=2;wheelInk.beginPath();wheelInk.moveTo(0,0);wheelInk.lineTo(-43,-50);wheelInk.lineTo(8,-48);wheelInk.closePath();wheelInk.fill();wheelInk.stroke();wheelInk.rotate(Math.PI/2);}wheelInk.fillStyle='#e4d5ab';wheelInk.beginPath();wheelInk.arc(0,0,7,0,Math.PI*2);wheelInk.fill();
-  const drawer=document.createElement('dialog');drawer.id='possession-drawer';drawer.innerHTML='<div class="collection-window"><header><div><p class="shop-eyebrow">UNDER THE LOFT</p><h2>Byte’s toy chest</h2></div><button class="collection-close" aria-label="Close chest">×</button></header><div class="collection-items"></div><p class="collection-note">Out to play. Back in the chest. Always his.</p></div>';document.querySelector('#playground').append(drawer);
+  const drawer=document.createElement('dialog');drawer.id='possession-drawer';drawer.innerHTML='<div class="collection-window"><header><div><p class="shop-eyebrow">UNDER THE LOFT</p><h2>Bob’s toy chest</h2></div><button class="collection-close" aria-label="Close chest">×</button></header><div class="collection-items"></div><p class="collection-note">Out to play. Back in the chest. Always his.</p></div>';document.querySelector('#playground').append(drawer);
   let backdropPress=false;drawer.addEventListener('pointerdown',e=>{backdropPress=e.target===drawer});
   drawer.querySelector('.collection-close').onclick=()=>drawer.close();drawer.addEventListener('click',e=>{if(e.target===drawer&&backdropPress)drawer.close();backdropPress=false});
   const ownedToys=()=>['ball',...catalogue.filter(v=>economy.owned.includes(v.id)).map(v=>v.id)];
@@ -95,7 +95,7 @@ window.createBytePossessions=function(api){
       life.gazeX=v.x;life.gazeY=v.y;
       if(act.elapsed>.35&&Math.hypot(v.x-byte.x,v.y-byte.y)<api.bodyH()*.6){api.releaseFoodWeb();home.carried=v;act.phase='present';act.elapsed=0;act.cycles++;state.fetches=(state.fetches||0)+1;}return;}
     if(act.phase==='seek'||act.phase==='chase'){const v=act.item;if(v.stored||v.room!==home.room){finish();return;}
-      // A high throw gives his existing food-retrieval rope a second, very Byte-like purpose.
+      // A high throw gives his existing food-retrieval rope a second, very Bob-like purpose.
       if(act.phase==='chase'&&!act.cheated&&['ball','comet-ball','ring-toy'].includes(v.id)&&act.elapsed>.35&&v.y<byte.y-api.bodyH()*.55&&['idle','scuttle'].includes(byte.mode)){
         act.cheated=true;act.phase='fetch-thought';act.elapsed=0;byte.targetX=byte.targetY=null;byte.mode='scheming';return;}
       life.gazeX=v.x;life.gazeY=v.y;const side=v.x<byte.x?-1:1;seek(v.x-side*api.bodyW()*.36);

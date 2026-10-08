@@ -30,7 +30,7 @@ window.createByteUnseen=function(api){
   function choices(s){const result=[];const actual=t=>home.things.find(v=>v.id===t.id&&v.room===t.room&&!!v.stored===t.stored&&v.unseenOrigin===t.origin&&(!v.food||v.bites===t.bites));
     if(s.room===5){const g=kitchen.geometry();
       const broccoli=s.things.find(t=>t.id==='broccoli'&&t.bites>0&&['byte','offered'].includes(t.origin)&&!t.stored&&t.reachable&&t.speed<120),b=broccoli&&actual(broccoli);
-      // The packet sits beneath the far end of the table, clear of Byte and the passage.
+      // The packet sits beneath the far end of the table, clear of Bob and the passage.
       const bx=world.w-(b?.r||18)-32,by=world.h-28;
       if(s.recent?.kind==='food'&&s.recent.id==='broccoli'&&b&&!b.silkWrapped&&empty(5,bx,by,b.r,b))result.push({kind:'broccoli',v:b,x:bx,y:by});
       const food=s.things.find(t=>t.id.startsWith('biscuit-')&&t.origin==='pantry'&&!t.stored&&t.onShelf&&t.bites>=3&&t.speed<40),v=food&&actual(food);

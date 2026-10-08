@@ -1,0 +1,4 @@
+<resources><style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+  <item name="android:fontFamily">sans</item><item name="android:windowLightStatusBar">false</item><item name="android:statusBarColor">#294d4a</item><item name="android:navigationBarColor">#294d4a</item><item name="android:windowBackground">@color/home_background</item><item name="android:colorAccent">#396b61</item>
+  <item name="android:windowSplashScreenBackground">@color/icon_background</item><item name="android:windowSplashScreenAnimatedIcon">@drawable/bob_icon</item>
+</style></resources>

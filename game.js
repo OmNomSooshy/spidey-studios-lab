@@ -66,7 +66,7 @@
   const soundButton = document.querySelector('#sound-toggle');
   function syncSoundButton() {
     soundButton.setAttribute('aria-pressed', String(audio.enabled));
-    soundButton.setAttribute('aria-label', audio.enabled ? "Mute Byte's sounds" : "Hear Byte's sounds");
+    soundButton.setAttribute('aria-label', audio.enabled ? "Mute Bob's sounds" : "Hear Bob's sounds");
   }
   function unlockAudio() {
     if (!audio.enabled) return;
@@ -708,7 +708,7 @@
   }
   function earthBodyAngle() {
     const down = earthDown();
-    // Canvas' local +Y axis is Byte's feet direction.
+    // Canvas' local +Y axis is Bob's feet direction.
     return Math.atan2(-down.x, down.y);
   }
   function moveEarthScuttle(dt) {
@@ -984,7 +984,7 @@
 
   function setGravityButton(label, status, pressed) {
     gravityLabel.textContent = label;
-    gravityStatus.textContent = /DENIED|UNAVAILABLE|NO MOTION/.test(status) ? (/DENIED/.test(status) ? 'Motion stays off. Byte is still playable.' : 'Phone motion is unavailable here.') : '';
+    gravityStatus.textContent = /DENIED|UNAVAILABLE|NO MOTION/.test(status) ? (/DENIED/.test(status) ? 'Motion stays off. Bob is still playable.' : 'Phone motion is unavailable here.') : '';
     gravityButton.setAttribute('aria-pressed', String(pressed));
     gravityButton.setAttribute('aria-label', pressed ? 'Return to screen-relative gravity' : 'Enable Earth-relative gravity');
   }
@@ -1054,7 +1054,7 @@
       earth.lastSample = 0;
       earth.x = 0; earth.y = fromByte ? 1650 : 0;
     }
-    setGravityButton('EARTH OWNS DOWN', fromByte ? 'BYTE DID THAT' : 'ROTATE YOUR PHONE', true);
+    setGravityButton('EARTH OWNS DOWN', fromByte ? 'BOB DID THAT' : 'ROTATE YOUR PHONE', true);
     startMotionListener();
     byte.targetX = byte.targetY = null;
     if (!byte.grabbed && byte.mode === 'idle') {
@@ -1441,7 +1441,7 @@
     noticeTouch(px, py, e.pointerId, quiet);
     const point = obby.hasLaunched ? crystal.unproject(px, py) : { x: px, y: py };
     if (web.active && web.planted && Math.hypot(point.x - web.anchorX, point.y - web.anchorY) <= 42) {
-      // Releasing the web leaves Byte's current linear and angular momentum untouched.
+      // Releasing the web leaves Bob's current linear and angular momentum untouched.
       web.active = false;
       web.planted = false;
       web.pointerId = null;
@@ -1449,7 +1449,7 @@
     }
     if (bathroom.begin(px, py, e.pointerId)) { canvas.setPointerCapture(e.pointerId); return; }
     if (home.beginHand(point.x, point.y - (obby.hasLaunched ? obby.cameraY : 0), e.pointerId)) { canvas.setPointerCapture(e.pointerId); return; }
-    // Objects and fixtures belong to the house too. Quiet tidying is not touching Byte.
+    // Objects and fixtures belong to the house too. Quiet tidying is not touching Bob.
     if (quiet) wakeByte();
     if (obby.hasLaunched) {
       if (obby.web.active || obby.web.pending) return;
@@ -1715,7 +1715,7 @@
     if (speed > 330) tactile(speed / 1100);
     if (speed > 550) life.roughness = Math.min(1, life.roughness + .08);
     if (where === 'side') {
-      // Horizontal impacts compress Byte across his width, then recover smoothly.
+      // Horizontal impacts compress Bob across his width, then recover smoothly.
       byte.wallSquish = Math.max(byte.wallSquish, clamp(speed / 1800, .1, .55));
       return;
     }
@@ -1759,7 +1759,7 @@
       ctx.drawImage(obby.hasLaunched ? dressed : bathroom.present(dressed, t), -frameW / 2, -bodyH() / 2, frameW, bodyH());
       ctx.restore();
     }
-    // Keep a planted endpoint above Byte's opaque artwork so its hit target stays visible.
+    // Keep a planted endpoint above Bob's opaque artwork so its hit target stays visible.
     ctx.save(); ctx.translate(0, -cameraY); drawWeb(); ctx.restore();
     drawObbyWeb();
     drawButtonWeb();
@@ -1787,7 +1787,7 @@
     }
   });
   // Runtime handles are available only to an explicitly enabled local QA harness.
-  if (['localhost', '127.0.0.1'].includes(location.hostname) && new URLSearchParams(location.search).has('probe')) {
+  if ((['localhost', '127.0.0.1'].includes(location.hostname) || window.LittleBobNative?.qaEnabled()) && new URLSearchParams(location.search).has('probe')) {
     window.__byteProbe = { byte, earth, web, obby, autonomy, buttonWeb, buttonBody, life, world, audio, update, updateLife, updateAutonomy, updateButtonWeb, updateObby, updateButtonPhysics, beginRest, wakeByte, beginObby, enableEarthGravity, stopEarthGravity, spoolPosition, bodyHalfExtents, bodyGeometry, draw, readEarthGravity, floorY, bodyW, bodyH, halfW, halfH, finishObby, solveWebTether, solveObbyWeb, solveNestTether, constrainGrabbedByte, containRoomBody, room, outside, updateOutside, reactToRoom, roomPowerPoint, home, crystal, bathroom, kitchen, economy, details, backyard, screenWeb };
   }
 
@@ -1827,10 +1827,10 @@
     actingNames.forEach((name, i) => { assets[name] = acting[i]; });
     resize();
     byte.x = world.w * .4; byte.y = floorY(); byte.blinkAt = now() + 1400;
-    if (!idle || !walk.every(Boolean) || !acting.every(Boolean)) { document.querySelector('#arrival').textContent = 'Byte could not arrive. Reload to try again.'; return; }
+    if (!idle || !walk.every(Boolean) || !acting.every(Boolean)) { document.querySelector('#arrival').textContent = 'Bob could not arrive. Reload to try again.'; return; }
     backyard.ready();
     home.unseen.start();
     document.querySelector('#arrival').classList.add('ready');
     requestAnimationFrame(loop);
-  }).catch(error=>{console.error(error);document.querySelector('#arrival').textContent='Byte’s home could not arrive. Reload to try again.';});
+  }).catch(error=>{console.error(error);document.querySelector('#arrival').textContent='Bob’s home could not arrive. Reload to try again.';});
 })();

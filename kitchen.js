@@ -71,6 +71,7 @@ window.createByteKitchen = function(api) {
   function drawFood(v){const size=(v.r+4)*2;let frame=v.vegetable?vegetableFrame:foodFrames[v.bites];
     if(v.treat){const item=window.byteTreasures.find(t=>t.id===v.treat),key=v.treat+':'+v.bites;frame=treatFrames.get(key);if(!frame&&item?.image?.naturalWidth){frame=document.createElement('canvas');frame.width=frame.height=80;const p=frame.getContext('2d');p.drawImage(item.image,48,0,160,160,0,0,80,80);p.globalCompositeOperation='destination-out';for(let i=0;i<item.portions-v.bites;i++){p.beginPath();p.arc(63,23+i*15,13,0,Math.PI*2);p.fill();}treatFrames.set(key,frame);}}
     if(frame)ctx.drawImage(frame,-size*.5,-size*.5,size,size);
+    if(v.silkWrapped)api.home().unseen?.drawWrap(v,size);
   }
   function deliver(item){if(item.category!=='food'||!world.w)return false;const h=api.home(),g=geometry();let id;do{id='treat-'+(++state.serial)+'-'+item.id}while(h.things.some(v=>v.id===id));
     const v={id,treat:item.id,food:true,bites:item.portions,r:18,room:5,nx:.77,ny:0,x:world.w*(.77+Math.sin(state.serial*2.4)*.045),y:g.tableY-18,vx:0,vy:0,angle:Math.sin(state.serial)*.2,spin:0,touch:0};h.things.push(v);save();
@@ -156,9 +157,10 @@ window.createByteKitchen = function(api) {
           state.opinionTime+=dt;
           if(state.opinionTime>.5&&state.time>=(v.refuseAfter||0)){
             state.refusal=1.45;state.rejected++;v.refuseAfter=state.time+2.8;
+            if(held)v.refusedInHand=true;
             // A real little shove; Fingers still owns a held vegetable, Byte can back away.
             const b=api.bodyGeometry(t),nx=Math.cos(b.angle)*byte.facing,ny=Math.sin(b.angle)*byte.facing;
-            if(!held){v.vx+=nx*180;v.vy+=ny*180-65;v.onShelf=false;}
+            if(!held){v.unseenOrigin='byte';v.vx+=nx*180;v.vy+=ny*180-65;v.onShelf=false;}
             if(!earth.enabled||earth.support.active){byte.vx-=nx*155;byte.vy-=ny*155;if(!earth.enabled)byte.mode='air';}
             api.voice('land',.2);api.tactile(.1);
           }

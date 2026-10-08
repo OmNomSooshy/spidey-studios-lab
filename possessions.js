@@ -24,7 +24,7 @@ window.createBytePossessions=function(api){
   function ensureToy(id){let v=home.things.find(v=>v.id===id);if(!v){v={id,toy:true,stored:true,room:2,nx:.64,ny:.9,x:0,y:0,vx:0,vy:0,angle:0,spin:0,touch:0,r:id==='ring-toy'?24:20};home.things.push(v);}return v;}
   for(const id of ownedToys()){const v=ensureToy(id);if(id!=='ball'&&!api.remembered?.things?.some(t=>t.id===id))v.stored=true;}
   function acquired(item){if(item.category==='toy'){ensureToy(item.id);save();}}
-  function takeOut(id,byByte=false){if(!storable().includes(id))return null;const v=ensureToy(id);if(!v.stored)return v;const g=chest();Object.assign(v,{stored:false,room:2,x:g.x,y:g.y-20,vx:0,vy:0,angle:0,spin:0});state.lid=1;state.retrievals++;save();return v;}
+  function takeOut(id,byByte=false){if(!storable().includes(id))return null;const v=ensureToy(id);if(!v.stored)return v;v.unseenOrigin=byByte?'byte':'human';const g=chest();Object.assign(v,{stored:false,room:2,x:g.x,y:g.y-20,vx:0,vy:0,angle:0,spin:0});state.lid=1;state.retrievals++;save();return v;}
   function putAway(v){if(!v||(!v.toy&&!['ball','sponge','stone'].includes(v.id))||home.hand?.item===v)return false;if(home.carried===v)api.drop();if(state.act?.item===v)cancel();v.stored=true;v.vx=v.vy=0;save();return true;}
   function withdraw(byByte=false){if(storedTrophies()<=0)return null;const g=cabinet();let id;do{id='fragment-'+(++state.serial)}while(home.things.some(v=>v.id===id));
     const v={id,trophy:true,room:2,x:g.x,y:g.y+g.h*.5-12,nx:.18,ny:.6,vx:0,vy:0,angle:0,spin:0,touch:1,r:13};home.things.push(v);state.collectionFlash=1;save();return v;}
@@ -70,7 +70,7 @@ window.createBytePossessions=function(api){
   function bedArrive(){state.act=null;state.pose=null;home.activity=null;life.sleepmate=home.carried?.id;state.cooldown=35;}
   function seek(x){const ex=api.extents().x,target=clamp(x,ex+4,world.w-ex-4);if(Math.abs(byte.x-target)<14){byte.targetX=byte.targetY=null;if(byte.mode==='scuttle')byte.mode='idle';return true;}
     if(byte.mode==='idle'||byte.mode==='scuttle'){byte.targetX=target;byte.targetY=api.floorY();byte.mode='scuttle';}return false;}
-  function invite(act){const v=act.item;byte.facing=byte.x>world.w*.55?-1:1;api.drop();v.room=home.room;v.vx=byte.facing*95;v.vy=Math.min(0,byte.vy)-40;v.spin=byte.facing*2;
+  function invite(act){const v=act.item;v.unseenOrigin='byte';byte.facing=byte.x>world.w*.55?-1:1;api.drop();v.room=home.room;v.vx=byte.facing*95;v.vy=Math.min(0,byte.vy)-40;v.spin=byte.facing*2;
     act.phase='invite';act.elapsed=0;state.invitations++;state.pose='expectant';life.gazeX=v.x;life.gazeY=v.y;save();api.voice('pet',.55);}
   function finish(){state.pose=null;state.act=null;home.activity=null;byte.targetX=byte.targetY=null;autonomy.choice=null;autonomy.idleTime=0;state.cooldown=26;save();}
   function update(dt){state.time+=dt;state.collectionFlash=Math.max(0,state.collectionFlash-dt*2);state.cooldown=Math.max(0,state.cooldown-dt);state.lid=Math.max(0,state.lid-dt*.4);state.pose=null;

@@ -302,6 +302,7 @@
     restHere: beginRestHere, obbyHere: beginObbyHere, skyOpening: crystal.opening });
   const details=window.createByteLifeDetails({ctx,world,byte,life,home,bathroom,kitchen,economy,obby,earth,web,bodyW:()=>bodyW(),bodyH:()=>bodyH(),floorY:()=>floorY(),roomH:()=>spriteH});home.details=details;
   home.household=window.createByteHousehold({world,byte,life,home,bathroom,earth,web,obby,autonomy,voice,wakeByte,castFoodWeb,releaseFoodWeb,bodyW:()=>bodyW(),bodyH:()=>bodyH(),floorY:()=>floorY(),extents:bodyHalfExtents});
+  home.unseen=window.createByteUnseen({ctx,world,byte,life,home,kitchen,bathroom,details,earth,web,obby,outside,bodyW:()=>bodyW(),bodyH:()=>bodyH(),floorY:()=>floorY(),pranking:()=>!['waiting','released'].includes(buttonWeb.phase)});
   function openRoom(kind = 'both') {
     if (room.state.open || room.state.pending) {
       room.close(); stopMotionIfUnused();
@@ -1733,6 +1734,7 @@
     bathroom.foreground(t);
     kitchen.foreground(t);
     details.foreground(t);
+    home.unseen.foreground();
   }
 
   document.addEventListener('visibilitychange', () => {
@@ -1761,6 +1763,7 @@
     room.sample(t);
     updateOutside(dt, t);
     home.update(dt);
+    home.unseen.update();
     update(dt, t);
     updateLife(dt);
     updateAutonomy(dt);
@@ -1785,6 +1788,7 @@
     resize();
     byte.x = world.w * .4; byte.y = floorY(); byte.blinkAt = now() + 1400;
     if (!idle || !walk.every(Boolean) || !acting.every(Boolean)) { document.querySelector('#arrival').textContent = 'Byte could not arrive. Reload to try again.'; return; }
+    home.unseen.start();
     document.querySelector('#arrival').classList.add('ready');
     requestAnimationFrame(loop);
   });

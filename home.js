@@ -46,6 +46,9 @@ window.createByteHome = function createByteHome(api) {
     const safe = saved && Number.isInteger(saved.room) && saved.room >= 0 && saved.room <= 5 && Number.isFinite(saved.nx) && Number.isFinite(saved.ny);
     home.things.push({ ...seed, ...(safe ? { room: saved.room, nx: clamp(saved.nx, .03, .97), ny: clamp(saved.ny, .03, .97) } : {}),
       ...(saved?.stored?{stored:true}:{}),
+      // Old saved arrangements are deliberately unknown. Only actual XI authorship opts in.
+      unseenOrigin:['human','byte','offered','pantry','house','kept'].includes(saved?.unseenOrigin)?saved.unseenOrigin:saved?'kept':seed.food&&!seed.vegetable?'pantry':'house',
+      ...(saved?.silkWrapped&&seed.vegetable?{silkWrapped:true}:{}),
       ...(seed.food?{stock:!safe,bites:safe&&Number.isFinite(saved.bites)?clamp(Math.round(saved.bites),0,seed.treat?api.economy.catalogue.find(t=>t.id===seed.treat).portions:4):4}:{}), x: 0, y: 0, vx: 0, vy: 0, angle: 0, spin: 0, touch: 0 });
   }
   function ensureTrophies() { home.possessions?.historyChanged(); save(); }
@@ -53,13 +56,13 @@ window.createByteHome = function createByteHome(api) {
     const biscuits=home.things.filter(v=>v.id.startsWith('biscuit-'));
     if(!biscuits.length||biscuits.some(v=>v.bites>0))return false;
     const shelf=api.kitchen.geometry();
-    biscuits.forEach((v,i)=>Object.assign(v,{room:5,x:world.w*(.28+i*.115),y:shelf.shelfY-v.r,bites:4,onShelf:true,stock:false,inMouth:false,vx:0,vy:0,angle:0,spin:0,contact:0}));
+    biscuits.forEach((v,i)=>Object.assign(v,{room:5,x:world.w*(.28+i*.115),y:shelf.shelfY-v.r,bites:4,onShelf:true,stock:false,unseenOrigin:'pantry',inMouth:false,vx:0,vy:0,angle:0,spin:0,contact:0}));
     save();return true;
   }
   function save() {
     if (!world.w || home.travel) return;
     const data = { room: home.room, slept: home.slept, found: home.found, stoneHome: home.stoneHome,
-      things: home.things.map(v => ({ id: v.id, room: v.room, nx: clamp(v.x / world.w, 0, 1), ny: clamp(v.y / world.h, 0, 1),...(v.food?{bites:v.bites,...(v.treat?{treat:v.treat}:{})}:{}),...(v.trophy?{trophy:true}:{}),...(v.toy?{toy:true}:{}),...(v.stored?{stored:true}:{}) })) };
+      things: home.things.map(v => ({ id: v.id, room: v.room, nx: clamp(v.x / world.w, 0, 1), ny: clamp(v.y / world.h, 0, 1),unseenOrigin:v.unseenOrigin||'kept',...(v.silkWrapped?{silkWrapped:true}:{}),...(v.food?{bites:v.bites,...(v.treat?{treat:v.treat}:{})}:{}),...(v.trophy?{trophy:true}:{}),...(v.toy?{toy:true}:{}),...(v.stored?{stored:true}:{}) })) };
     try { localStorage.setItem(key, JSON.stringify(data)); } catch (_) {}
     home.savedAt = home.time;
   }
@@ -192,6 +195,7 @@ window.createByteHome = function createByteHome(api) {
     if(home.possessions?.hitFixture(x,y))return true;
     const hit = [...home.things].reverse().find(v => !v.stored&&(!v.food||v.bites>0)&&v.room === home.room && Math.hypot(x - v.x, y + (obby.hasLaunched ? obby.cameraY : 0) - v.y) < Math.max(28, v.r + 9));
     if (!hit) return false;
+    hit.unseenOrigin='human';hit.refusedInHand=false;home.unseen?.handled(hit);
     cancel(home.possessions?.canAnswer(hit)); if (home.carried === hit) drop();
     home.possessions?.onGrab(hit);
     home.hand = { item: hit, id, dx: x - hit.x, dy: y + (obby.hasLaunched ? obby.cameraY : 0) - hit.y,
@@ -205,10 +209,12 @@ window.createByteHome = function createByteHome(api) {
     const t = performance.now(), dt = Math.max(.016, (t - hand.time) / 1000), v = hand.item;
     hand.vx = clamp((x - hand.lastX) / dt * .85, -1200, 1200); hand.vy = clamp((y - hand.lastY) / dt * .85, -1400, 1400);
     if (Math.hypot(x - hand.lastX, y - hand.lastY) > 1) hand.moved = t;
+    const movedX=x-hand.lastX,movedY=y-hand.lastY;
     hand.lastX = x; hand.lastY = y; hand.time = t;
     v.x = clamp(x - hand.dx, v.r, world.w - v.r);
     v.y = y + (obby.hasLaunched ? obby.cameraY : 0) - hand.dy;
     if (!obby.hasLaunched) v.y = clamp(v.y, v.r, world.h - v.r - 10);
+    home.unseen?.wipe(v,movedX,movedY);
     home.possessions?.onMove(v,hand);
     return true;
   }
@@ -219,6 +225,7 @@ window.createByteHome = function createByteHome(api) {
     home.hand = null; life.pointer.active = false;
     const next = cancelled ? null : portal(hand.lastX, hand.lastY);
     if (next !== null) request(next, 'visit', v);
+    home.unseen?.released(v,cancelled);
     home.possessions?.onRelease(v,hand,cancelled);
     save(); return true;
   }

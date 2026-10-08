@@ -1,11 +1,11 @@
 {
-  "version": "1.0.0",
-  "version_code": 1,
+  "version": "1.0.1",
+  "version_code": 2,
   "package": "com.spideystudios.littlebob",
   "baseline": "72cab43ca61a6b29fbdbc92118faaff18fdbd5a2",
-  "apk": "little-bob-1.0.0.apk",
+  "apk": "little-bob-1.0.1.apk",
   "bytes": 2065414,
-  "sha256": "afda01ac8b269017474d9a1d595059f512a4588570646bff107f62cb19e08ecf",
+  "sha256": "347ffe3272f745126d92e85d76b6b96f99ecdb352e4ec75ee4e2198a412ecfef",
   "runtime_assets": 154,
   "runtime_assets_sha256": {
     "backyard.js": "c3e2cb9494f1c0cc6268f21d8560e3931e44dd5d8269a6e95d242b49d1b64e9b",

@@ -4,3 +4,5 @@ android/build/
 *.jks
 *.keystore
 *.p12
+
+android/tools/__pycache__/

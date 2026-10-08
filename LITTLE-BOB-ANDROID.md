@@ -1,6 +1,6 @@
 # Little Bob · first Android delivery
 
-Version **1.0.0 (1)** · package **com.spideystudios.littlebob** · Android **8.0 / API 26 or newer**, with an up-to-date Android System WebView / Chrome.
+Version **1.0.1 (2)** · package **com.spideystudios.littlebob** · Android **8.0 / API 26 or newer**, with an up-to-date Android System WebView / Chrome.
 
 The signed installable APK and installation page are in [release/little-bob](release/little-bob/index.html). This is Sunburn XIII packaged locally, not a native engine rewrite. The XIII baseline is `72cab43ca61a6b29fbdbc92118faaff18fdbd5a2`; the release branch is `release/little-bob-android-2026-10-09`.
 
@@ -10,7 +10,7 @@ The signed installable APK and installation page are in [release/little-bob](rel
 
 The original HTML/JS/CSS game, HQ character artwork, cosmetic artwork and baked dimensional WebP world assets are bundled. Authoring files, raw world source PNGs, QA videos and historical experiments are not packaged. The identity changes are player-facing strings only; internal controller symbols and persistence keys remain unchanged.
 
-`android-compat.js` is inactive in ordinary browsers. Inside this app it connects actual Android lifecycle and SensorManager/battery data to the existing browser event vocabulary. It cancels live finger gestures on backgrounding, dispatches the existing visibility/save handlers, suspends audio, and restores foreground operation. It does not control the character, camera, ropes, economy, care or autonomy. Motion readings are real acceleration/gyroscope data, not four-edge orientation presets. A native fallback avoids duplicating valid WebView motion events.
+`android-compat.js` is inactive in ordinary browsers. Inside this app it connects actual Android lifecycle and SensorManager/battery data to the existing browser event vocabulary. It cancels live finger gestures on backgrounding, dispatches the existing visibility/save handlers, suspends audio, and restores foreground operation. It does not control the character, camera, ropes, economy, care or autonomy. Motion readings are real acceleration/gyroscope data, not four-edge orientation presets. The gyroscope mapping matches Chromium DeviceMotionEventPump (local x/y/z → alpha/beta/gamma in degrees/second), including the existing local-Z turn response. A native fallback avoids duplicating valid WebView motion events.
 
 The system camera/microphone permission callback bridges the existing `getUserMedia` request. Denial remains a real denial handled by the game. No fake camera or audio demonstration is substituted. Camera and microphone permission are requested only when the existing sensory aperture is opened. Network and vibration are normal declared permissions; no notification, location, contacts, broad storage, overlay or root permission is requested.
 

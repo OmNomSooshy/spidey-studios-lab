@@ -1,0 +1,11 @@
+{
+  "authority": "Desktop Chromium with mock bridge; compatibility-adapter simulation only, not Android runtime",
+  "checks": [
+    "XIII loads with Android adapter present",
+    "Android pause semantic stops actual update and persists garden",
+    "Resume unblocks visibility",
+    "Back closes actual shop",
+    "Same-origin reload restores garden"
+  ],
+  "errors": []
+}

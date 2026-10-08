@@ -158,7 +158,8 @@ public final class MainActivity extends Activity implements SensorEventListener 
         else if(type==Sensor.TYPE_GYROSCOPE)System.arraycopy(event.values,0,angular,0,3);
         long now=SystemClock.elapsedRealtimeNanos();if(!ready||firstGravity||now-delivered<33333333)return;
         double interval=delivered==0?33.333:(now-delivered)/1e6;delivered=now;
-        String rotation=gyro==null?"null":"{alpha:"+Math.toDegrees(angular[2])+",beta:"+Math.toDegrees(angular[0])+",gamma:"+Math.toDegrees(angular[1])+"}";
+        // Match Chromium DeviceMotionEventPump: alpha/beta/gamma are local x/y/z rates.
+        String rotation=gyro==null?"null":"{alpha:"+Math.toDegrees(angular[0])+",beta:"+Math.toDegrees(angular[1])+",gamma:"+Math.toDegrees(angular[2])+"}";
         script("motion({accelerationIncludingGravity:{x:"+acceleration[0]+",y:"+acceleration[1]+",z:"+acceleration[2]+"},acceleration:{x:"+linear[0]+",y:"+linear[1]+",z:"+linear[2]+"},rotationRate:"+rotation+",interval:"+interval+"})");
     }
     public final class Bridge {

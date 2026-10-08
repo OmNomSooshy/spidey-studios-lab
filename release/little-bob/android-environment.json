@@ -1,0 +1,23 @@
+{
+  "status": "APK_BUILD_VERIFIED_ANDROID_RUNTIME_VALIDATION_BLOCKED",
+  "apk": "little-bob-1.0.1.apk",
+  "device": "No physical Android handset attached",
+  "emulator": "Official Android 15 Google APIs x86_64 image / Android Emulator 37.2.12",
+  "host_acceleration": "No /dev/kvm or available hardware virtualization; software TCG CPU and SwiftShader GPU",
+  "attempts": [
+    "First boot progressed through package scanning/dex verification but SystemServer watchdog terminated Android before installation/launch could be verified.",
+    "One retry on a smaller 720x1600 display again lost Android package/activity services during startup."
+  ],
+  "install_result": "Not verified; emulator package service failed during framework startup, not an observed game crash.",
+  "cold_launch_result": "Not verified; Android activity service unavailable.",
+  "gameplay_result": "Android WebView runtime probe was not run because Android framework never became stable.",
+  "performance_result": "No handset FPS or memory claim. Emulator timing is not handset evidence.",
+  "completed_checks": [
+    "APK compiled and release-signed",
+    "Signature/ZIP/alignment/package metadata checks",
+    "154 packaged asset byte comparisons",
+    "Original controller AST/artwork/CSS continuity audit",
+    "Browser compatibility-adapter simulation"
+  ],
+  "handset_validation_pending": true
+}

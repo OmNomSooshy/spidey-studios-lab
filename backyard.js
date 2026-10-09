@@ -23,7 +23,7 @@ window.createByteBackyard = function(api) {
   const inverse=(x,y)=>({x:(x/.8+y/.42)/2,y:(y/.42-x/.8)/2});
   function project(x,y,z=0){const p=iso(x,y);return{x:p.x-state.camera.x+world.w*.5,y:p.y-z-state.camera.y+world.h*.52};}
   function unproject(x,y,z=0){return inverse(x-world.w*.5+state.camera.x,y-world.h*.52+state.camera.y+z);}
-  const playground=window.createBytePlayground({actor,state,project,unproject,voice:api.voice});state.playground=playground;
+  const playground=window.createBytePlayground({actor,state,project,unproject,voice:api.voice,groundForce:()=>api.earth.enabled?inverse(api.earth.x*.065,api.earth.y*.065):{x:0,y:0}});state.playground=playground;
   function save(){try{localStorage.setItem(key,JSON.stringify({active:state.active,actor:{x:actor.x,y:actor.y,z:actor.z},camera:state.camera,visits:state.visits,
     items:state.items.map(({id,x,y,z})=>({id,x,y,z})),flowers:state.flowers.map(({stage,water,color,shown})=>({stage,water,color,shown})),rope:state.rope.active&&state.rope.planted?state.rope:null}))}catch(_){} }
   function cameraBounds(){state.camera.x=clamp(state.camera.x,-960,maxX*.8);state.camera.y=clamp(state.camera.y,60,(maxX+maxY)*.42);}

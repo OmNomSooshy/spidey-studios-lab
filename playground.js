@@ -1,6 +1,6 @@
 /* XIV: bounded surfaces and one pendulum, sharing the backyard's actual bodies.
    No animation owns travel. The renderer consumes these contact/velocity states. */
-window.createBytePlayground=function({actor,state,project,unproject,voice}){
+window.createBytePlayground=function({actor,state,project,unproject,voice,groundForce}){
  const bounds={x:2200,y:1200},tower={x:1610,y:370},swing={x:1770,y:730,z:205,length:160,theta:0,omega:0,rider:false,hand:false},bounce={x:2040,y:940,r:64,z:20,compression:0,velocity:0},stats={landings:0,slides:0,boards:0,bounces:0,autonomous:0};
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));let slideBody=null;
  function surface(x,y){if(y>=315&&y<=425){
@@ -35,7 +35,7 @@ window.createBytePlayground=function({actor,state,project,unproject,voice}){
  function move(x,y){const p=unproject(x,y,45);const now=performance.now(),oldTheta=swing.theta;swing.theta=clamp(Math.asin(clamp((p.x-swing.x)/swing.length,-.94,.94)),-1.23,1.23);swing.flick=swing.lastInput?clamp((swing.theta-oldTheta)/Math.max(.02,(now-swing.lastInput)/1000),-4,4):0;swing.lastInput=now;swing.omega=0;}
  function end(){swing.hand=false;swing.omega=performance.now()-(swing.lastInput||0)<160?(swing.flick||0):0;}
  function update(dt){bounce.velocity+=(-bounce.compression*95-bounce.velocity*12)*dt;bounce.compression=clamp(bounce.compression+bounce.velocity*dt,-2,12);
-   if(!swing.hand){swing.omega+=(-850/swing.length*Math.sin(swing.theta)-swing.omega*.12)*dt;if(swing.rider&&!state.hand&&!state.rope.active)swing.omega+=Math.sin(swing.theta)*dt*1.2;swing.theta+=swing.omega*dt;if(Math.abs(swing.theta)>1.26){swing.theta=clamp(swing.theta,-1.26,1.26);swing.omega*=-.4;}}
+   if(!swing.hand){swing.omega+=((-850*Math.sin(swing.theta)+groundForce().x*Math.cos(swing.theta))/swing.length-swing.omega*.12)*dt;if(swing.rider&&!state.hand&&!state.rope.active)swing.omega+=Math.sin(swing.theta)*dt*1.2;swing.theta+=swing.omega*dt;if(Math.abs(swing.theta)>1.26){swing.theta=clamp(swing.theta,-1.26,1.26);swing.omega*=-.4;}}
    const p=seat();if(!swing.rider&&!actor.grabbed&&!state.rope.active&&actor.vz<=100&&Math.hypot(actor.x-p.x,actor.y-p.y)<24&&Math.abs(actor.z-p.z)<12){swing.rider=true;swing.omega+=actor.vx/(swing.length*Math.max(.4,Math.cos(swing.theta)));stats.boards++;actor.target=null;actor.pose='satisfied';actor.poseTime=6;state.playgroundIntent=null;}
    if(swing.rider){if(actor.grabbed||state.rope.active){release();return;}Object.assign(actor,{x:p.x,y:p.y,z:p.z,vx:Math.cos(swing.theta)*swing.length*swing.omega,vy:0,vz:Math.sin(swing.theta)*swing.length*swing.omega,angle:0});}
    if(surface(actor.x,actor.y).kind!=='slide')slideBody=null;

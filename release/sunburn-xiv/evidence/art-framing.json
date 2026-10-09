@@ -1,0 +1,76 @@
+{
+  "status": "PASS",
+  "method": "Rendered alpha-boundary framing, plus metadata agreement. Runtime captures separately inspect actual placement.",
+  "assets": [
+    {
+      "name": "play-structure",
+      "pixels": [
+        912,
+        672
+      ],
+      "visibleBounds": [
+        117,
+        32,
+        867,
+        548
+      ],
+      "minimumTransparentMargin": 32
+    },
+    {
+      "name": "play-swing",
+      "pixels": [
+        396,
+        648
+      ],
+      "visibleBounds": [
+        78,
+        25,
+        318,
+        386
+      ],
+      "minimumTransparentMargin": 25
+    },
+    {
+      "name": "play-seat",
+      "pixels": [
+        144,
+        108
+      ],
+      "visibleBounds": [
+        14,
+        14,
+        130,
+        85
+      ],
+      "minimumTransparentMargin": 14
+    },
+    {
+      "name": "play-bounce",
+      "pixels": [
+        252,
+        192
+      ],
+      "visibleBounds": [
+        37,
+        16,
+        215,
+        139
+      ],
+      "minimumTransparentMargin": 16
+    },
+    {
+      "name": "play-meadow",
+      "pixels": [
+        1536,
+        922
+      ],
+      "visibleBounds": [
+        60,
+        65,
+        1476,
+        838
+      ],
+      "minimumTransparentMargin": 60
+    }
+  ]
+}

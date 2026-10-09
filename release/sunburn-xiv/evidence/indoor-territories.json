@@ -1,0 +1,15 @@
+{
+  "thrown": {
+    "vx": 340,
+    "vy": -340,
+    "stored": false,
+    "journey": null
+  },
+  "physicalTrunkDeposit": true,
+  "storedReload": true,
+  "uiRetrieval": true,
+  "physicalLadderCarry": true,
+  "loftReload": true,
+  "errors": [],
+  "method": "Explicit initial loose-object/Byte placement separates pickup from furniture and other actors; competing autonomous opportunities suppressed. All gestures trusted touch; all release, storage, carry/navigation and persistence controllers original, travel at native time."
+}

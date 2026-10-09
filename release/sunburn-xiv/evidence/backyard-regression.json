@@ -1,0 +1,317 @@
+{
+  "results": [
+    {
+      "name": "Independent pan 320x568",
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "camera": {
+        "x": 6,
+        "y": 482.63999938964844
+      }
+    },
+    {
+      "name": "Independent pan 360x800",
+      "viewport": {
+        "width": 360,
+        "height": 800
+      },
+      "camera": {
+        "x": 6,
+        "y": 594
+      }
+    },
+    {
+      "name": "Independent pan 412x824",
+      "viewport": {
+        "width": 412,
+        "height": 824
+      },
+      "camera": {
+        "x": 6,
+        "y": 605.5199890136719
+      }
+    },
+    {
+      "name": "Independent pan 430x932",
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "camera": {
+        "x": 6,
+        "y": 657.3599853515625
+      }
+    },
+    {
+      "name": "Independent pan 844x390",
+      "viewport": {
+        "width": 844,
+        "height": 390
+      },
+      "camera": {
+        "x": 6,
+        "y": 379.91998291015625
+      }
+    },
+    {
+      "name": "Actual spool/plant/tap/reload and isolated rope laws",
+      "planted": {
+        "active": true,
+        "planted": true,
+        "x": 257.1889717465355,
+        "y": 135.19197772798083,
+        "z": 0,
+        "length": 126.07345764216417
+      },
+      "anchored": {
+        "r": {
+          "active": true,
+          "planted": true,
+          "x": 257.1889717465355,
+          "y": 135.19197772798083,
+          "z": 0,
+          "length": 126.07345764216417
+        },
+        "actor": {
+          "x": 180,
+          "y": 250,
+          "z": 0,
+          "vx": 0,
+          "vy": 0,
+          "vz": 0,
+          "angle": 0,
+          "spin": 0,
+          "squash": 0,
+          "facing": 1,
+          "frame": 0,
+          "clock": 0,
+          "target": null,
+          "grabbed": false,
+          "carry": null,
+          "pose": null,
+          "poseTime": 0
+        },
+        "p": {
+          "x": 367.59759521484375,
+          "y": 383.2799987792969
+        }
+      },
+      "laws": {
+        "before": {
+          "x": 500,
+          "y": 500,
+          "z": 50,
+          "vx": 90,
+          "vy": -55,
+          "vz": 25
+        },
+        "slack": {
+          "x": 500,
+          "y": 500,
+          "z": 50,
+          "vx": 90,
+          "vy": -55,
+          "vz": 25
+        },
+        "taut": {
+          "x": 651.6744137803398,
+          "y": 509.3588507514248,
+          "z": 0,
+          "vx": 90,
+          "vy": -55,
+          "vz": 25
+        },
+        "release": {
+          "vx": 90,
+          "vy": -55,
+          "vz": 25
+        }
+      },
+      "fixture": "Slack/taut velocity comparison uses explicit physical starting states and direct solver call after real touch lifecycle."
+    },
+    {
+      "name": "Actual offscreen can retrieval, watering, bloom and voluntary invitation",
+      "before": {
+        "can": {
+          "id": "can",
+          "kind": "can",
+          "x": 255,
+          "y": 265,
+          "r": 22,
+          "z": 0,
+          "vx": 0,
+          "vy": 0,
+          "vz": 0,
+          "angle": 0
+        },
+        "flower": {
+          "id": 1,
+          "x": 450,
+          "y": 370,
+          "stage": 1,
+          "water": 0,
+          "shown": false,
+          "color": "#ef8da4"
+        },
+        "actor": {
+          "x": 180,
+          "y": 250,
+          "z": 0,
+          "vx": 0,
+          "vy": 0,
+          "vz": 0,
+          "angle": 0,
+          "spin": 0,
+          "squash": 0,
+          "facing": 1,
+          "frame": 0,
+          "clock": 0,
+          "target": null,
+          "grabbed": false,
+          "carry": null,
+          "pose": null,
+          "poseTime": 0
+        },
+        "camera": {
+          "x": 0,
+          "y": 882
+        }
+      },
+      "after": {
+        "can": {
+          "id": "can",
+          "kind": "can",
+          "x": 421.1586552239168,
+          "y": 366.7643657319543,
+          "r": 22,
+          "z": 37,
+          "vx": 4.594245630778372e-12,
+          "vy": 3.0704895573297265e-12,
+          "vz": 0,
+          "angle": 0
+        },
+        "flower": {
+          "id": 1,
+          "x": 450,
+          "y": 370,
+          "stage": 3,
+          "water": 0,
+          "shown": true,
+          "color": "#ef8da4"
+        },
+        "actor": {
+          "x": 403.1586552239168,
+          "y": 368.7643657319543,
+          "z": 0,
+          "vx": 4.594245630778372e-12,
+          "vy": 3.0704895573297265e-12,
+          "vz": 0,
+          "angle": 0,
+          "spin": 0,
+          "squash": 0,
+          "facing": 1,
+          "frame": 3,
+          "clock": 2.5918999999999985,
+          "target": null,
+          "grabbed": false,
+          "carry": null,
+          "pose": "proud",
+          "poseTime": 4,
+          "detour": null
+        },
+        "invitation": {
+          "x": 403.1586552239168,
+          "y": 368.7643657319543,
+          "flower": 1,
+          "born": 8.628400000000031
+        },
+        "camera": {
+          "x": 0,
+          "y": 882
+        }
+      },
+      "fixture": "Only a planted seed and distant camera are set; no actor relocation, time stepping, pose or water-growth writes."
+    },
+    {
+      "name": "Actual body carry/drop onto spring mushroom",
+      "body": {
+        "x": 854.9999709356399,
+        "y": 454.9999709356399,
+        "z": 23.041774000000117,
+        "vx": 0,
+        "vy": 0,
+        "vz": 401.7799999999998,
+        "angle": 0,
+        "spin": 0,
+        "squash": 0.28678509991045703,
+        "facing": 1,
+        "frame": 0,
+        "clock": 0,
+        "target": null,
+        "grabbed": false,
+        "carry": null,
+        "pose": null,
+        "poseTime": 0
+      },
+      "fixture": "Initial actor beside mushroom and camera above it; contact/launch are native physics after trusted carry/drop."
+    },
+    {
+      "name": "Outdoor observation cannot fabricate/observe an XI indoor trace",
+      "xi": {
+        "seen": false,
+        "free": false,
+        "away": true
+      }
+    },
+    {
+      "name": "Autonomous walking actually leaves the viewport",
+      "origin": {
+        "x": 180,
+        "y": 250,
+        "camera": {
+          "x": -64,
+          "y": 210
+        }
+      },
+      "distant": {
+        "actor": {
+          "x": 519.7733462194398,
+          "y": 285.45461004028914,
+          "z": 0,
+          "vx": 91.7210398500259,
+          "vy": 9.570891114785338,
+          "vz": 0,
+          "angle": 0,
+          "spin": 0,
+          "squash": 0,
+          "facing": 1,
+          "frame": 0,
+          "clock": 3.480499999999998,
+          "target": {
+            "x": 1330,
+            "y": 370,
+            "reason": "playground"
+          },
+          "grabbed": false,
+          "carry": null,
+          "pose": null,
+          "poseTime": 0,
+          "detour": null
+        },
+        "camera": {
+          "x": -64,
+          "y": 210
+        }
+      },
+      "continued": {
+        "x": 699.2115670196633,
+        "y": 304.17859829770396
+      },
+      "fixture": "Opportunity selection is fixtured to a wandering turn; full real travel, no body coordinate writes."
+    }
+  ],
+  "errors": [],
+  "method": "Trusted CDP touch/native RAF; actor/plant/sensor starting arrangements explicitly fixtured where identified. Not physical handset evidence."
+}

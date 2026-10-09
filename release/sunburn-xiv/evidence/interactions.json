@@ -1,0 +1,1310 @@
+{
+  "method": "Mobile-size Chromium, trusted CDP touch, native RAF. Camera/starting-body fixtures only; actual paths, contacts and momentum sampled. Not Android handset acceptance.",
+  "checks": [
+    {
+      "name": "Continuous old yard → ramp → intermediate landing → elevated deck",
+      "before": {
+        "actor": {
+          "x": 1170,
+          "y": 370,
+          "z": 0,
+          "vx": 0,
+          "vy": 0,
+          "vz": 0,
+          "target": null
+        },
+        "camera": {
+          "x": 800,
+          "y": 706.0799999999999
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 0,
+          "boards": 0,
+          "bounces": 0,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0,
+          "omega": 0,
+          "rider": false,
+          "hand": false
+        }
+      },
+      "top": {
+        "actor": {
+          "x": 1584.631244902009,
+          "y": 370,
+          "z": 130,
+          "vx": 38.52037301873713,
+          "vy": 0,
+          "vz": 0,
+          "target": null
+        },
+        "camera": {
+          "x": 800,
+          "y": 706.0799999999999
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 0,
+          "boards": 0,
+          "bounces": 0,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0,
+          "omega": 0,
+          "rider": false,
+          "hand": false
+        },
+        "route": []
+      },
+      "pathSamples": 21
+    },
+    {
+      "name": "Slide uses actual slope/height/momentum, not a top-bottom teleport",
+      "bottom": {
+        "actor": {
+          "x": 1998.428101792575,
+          "y": 370,
+          "z": 1.4020722472195044,
+          "vx": 291.3299916946034,
+          "vy": 0,
+          "vz": -25.651461618012636,
+          "target": null
+        },
+        "camera": {
+          "x": 1024,
+          "y": 773.68
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 0,
+          "bounces": 0,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0,
+          "omega": 0,
+          "rider": false,
+          "hand": false
+        },
+        "route": []
+      },
+      "slidePath": [
+        {
+          "actor": {
+            "x": 1597.6485586653303,
+            "y": 370,
+            "z": 130,
+            "vx": 74.99433309853815,
+            "vy": 0,
+            "vz": 0,
+            "target": {
+              "x": 1830,
+              "y": 370,
+              "reason": "call"
+            }
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 0,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1608.8071538462832,
+            "y": 370,
+            "z": 130,
+            "vx": 98.10202658967161,
+            "vy": 0,
+            "vz": 0,
+            "target": {
+              "x": 1830,
+              "y": 370,
+              "reason": "call"
+            }
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 0,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1619.6466310852027,
+            "y": 370,
+            "z": 130,
+            "vx": 104.42628704067432,
+            "vy": 0,
+            "vz": 0,
+            "target": {
+              "x": 1830,
+              "y": 370,
+              "reason": "call"
+            }
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 0,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1630.8437427842505,
+            "y": 370,
+            "z": 130,
+            "vx": 106.66111546527009,
+            "vy": 0,
+            "vz": 0,
+            "target": {
+              "x": 1830,
+              "y": 370,
+              "reason": "call"
+            }
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 0,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1644.087656666486,
+            "y": 370,
+            "z": 130,
+            "vx": 107.51917186319827,
+            "vy": 0,
+            "vz": 0,
+            "target": {
+              "x": 1830,
+              "y": 370,
+              "reason": "call"
+            }
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 0,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1655.4830172669333,
+            "y": 370,
+            "z": 130,
+            "vx": 107.7526271395057,
+            "vy": 0,
+            "vz": 0,
+            "target": {
+              "x": 1830,
+              "y": 370,
+              "reason": "call"
+            }
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 0,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1666.8923121224975,
+            "y": 370,
+            "z": 130,
+            "vx": 107.83656935694854,
+            "vy": 0,
+            "vz": 0,
+            "target": {
+              "x": 1830,
+              "y": 370,
+              "reason": "call"
+            }
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 0,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1680.2013686258747,
+            "y": 370,
+            "z": 130,
+            "vx": 107.86981082495348,
+            "vy": 0,
+            "vz": 0,
+            "target": {
+              "x": 1830,
+              "y": 370,
+              "reason": "call"
+            }
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 0,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1691.6176922776704,
+            "y": 370,
+            "z": 129.2489285853673,
+            "vx": 118.30751630360436,
+            "vy": 0,
+            "vz": -55.29442845620071,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1706.8490922575872,
+            "y": 370,
+            "z": 122.17720716612021,
+            "vx": 146.41077905851208,
+            "vy": 0,
+            "vz": -68.4292984994467,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1722.439630546111,
+            "y": 370,
+            "z": 114.9387429607342,
+            "vx": 168.92655003470497,
+            "vy": 0,
+            "vz": -78.95269317696109,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1737.1260107730138,
+            "y": 370,
+            "z": 108.120066426815,
+            "vx": 186.6658981441581,
+            "vy": 0,
+            "vz": -87.24717874458086,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1763.2486098865684,
+            "y": 370,
+            "z": 95.99171683837896,
+            "vx": 212.88784765750637,
+            "vy": 0,
+            "vz": -99.50325304078498,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1785.3183399113461,
+            "y": 370,
+            "z": 85.74505646973216,
+            "vx": 231.40721133490263,
+            "vy": 0,
+            "vz": -108.15915778322419,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1809.193060683885,
+            "y": 370,
+            "z": 74.66036468248194,
+            "vx": 248.81324075848133,
+            "vy": 0,
+            "vz": -116.29469285122896,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1839.1661301657934,
+            "y": 370,
+            "z": 60.74429670873876,
+            "vx": 267.79186518342635,
+            "vy": 0,
+            "vz": -125.16024842021297,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1866.6151148418842,
+            "y": 370,
+            "z": 48.00012525198235,
+            "vx": 283.0251499123264,
+            "vy": 0,
+            "vz": -132.28525450611522,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1900.4564331930947,
+            "y": 370,
+            "z": 32.28808458892034,
+            "vx": 299.61780407426556,
+            "vy": 0,
+            "vz": -140.04061999015076,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1930.9792879111058,
+            "y": 370,
+            "z": 18.11675918412947,
+            "vx": 312.9232148317732,
+            "vy": 0,
+            "vz": -146.2595360437613,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1968.2010744792642,
+            "y": 370,
+            "z": 0.8352154203416181,
+            "vx": 327.4307612737616,
+            "vy": 0,
+            "vz": -153.04032734069102,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        },
+        {
+          "actor": {
+            "x": 1998.428101792575,
+            "y": 370,
+            "z": 1.4020722472195044,
+            "vx": 291.3299916946034,
+            "vy": 0,
+            "vz": -25.651461618012636,
+            "target": null
+          },
+          "camera": {
+            "x": 1024,
+            "y": 773.68
+          },
+          "stats": {
+            "landings": 0,
+            "slides": 1,
+            "boards": 0,
+            "bounces": 0,
+            "autonomous": 0
+          },
+          "swing": {
+            "x": 1770,
+            "y": 730,
+            "z": 205,
+            "length": 160,
+            "theta": 0,
+            "omega": 0,
+            "rider": false,
+            "hand": false
+          },
+          "route": []
+        }
+      ]
+    },
+    {
+      "name": "Reachable swing boarding + pendulum movement",
+      "boarded": {
+        "actor": {
+          "x": 1770,
+          "y": 730,
+          "z": 45,
+          "vx": 85.13009911412004,
+          "vy": 0,
+          "vz": 0,
+          "target": null
+        },
+        "camera": {
+          "x": 832,
+          "y": 960.28
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 0,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0,
+          "omega": 0.5320631194632502,
+          "rider": true,
+          "hand": false
+        },
+        "route": []
+      },
+      "swinging": {
+        "actor": {
+          "x": 1734.759302171265,
+          "y": 730,
+          "z": 48.92920447263751,
+          "vx": -18.271127592911,
+          "vy": 0,
+          "vz": 4.12561033162127,
+          "target": null
+        },
+        "camera": {
+          "x": 832,
+          "y": 960.28
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 0,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": -0.2220752280009272,
+          "omega": -0.11706948459622407,
+          "rider": true,
+          "hand": false
+        },
+        "route": []
+      }
+    },
+    {
+      "name": "Bob grab interrupts swing; body remains physically throwable",
+      "after": {
+        "actor": {
+          "x": 1678.7295238106105,
+          "y": 786.484069431179,
+          "z": 51.128956423822586,
+          "vx": 0,
+          "vy": 0,
+          "vz": 0,
+          "target": null
+        },
+        "camera": {
+          "x": 832,
+          "y": 960.28
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 0,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0.07054597784954066,
+          "omega": 0.4684544314308237,
+          "rider": false,
+          "hand": false
+        },
+        "route": null
+      }
+    },
+    {
+      "name": "New spring surface repeats actual physical contact bounces",
+      "bounced": {
+        "actor": {
+          "x": 2063.078410890227,
+          "y": 892.0214820639646,
+          "z": 22,
+          "vx": -12.508991136401333,
+          "vy": 6.447927611348422,
+          "vz": 540,
+          "target": {
+            "x": 2016.1904907226562,
+            "y": 916.1904907226562,
+            "reason": "call"
+          }
+        },
+        "camera": {
+          "x": 880,
+          "y": 1201.8799999999999
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 3,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0.07916780243237052,
+          "omega": 0.3778909658858728,
+          "rider": false,
+          "hand": false
+        },
+        "route": []
+      }
+    },
+    {
+      "name": "Expanded camera remains independent while equipment stays in world",
+      "before": {
+        "actor": {
+          "x": 2059.120115030876,
+          "y": 894.0618388670903,
+          "z": 94.16259900000033,
+          "vx": 0,
+          "vy": 0,
+          "vz": 413.6049999999994,
+          "target": null
+        },
+        "camera": {
+          "x": 880,
+          "y": 1201.8799999999999
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 3,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0.1285553935124772,
+          "omega": 0.2916398209012315,
+          "rider": false,
+          "hand": false
+        },
+        "route": []
+      },
+      "after": {
+        "actor": {
+          "x": 2059.120115030876,
+          "y": 894.0618388670903,
+          "z": 114.37825850000057,
+          "vx": 0,
+          "vy": 0,
+          "vz": 370.0849999999988,
+          "target": null
+        },
+        "camera": {
+          "x": 880,
+          "y": 1428
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 4,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": -0.11375611198875073,
+          "omega": -0.27966014947164924,
+          "rider": false,
+          "hand": false
+        },
+        "route": []
+      }
+    },
+    {
+      "name": "New-world position/camera survive reload with original storage key",
+      "persisted": {
+        "actor": {
+          "x": 2059.120115030876,
+          "y": 894.0618388670903,
+          "z": 114.37825850000057,
+          "vx": 0,
+          "vy": 0,
+          "vz": 370.0849999999988,
+          "target": null
+        },
+        "camera": {
+          "x": 880,
+          "y": 1428
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 4,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": -0.11375611198875073,
+          "omega": -0.27966014947164924,
+          "rider": false,
+          "hand": false
+        },
+        "route": []
+      },
+      "restored": {
+        "actor": {
+          "x": 2059.120115030876,
+          "y": 894.0618388670903,
+          "z": 113.51931800000084,
+          "vx": 0,
+          "vy": 0,
+          "vz": -122.99499999999993,
+          "target": null
+        },
+        "camera": {
+          "x": 880,
+          "y": 1428
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 0,
+          "boards": 0,
+          "bounces": 0,
+          "autonomous": 0
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0,
+          "omega": 0,
+          "rider": false,
+          "hand": false
+        }
+      }
+    },
+    {
+      "name": "Existing opportunity arbitration can autonomously climb then slide",
+      "after": {
+        "actor": {
+          "x": 1691.5485640831616,
+          "y": 370,
+          "z": 129.2810238185321,
+          "vx": 118.36996571028408,
+          "vy": 0,
+          "vz": -55.3258289756782,
+          "target": null
+        },
+        "camera": {
+          "x": 960,
+          "y": 750.0799999999999
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 0,
+          "bounces": 0,
+          "autonomous": 1
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0,
+          "omega": 0,
+          "rider": false,
+          "hand": false
+        },
+        "route": []
+      }
+    },
+    {
+      "name": "Native autonomous opportunity uses swing",
+      "after": {
+        "actor": {
+          "x": 1770,
+          "y": 730,
+          "z": 45,
+          "vx": 85.12596590818548,
+          "vy": 0,
+          "vz": 0,
+          "target": null
+        },
+        "camera": {
+          "x": 800,
+          "y": 978.48
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 0,
+          "autonomous": 2
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0,
+          "omega": 0.5320372869261593,
+          "rider": true,
+          "hand": false
+        },
+        "route": []
+      }
+    },
+    {
+      "name": "Native autonomous opportunity uses bounce",
+      "after": {
+        "actor": {
+          "x": 1976.0122302658215,
+          "y": 940,
+          "z": 22,
+          "vx": 75.0338049971087,
+          "vy": 0,
+          "vz": 540,
+          "target": {
+            "x": 2040,
+            "y": 940,
+            "reason": "playground"
+          }
+        },
+        "camera": {
+          "x": 912,
+          "y": 1213.6799999999998
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 1,
+          "autonomous": 3
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0.21731903035390027,
+          "omega": 0.16515685504009125,
+          "rider": false,
+          "hand": false
+        },
+        "route": []
+      }
+    },
+    {
+      "name": "Actual playground → original garden travel without camera leash",
+      "leaving": {
+        "actor": {
+          "x": 1993.4996469205898,
+          "y": 940,
+          "z": 120.02960850000001,
+          "vx": 77.93799620667792,
+          "vy": 0,
+          "vz": 358.1,
+          "target": {
+            "x": 2040,
+            "y": 940,
+            "reason": "playground"
+          }
+        },
+        "camera": {
+          "x": 520,
+          "y": 542.28
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 1,
+          "autonomous": 3
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0.2227967090335344,
+          "omega": -0.08912186686151952,
+          "rider": false,
+          "hand": false
+        },
+        "route": []
+      },
+      "returned": {
+        "actor": {
+          "x": 1009.1974475243138,
+          "y": 354.7695459812516,
+          "z": 0,
+          "vx": -19.814133201664156,
+          "vy": -10.27505517270473,
+          "vz": 0,
+          "target": null
+        },
+        "camera": {
+          "x": 520,
+          "y": 542.28
+        },
+        "stats": {
+          "landings": 0,
+          "slides": 1,
+          "boards": 1,
+          "bounces": 4,
+          "autonomous": 3
+        },
+        "swing": {
+          "x": 1770,
+          "y": 730,
+          "z": 205,
+          "length": 160,
+          "theta": 0.081445184369382,
+          "omega": 0.057117165052096866,
+          "rider": false,
+          "hand": false
+        },
+        "route": []
+      },
+      "pathSamples": 86
+    },
+    {
+      "name": "Physical return through existing rear passage to kitchen",
+      "room": 5
+    }
+  ],
+  "errors": []
+}

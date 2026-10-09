@@ -1,0 +1,61 @@
+{
+  "method": "Serial native RAF, 6× CPU-throttled software Chromium, DPR2. Equipment starting-state fixtures, actual running contacts thereafter. Heap/RGBA accounting is not Android GPU/process memory. No target-handset inference.",
+  "results": [
+    {
+      "mode": "old-garden",
+      "cpu": 1,
+      "software": true,
+      "dpr": 2,
+      "fps": 56.224778199295685,
+      "p95FrameMs": 16.700000000000728,
+      "maxInputMs": 86.30000000074506,
+      "exitMs": 162,
+      "cache": {
+        "bytes": 6881280,
+        "builds": 1,
+        "textureBytes": 792000,
+        "textures": 5,
+        "foregroundPaints": 124,
+        "mountedSprites": 18,
+        "spriteBytes": 3491264
+      },
+      "art": {
+        "decodedBytes": 22894744,
+        "assets": 63,
+        "roomCacheBytes": 763848,
+        "foodCacheBytes": 184320
+      },
+      "travel": 142.1369930973774,
+      "heapBytes": 4771005,
+      "errors": []
+    },
+    {
+      "mode": "pan",
+      "cpu": 1,
+      "software": true,
+      "dpr": 2,
+      "fps": 47.56329577052539,
+      "p95FrameMs": 33.399999999999636,
+      "maxInputMs": 353.09999999962747,
+      "exitMs": 46,
+      "cache": {
+        "bytes": 6881280,
+        "builds": 1,
+        "textureBytes": 792000,
+        "textures": 5,
+        "foregroundPaints": 90,
+        "mountedSprites": 18,
+        "spriteBytes": 3491264
+      },
+      "art": {
+        "decodedBytes": 22894744,
+        "assets": 63,
+        "roomCacheBytes": 763848,
+        "foodCacheBytes": 184320
+      },
+      "travel": 0,
+      "heapBytes": 4554644,
+      "errors": []
+    }
+  ]
+}

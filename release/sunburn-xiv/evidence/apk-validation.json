@@ -1,0 +1,31 @@
+{
+  "frozen": {
+    "bytes": 2065414,
+    "sha256": "347ffe3272f745126d92e85d76b6b96f99ecdb352e4ec75ee4e2198a412ecfef",
+    "certificateSha256": "0b01961f93dbc64519b0688b63606c285289c00847cd15419bb9fcd6b3ace801",
+    "manifest": "package: name='com.spideystudios.littlebob' versionCode='2' versionName='1.0.1' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'",
+    "assets": 154
+  },
+  "candidate": {
+    "bytes": 2266711,
+    "sha256": "b987417f8df0948158f8c39bc1e3eb8c160a2f6185f5721d8be606a14c4cd879",
+    "certificateSha256": "0b01961f93dbc64519b0688b63606c285289c00847cd15419bb9fcd6b3ace801",
+    "manifest": "package: name='com.spideystudios.littlebob' versionCode='3' versionName='1.1.0' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'",
+    "assets": 161
+  },
+  "recovery": {
+    "bytes": 2065414,
+    "sha256": "b1f01bd331baed2ff3ad93aabaaa940ea5c630e970b6552f2bb317e39bb51db3",
+    "certificateSha256": "0b01961f93dbc64519b0688b63606c285289c00847cd15419bb9fcd6b3ace801",
+    "manifest": "package: name='com.spideystudios.littlebob' versionCode='3' versionName='1.0.1' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'",
+    "assets": 154
+  },
+  "validation": {
+    "signatureAndPackageCompatible": true,
+    "candidateAssetsMatchCurrentCheckout": true,
+    "recoveryGameByteIdentical": true,
+    "frozenFallbackUnchanged": true,
+    "ordinaryUpdateExpected": "Candidate/recovery code3 over frozen code2; same-code candidate/recovery swaps use the same certificate. Android installation and save continuity still require the physical handset.",
+    "noAttachedAndroidDevice": true
+  }
+}

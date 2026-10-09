@@ -1,0 +1,125 @@
+{
+  "before": {
+    "bounces": [
+      {
+        "t": 5785.1,
+        "x": 854.9999709356399,
+        "y": 454.9999709356399,
+        "vz": 430
+      },
+      {
+        "t": 7218.4,
+        "x": 854.9999709356399,
+        "y": 454.9999709356399,
+        "vz": 430
+      },
+      {
+        "t": 8285,
+        "x": 854.9999709356399,
+        "y": 454.9999709356399,
+        "vz": 430
+      },
+      {
+        "t": 9351.6,
+        "x": 854.9999709356399,
+        "y": 454.9999709356399,
+        "vz": 430
+      }
+    ],
+    "actor": {
+      "x": 854.9999709356399,
+      "y": 454.9999709356399,
+      "z": 91.22698250000029,
+      "vx": 0,
+      "vy": 0,
+      "vz": 223.19499999999914,
+      "angle": 0,
+      "spin": 0,
+      "squash": 0.08129895432040843,
+      "facing": 1,
+      "frame": 0,
+      "clock": 0,
+      "target": null,
+      "grabbed": false,
+      "carry": null,
+      "pose": null,
+      "poseTime": 0
+    },
+    "camera": {
+      "x": 320,
+      "y": 566.68
+    }
+  },
+  "after": {
+    "bounces": [
+      {
+        "t": 5785.1,
+        "x": 854.9999709356399,
+        "y": 454.9999709356399,
+        "vz": 430
+      },
+      {
+        "t": 7218.4,
+        "x": 854.9999709356399,
+        "y": 454.9999709356399,
+        "vz": 430
+      },
+      {
+        "t": 8285,
+        "x": 854.9999709356399,
+        "y": 454.9999709356399,
+        "vz": 430
+      },
+      {
+        "t": 9351.6,
+        "x": 854.9999709356399,
+        "y": 454.9999709356399,
+        "vz": 430
+      },
+      {
+        "t": 10768.3,
+        "x": 854.9999709356399,
+        "y": 454.9999709356399,
+        "vz": 430
+      },
+      {
+        "t": 11801.5,
+        "x": 839.6453416780963,
+        "y": 454.99997450582055,
+        "vz": 430
+      },
+      {
+        "t": 12834.9,
+        "x": 815.0528510423931,
+        "y": 454.99998022394186,
+        "vz": 430
+      }
+    ],
+    "actor": {
+      "x": 729.207175066776,
+      "y": 455.00000018434355,
+      "z": 0,
+      "vx": -0.0307748765907119,
+      "vy": 7.155618315195591e-9,
+      "vz": 0,
+      "angle": 0,
+      "spin": 0,
+      "squash": 0.000016642749622761255,
+      "facing": -1,
+      "frame": 3,
+      "clock": 0.36649999999999827,
+      "target": null,
+      "grabbed": false,
+      "carry": null,
+      "pose": "curious",
+      "poseTime": 0.6500999999999997,
+      "detour": null
+    },
+    "camera": {
+      "x": 320,
+      "y": 566.68
+    }
+  },
+  "errors": [],
+  "method": "Initial placement beside mushroom/camera and competing-opportunity suppression only. Trusted carry/drop, native repeated contacts, then real background tap and actual physical travel. Recording is interaction evidence, not a performance sample. The original test assumed at most one further mushroom contact after a midair call; frozen 1.0.1 also fails that assumption. This checks finite physical travel to the call and no continued bounce there, without changing the mushroom/controller."
+}

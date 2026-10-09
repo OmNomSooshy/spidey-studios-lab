@@ -1,0 +1,294 @@
+{
+  "status": "software browser touch, not handset acceptance",
+  "checks": [
+    {
+      "name": "Byte retrieves/presents/waits → human throws → chase/carry/return → invites again",
+      "invitation": {
+        "play": {
+          "phase": "wait",
+          "home": {
+            "x": 610,
+            "y": 760
+          },
+          "answered": 0,
+          "returns": 1
+        },
+        "actor": {
+          "x": 604.5607162186806,
+          "y": 754.1913309077486,
+          "z": 0,
+          "vx": 0.002839334124956945,
+          "vy": 0.003083464428842201,
+          "vz": 0,
+          "angle": 0,
+          "spin": 0,
+          "squash": 0,
+          "facing": -1,
+          "frame": 1,
+          "clock": 6.60970000000002,
+          "target": null,
+          "grabbed": false,
+          "carry": null,
+          "pose": "expectant",
+          "poseTime": 18.218000000000053,
+          "detour": null
+        },
+        "ball": {
+          "id": "ball",
+          "kind": "ball",
+          "x": 677.2268817583752,
+          "y": 806.4480701707706,
+          "r": 19,
+          "z": 0,
+          "vx": 5.813792927006507,
+          "vy": 5.813792927006507,
+          "vz": 0,
+          "angle": 0
+        }
+      },
+      "result": {
+        "play": {
+          "phase": "wait",
+          "home": {
+            "x": 610,
+            "y": 760
+          },
+          "answered": 1,
+          "returns": 2
+        },
+        "actor": {
+          "x": 609.5223288675469,
+          "y": 746.549184926219,
+          "z": 0,
+          "vx": 1.204270701979607,
+          "vy": 33.9112443908986,
+          "vz": 0,
+          "angle": 0,
+          "spin": 0,
+          "squash": 0,
+          "facing": -1,
+          "frame": 1,
+          "clock": 17.98859999999987,
+          "target": null,
+          "grabbed": false,
+          "carry": null,
+          "pose": "expectant",
+          "poseTime": 20,
+          "detour": null
+        }
+      }
+    },
+    {
+      "name": "Scheming interrupted by real fingers",
+      "shots": 0
+    },
+    {
+      "name": "Elastic deformation → progressive attachment break → full peel → proud → physical removal",
+      "attached": {
+        "shots": 1,
+        "anchors": 8
+      },
+      "tension": {
+        "anchors": 7,
+        "hand": {
+          "id": 3,
+          "node": 0,
+          "x": -4.079999923706055,
+          "y": 314.239990234375,
+          "dx": 0.0000018310546892053026,
+          "dy": -0.000005493164053405053,
+          "travel": 122.06554256305756,
+          "lastX": -4.079999923706055,
+          "lastY": 314.239990234375
+        },
+        "nodes": [
+          {
+            "x": -4.0799980926513655,
+            "y": 314.23998474121095,
+            "attached": false
+          },
+          {
+            "x": 70.82308965792707,
+            "y": 253.44762679215094,
+            "attached": false
+          },
+          {
+            "x": 136.48621674937206,
+            "y": 231.092162429936,
+            "attached": false
+          },
+          {
+            "x": 206,
+            "y": 214.24,
+            "attached": true
+          },
+          {
+            "x": 242.41177732320753,
+            "y": 218.23203566740114,
+            "attached": false
+          },
+          {
+            "x": 292.87881766572133,
+            "y": 214.07686285967944,
+            "attached": false
+          },
+          {
+            "x": 346.08000000000004,
+            "y": 214.24,
+            "attached": true
+          },
+          {
+            "x": 46.14786714687,
+            "y": 285.8781858804986,
+            "attached": false
+          },
+          {
+            "x": 85.36225698101747,
+            "y": 299.2476268476826,
+            "attached": false
+          },
+          {
+            "x": 138.34109353199273,
+            "y": 287.6030611828313,
+            "attached": false
+          },
+          {
+            "x": 190.4289109391997,
+            "y": 279.6844952876544,
+            "attached": false
+          },
+          {
+            "x": 241.03419697204222,
+            "y": 275.8351272562128,
+            "attached": false
+          },
+          {
+            "x": 290.77333884203944,
+            "y": 274.4569173083522,
+            "attached": false
+          },
+          {
+            "x": 335.8285109036705,
+            "y": 271.53962337841443,
+            "attached": false
+          },
+          {
+            "x": 65.92,
+            "y": 329.24,
+            "attached": true
+          },
+          {
+            "x": 101.70040720913263,
+            "y": 346.36607188217107,
+            "attached": false
+          },
+          {
+            "x": 148.68295958482858,
+            "y": 340.86836471775484,
+            "attached": false
+          },
+          {
+            "x": 196.9410252717971,
+            "y": 335.1829714048029,
+            "attached": false
+          },
+          {
+            "x": 245.56185627719574,
+            "y": 332.1323281660936,
+            "attached": false
+          },
+          {
+            "x": 294.4949894131489,
+            "y": 329.47984633376865,
+            "attached": false
+          },
+          {
+            "x": 346.08000000000004,
+            "y": 329.24,
+            "attached": true
+          },
+          {
+            "x": 68.22755529968119,
+            "y": 390.91225878282876,
+            "attached": false
+          },
+          {
+            "x": 109.64767555137648,
+            "y": 400.3576373965347,
+            "attached": false
+          },
+          {
+            "x": 154.40097788856167,
+            "y": 395.96154642917793,
+            "attached": false
+          },
+          {
+            "x": 202.55144651503562,
+            "y": 390.6414912018043,
+            "attached": false
+          },
+          {
+            "x": 249.2647855245529,
+            "y": 388.7048959720927,
+            "attached": false
+          },
+          {
+            "x": 296.4322107028004,
+            "y": 387.48732313296256,
+            "attached": false
+          },
+          {
+            "x": 342.4893038833537,
+            "y": 385.92894795046533,
+            "attached": false
+          },
+          {
+            "x": 65.92,
+            "y": 444.24,
+            "attached": true
+          },
+          {
+            "x": 111.50281429013819,
+            "y": 456.8645310648787,
+            "attached": false
+          },
+          {
+            "x": 159.98006826557182,
+            "y": 454.7923657746867,
+            "attached": false
+          },
+          {
+            "x": 206,
+            "y": 444.24,
+            "attached": true
+          },
+          {
+            "x": 252.44519799543951,
+            "y": 445.86810039681035,
+            "attached": false
+          },
+          {
+            "x": 298.90057759518925,
+            "y": 444.10890531640064,
+            "attached": false
+          },
+          {
+            "x": 346.08000000000004,
+            "y": 444.24,
+            "attached": true
+          }
+        ]
+      },
+      "peeled": {
+        "broken": 8,
+        "proud": 3.3666999999999976,
+        "anchors": 0
+      }
+    }
+  ],
+  "errors": [],
+  "fixtures": [
+    "Kitchen starting room; competing indoor autonomy suppressed during connection test.",
+    "Garden nextInterest deferred only during isolated gesture/plant/decor/peel checks; native RAF and trusted CDP touch remain authoritative."
+  ]
+}

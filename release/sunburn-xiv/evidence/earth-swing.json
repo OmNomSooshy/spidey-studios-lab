@@ -1,0 +1,20 @@
+{
+  "method": "Existing Earth vector explicitly fixtured; native RAF advances the actual pendulum. Validates physical composition, not real device sensor acquisition.",
+  "results": [
+    {
+      "earthX": 0,
+      "theta": 0,
+      "actorX": 1770
+    },
+    {
+      "earthX": 1650,
+      "theta": 0.1079178404636954,
+      "actorX": 1787.2333582718163
+    },
+    {
+      "earthX": -1650,
+      "theta": -0.09505777548522805,
+      "actorX": 1754.8136506487076
+    }
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "method": "Serial native RAF, 6× CPU-throttled software Chromium, DPR2. Equipment starting-state fixtures, actual running contacts thereafter. Heap/RGBA accounting is not Android GPU/process memory. No target-handset inference.",
+  "results": [
+    {
+      "mode": "old-garden",
+      "cpu": 6,
+      "software": true,
+      "dpr": 2,
+      "fps": 27.848407797554184,
+      "p95FrameMs": 100,
+      "maxInputMs": 709.8999999994412,
+      "exitMs": 352,
+      "cache": {
+        "bytes": 12546048,
+        "builds": 1,
+        "textureBytes": 792000,
+        "textures": 5,
+        "foregroundPaints": 68,
+        "mountedSprites": 18,
+        "spriteBytes": 3491264
+      },
+      "art": {
+        "decodedBytes": 32293144,
+        "assets": 68,
+        "roomCacheBytes": 763848,
+        "foodCacheBytes": 184320
+      },
+      "travel": 141.7837144252829,
+      "heapBytes": 5040134,
+      "stats": {
+        "landings": 0,
+        "slides": 0,
+        "boards": 0,
+        "bounces": 0,
+        "autonomous": 0
+      },
+      "errors": []
+    },
+    {
+      "mode": "climb-slide",
+      "cpu": 6,
+      "software": true,
+      "dpr": 2,
+      "fps": 21.082220660576247,
+      "p95FrameMs": 83.40000000000009,
+      "maxInputMs": 666.5999999996275,
+      "exitMs": 345,
+      "cache": {
+        "bytes": 12546048,
+        "builds": 1,
+        "textureBytes": 2458400,
+        "textures": 3,
+        "foregroundPaints": 94,
+        "mountedSprites": 5,
+        "spriteBytes": 2805664
+      },
+      "art": {
+        "decodedBytes": 32293144,
+        "assets": 68,
+        "roomCacheBytes": 763848,
+        "foodCacheBytes": 184320
+      },
+      "travel": 427.3394088275186,
+      "heapBytes": 4660199,
+      "stats": {
+        "landings": 0,
+        "slides": 1,
+        "boards": 0,
+        "bounces": 0,
+        "autonomous": 0
+      },
+      "errors": []
+    },
+    {
+      "mode": "swing",
+      "cpu": 6,
+      "software": true,
+      "dpr": 2,
+      "fps": 14.462205947966828,
+      "p95FrameMs": 116.80000000000018,
+      "maxInputMs": null,
+      "exitMs": 690,
+      "cache": {
+        "bytes": 12546048,
+        "builds": 1,
+        "textureBytes": 2592800,
+        "textures": 4,
+        "foregroundPaints": 109,
+        "mountedSprites": 6,
+        "spriteBytes": 2940064
+      },
+      "art": {
+        "decodedBytes": 32293144,
+        "assets": 68,
+        "roomCacheBytes": 763848,
+        "foodCacheBytes": 184320
+      },
+      "travel": 0.9385095286772867,
+      "heapBytes": 5045647,
+      "stats": {
+        "landings": 0,
+        "slides": 0,
+        "boards": 0,
+        "bounces": 0,
+        "autonomous": 0
+      },
+      "errors": []
+    },
+    {
+      "mode": "bounce",
+      "cpu": 6,
+      "software": true,
+      "dpr": 2,
+      "fps": 9.207537904364374,
+      "p95FrameMs": 283.2999999999993,
+      "maxInputMs": null,
+      "exitMs": 477,
+      "cache": {
+        "bytes": 12546048,
+        "builds": 1,
+        "textureBytes": 2592800,
+        "textures": 4,
+        "foregroundPaints": 67,
+        "mountedSprites": 6,
+        "spriteBytes": 2940064
+      },
+      "art": {
+        "decodedBytes": 32293144,
+        "assets": 68,
+        "roomCacheBytes": 763848,
+        "foodCacheBytes": 184320
+      },
+      "travel": 0,
+      "heapBytes": 4497706,
+      "stats": {
+        "landings": 0,
+        "slides": 0,
+        "boards": 0,
+        "bounces": 2,
+        "autonomous": 0
+      },
+      "errors": []
+    },
+    {
+      "mode": "pan",
+      "cpu": 6,
+      "software": true,
+      "dpr": 2,
+      "fps": 23.409681751537033,
+      "p95FrameMs": 83.40000000000009,
+      "maxInputMs": 297.29999999981374,
+      "exitMs": 252,
+      "cache": {
+        "bytes": 12546048,
+        "builds": 1,
+        "textureBytes": 2592800,
+        "textures": 4,
+        "foregroundPaints": 91,
+        "mountedSprites": 6,
+        "spriteBytes": 2940064
+      },
+      "art": {
+        "decodedBytes": 32293144,
+        "assets": 68,
+        "roomCacheBytes": 763848,
+        "foodCacheBytes": 184320
+      },
+      "travel": 0,
+      "heapBytes": 4959059,
+      "stats": {
+        "landings": 0,
+        "slides": 0,
+        "boards": 0,
+        "bounces": 0,
+        "autonomous": 0
+      },
+      "errors": []
+    }
+  ]
+}

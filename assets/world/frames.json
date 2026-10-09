@@ -1199,5 +1199,116 @@
       0.8255208333333334
     ],
     "source": "offline rounded geometry / baked area light"
+  },
+  "terrain-xiv": {
+    "w": 1680,
+    "h": 1024,
+    "display": [
+      2100,
+      1280
+    ],
+    "groundOrigin": [
+      1050,
+      210
+    ],
+    "projection": [
+      0.8,
+      0.42
+    ]
+  },
+  "play-meadow": {
+    "w": 1536,
+    "h": 922,
+    "rect": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "display": [
+      1920,
+      1152
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ],
+    "source": "XIV offline geometry / XIII materials and baked light"
+  },
+  "play-structure": {
+    "w": 912,
+    "h": 672,
+    "rect": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "display": [
+      760,
+      560
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ],
+    "source": "XIV offline geometry / XIII materials and baked light"
+  },
+  "play-swing": {
+    "w": 396,
+    "h": 648,
+    "rect": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "display": [
+      330,
+      540
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ],
+    "source": "XIV offline geometry / XIII materials and baked light"
+  },
+  "play-seat": {
+    "w": 144,
+    "h": 108,
+    "rect": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "display": [
+      120,
+      90
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ],
+    "source": "XIV offline geometry / XIII materials and baked light"
+  },
+  "play-bounce": {
+    "w": 252,
+    "h": 192,
+    "rect": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "display": [
+      210,
+      160
+    ],
+    "pivot": [
+      0.5,
+      0.5
+    ],
+    "source": "XIV offline geometry / XIII materials and baked light"
   }
 }

@@ -4,7 +4,7 @@ window.createByteBackyard = function(api) {
   const {ctx,world,byte,life,home,assets,economy,bathroom}=api;
   const key='byte-backyard-xii-v1',clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
   let old;try{old=JSON.parse(localStorage.getItem(key))}catch(_){}
-  const limit=1200, H=112, W=H*.81;
+  const maxX=2200,maxY=1200, H=112, W=H*.81;
   const seeds=[{id:'seed-rose',kind:'seed',x:255,y:175,color:'#ef8da4'}, {id:'seed-sun',kind:'seed',x:315,y:175,color:'#f6cf67'}, {id:'seed-blue',kind:'seed',x:375,y:175,color:'#90bfe8'}];
   const defaults=[{id:'can',kind:'can',x:255,y:265,r:22},{id:'ball',kind:'ball',x:600,y:750,r:19},
     {id:'bench',kind:'bench',x:840,y:910,r:45},{id:'lantern',kind:'lantern',x:735,y:865,r:20},{id:'pot',kind:'pot',x:960,y:810,r:24}];
@@ -13,19 +13,20 @@ window.createByteBackyard = function(api) {
   const state={active:false,pending:false,time:0,idle:0,nextInterest:10,interest:null,care:null,invitation:null,inviteSerial:0,
     camera:{x:0,y:0},actor,hand:null,play:{phase:'idle',home:{x:610,y:760},answered:0,returns:0},
     rope:{active:false,planted:false},flowers:[],items:[],visits:0,cacheBytes:0,cacheBuilds:0};
-  for(const v of defaults){const s=old?.items?.find(x=>x.id===v.id);state.items.push({...v,...(s&&valid(s.x)&&valid(s.y)?{x:clamp(s.x,40,1160),y:clamp(s.y,40,1160),z:clamp(s.z||0,0,400)}:{}),z:clamp(Number(s?.z)||0,0,400),vx:0,vy:0,vz:0,angle:0});}
+  for(const v of defaults){const s=old?.items?.find(x=>x.id===v.id);state.items.push({...v,...(s&&valid(s.x)&&valid(s.y)?{x:clamp(s.x,40,maxX-40),y:clamp(s.y,40,1160),z:clamp(s.z||0,0,400)}:{}),z:clamp(Number(s?.z)||0,0,400),vx:0,vy:0,vz:0,angle:0});}
   for(let i=0;i<6;i++){const f=old?.flowers?.[i];state.flowers.push({id:i,x:340+(i%3)*110,y:370+Math.floor(i/3)*105,stage:clamp(Number(f?.stage)||0,0,3),water:clamp(Number(f?.water)||0,0,1),shown:!!f?.shown,color:['#ef8da4','#f6cf67','#90bfe8'].includes(f?.color)?f.color:'#ef8da4'});}
-  if(old?.active&&valid(old?.actor?.x)&&valid(old?.actor?.y)){Object.assign(actor,{x:clamp(old.actor.x,30,1170),y:clamp(old.actor.y,30,1170),z:clamp(old.actor.z||0,0,400)});state.active=true;}
+  if(old?.active&&valid(old?.actor?.x)&&valid(old?.actor?.y)){Object.assign(actor,{x:clamp(old.actor.x,30,maxX-30),y:clamp(old.actor.y,30,1170),z:clamp(old.actor.z||0,0,400)});state.active=true;}
   state.visits=Number(old?.visits)||0;
   if(valid(old?.camera?.x)&&valid(old?.camera?.y))Object.assign(state.camera,old.camera);
-  if(old?.rope?.active&&valid(old.rope.x)&&valid(old.rope.y))Object.assign(state.rope,{active:true,planted:true,x:clamp(old.rope.x,0,1200),y:clamp(old.rope.y,0,1200),z:0,length:clamp(old.rope.length,20,190)});
+  if(old?.rope?.active&&valid(old.rope.x)&&valid(old.rope.y))Object.assign(state.rope,{active:true,planted:true,x:clamp(old.rope.x,0,maxX),y:clamp(old.rope.y,0,1200),z:0,length:clamp(old.rope.length,20,190)});
   const iso=(x,y)=>({x:(x-y)*.8,y:(x+y)*.42});
   const inverse=(x,y)=>({x:(x/.8+y/.42)/2,y:(y/.42-x/.8)/2});
   function project(x,y,z=0){const p=iso(x,y);return{x:p.x-state.camera.x+world.w*.5,y:p.y-z-state.camera.y+world.h*.52};}
   function unproject(x,y,z=0){return inverse(x-world.w*.5+state.camera.x,y-world.h*.52+state.camera.y+z);}
+  const playground=window.createBytePlayground({actor,state,project,unproject,voice:api.voice});state.playground=playground;
   function save(){try{localStorage.setItem(key,JSON.stringify({active:state.active,actor:{x:actor.x,y:actor.y,z:actor.z},camera:state.camera,visits:state.visits,
     items:state.items.map(({id,x,y,z})=>({id,x,y,z})),flowers:state.flowers.map(({stage,water,color,shown})=>({stage,water,color,shown})),rope:state.rope.active&&state.rope.planted?state.rope:null}))}catch(_){} }
-  function cameraBounds(){state.camera.x=clamp(state.camera.x,-960,960);state.camera.y=clamp(state.camera.y,60,960);}
+  function cameraBounds(){state.camera.x=clamp(state.camera.x,-960,maxX*.8);state.camera.y=clamp(state.camera.y,60,(maxX+maxY)*.42);}
   function ui(){document.body.classList.toggle('backyard-away',state.active);}
   function enter(){if(state.active)return;if(!state.cacheBuilds)cache();lastDraw='';home.cancel();api.wakeByte();state.active=true;state.pending=false;state.visits++;actor.x=180;actor.y=250;actor.z=0;actor.vx=actor.vy=actor.vz=0;actor.target=null;byte.targetX=byte.targetY=null;life.pendingFollow=false;
     Object.assign(state.camera,iso(210,290));state.idle=0;home.save();save();ui();api.voice('notice',.6);}
@@ -43,7 +44,7 @@ window.createByteBackyard = function(api) {
   function hitByte(x,y){const p=bodyPoint(),dx=x-p.x,dy=y-p.y,c=Math.cos(actor.angle),s=Math.sin(actor.angle);return Math.abs(dx*c+dy*s)<W*.54*(1+actor.squash*.4)&&Math.abs(-dx*s+dy*c)<H*.55*(1-actor.squash*.45);}
   function spoolWorld(){const lx=W*.205*actor.facing*(1+actor.squash*.4),ly=H*.205*(1-actor.squash*.45),c=Math.cos(actor.angle),s=Math.sin(actor.angle),offset=inverse(c*lx-s*ly,0);return{x:actor.x+offset.x,y:actor.y+offset.y,z:actor.z+H*.48-(s*lx+c*ly)};}
   function spoolPoint(){const p=spoolWorld();return project(p.x,p.y,p.z);}
-  function follow(x,y,reason='call'){if(reason==='call'&&state.care){state.care=null;releaseCarry();}actor.detour=null;actor.target={x:clamp(x,35,1165),y:clamp(y,35,1165),reason};state.idle=0;state.interest=null;if(reason==='call')state.invitation=null;}
+  function follow(x,y,reason='call'){if(reason==='call')playground.interrupt();const route=playground.route(x,y);state.route=route;const first=route.shift();x=first.x;y=first.y;if(reason==='call'&&state.care){state.care=null;releaseCarry();}actor.detour=null;actor.target={x:clamp(x,35,maxX-35),y:clamp(y,35,maxY-35),reason};state.idle=0;state.interest=null;if(reason==='call')state.invitation=null;}
   function releaseCarry(){if(actor.carry){const v=actor.carry;v.vx=actor.vx;v.vy=actor.vy;v.vz=actor.vz;actor.carry=null;}}
   function begin(x,y,id){if(!state.active)return false;
     const rope=state.rope;if(rope.active&&rope.planted){const p=project(rope.x,rope.y,rope.z);if(Math.hypot(x-p.x,y-p.y)<27){rope.active=false;save();return true;}}
@@ -53,30 +54,32 @@ window.createByteBackyard = function(api) {
       let item=v;if(v.kind==='seed')item={...v,id:'held-seed',z:20,vx:0,vy:0,vz:0};
       if(actor.carry===v){actor.carry=null;if(state.care){state.care=null;actor.target=null;}}state.idle=0;state.nextInterest=state.time+9;state.hand={kind:'item',id,item,x,y,lastX:x,lastY:y,samples:[]};state.play.phase=v.kind==='ball'&&state.play.phase==='wait'?'answer':state.play.phase;return true;}}
     if(hitByte(x,y)){const spool=spoolPoint(),origin=spoolWorld();if(!rope.active&&Math.hypot(x-spool.x,y-spool.y)<18){Object.assign(rope,{active:true,planted:false,id,x:origin.x,y:origin.y,z:0,length:Math.max(20,origin.z)});state.hand={kind:'rope',id,x,y};return true;}
-      releaseCarry();state.care=null;state.idle=0;state.nextInterest=state.time+9;state.play.phase='idle';actor.target=null;actor.grabbed=true;actor.vx=actor.vy=actor.vz=actor.spin=0;const p=bodyPoint();state.hand={kind:'byte',id,dx:x-p.x,dy:y-p.y,x,y,lastX:x,lastY:y,samples:[]};actor.z=Math.max(actor.z,40);actor.pose=null;return true;}
+      playground.interrupt();releaseCarry();state.route=null;state.care=null;state.idle=0;state.nextInterest=state.time+9;state.play.phase='idle';actor.target=null;actor.grabbed=true;actor.vx=actor.vy=actor.vz=actor.spin=0;const p=bodyPoint();state.hand={kind:'byte',id,dx:x-p.x,dy:y-p.y,x,y,lastX:x,lastY:y,samples:[]};actor.z=Math.max(actor.z,40);actor.pose=null;return true;}
+    if(playground.begin(x,y)){state.hand={kind:'swing',id,x,y,startX:x,startY:y,lastX:x,lastY:y,pan:false};return true;}
     state.hand={kind:'background',id,x,y,startX:x,startY:y,lastX:x,lastY:y,pan:false};return true;
   }
   function move(x,y,id){const h=state.hand;if(!h||h.id!==id)return false;const t=performance.now();
     if(h.kind==='background'||h.kind==='invite'){if(Math.hypot(x-h.startX,y-h.startY)>8)h.pan=true;if(h.pan||h.kind==='invite'){state.camera.x-=x-h.lastX;state.camera.y-=y-h.lastY;cameraBounds();}}
-    else if(h.kind==='byte'){const p=unproject(x-h.dx,y-h.dy,H*.48+actor.z);actor.x=clamp(p.x,30,1170);actor.y=clamp(p.y,30,1170);actor.squash=Math.min(.4,Math.hypot(actor.x-p.x,actor.y-p.y)/160);if(actor.x<235&&actor.y<172)actor.y=172;h.samples.push({x:actor.x,y:actor.y,t});h.samples=h.samples.filter(s=>t-s.t<140);}
-    else if(h.kind==='item'){const p=unproject(x,y,28);h.item.x=clamp(p.x,25,1175);h.item.y=clamp(p.y,25,1175);if(h.item.x<235&&h.item.y<172)h.item.y=172;h.item.z=28;h.samples.push({x:h.item.x,y:h.item.y,t});h.samples=h.samples.filter(s=>t-s.t<140);}
+    else if(h.kind==='swing'){if(Math.hypot(x-h.startX,y-h.startY)>6)h.pan=true;if(h.pan)playground.move(x,y);}
+    else if(h.kind==='byte'){actor.z=playground.dragHeight(x-h.dx,y-h.dy,actor.z);const p=unproject(x-h.dx,y-h.dy,H*.48+actor.z);actor.x=clamp(p.x,30,maxX-30);actor.y=clamp(p.y,30,1170);actor.squash=Math.min(.4,Math.hypot(actor.x-p.x,actor.y-p.y)/160);if(actor.x<235&&actor.y<172)actor.y=172;h.samples.push({x:actor.x,y:actor.y,t});h.samples=h.samples.filter(s=>t-s.t<140);}
+    else if(h.kind==='item'){const p=unproject(x,y,28);h.item.x=clamp(p.x,25,maxX-25);h.item.y=clamp(p.y,25,1175);if(h.item.x<235&&h.item.y<172)h.item.y=172;h.item.z=28;h.samples.push({x:h.item.x,y:h.item.y,t});h.samples=h.samples.filter(s=>t-s.t<140);}
     else if(h.kind==='rope'){const p=unproject(x,y);const a=spoolWorld(),d=Math.hypot(p.x-a.x,p.y-a.y,a.z);ropePay(p,d);}
     h.lastX=x;h.lastY=y;h.x=x;h.y=y;return true;
   }
-  function ropePay(p,d){Object.assign(state.rope,{x:clamp(p.x,0,1200),y:clamp(p.y,0,1200),z:0,length:Math.min(H*1.2,Math.max(state.rope.length,d))});}
+  function ropePay(p,d){Object.assign(state.rope,{x:clamp(p.x,0,maxX),y:clamp(p.y,0,1200),z:0,length:Math.min(H*1.2,Math.max(state.rope.length,d))});}
   function end(id,cancel=false){const h=state.hand;if(!h||h.id!==id)return false;
-    if(h.kind==='background'&&!h.pan&&!cancel){const p=unproject(h.x,h.y);if(p.x>=0&&p.x<=1200&&p.y>=0&&p.y<=1200){if(p.x<225&&p.y<185){p.x=145;p.y=175;}follow(p.x,p.y);state.play.phase='idle';}}
+    if(h.kind==='background'&&!h.pan&&!cancel){const elevated=playground.target(h.x,h.y),p=elevated||unproject(h.x,h.y);if(p.x>=0&&p.x<=maxX&&p.y>=0&&p.y<=1200){if(p.x<225&&p.y<185){p.x=145;p.y=175;}follow(p.x,p.y);if(elevated?.swing)state.playgroundIntent='swing';state.play.phase='idle';}}
     if(h.kind==='byte'||h.kind==='item'){const v=h.kind==='byte'?actor:h.item,s=h.samples;v.vx=v.vy=0;if(s.length>1&&performance.now()-s.at(-1).t<160){const a=s[0],b=s.at(-1),dt=Math.max(.02,(b.t-a.t)/1000);v.vx=clamp((b.x-a.x)/dt*.78,-750,750);v.vy=clamp((b.y-a.y)/dt*.78,-750,750);}
       if(cancel)v.vx=v.vy=0;if(v===actor)v.spin=clamp((v.vx-v.vy)*.002,-2,2);v.vz=Math.min(270,Math.hypot(v.vx,v.vy)*.32);actor.grabbed=false;
       if(v.kind==='seed'){const f=state.flowers.find(f=>Math.hypot(v.x-f.x,v.y-f.y)<57);if(f&&!cancel){f.stage=Math.max(1,f.stage);f.color=v.color;f.water=0;api.voice('pet',.5);}}
       if(v.kind==='ball'&&state.play.phase==='answer'&&!cancel){if(Math.hypot(v.vx,v.vy)>35){state.play.phase='chase';state.play.answered++;actor.target={x:v.x,y:v.y,reason:'play'};actor.pose=null;}else state.play.phase='wait';}
     }
     if(h.kind==='rope'){state.rope.planted=true;delete state.rope.id;}
-    state.hand=null;save();return true;
+    if(h.kind==='swing'){playground.end();if(!h.pan&&!cancel&&!playground.swing.rider){const p=playground.seat();follow(p.x,p.y);state.playgroundIntent='swing';}}state.hand=null;save();return true;
   }
-  function contact(v,dt){if(api.earth.enabled){const force=inverse(api.earth.x*.065,api.earth.y*.065);v.vx+=force.x*dt;v.vy+=force.y*dt;}v.z+=v.vz*dt;v.vz-=850*dt;v.x+=v.vx*dt;v.y+=v.vy*dt;if(v.x<235&&v.y<172&&v.z<115){v.y=172;v.vy=Math.abs(v.vy)*.4;}
-    for(const c of ['x','y']){if(v[c]<28||v[c]>1172){v[c]=clamp(v[c],28,1172);v['v'+c]*=-.5;v.squash=Math.max(v.squash||0,.32);}}
-    if(v.z<=0){v.z=0;const speed=-v.vz;v.vz=speed>85?speed*(v.kind==='ball'?.61:.27):0;if(v===actor&&speed>150){v.squash=Math.min(.55,speed/700);api.voice('land',.4);}v.vx*=Math.exp(-dt*3);v.vy*=Math.exp(-dt*3);}
+  function contact(v,dt){const old={x:v.x,y:v.y,z:v.z};if(api.earth.enabled){const force=inverse(api.earth.x*.065,api.earth.y*.065);v.vx+=force.x*dt;v.vy+=force.y*dt;}v.z+=v.vz*dt;v.vz-=850*dt;v.x+=v.vx*dt;v.y+=v.vy*dt;if(v.x<235&&v.y<172&&v.z<115){v.y=172;v.vy=Math.abs(v.vy)*.4;}
+    for(const c of ['x','y']){if(v[c]<28||v[c]>(c==='x'?maxX:maxY)-28){v[c]=clamp(v[c],28,(c==='x'?maxX:maxY)-28);v['v'+c]*=-.5;v.squash=Math.max(v.squash||0,.32);}}
+    const supported=playground.contact(v,old,dt);if(!supported&&v.z<=0){v.z=0;const speed=-v.vz;v.vz=speed>85?speed*(v.kind==='ball'?.61:.27):0;if(v===actor&&speed>150){v.squash=Math.min(.55,speed/700);api.voice('land',.4);}v.vx*=Math.exp(-dt*3);v.vy*=Math.exp(-dt*3);}
     v.vx*=Math.exp(-dt*(v.z>0?.4:2));v.vy*=Math.exp(-dt*(v.z>0?.4:2));
   }
   function solveRope(){const r=state.rope;if(!r.active||actor.grabbed)return;const a=spoolWorld(),dx=r.x-a.x,dy=r.y-a.y,dz=r.z-a.z,d=Math.hypot(dx,dy,dz);if(d<=r.length)return;
@@ -85,28 +88,30 @@ window.createByteBackyard = function(api) {
   function pick(v){if(state.hand?.item===v||actor.grabbed)return false;if(Math.hypot(actor.x-v.x,actor.y-v.y)>35||Math.abs(actor.z-v.z)>45)return false;actor.carry=v;return true;}
   function interest(){const growing=state.flowers.find(f=>f.stage>0&&f.stage<3),can=state.items.find(v=>v.kind==='can');if(growing&&!state.hand){releaseCarry();state.care={phase:'fetch',flower:growing,can};follow(can.x,can.y,'water-can');return;}const flower=state.flowers.find(f=>f.stage>=2&&!f.shown);if(flower){state.interest={kind:'flower',flower};follow(flower.x+48,flower.y+40,'flower');state.interest={kind:'flower',flower};return;}
     const ball=state.items.find(v=>v.kind==='ball');if(state.play.phase==='idle'&&(state.roams=(state.roams||0)+1)%3===1){state.play.phase='fetch';follow(ball.x,ball.y,'fetch');return;}
+    if((state.roams||1)%3!==1){const next=playground.opportunity();follow(next.x,next.y,next.reason);return;}
     const places=[{x:1000,y:1040},{x:990,y:270},{x:220,y:1050}];const place=places[(state.roams||1)%places.length];follow(place.x+(Math.random()-.5)*80,place.y+(Math.random()-.5)*80,'wander');}
   function update(dt){if(!state.active){idleIndoor();return;}state.time+=dt;state.idle+=dt;
     const sensed=api.senses?.state;if(sensed?.open){if(state.soundId!==sensed.soundId||state.joltId!==sensed.joltId){if(state.soundId!==undefined&&!actor.grabbed){actor.vz+=Math.min(260,120+(sensed.level||0)*300);actor.squash=.2;}state.soundId=sensed.soundId;state.joltId=sensed.joltId;}
       const loose=state.items.find(v=>v.kind==='ball');if(loose!==actor.carry&&state.hand?.item!==loose){loose.vx+=(sensed.breathX||0)*(sensed.breath||0)*dt*800;loose.vy+=(sensed.breathY||0)*(sensed.breath||0)*dt*800;}}
-    actor.squash*=Math.exp(-dt*6);if(actor.z>10&&!actor.grabbed){actor.angle+=actor.spin*dt;actor.spin*=Math.exp(-dt*.7);}else{actor.angle*=Math.exp(-dt*4);actor.spin*=Math.exp(-dt*4);}actor.poseTime=Math.max(0,actor.poseTime-dt);if(!actor.poseTime&&!['wait','fetch','return'].includes(state.play.phase))actor.pose=null;
+    actor.squash*=Math.exp(-dt*6);if(!playground.grounded(actor)&&!actor.grabbed){actor.angle+=actor.spin*dt;actor.spin*=Math.exp(-dt*.7);}else{actor.angle*=Math.exp(-dt*4);actor.spin*=Math.exp(-dt*4);}actor.poseTime=Math.max(0,actor.poseTime-dt);if(!actor.poseTime&&!['wait','fetch','return'].includes(state.play.phase))actor.pose=null;
     const ball=state.items.find(v=>v.kind==='ball');
     if(state.play.phase==='chase'){actor.target={x:ball.x,y:ball.y,reason:'play'};if(pick(ball)){state.play.phase='return';actor.target={...state.play.home,reason:'return'};}}
-    if(actor.target&&!actor.grabbed&&actor.z<10){let goal=actor.target;
+    if(actor.target&&!actor.grabbed&&playground.grounded(actor)){let goal=actor.target;
       if(actor.detour&&Math.hypot(actor.detour.x-actor.x,actor.detour.y-actor.y)<8)actor.detour=null;
       if(!actor.detour){const gx=goal.x-actor.x,gy=goal.y-actor.y,gd=Math.max(1,Math.hypot(gx,gy));for(const v of state.items){if(!['bench','lantern','pot'].includes(v.kind)||state.hand?.item===v)continue;const r=(v.kind==='bench'?43:22)+36,dx=v.x-actor.x,dy=v.y-actor.y,a=(dx*gx+dy*gy)/gd,across=(dx*gy-dy*gx)/gd;
-          if(a>0&&a<Math.min(gd,180)&&Math.abs(across)<r){const side=across>0?-1:1;actor.detour={x:clamp(v.x-gy/gd*(r+25)*side,35,1165),y:clamp(v.y+gx/gd*(r+25)*side,35,1165)};break;}}}
+          if(a>0&&a<Math.min(gd,180)&&Math.abs(across)<r){const side=across>0?-1:1;actor.detour={x:clamp(v.x-gy/gd*(r+25)*side,35,maxX-35),y:clamp(v.y+gx/gd*(r+25)*side,35,1165)};break;}}}
       goal=actor.detour||goal;const dx=goal.x-actor.x,dy=goal.y-actor.y,d=Math.hypot(dx,dy),speed=state.play.phase==='chase'?195:165;
-      if(d<15&&!actor.detour){const reason=actor.target.reason;actor.target=null;actor.vx*=.4;actor.vy*=.4;
+      if(d<15&&!actor.detour){const reason=actor.target.reason;if(state.route?.length){actor.target={...state.route.shift(),reason};}else{actor.target=null;actor.vx*=.4;actor.vy*=.4;
         if(reason==='call'){state.nextInterest=state.time+10;actor.pose='curious';actor.poseTime=2.2;state.idle=0;}
         if(reason==='water-can'&&state.care){if(pick(state.care.can)){state.care.phase='walk';actor.target={x:state.care.flower.x-42,y:state.care.flower.y+2,reason:'water'};}else state.care=null;}
         if(reason==='water'&&state.care){state.care.phase='pour';actor.pose='curious';actor.poseTime=10;}
         if(reason==='fetch'&&pick(ball)){state.play.phase='return';actor.target={...state.play.home,reason:'return'};}
         if(reason==='return'){releaseCarry();ball.vx=55;ball.vy=55;ball.vz=35;state.play.phase='wait';state.play.returns++;actor.pose='expectant';actor.poseTime=20;state.idle=0;api.voice('invite',.7);}
         if(reason==='flower'&&state.interest?.flower){const f=state.interest.flower;actor.pose='curious';actor.poseTime=6;if(!onScreen()){state.invitation={x:actor.x,y:actor.y,flower:f.id,born:state.time};state.inviteSerial++;}f.shown=true;state.nextInterest=state.time+24;}
-        if(actor.x<230&&actor.y<200&&reason==='call'){leave();return;}
+        if(reason==='playground'){const next=playground.arrived();if(next)follow(next.x,next.y,next.reason);}
+        if(actor.x<230&&actor.y<200&&reason==='call'){leave();return;}}
       }else{const blend=1-Math.exp(-dt*7);actor.vx+=(dx/d*speed-actor.vx)*blend;actor.vy+=(dy/d*speed-actor.vy)*blend;actor.facing=(dx-dy)<0?-1:1;actor.clock+=dt;actor.frame=Math.floor(actor.clock/.095)%4;}}
-    if(!actor.grabbed)contact(actor,dt);
+    if(!actor.grabbed&&!playground.swing.rider)contact(actor,dt);playground.update(dt);
     for(const v of state.items){if(state.hand?.item===v)continue;if(actor.carry===v){v.x=actor.x+18;v.y=actor.y-2;v.z=actor.z+37;v.vx=actor.vx;v.vy=actor.vy;v.vz=actor.vz;}else contact(v,dt);}
     // Actual contact with the lawn toy, not animation authority.
     for(const v of [actor,ball])if(!v.grabbed&&state.hand?.item!==v&&v.vz<=0&&v.z<8&&Math.hypot(v.x-855,v.y-455)<42){v.vz=430;v.z=9;v.squash=.35;api.voice('boing',.7);}
@@ -118,7 +123,7 @@ window.createByteBackyard = function(api) {
     if(pouring){for(const f of state.flowers)if(f.stage>0&&f.stage<3&&Math.hypot(pouring.x+24-f.x,pouring.y-f.y)<65){f.water+=dt*.34;if(f.water>=1){f.water=0;f.stage++;f.shown=false;actor.pose='curious';actor.poseTime=2;save();}}}
     if(state.care?.phase==='pour'&&state.care.flower.stage===3){const f=state.care.flower;releaseCarry();state.care=null;actor.pose='proud';actor.poseTime=4;if(!onScreen()){state.invitation={x:actor.x,y:actor.y,flower:f.id,born:state.time};state.inviteSerial++;}f.shown=true;state.nextInterest=state.time+25;save();}
     if(actor.z<5&&Math.hypot(actor.vx,actor.vy)>25&&state.time>(state.dirtyAt||0)&&state.flowers.some(f=>Math.hypot(f.x-actor.x,f.y-actor.y)<42)){state.dirtyAt=state.time+9;bathroom.dirtyFeet(.06);bathroom.save();}
-    if(!state.hand&&!actor.target&&!actor.grabbed&&!state.rope.active&&state.time>state.nextInterest&&state.play.phase!=='wait'&&!state.invitation){state.nextInterest=state.time+15;interest();}
+    if(!state.hand&&!actor.target&&!actor.grabbed&&!state.rope.active&&state.time>state.nextInterest&&state.play.phase!=='wait'&&!state.invitation&&!playground.swing.rider){state.nextInterest=state.time+15;interest();}
     if(state.play.phase==='wait'&&state.idle>24){state.play.phase='idle';actor.pose=null;state.nextInterest=state.time+18;}
     if(state.invitation&&state.time-state.invitation.born>35)state.invitation=null;
     if(onScreen()&&state.invitation)state.invitation=null;
@@ -131,7 +136,7 @@ window.createByteBackyard = function(api) {
   const landscape=document.createElement('div');landscape.id='backyard-scenery';landscape.setAttribute('aria-hidden','true');landscape.append(scenery);ctx.canvas.before(landscape);scenery.style.cssText='position:absolute;width:2100px;height:1280px;transform-origin:0 0;will-change:transform';
   const textures=new Map();let textureBytes=0;
   function path(p,points,fill,stroke){p.beginPath();points.forEach((v,i)=>{const q=iso(v[0],v[1]);i?p.lineTo(q.x,q.y):p.moveTo(q.x,q.y)});p.closePath();if(fill){p.fillStyle=fill;p.fill()}if(stroke){p.strokeStyle=stroke;p.stroke()}}
-  function cache(){scenery.width=1680;scenery.height=1024;state.cacheBytes=scenery.width*scenery.height*4;state.cacheBuilds++;ink.setTransform(.8,0,0,.8,0,0);ink.drawImage(window.ByteWorldArt.images.get('terrain'),0,0,2100,1280);ink.translate(1050,210);for(const seed of seeds){const p=iso(seed.x,seed.y);ink.save();ink.translate(p.x,p.y);paintItem(seed,ink,true);ink.restore();}}
+  function cache(){scenery.width=1680;scenery.height=1024;state.cacheBytes=scenery.width*scenery.height*4;state.cacheBuilds++;cacheMeadow();ink.setTransform(.8,0,0,.8,0,0);ink.drawImage(window.ByteWorldArt.images.get('terrain-xiv'),0,0,2100,1280);ink.translate(1050,210);for(const seed of seeds){const p=iso(seed.x,seed.y);ink.save();ink.translate(p.x,p.y);paintItem(seed,ink,true);ink.restore();}}
   function paintItem(v,target,local=false){const p=local?{x:0,y:0}:project(v.x,v.y,(v.z||0));target.save();target.translate(p.x,p.y);const a=window.ByteWorldArt,kind=v.kind;
     if(kind==='ball')a.rect(target,'ball',-19,-35,38,38);
     else if(kind==='can')a.rect(target,'can',-34,-40,74,42);
@@ -163,15 +168,34 @@ window.createByteBackyard = function(api) {
   // still run every frame; only sub-pixel-invisible raster work is skipped.
   let lastDraw='',drawCount=0;
   function draw(t){const q=n=>Math.round((n||0)*10),animation=!!invitationPoint()||state.hand?.item?.kind==='can'||state.care?.phase==='pour'||bathroom.wet>0;
-    const stamp=[world.w,world.h,q(state.camera.x),q(state.camera.y),q(actor.x),q(actor.y),q(actor.z),Math.round(actor.angle*500),Math.round(actor.squash*500),actor.facing,actor.frame,actor.pose,!!actor.target,api.screenWeb?.phase,api.screenWeb?.proud>0,bathroom.stainVersion,bathroom.wet,JSON.stringify(economy.gear),animation?Math.floor(t/50):0,
+    const stamp=[world.w,world.h,q(state.camera.x),q(state.camera.y),q(actor.x),q(actor.y),q(actor.z),Math.round(actor.angle*500),Math.round(actor.squash*500),actor.facing,actor.frame,actor.pose,!!actor.target,q(playground.swing.theta),q(playground.bounce.compression),api.screenWeb?.phase,api.screenWeb?.proud>0,bathroom.stainVersion,bathroom.wet,JSON.stringify(economy.gear),animation?Math.floor(t/50):0,
       ...state.items.flatMap(v=>[v.id,q(v.x),q(v.y),q(v.z)]),...state.flowers.flatMap(f=>[f.stage,q(f.water),f.color]),state.hand?.kind,state.hand?.item?.id==='held-seed'?q(state.hand.item.x)+','+q(state.hand.item.y):'',state.rope.active,state.rope.active?[q(state.rope.x),q(state.rope.y),q(state.rope.length)].join(','):''].join('|');
     if(stamp===lastDraw)return;lastDraw=stamp;drawCount++;visibleNodes=new Set();ctx.clearRect(0,0,world.w,world.h);const tx=-1050-state.camera.x+world.w*.5,ty=-210-state.camera.y+world.h*.52;if(tx!==state.lastMaterialX||ty!==state.lastMaterialY){scenery.style.transform=`translate(${tx}px,${ty}px)`;state.lastMaterialX=tx;state.lastMaterialY=ty;}
-    const nodes=[...state.flowers.map(f=>({depth:f.x+f.y,draw:()=>drawFlower(f)})),...state.items.map(v=>({depth:v.x+v.y,draw:()=>drawItem(v)})),{depth:actor.x+actor.y,draw:()=>drawActor(t)}];nodes.sort((a,b)=>a.depth-b.depth);for(const n of nodes)n.draw();if(state.hand?.item?.id==='held-seed')drawItem(state.hand.item);
+    drawPlayground();const nodes=[...state.flowers.map(f=>({depth:f.x+f.y,draw:()=>drawFlower(f)})),...state.items.map(v=>({depth:v.x+v.y,draw:()=>drawItem(v)})),{depth:actor.x+actor.y,draw:()=>drawActor(t)}];nodes.sort((a,b)=>a.depth-b.depth);for(const n of nodes)n.draw();if(state.hand?.item?.id==='held-seed')drawItem(state.hand.item);
     for(const [key,v] of mounted)if(!visibleNodes.has(key)&&v.canvas.style.visibility!=='hidden')v.canvas.style.visibility='hidden';
-    drawRope();const ip=invitationPoint();if(ip){ctx.strokeStyle='#69816d';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(ip.x,ip.y);const center={x:world.w/2,y:world.h/2};const dx=center.x-ip.x,dy=center.y-ip.y,d=Math.hypot(dx,dy);ctx.quadraticCurveTo(ip.x+dx/d*30,ip.y+dy/d*30+Math.sin(t*.006)*5,ip.x+dx/d*59,ip.y+dy/d*59);ctx.stroke();ctx.strokeStyle='#fff7de';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#efca7d';ctx.beginPath();ctx.arc(ip.x+dx/d*59,ip.y+dy/d*59,7,0,7);ctx.fill();}
+    drawSwingRopes();drawRope();const ip=invitationPoint();if(ip){ctx.strokeStyle='#69816d';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(ip.x,ip.y);const center={x:world.w/2,y:world.h/2};const dx=center.x-ip.x,dy=center.y-ip.y,d=Math.hypot(dx,dy);ctx.quadraticCurveTo(ip.x+dx/d*30,ip.y+dy/d*30+Math.sin(t*.006)*5,ip.x+dx/d*59,ip.y+dy/d*59);ctx.stroke();ctx.strokeStyle='#fff7de';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#efca7d';ctx.beginPath();ctx.arc(ip.x+dx/d*59,ip.y+dy/d*59,7,0,7);ctx.fill();}
+  }
+  // New static layers use the same baked-art / compositor path as XIII.
+  // Camera motion transforms cached pixels; it never lights/redraws a meadow.
+  const meadow=document.createElement('canvas');meadow.style.cssText='position:absolute;width:1920px;height:1152px;transform-origin:0 0;pointer-events:none';landscape.insertBefore(meadow,scenery);
+  function cacheMeadow(){meadow.width=1536;meadow.height=922;meadow.getContext('2d').drawImage(window.ByteWorldArt.images.get('play-meadow'),0,0,1536,922);state.cacheBytes+=meadow.width*meadow.height*4;}
+  function playSprite(name,x,y,z,w,h,depth,extra=''){
+    const p=project(x,y,z);if(p.x<-w/2||p.x>world.w+w/2||p.y<-h/2||p.y>world.h+h/2)return;
+    const image=texture(name,q=>window.ByteWorldArt.rect(q,name,-w/2,-h/2,w,h),Math.ceil(w*2),Math.ceil(h*2+40));
+    placed(name,image,p,w/2,(image.height-20)/2,depth,name,extra);
+  }
+  function drawPlayground(){
+    const ground=project(1700,600);meadow.style.transform=`translate(${ground.x-960}px,${ground.y-576}px)`;
+    playSprite('play-structure',1610,370,0,760,560,1400);
+    playSprite('play-swing',1770,730,0,330,540,2350);
+    const s=playground.seat();playSprite('play-seat',s.x,s.y,s.z,120,90,s.x+s.y-.5,`rotate(${-playground.swing.theta*.3}rad)`);
+    playSprite('play-bounce',2040,940,0,210,160,2975,`scale(1,${1-playground.bounce.compression*.007})`);
+  }
+  function drawSwingRopes(){const s=playground.seat(),a=project(playground.swing.x,playground.swing.y,playground.swing.z),b=project(s.x,s.y,s.z+6);if(a.x<-180||a.x>world.w+180||a.y<-250||a.y>world.h+250)return;
+    ctx.strokeStyle='#425955';ctx.lineWidth=3;ctx.beginPath();for(const dx of [-17,17]){ctx.moveTo(a.x+dx,a.y);ctx.lineTo(b.x+dx,b.y);}ctx.stroke();ctx.strokeStyle='#eadab5';ctx.lineWidth=1;ctx.stroke();
   }
   const actorImage=document.createElement('canvas');actorImage.width=Math.ceil(W*2);actorImage.height=H*2;let actorImageStamp='';
-  function drawActor(t){if(!onScreen())return;const p=bodyPoint(),moving=actor.target&&actor.z<10&&!actor.grabbed&&Math.hypot(actor.vx,actor.vy)>12;let name=moving?'walk':actor.pose||'idle';if(api.screenWeb?.phase==='scheming')name='scheming';else if(api.screenWeb?.proud>0&&!actor.pose&&!actor.grabbed&&!moving&&actor.z<10)name='proud';
+  function drawActor(t){if(!onScreen())return;const p=bodyPoint(),moving=actor.target&&playground.grounded(actor)&&!actor.grabbed&&Math.hypot(actor.vx,actor.vy)>12;let name=moving?'walk':actor.pose||'idle';if(api.screenWeb?.phase==='scheming')name='scheming';else if(api.screenWeb?.proud>0&&!actor.pose&&!actor.grabbed&&!moving&&actor.z<10)name='proud';
     const frame=name==='walk'?assets.walk[actor.frame]:assets[name]||assets.idle;if(!frame)return;const stamp=[name,name==='walk'?actor.frame:0,JSON.stringify(economy.gear),bathroom.stainVersion,bathroom.wet,bathroom.wet>0?Math.floor(t/50):0].join('|');
     if(stamp!==actorImageStamp){const p=actorImage.getContext('2d');p.clearRect(0,0,actorImage.width,actorImage.height);p.drawImage(bathroom.present(economy.bodyPresentation(frame),t),0,0,actorImage.width,actorImage.height);actorImageStamp=stamp;}
     placed('shadow-byte',shadow,project(actor.x,actor.y),30,11,actor.x+actor.y-1,'shadow');

@@ -147,9 +147,9 @@ window.createByteBackyard = function(api) {
     if(v.id==='held-seed'){target.fillStyle=v.color;target.beginPath();target.ellipse(0,-13,7,10,.4,0,7);target.fill();}target.restore();}
   function texture(key,paint,w=220,h=180){let c=textures.get(key);if(!c){c=document.createElement('canvas');c.width=w;c.height=h;const p=c.getContext('2d');p.setTransform(2,0,0,2,w/2,h-20);paint(p);textures.set(key,c);textureBytes+=w*h*4;}return c;}
   const mounted=new Map();let visibleNodes=new Set();
-  function placed(key,image,p,ax,ay,depth,stamp,extra=''){
+  function placed(key,image,p,ax,ay,depth,stamp,extra='',density=2){
     let v=mounted.get(key);if(!v){const c=document.createElement('canvas');c.style.cssText='position:absolute;left:0;top:0;transform-origin:50% 50%;pointer-events:none';landscape.append(c);v={canvas:c,ink:c.getContext('2d'),stamp:null,transform:null};mounted.set(key,v);}
-    const c=v.canvas;if(stamp!==v.stamp){if(c.width!==image.width||c.height!==image.height){c.width=image.width;c.height=image.height;c.style.width=c.width/2+'px';c.style.height=c.height/2+'px';}v.ink.clearRect(0,0,c.width,c.height);v.ink.drawImage(image,0,0);v.stamp=stamp;}
+    const c=v.canvas;if(stamp!==v.stamp){if(c.width!==image.width||c.height!==image.height){c.width=image.width;c.height=image.height;c.style.width=c.width/density+'px';c.style.height=c.height/density+'px';}v.ink.clearRect(0,0,c.width,c.height);v.ink.drawImage(image,0,0);v.stamp=stamp;}
     const transform=`translate(${p.x-ax}px,${p.y-ay}px) ${extra}`;if(transform!==v.transform){c.style.transform=transform;v.transform=transform;}c.style.zIndex=Math.max(1,Math.round(depth));if(c.style.visibility==='hidden')c.style.visibility='visible';visibleNodes.add(key);
   }
   const shadow=document.createElement('canvas');shadow.width=120;shadow.height=44;const shadowInk=shadow.getContext('2d');window.ByteWorldArt.shadow(shadowInk,60,22,118,40);
@@ -177,15 +177,16 @@ window.createByteBackyard = function(api) {
   }
   // New static layers use the same baked-art / compositor path as XIII.
   // Camera motion transforms cached pixels; it never lights/redraws a meadow.
-  const meadow=document.createElement('canvas');meadow.style.cssText='position:absolute;width:1920px;height:1152px;transform-origin:0 0;pointer-events:none';landscape.insertBefore(meadow,scenery);
+  const meadow=document.createElement('canvas');meadow.style.cssText='position:absolute;width:1920px;height:1152px;transform-origin:0 0;will-change:transform;pointer-events:none';landscape.insertBefore(meadow,scenery);
   function cacheMeadow(){meadow.width=1536;meadow.height=922;meadow.getContext('2d').drawImage(window.ByteWorldArt.images.get('play-meadow'),0,0,1536,922);state.cacheBytes+=meadow.width*meadow.height*4;}
+  const equipmentImages=new Map();let equipmentBytes=0;
   function playSprite(name,x,y,z,w,h,depth,extra=''){
     const p=project(x,y,z);if(p.x<-w/2||p.x>world.w+w/2||p.y<-h/2||p.y>world.h+h/2)return;
-    const image=texture(name,q=>window.ByteWorldArt.rect(q,name,-w/2,-h/2,w,h),Math.ceil(w*2),Math.ceil(h*2+40));
-    placed(name,image,p,w/2,(image.height-20)/2,depth,name,extra);
+    let image=equipmentImages.get(name);if(!image){image=document.createElement('canvas');image.width=Math.ceil(w);image.height=Math.ceil(h);window.ByteWorldArt.rect(image.getContext('2d'),name,0,0,w,h);equipmentImages.set(name,image);equipmentBytes+=image.width*image.height*4;}
+    placed(name,image,p,w/2,h/2,depth,name,extra,1);
   }
   function drawPlayground(){
-    const ground=project(1700,600);meadow.style.transform=`translate(${ground.x-960}px,${ground.y-576}px)`;
+    const ground=project(1700,600),mt=`translate(${ground.x-960}px,${ground.y-576}px)`;if(mt!==state.meadowTransform){meadow.style.transform=mt;state.meadowTransform=mt;}
     playSprite('play-structure',1610,370,0,760,560,1400);
     playSprite('play-swing',1770,730,0,330,540,2350);
     const s=playground.seat();playSprite('play-seat',s.x,s.y,s.z,120,90,s.x+s.y-.5,`rotate(${-playground.swing.theta*.3}rad)`);
@@ -206,5 +207,5 @@ window.createByteBackyard = function(api) {
   function suspend(){if(state.hand)end(state.hand.id,true);save();}
   window.addEventListener('pagehide',suspend);document.addEventListener('visibilitychange',()=>{if(document.hidden)suspend()});
   return Object.assign(state,{enter,leave,ready,resize,save,update,draw,begin,move,end,project,unproject,bodyPoint,spoolPoint,spoolWorld,hitByte,onScreen,invitationPoint,doorway,door,indoorBegin,afterRelease,follow,solveRope,
-    screenPoint:bodyPoint,bodyHeight:H,cacheStats:()=>({bytes:state.cacheBytes,builds:state.cacheBuilds,textureBytes,textures:textures.size,foregroundPaints:drawCount,mountedSprites:mounted.size,spriteBytes:[...mounted.values()].reduce((n,v)=>n+v.canvas.width*v.canvas.height*4,0)+actorImage.width*actorImage.height*4+flowerImages.size*180*260*4})});
+    screenPoint:bodyPoint,bodyHeight:H,cacheStats:()=>({bytes:state.cacheBytes,builds:state.cacheBuilds,textureBytes:textureBytes+equipmentBytes,textures:textures.size+equipmentImages.size,foregroundPaints:drawCount,mountedSprites:mounted.size,spriteBytes:[...mounted.values()].reduce((n,v)=>n+v.canvas.width*v.canvas.height*4,0)+actorImage.width*actorImage.height*4+flowerImages.size*180*260*4})});
 };

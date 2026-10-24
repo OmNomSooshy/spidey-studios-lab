@@ -1,1 +1,4 @@
-/artifacts/
+/app/build/
+/quest-native/app/build/
+/quest-native/app/src/main/assets/
+**/__pycache__/

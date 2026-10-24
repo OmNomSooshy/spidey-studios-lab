@@ -49,12 +49,22 @@ jobs:
             "ndk;27.0.12077973" \
             "cmake;3.22.1"
 
-      - name: Prepare pinned SmthJedi assets
+      - name: Download and prepare pinned sound fonts and Luke model
         working-directory: project-lightsaber
         run: |
+          curl --fail --location --retry 3 --retry-delay 2 \
+            "https://github.com/Ferase/JediSurvivor-Soundfonts/releases/download/v3.8/SWJSPack_Proffie_v3.8.zip" \
+            --output "$RUNNER_TEMP/Ferase-Proffie-v3.8.zip"
+          echo "05088ebfc25a1a7aabb79879135fc182deb003da33f346008b4bbbe54bab533a  $RUNNER_TEMP/Ferase-Proffie-v3.8.zip" | sha256sum --check
           python3 font-assets/package_smthjedi.py --output "$RUNNER_TEMP/SmthJedi-ProffieOS.zip"
-          mkdir -p quest-native/app/src/main/assets
-          unzip -q "$RUNNER_TEMP/SmthJedi-ProffieOS.zip" -d quest-native/app/src/main/assets
+          python3 quest-native/tools/prepare_quest_assets.py \
+            --ferase-zip "$RUNNER_TEMP/Ferase-Proffie-v3.8.zip" \
+            --smthjedi-zip "$RUNNER_TEMP/SmthJedi-ProffieOS.zip" \
+            --asset-dir quest-native/app/src/main/assets
+          python3 quest-native/tools/convert_luke_glb.py \
+            quest-native/model-source/luke-rotj.glb \
+            quest-native/app/src/main/assets/saber/luke_rotj.mesh \
+            --report quest-native/app/src/main/assets/saber/luke_rotj_mesh_report.json
 
       - name: Run portable engine regression tests
         working-directory: project-lightsaber
@@ -63,16 +73,16 @@ jobs:
           "$RUNNER_TEMP/lightsaber-trace"
           g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/audio_font_trace.cpp -o "$RUNNER_TEMP/lightsaber-audio-trace"
           "$RUNNER_TEMP/lightsaber-audio-trace"
-          mkdir -p "$RUNNER_TEMP/smthjedi-import-test"
-          unzip -q "$RUNNER_TEMP/SmthJedi-ProffieOS.zip" -d "$RUNNER_TEMP/smthjedi-import-test"
           g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/font_smoke.cpp -o "$RUNNER_TEMP/lightsaber-font-smoke"
-          "$RUNNER_TEMP/lightsaber-font-smoke" "$RUNNER_TEMP/smthjedi-import-test/SmthJedi"
+          g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/font_catalog_smoke.cpp -o "$RUNNER_TEMP/lightsaber-font-catalog"
+          "$RUNNER_TEMP/lightsaber-font-smoke" quest-native/app/src/main/assets/fonts/smthjedi
+          "$RUNNER_TEMP/lightsaber-font-catalog" quest-native/app/src/main/assets/fonts/*
 
       - name: Build standalone Quest debug APK
         working-directory: project-lightsaber
         run: ./gradlew --no-daemon --stacktrace --project-dir quest-native :app:assembleDebug
 
-      - name: Verify APK package, passthrough metadata, native code, and font
+      - name: Verify APK package, passthrough metadata, native code, profiles, fonts, and Luke mesh
         id: verify
         run: |
           apk="project-lightsaber/quest-native/app/build/outputs/apk/debug/app-debug.apk"
@@ -82,8 +92,20 @@ jobs:
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump xmltree "$apk" AndroidManifest.xml | grep -F "com.oculus.feature.PASSTHROUGH"
           unzip -l "$apk" | grep -F "lib/arm64-v8a/libquestxr.so"
           unzip -l "$apk" | grep -F "lib/arm64-v8a/libopenxr_loader.so"
-          unzip -l "$apk" | grep -F "assets/SmthJedi/smoothsw.ini"
-          unzip -l "$apk" | grep -E 'assets/SmthJedi/.*/(swingh|swingl)[0-9]+\.wav' | head -1
+          unzip -l "$apk" | grep -F "assets/fonts/smthjedi/smoothsw.ini"
+          unzip -l "$apk" | grep -F "assets/fonts/bode-akuna/smoothsw.ini"
+          unzip -l "$apk" | grep -F "assets/fonts/cere-junda/smoothsw.ini"
+          unzip -l "$apk" | grep -F "assets/fonts/darth-vader/smoothsw.ini"
+          unzip -l "$apk" | grep -F "assets/fonts/ninth-sister/smoothsw.ini"
+          unzip -l "$apk" | grep -F "assets/fonts/second-sister/smoothsw.ini"
+          unzip -l "$apk" | grep -F "assets/saber/luke_rotj.mesh"
+          unzip -l "$apk" | grep -F "assets/saber_profiles.tsv"
+          unzip -l "$apk" | grep -F "assets/credits/Ferase-README.md"
+          python3 - "$apk" <<'PY'
+          import sys, zipfile
+          with zipfile.ZipFile(sys.argv[1]) as apk_file:
+              assert apk_file.read("assets/saber/luke_rotj.mesh")[:4] == b"SLM1"
+          PY
           cp "$apk" "$RUNNER_TEMP/Project-Lightsaber-Quest3-debug.apk"
           sha256sum "$apk" | tee "$RUNNER_TEMP/quest-apk.sha256"
           echo "apk_sha256=$(sha256sum "$apk" | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
@@ -102,7 +124,7 @@ jobs:
           APK_SHA256: ${{ steps.verify.outputs.apk_sha256 }}
         run: |
           tag="lightsaber-quest-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
-          printf 'Project Lightsaber Quest 3 debug APK\nSource commit: %s\nAPK SHA-256: %s\n\nThis APK bundles the pinned SmthJedi font. Install for headset validation; no PC connection is needed after installation.\n' "$GITHUB_SHA" "$APK_SHA256" > "$RUNNER_TEMP/quest-release-notes.md"
+          printf 'Project Lightsaber Quest 3 debug APK\nSource commit: %s\nAPK SHA-256: %s\n\nIncludes the Luke ROTJ hilt model, green cylindrical blade, runtime selector, SmthJedi and five Ferase Jedi Survivor Proffie SmoothSwing V2 font auditions. The Ferase README and attribution are included. These audio profiles are not Luke ROTJ recordings. Standalone Quest 3; no PC connection required during play. Physical visual/audio validation is pending Management.\n' "$GITHUB_SHA" "$APK_SHA256" > "$RUNNER_TEMP/quest-release-notes.md"
           gh release create "$tag" \
             "$RUNNER_TEMP/Project-Lightsaber-Quest3-debug.apk#Project-Lightsaber-Quest3-debug.apk" \
             --repo "$GITHUB_REPOSITORY" \

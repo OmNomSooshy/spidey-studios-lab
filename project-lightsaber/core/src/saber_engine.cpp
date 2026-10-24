@@ -1,6 +1,5 @@
 #include "saber_engine.h"
 #include <algorithm>
-#include <array>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -95,43 +94,29 @@ MixGains SmoothSwingCore::update(const MotionFrame& f, bool on) {
 }
 
 struct SaberEngine::Impl {
-  static constexpr uint32_t kMotionQueueCapacity = 512;
   mutable std::mutex mutex;
   fs::path dir; std::string name, ignition_name, retraction_name, hum_name; bool ready=false, on=false, ignition=false, retracting=false, playing_postoff=false;
-  Wav hum, ignite, retract, postoff; std::vector<Wav> lows, highs;
+  Wav hum, ignite, retract, postoff, clash, blaster, stab, lock_start, lock_loop, lock_end;
+  std::vector<Wav> lows, highs;
   double effect_pos=0, postoff_pos=0, hum_pos=0, low_pos=0, high_pos=0;
+  double one_shot_pos=0, lock_pos=0, lock_start_pos=0;
+  Wav* one_shot=nullptr;
+  bool lock_active=false, lock_ending=false;
   float hum_gain=0, swing_low_gain=0, swing_high_gain=0, target_hum=0;
   float swing_low_current=0, swing_high_current=0;
-  MixGains motion_gains{};
   float font_hum_volume=15.0f/16.0f, font_effect_volume=1.0f;
   int hum_start_ms=100, smooth_swing_hum_start=0;
   float proffie_hum_delay_ms=-1.0f, hum_start_delay=0.0f, hum_fade_seconds=0.2f;
   double ignition_elapsed_seconds=0.0;
   int current_rate=44100;
-  // Sensor callback is the single producer; render() is the single consumer.
-  // Preserve every timestamped sample so the V2 box filter sees sensor events,
-  // rather than the same latest value repeated at the audio-block cadence.
-  std::array<MotionFrame, kMotionQueueCapacity> motion_queue{};
-  std::atomic<uint32_t> motion_write{0}, motion_read{0};
-  std::atomic<uint64_t> latest_timestamp{0};
-  std::atomic<uint64_t> motion_samples{0}, motion_processed{0}, motion_dropped{0}, rendered_frames{0};
+  std::atomic<float> gy{0}, gz{0}; std::atomic<uint64_t> timestamp{0};
+  std::atomic<uint64_t> motion_samples{0}, rendered_frames{0};
   std::atomic<float> reported_speed{0}; std::atomic<bool> reported_swing{false};
   SmoothSwingConfig config;
   SmoothSwingCore core;
   std::mt19937 rng{0x50524f46};
   size_t current=0; bool have_pair=false, was_swinging=false, reseed_after_swing=false;
   uint64_t last_pair_pick_ns=0;
-  void discardQueuedMotion() {
-    motion_read.store(motion_write.load(std::memory_order_acquire), std::memory_order_release);
-  }
-  bool enqueueMotion(const MotionFrame& f) {
-    uint32_t w=motion_write.load(std::memory_order_relaxed);
-    uint32_t r=motion_read.load(std::memory_order_acquire);
-    if (uint32_t(w-r)>=kMotionQueueCapacity) { motion_dropped.fetch_add(1,std::memory_order_relaxed); return false; }
-    motion_queue[w%kMotionQueueCapacity]=f;
-    motion_write.store(w+1,std::memory_order_release);
-    return true;
-  }
   bool loadSwing(const std::string& base,int n,Wav& w) {
     if(n==1 && (w.load(dir/(base+".wav")) || w.load(dir/base/(base+".wav"))))return true;
     for(int digits:{1,2,3,4}) { std::string number=zeroPad(n,digits),file=base+number+".wav";
@@ -147,7 +132,12 @@ struct SaberEngine::Impl {
   bool findEffect(const std::string& n, Wav& w) {
     fs::path flat=dir/(n+".wav"); if(w.load(flat)) return true;
     fs::path folder=dir/n;
-    if(fs::exists(folder)) for(auto& e:fs::directory_iterator(folder)) if(e.is_regular_file() && lower(e.path().extension().string())==".wav" && w.load(e.path())) return true;
+    if(fs::exists(folder)) {
+      std::vector<fs::path> files;
+      for(auto& e:fs::directory_iterator(folder)) if(e.is_regular_file() && lower(e.path().extension().string())==".wav") files.push_back(e.path());
+      std::sort(files.begin(), files.end());
+      for(const auto& file:files) if(w.load(file)) return true;
+    }
     return false;
   }
   bool effectPresent(const std::string& n) const {
@@ -158,7 +148,7 @@ struct SaberEngine::Impl {
       if(e.is_regular_file()&&lower(e.path().extension().string())==".wav") return true;
     return false;
   }
-  void newPair() { if(lows.empty()) return;uint64_t now=latest_timestamp.load(std::memory_order_relaxed);if(have_pair&&now>=last_pair_pick_ns&&now-last_pair_pick_ns<1'000'000'000ULL)return;std::uniform_int_distribution<size_t>d(0,lows.size()-1); std::uniform_real_distribution<float>offset(10.0f,60.0f); current=d(rng);last_pair_pick_ns=now;double start=smooth_swing_hum_start==0?now*1e-9:hum_pos/std::max(1,current_rate);low_pos=high_pos=start*std::max(1,current_rate);have_pair=true;core.resetTransition(offset(rng),(rng()&1)==0); }
+  void newPair() { if(lows.empty()) return;uint64_t now=timestamp.load(std::memory_order_relaxed);if(have_pair&&now>=last_pair_pick_ns&&now-last_pair_pick_ns<1'000'000'000ULL)return;std::uniform_int_distribution<size_t>d(0,lows.size()-1); std::uniform_real_distribution<float>offset(10.0f,60.0f); current=d(rng);last_pair_pick_ns=now;double start=smooth_swing_hum_start==0?now*1e-9:hum_pos/std::max(1,current_rate);low_pos=high_pos=start*std::max(1,current_rate);have_pair=true;core.resetTransition(offset(rng),(rng()&1)==0); }
   float source(const Wav& w, double& pos, int outch, int rate, bool loop) {
     if(!w.frames()) return 0;
     if(loop) { if(pos>=w.frames()*double(rate)/w.rate) pos=std::fmod(pos,w.frames()*double(rate)/w.rate); }
@@ -199,6 +189,7 @@ bool SaberEngine::loadFont(const std::string& path,std::string* error) {
   p.ready=false;
   if(!fs::is_directory(p.dir)){if(error)*error="Choose a Proffie sound-font ZIP or font directory.";return false;}
   p.name=p.dir.filename().string(); p.hum=Wav{};p.ignite=Wav{};p.retract=Wav{};p.postoff=Wav{};p.lows.clear();p.highs.clear();
+  p.clash=Wav{};p.blaster=Wav{};p.stab=Wav{};p.lock_start=Wav{};p.lock_loop=Wav{};p.lock_end=Wav{};p.one_shot=nullptr;p.lock_active=p.lock_ending=false;
   p.hum_name.clear();if(p.findEffect("humm",p.hum))p.hum_name="humm";else if(p.findEffect("hum",p.hum))p.hum_name="hum";
   if(p.hum_name.empty()){
     bool present=p.effectPresent("humm")||p.effectPresent("hum");
@@ -220,6 +211,12 @@ bool SaberEngine::loadFont(const std::string& path,std::string* error) {
     if(error)*error=present?"Unsupported audio encoding: retraction WAV must be PCM 16-bit mono or stereo WAV.":"Missing required WAV files: retraction needs in.wav, pstoff.wav, or a supported power-off effect.";
     return false;
   }
+  p.findEffect("clsh",p.clash);
+  p.findEffect("blst",p.blaster);
+  p.findEffect("stab",p.stab);
+  p.findEffect("bgnlock",p.lock_start);
+  p.findEffect("lock",p.lock_loop);
+  p.findEffect("endlock",p.lock_end);
   Wav probe_l,probe_h; bool modern=p.hasSwing("swingl",0)||p.hasSwing("swingh",0)||p.hasSwing("swingl",1)||p.hasSwing("swingh",1);
   std::string low_name=modern?"swingl":"lswing", high_name=modern?"swingh":"hswing";
   int first_file=(p.hasSwing(low_name,0)||p.hasSwing(high_name,0))?0:1;
@@ -238,27 +235,24 @@ bool SaberEngine::loadFont(const std::string& path,std::string* error) {
     return false;
   }
   p.config=SmoothSwingConfig{};p.core=SmoothSwingCore(p.config);if(!p.loadConfig(error))return false;p.font_hum_volume=15.0f/16.0f;p.font_effect_volume=1;p.hum_start_ms=100;p.proffie_hum_delay_ms=-1;p.smooth_swing_hum_start=0;p.loadFontConfig();
-  p.discardQueuedMotion();p.ready=true;p.on=false;p.hum_pos=p.low_pos=p.high_pos=p.postoff_pos=0;p.current=0;p.have_pair=false;p.was_swinging=false;p.reseed_after_swing=false;p.playing_postoff=false;p.swing_low_current=p.swing_high_current=0;p.motion_gains={};p.rendered_frames=0;p.reported_speed=0;p.reported_swing=false;p.ignition_elapsed_seconds=0;p.core.reset();
+  p.ready=true;p.on=false;p.hum_pos=p.low_pos=p.high_pos=p.postoff_pos=0;p.current=0;p.have_pair=false;p.was_swinging=false;p.reseed_after_swing=false;p.playing_postoff=false;p.swing_low_current=p.swing_high_current=0;p.motion_samples=0;p.rendered_frames=0;p.reported_speed=0;p.reported_swing=false;p.ignition_elapsed_seconds=0;p.core.reset();
   if(error) *error="";
   return true;
 }
 bool SaberEngine::fontReady() const {std::lock_guard<std::mutex>l(impl_->mutex);return impl_->ready;}
 std::string SaberEngine::fontName() const {std::lock_guard<std::mutex>l(impl_->mutex);return impl_->name;}
-void SaberEngine::ignite(){std::lock_guard<std::mutex>l(impl_->mutex);auto&p=*impl_;if(!p.ready)return;p.discardQueuedMotion();p.on=true;p.retracting=false;p.ignition=p.ignite.frames()>0;p.effect_pos=0;p.ignition_elapsed_seconds=0;p.hum_pos=0;p.target_hum=0;p.motion_gains={1,0,0};p.swing_low_current=p.swing_high_current=0;p.was_swinging=p.reseed_after_swing=false;p.core.reset();p.hum_fade_seconds=p.hum_name=="humm"?double(p.ignite.frames())/p.ignite.rate:0.2f;if(p.proffie_hum_delay_ms>=0)p.hum_start_delay=p.proffie_hum_delay_ms/1000.0f;else p.hum_start_delay=p.hum_name=="humm"?0.0f:std::max(0.0,double(p.ignite.frames())/p.ignite.rate-p.hum_start_ms/1000.0);p.newPair();}
-void SaberEngine::retract(){std::lock_guard<std::mutex>l(impl_->mutex);auto&p=*impl_;if(!p.on)return;p.on=false;p.retracting=p.retract.frames()>0;p.playing_postoff=false;p.effect_pos=p.postoff_pos=0;p.target_hum=0;p.motion_gains={};p.was_swinging=p.reseed_after_swing=false;}
-void SaberEngine::motion(const MotionFrame&f){impl_->latest_timestamp.store(f.timestamp_ns,std::memory_order_relaxed);impl_->motion_samples.fetch_add(1,std::memory_order_relaxed);impl_->enqueueMotion(f);}
-uint64_t SaberEngine::motionSamplesReceived()const{return impl_->motion_samples.load(std::memory_order_relaxed);}
-uint64_t SaberEngine::motionSamplesProcessed()const{return impl_->motion_processed.load(std::memory_order_relaxed);}
-uint64_t SaberEngine::motionSamplesDropped()const{return impl_->motion_dropped.load(std::memory_order_relaxed);}
+void SaberEngine::ignite(){std::lock_guard<std::mutex>l(impl_->mutex);auto&p=*impl_;if(!p.ready)return;p.on=true;p.retracting=false;p.ignition=p.ignite.frames()>0;p.effect_pos=0;p.ignition_elapsed_seconds=0;p.hum_pos=0;p.target_hum=0;p.swing_low_current=p.swing_high_current=0;p.was_swinging=p.reseed_after_swing=false;p.core.reset();p.hum_fade_seconds=p.hum_name=="humm"?double(p.ignite.frames())/p.ignite.rate:0.2f;if(p.proffie_hum_delay_ms>=0)p.hum_start_delay=p.proffie_hum_delay_ms/1000.0f;else p.hum_start_delay=p.hum_name=="humm"?0.0f:std::max(0.0,double(p.ignite.frames())/p.ignite.rate-p.hum_start_ms/1000.0);p.newPair();}
+void SaberEngine::retract(){std::lock_guard<std::mutex>l(impl_->mutex);auto&p=*impl_;if(!p.on)return;p.on=false;p.retracting=p.retract.frames()>0;p.playing_postoff=false;p.effect_pos=p.postoff_pos=0;p.target_hum=0;p.was_swinging=p.reseed_after_swing=false;}
+bool SaberEngine::effectAvailable(SaberEffect e) const {std::lock_guard<std::mutex>l(impl_->mutex);const auto&p=*impl_;switch(e){case SaberEffect::Clash:return p.clash.frames()>0;case SaberEffect::Blaster:return p.blaster.frames()>0;case SaberEffect::Stab:return p.stab.frames()>0;}return false;}
+void SaberEngine::triggerEffect(SaberEffect e) {std::lock_guard<std::mutex>l(impl_->mutex);auto&p=*impl_;if(!p.ready||!p.on)return;switch(e){case SaberEffect::Clash:p.one_shot=p.clash.frames()?&p.clash:nullptr;break;case SaberEffect::Blaster:p.one_shot=p.blaster.frames()?&p.blaster:nullptr;break;case SaberEffect::Stab:p.one_shot=p.stab.frames()?&p.stab:nullptr;break;}p.one_shot_pos=0;}
+bool SaberEngine::lockupAvailable() const {std::lock_guard<std::mutex>l(impl_->mutex);const auto&p=*impl_;return p.lock_loop.frames()>0;}
+void SaberEngine::setLockup(bool active) {std::lock_guard<std::mutex>l(impl_->mutex);auto&p=*impl_;if(!p.ready)return;if(active&&p.on&&p.lock_loop.frames()&&!p.lock_active){p.lock_active=true;p.lock_ending=false;p.lock_pos=0;p.lock_start_pos=0;}else if(!active&&p.lock_active){p.lock_active=false;p.lock_ending=p.lock_end.frames()>0;p.lock_pos=0;}}
+void SaberEngine::motion(const MotionFrame&f){impl_->gy.store(f.y_dps,std::memory_order_relaxed);impl_->gz.store(f.z_dps,std::memory_order_relaxed);impl_->timestamp.store(f.timestamp_ns,std::memory_order_relaxed);impl_->motion_samples.fetch_add(1,std::memory_order_relaxed);}
 bool SaberEngine::isOn()const{std::lock_guard<std::mutex>l(impl_->mutex);return impl_->on;}
-std::string SaberEngine::diagnostics()const{std::lock_guard<std::mutex>l(impl_->mutex);const auto&p=*impl_;std::ostringstream s;s<<"font="<<(p.ready?p.name:"none")<<";blade="<<(p.on?"on":"off")<<";gyro_samples="<<p.motion_samples.load()<<";gyro_processed="<<p.motion_processed.load()<<";gyro_dropped="<<p.motion_dropped.load()<<";speed_dps="<<p.reported_speed.load()<<";swing="<<(p.reported_swing.load()?"active":"idle")<<";sensitivity="<<p.config.swing_sensitivity<<";sharpness="<<p.config.swing_sharpness<<";hum="<<p.hum_name<<";ignite_effect="<<p.ignition_name<<";retract_effect="<<p.retraction_name<<";swing_pairs="<<p.lows.size()<<";humStart_ms="<<p.hum_start_ms<<";audio_frames="<<p.rendered_frames.load();return s.str();}
+std::string SaberEngine::diagnostics()const{std::lock_guard<std::mutex>l(impl_->mutex);const auto&p=*impl_;std::ostringstream s;s<<"font="<<(p.ready?p.name:"none")<<";blade="<<(p.on?"on":"off")<<";gyro_samples="<<p.motion_samples.load()<<";speed_dps="<<p.reported_speed.load()<<";swing="<<(p.reported_swing.load()?"active":"idle")<<";sensitivity="<<p.config.swing_sensitivity<<";sharpness="<<p.config.swing_sharpness<<";hum="<<p.hum_name<<";ignite_effect="<<p.ignition_name<<";retract_effect="<<p.retraction_name<<";swing_pairs="<<p.lows.size()<<";humStart_ms="<<p.hum_start_ms<<";audio_frames="<<p.rendered_frames.load();return s.str();}
 void SaberEngine::render(int16_t*out,int frames,int rate){
   std::lock_guard<std::mutex> lock(impl_->mutex); auto&p=*impl_; if(!out||frames<=0||rate<=0)return;
-  MixGains gains=p.motion_gains;
-  uint32_t r=p.motion_read.load(std::memory_order_relaxed);
-  const uint32_t w=p.motion_write.load(std::memory_order_acquire);
-  while(r!=w){p.motion_gains=p.core.update(p.motion_queue[r%Impl::kMotionQueueCapacity],p.on);gains=p.motion_gains;++r;p.motion_processed.fetch_add(1,std::memory_order_relaxed);}
-  p.motion_read.store(r,std::memory_order_release);
+  MotionFrame mf{0,p.gy.load(),p.gz.load(),p.timestamp.load()}; MixGains gains=p.core.update(mf,p.on);
   p.reported_speed.store(p.core.speed_dps(),std::memory_order_relaxed);
   p.current_rate=rate;
   bool swinging=p.on&&p.core.speed_dps()>=p.config.swing_strength_threshold*.9f;
@@ -283,6 +277,10 @@ void SaberEngine::render(int16_t*out,int frames,int rate){
       if(p.playing_postoff){l+=p.source(p.postoff,p.postoff_pos,0,rate,false)*p.font_effect_volume;if(p.postoff_pos>=p.postoff.frames()*double(rate)/p.postoff.rate)p.retracting=false;}
       else {l+=p.source(p.retract,p.effect_pos,0,rate,false)*p.font_effect_volume;if(p.effect_pos>=p.retract.frames()*double(rate)/p.retract.rate){if(p.postoff.frames())p.playing_postoff=true;else p.retracting=false;}}
     }
+    if(p.one_shot&&p.one_shot->frames()){l+=p.source(*p.one_shot,p.one_shot_pos,0,rate,false)*p.font_effect_volume;if(p.one_shot_pos>=p.one_shot->frames()*double(rate)/p.one_shot->rate)p.one_shot=nullptr;}
+    if(p.on&&p.lock_active&&p.lock_start.frames()&&p.lock_start_pos<p.lock_start.frames()*double(rate)/p.lock_start.rate)l+=p.source(p.lock_start,p.lock_start_pos,0,rate,false)*p.font_effect_volume;
+    if(p.on&&p.lock_active&&p.lock_loop.frames())l+=p.source(p.lock_loop,p.lock_pos,0,rate,true)*p.font_effect_volume;
+    else if(p.lock_ending&&p.lock_end.frames()){l+=p.source(p.lock_end,p.lock_pos,0,rate,false)*p.font_effect_volume;if(p.lock_pos>=p.lock_end.frames()*double(rate)/p.lock_end.rate)p.lock_ending=false;}
     float lo=0,hi=0;
     if(p.on&&p.have_pair){lo=p.source(p.lows[p.current],p.low_pos,0,rate,true)*p.swing_low_current;hi=p.source(p.highs[p.current],p.high_pos,0,rate,true)*p.swing_high_current;}
     float sample=32767.0f*std::tanh(((l+lo+hi)*0.78f)/32767.0f);

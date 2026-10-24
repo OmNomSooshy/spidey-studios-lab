@@ -17,6 +17,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstring>
+#include <fstream>
 #include <string>
 #include <vector>
 
@@ -139,6 +140,19 @@ struct OpenXrProgram::Impl {
     PFN_xrPassthroughLayerResumeFB pfnPassthroughLayerResumeFB = nullptr;
     bool passthrough_ready = false;
 
+    XrSwapchain scene_swapchain = XR_NULL_HANDLE;
+    std::vector<XrSwapchainImageOpenGLESKHR> scene_images;
+    std::vector<XrViewConfigurationView> view_config;
+    std::vector<XrCompositionLayerProjectionView> projection_views;
+    uint32_t scene_width=0,scene_height=0;
+    GLuint scene_fbo=0, scene_vao=0, scene_depth = 0, scene_program = 0, hilt_vbo = 0, blade_vbo = 0;
+    GLint scene_mvp = -1, scene_mv=-1, scene_color = -1, scene_unlit=-1;
+    struct MeshRange { uint32_t first=0, count=0; float r=1,g=1,b=1,metal=0,rough=1; };
+    std::vector<MeshRange> hilt_ranges;
+    uint32_t hilt_vertices = 0;
+    std::string loaded_hilt_asset;
+    bool scene_ready = false;
+
     bool InitLoader();
     bool CreateInstance();
     bool InitSystem();
@@ -152,6 +166,10 @@ struct OpenXrProgram::Impl {
     void FillHudPixels(const TrackingFrame& f);
     void RenderHud(const TrackingFrame& f);
     bool CreateBeamSwapchain();
+    bool CreateSceneSwapchain();
+    bool LoadHiltMesh(const std::string& relative_path);
+    bool CreateScenePipeline();
+    bool RenderScene(const TrackingFrame& f, XrTime time, XrCompositionLayerProjection* layer);
     void FillBeamOnce();
     void ComputeHudRays(const TrackingFrame& f);
     bool CreatePassthrough();
@@ -556,6 +574,8 @@ bool OpenXrProgram::Impl::CreateHudSwapchain() {
 namespace {
 
 struct V3 { float x, y, z; };
+struct Mat4 { float v[16]{}; };
+constexpr float kPi=3.14159265358979323846f;
 
 inline V3 Sub(V3 a, V3 b) { return {a.x - b.x, a.y - b.y, a.z - b.z}; }
 inline float Dot(V3 a, V3 b) { return a.x * b.x + a.y * b.y + a.z * b.z; }
@@ -635,6 +655,100 @@ bool OpenXrProgram::Impl::CreateBeamSwapchain() {
         reinterpret_cast<XrSwapchainImageBaseHeader*>(beam_images.data()));
     LOGI("Beam swapchain created (%dx%d, %u images).", BEAM_W, BEAM_H, img_count);
     return true;
+}
+
+namespace {
+GLuint CompileShader(GLenum type,const char* source) {
+    GLuint shader=glCreateShader(type);glShaderSource(shader,1,&source,nullptr);glCompileShader(shader);
+    GLint ok=0;glGetShaderiv(shader,GL_COMPILE_STATUS,&ok);if(!ok){char log[1024]{};glGetShaderInfoLog(shader,sizeof(log),nullptr,log);LOGE("Scene shader compile failed: %s",log);glDeleteShader(shader);return 0;}return shader;
+}
+Mat4 Identity4(){Mat4 m{};m.v[0]=m.v[5]=m.v[10]=m.v[15]=1;return m;}
+Mat4 Mul4(const Mat4&a,const Mat4&b){Mat4 r{};for(int c=0;c<4;c++)for(int row=0;row<4;row++)for(int k=0;k<4;k++)r.v[c*4+row]+=a.v[k*4+row]*b.v[c*4+k];return r;}
+Mat4 Translate4(float x,float y,float z){Mat4 m=Identity4();m.v[12]=x;m.v[13]=y;m.v[14]=z;return m;}
+Mat4 Scale4(float x,float y,float z){Mat4 m=Identity4();m.v[0]=x;m.v[5]=y;m.v[10]=z;return m;}
+Mat4 Quat4(const XrQuaternionf&q){Mat4 m=Identity4();float x=q.x,y=q.y,z=q.z,w=q.w;m.v[0]=1-2*(y*y+z*z);m.v[1]=2*(x*y+z*w);m.v[2]=2*(x*z-y*w);m.v[4]=2*(x*y-z*w);m.v[5]=1-2*(x*x+z*z);m.v[6]=2*(y*z+x*w);m.v[8]=2*(x*z+y*w);m.v[9]=2*(y*z-x*w);m.v[10]=1-2*(x*x+y*y);return m;}
+Mat4 PoseMatrix(const XrPosef&p){return Mul4(Translate4(p.position.x,p.position.y,p.position.z),Quat4(p.orientation));}
+Mat4 ViewMatrix(const XrPosef&p){XrQuaternionf q{-p.orientation.x,-p.orientation.y,-p.orientation.z,p.orientation.w};return Mul4(Quat4(q),Translate4(-p.position.x,-p.position.y,-p.position.z));}
+Mat4 ProjectionMatrix(const XrFovf&f,float near_z,float far_z){float l=std::tan(f.angleLeft),r=std::tan(f.angleRight),d=std::tan(f.angleDown),u=std::tan(f.angleUp);Mat4 m{};m.v[0]=2/(r-l);m.v[8]=(r+l)/(r-l);m.v[5]=2/(u-d);m.v[9]=(u+d)/(u-d);m.v[10]=-(far_z+near_z)/(far_z-near_z);m.v[14]=-2*far_z*near_z/(far_z-near_z);m.v[11]=-1;return m;}
+void SetUniformMat(GLint loc,const Mat4&m){glUniformMatrix4fv(loc,1,GL_FALSE,m.v);}
+}
+
+bool OpenXrProgram::Impl::CreateScenePipeline(){
+    static const char* vs="#version 300 es\nlayout(location=0) in vec3 aPos;layout(location=1) in vec3 aNormal;uniform mat4 uMvp;uniform mat4 uModelView;out vec3 vNormal;void main(){gl_Position=uMvp*vec4(aPos,1.0);vNormal=mat3(uModelView)*aNormal;}";
+    static const char* fs="#version 300 es\nprecision mediump float;in vec3 vNormal;uniform vec4 uColor;uniform float uUnlit;out vec4 frag;void main(){float l=mix(0.32+0.68*max(dot(normalize(vNormal),normalize(vec3(0.3,0.7,0.8))),0.0),1.0,uUnlit);frag=vec4(uColor.rgb*l,uColor.a);}";
+    GLuint v=CompileShader(GL_VERTEX_SHADER,vs),f=CompileShader(GL_FRAGMENT_SHADER,fs);if(!v||!f)return false;
+    scene_program=glCreateProgram();glAttachShader(scene_program,v);glAttachShader(scene_program,f);glLinkProgram(scene_program);glDeleteShader(v);glDeleteShader(f);
+    GLint linked=0;glGetProgramiv(scene_program,GL_LINK_STATUS,&linked);if(!linked){char log[1024]{};glGetProgramInfoLog(scene_program,sizeof(log),nullptr,log);LOGE("Scene program link failed: %s",log);return false;}
+    scene_mvp=glGetUniformLocation(scene_program,"uMvp");scene_mv=glGetUniformLocation(scene_program,"uModelView");scene_color=glGetUniformLocation(scene_program,"uColor");scene_unlit=glGetUniformLocation(scene_program,"uUnlit");
+    glGenVertexArrays(1,&scene_vao);
+    std::vector<float> cylinder;constexpr int sides=24;
+    for(int i=0;i<sides;i++){float a=2*kPi*i/sides,b=2*kPi*(i+1)/sides;float ax=std::cos(a),ay=std::sin(a),bx=std::cos(b),by=std::sin(b);
+      const float z0=0,z1=-1;auto vtx=[&](float x,float y,float z){cylinder.insert(cylinder.end(),{x,y,z,x,y,0});};
+      vtx(ax,ay,z0);vtx(bx,by,z0);vtx(bx,by,z1);vtx(ax,ay,z0);vtx(bx,by,z1);vtx(ax,ay,z1);
+    }
+    glGenBuffers(1,&blade_vbo);glBindBuffer(GL_ARRAY_BUFFER,blade_vbo);glBufferData(GL_ARRAY_BUFFER,cylinder.size()*sizeof(float),cylinder.data(),GL_STATIC_DRAW);glBindBuffer(GL_ARRAY_BUFFER,0);
+    scene_ready=true;return true;
+}
+
+bool OpenXrProgram::Impl::LoadHiltMesh(const std::string& relative_path){
+    const std::string path=std::string(app->activity->internalDataPath)+"/ProjectLightsaber/"+relative_path;
+    std::ifstream in(path,std::ios::binary);if(!in){LOGE("Converted hilt mesh missing: %s",path.c_str());return false;}
+    char magic[4];uint32_t version=0;in.read(magic,4);in.read(reinterpret_cast<char*>(&version),4);in.read(reinterpret_cast<char*>(&hilt_vertices),4);uint32_t mats=0,reserved=0;in.read(reinterpret_cast<char*>(&mats),4);in.read(reinterpret_cast<char*>(&reserved),4);
+    if(!in||std::memcmp(magic,"SLM1",4)||version!=1||mats>64||hilt_vertices>2000000){LOGE("Invalid Luke mesh header");return false;}
+    struct Mat {float rgba[4],metal,rough;};std::vector<Mat> material(mats);in.read(reinterpret_cast<char*>(material.data()),mats*sizeof(Mat));hilt_ranges.resize(mats);
+    for(auto&r:hilt_ranges){in.read(reinterpret_cast<char*>(&r.first),4);in.read(reinterpret_cast<char*>(&r.count),4);}
+    std::vector<float> verts((size_t)hilt_vertices*6);in.read(reinterpret_cast<char*>(verts.data()),verts.size()*sizeof(float));if(!in){LOGE("Truncated Luke mesh data");return false;}
+    for(size_t i=0;i<hilt_ranges.size();i++){auto&r=hilt_ranges[i];const auto&m=material[i];r.r=m.rgba[0];r.g=m.rgba[1];r.b=m.rgba[2];r.metal=m.metal;r.rough=m.rough;if(r.first+r.count>hilt_vertices){LOGE("Invalid Luke mesh material range");return false;}}
+    if(hilt_vbo)glDeleteBuffers(1,&hilt_vbo);glGenBuffers(1,&hilt_vbo);glBindBuffer(GL_ARRAY_BUFFER,hilt_vbo);glBufferData(GL_ARRAY_BUFFER,verts.size()*sizeof(float),verts.data(),GL_STATIC_DRAW);glBindBuffer(GL_ARRAY_BUFFER,0);
+    loaded_hilt_asset=relative_path;LOGI("Loaded hilt asset %s: %u vertices, %zu retained source material groups",relative_path.c_str(),hilt_vertices,hilt_ranges.size());return true;
+}
+
+bool OpenXrProgram::Impl::CreateSceneSwapchain(){
+    uint32_t count=0;XR_CHECK(instance,xrEnumerateViewConfigurationViews(instance,system_id,XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO,0,&count,nullptr));
+    if(count!=2){LOGE("Expected stereo views, runtime returned %u",count);return false;}view_config.assign(count,{XR_TYPE_VIEW_CONFIGURATION_VIEW});
+    XR_CHECK(instance,xrEnumerateViewConfigurationViews(instance,system_id,XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO,count,&count,view_config.data()));
+    scene_width=view_config[0].recommendedImageRectWidth;scene_height=view_config[0].recommendedImageRectHeight;
+    XrSwapchainCreateInfo ci{XR_TYPE_SWAPCHAIN_CREATE_INFO};ci.usageFlags=XR_SWAPCHAIN_USAGE_COLOR_ATTACHMENT_BIT;ci.format=swapchain_format;ci.sampleCount=1;ci.width=scene_width;ci.height=scene_height;ci.faceCount=1;ci.arraySize=count;ci.mipCount=1;
+    XR_CHECK(instance,xrCreateSwapchain(session,&ci,&scene_swapchain));uint32_t n=0;xrEnumerateSwapchainImages(scene_swapchain,0,&n,nullptr);scene_images.assign(n,{XR_TYPE_SWAPCHAIN_IMAGE_OPENGL_ES_KHR});XR_CHECK(instance,xrEnumerateSwapchainImages(scene_swapchain,n,&n,reinterpret_cast<XrSwapchainImageBaseHeader*>(scene_images.data())));
+    glGenFramebuffers(1,&scene_fbo);glGenRenderbuffers(1,&scene_depth);glBindRenderbuffer(GL_RENDERBUFFER,scene_depth);glRenderbufferStorage(GL_RENDERBUFFER,GL_DEPTH_COMPONENT24,scene_width,scene_height);glBindRenderbuffer(GL_RENDERBUFFER,0);
+    if(!CreateScenePipeline()||!LoadHiltMesh("saber/luke_rotj.mesh"))return false;
+    projection_views.assign(count,{XR_TYPE_COMPOSITION_LAYER_PROJECTION_VIEW});LOGI("Saber scene swapchain created: %ux%u x %u eyes",scene_width,scene_height,count);return true;
+}
+
+bool OpenXrProgram::Impl::RenderScene(const TrackingFrame&f,XrTime time,XrCompositionLayerProjection*layer){
+    if(!scene_ready||scene_swapchain==XR_NULL_HANDLE)return false;
+    if(f.hilt_asset[0]&&loaded_hilt_asset!=f.hilt_asset)LoadHiltMesh(f.hilt_asset);
+    XrViewLocateInfo li{XR_TYPE_VIEW_LOCATE_INFO};li.viewConfigurationType=XR_VIEW_CONFIGURATION_TYPE_PRIMARY_STEREO;li.displayTime=time;li.space=local_space;
+    XrViewState state{XR_TYPE_VIEW_STATE};uint32_t count=0;std::vector<XrView> views(view_config.size(),{XR_TYPE_VIEW});
+    if(XR_FAILED(xrLocateViews(session,&li,&state,(uint32_t)views.size(),&count,views.data()))||count!=2)return false;
+    uint32_t image=0;XrSwapchainImageAcquireInfo ai{XR_TYPE_SWAPCHAIN_IMAGE_ACQUIRE_INFO};if(XR_FAILED(xrAcquireSwapchainImage(scene_swapchain,&ai,&image)))return false;
+    XrSwapchainImageWaitInfo wi{XR_TYPE_SWAPCHAIN_IMAGE_WAIT_INFO};wi.timeout=XR_INFINITE_DURATION;if(XR_FAILED(xrWaitSwapchainImage(scene_swapchain,&wi))){XrSwapchainImageReleaseInfo ri{XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO};xrReleaseSwapchainImage(scene_swapchain,&ri);return false;}
+    glBindFramebuffer(GL_FRAMEBUFFER,scene_fbo);glBindRenderbuffer(GL_RENDERBUFFER,scene_depth);glFramebufferRenderbuffer(GL_FRAMEBUFFER,GL_DEPTH_ATTACHMENT,GL_RENDERBUFFER,scene_depth);
+    glEnable(GL_DEPTH_TEST);glDepthFunc(GL_LEQUAL);glDisable(GL_CULL_FACE);glEnable(GL_BLEND);glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);glUseProgram(scene_program);glBindVertexArray(scene_vao);
+    const bool hilt_ok=f.right_grip.valid&&f.right_grip.active&&hilt_vbo;
+    XrPosef grip{};if(hilt_ok){grip.position={f.right_grip.px,f.right_grip.py,f.right_grip.pz};grip.orientation={f.right_grip.qx,f.right_grip.qy,f.right_grip.qz,f.right_grip.qw};}
+    Mat4 hilt_model=PoseMatrix(grip);Mat4 blade_base=Mul4(hilt_model,Translate4(0,0,-0.157223f));
+    for(uint32_t eye=0;eye<2;eye++){
+        glFramebufferTextureLayer(GL_FRAMEBUFFER,GL_COLOR_ATTACHMENT0,scene_images[image].image,0,(GLint)eye);
+        glViewport(0,0,(GLsizei)scene_width,(GLsizei)scene_height);glClearColor(0,0,0,0);glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        if(glCheckFramebufferStatus(GL_FRAMEBUFFER)!=GL_FRAMEBUFFER_COMPLETE){LOGE("Quest eye framebuffer incomplete");continue;}
+        const Mat4 view=ViewMatrix(views[eye].pose),proj=ProjectionMatrix(views[eye].fov,0.03f,20.0f);
+        auto draw=[&](GLuint buffer,uint32_t first,uint32_t count,const Mat4&model,float r,float g,float b,float alpha,float unlit){
+            const Mat4 mv=Mul4(view,model),mvp=Mul4(proj,mv);SetUniformMat(scene_mvp,mvp);SetUniformMat(scene_mv,mv);
+            glUniform4f(scene_color,r,g,b,alpha);glUniform1f(scene_unlit,unlit);glBindBuffer(GL_ARRAY_BUFFER,buffer);
+            glEnableVertexAttribArray(0);glEnableVertexAttribArray(1);glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)0);glVertexAttribPointer(1,3,GL_FLOAT,GL_FALSE,6*sizeof(float),(void*)(3*sizeof(float)));
+            glDrawArrays(GL_TRIANGLES,(GLint)first,(GLsizei)count);
+        };
+        if(hilt_ok)for(const auto&m:hilt_ranges)if(m.count)draw(hilt_vbo,m.first,m.count,hilt_model,m.r,m.g,m.b,1.0f,0.0f);
+        if(hilt_ok&&f.blade_visible&&f.blade_extension>0.001f){
+            glDepthMask(GL_FALSE);draw(blade_vbo,0,24*6,Mul4(blade_base,Scale4(0.022f,0.022f,f.blade_length_m*f.blade_extension)),f.blade_r,f.blade_g,f.blade_b,0.28f,1.0f);
+            glDepthMask(GL_TRUE);draw(blade_vbo,0,24*6,Mul4(blade_base,Scale4(0.009f,0.009f,f.blade_length_m*f.blade_extension)),0.72f,1.0f,0.78f,1.0f,1.0f);
+        }
+        XrCompositionLayerProjectionView&pv=projection_views[eye];pv.pose=views[eye].pose;pv.fov=views[eye].fov;pv.subImage.swapchain=scene_swapchain;pv.subImage.imageRect.offset={0,0};pv.subImage.imageRect.extent={(int32_t)scene_width,(int32_t)scene_height};pv.subImage.imageArrayIndex=eye;
+    }
+    glBindBuffer(GL_ARRAY_BUFFER,0);glBindFramebuffer(GL_FRAMEBUFFER,0);glDisable(GL_BLEND);glDepthMask(GL_TRUE);
+    XrSwapchainImageReleaseInfo ri{XR_TYPE_SWAPCHAIN_IMAGE_RELEASE_INFO};if(XR_FAILED(xrReleaseSwapchainImage(scene_swapchain,&ri)))return false;
+    layer->layerFlags=XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;layer->space=local_space;layer->viewCount=(uint32_t)projection_views.size();layer->views=projection_views.data();return true;
 }
 
 // Uploads the static beam texture once: left half cyan (left hand), right
@@ -742,7 +856,18 @@ void OpenXrProgram::Impl::FillHudPixels(const TrackingFrame& f) {
 
     const int scale = 2;
     HudDrawText(buf, W, H, 16, 18, "PROJECT LIGHTSABER", scale, 230, 248, 255);
-    HudDrawText(buf, W, H, 16, 42, "QUEST 3 / SMOOTHSWING V2", scale, 125, 210, 255);
+    HudDrawText(buf, W, H, 16, 42, "QUEST 3 / PROFFIE-DERIVED SMOOTHSWING V2", scale, 125, 210, 255);
+    HudDrawText(buf, W, H, 16, 72, f.profile_name, scale, 115, 255, 145);
+    HudDrawText(buf, W, H, 16, 92, f.profile_note, scale, 190, 210, 225);
+    if(f.selector_open){
+        char choice[80];std::snprintf(choice,sizeof(choice),"SABER SELECTOR %d/%d",f.profile_index+1,f.profile_count);
+        HudDrawText(buf,W,H,16,132,choice,scale,255,220,120);
+        HudDrawText(buf,W,H,16,152,f.selector_profile_name,scale,255,240,185);
+        HudDrawText(buf,W,H,16,172,"LEFT STICK: BROWSE   X: SELECT   Y: CLOSE",scale,225,235,245);
+    } else {
+        HudDrawText(buf,W,H,16,132,"A TOGGLE   B BLASTER   RT CLASH   LT STAB",scale,210,225,238);
+        HudDrawText(buf,W,H,16,152,"HOLD RIGHT GRIP: LOCKUP   LEFT Y: SELECT SABER",scale,210,225,238);
+    }
     HudDrawText(buf, W, H, 16, H - 94,
                 passthrough_ready ? "PASSTHROUGH ACTIVE" : "PASSTHROUGH ERROR - CHECK LOGCAT",
                 scale, passthrough_ready ? 120 : 255, 255,
@@ -816,6 +941,10 @@ bool OpenXrProgram::Create(android_app* app) {
     if (!impl_->CreateHudSwapchain()) {
         LOGW("HUD swapchain creation failed; continuing without overlay.");
         impl_->hud_swapchain = XR_NULL_HANDLE;
+    }
+    if (!impl_->CreateSceneSwapchain()) {
+        LOGE("Required saber projection renderer could not be initialized.");
+        return false;
     }
     if (impl_->hud_swapchain != XR_NULL_HANDLE &&
         !impl_->CreateBeamSwapchain()) {
@@ -959,11 +1088,10 @@ void OpenXrProgram::Locate(TrackingFrame* out, int64_t predictedDisplayTime) {
 void OpenXrProgram::EndFrame(int64_t predictedDisplayTime,
                              const TrackingFrame& frame) {
     XrCompositionLayerPassthroughFB pass{XR_TYPE_COMPOSITION_LAYER_PASSTHROUGH_FB};
+    XrCompositionLayerProjection projection{XR_TYPE_COMPOSITION_LAYER_PROJECTION};
     XrCompositionLayerQuad quad{XR_TYPE_COMPOSITION_LAYER_QUAD};
     XrCompositionLayerQuad beams[2] = {{XR_TYPE_COMPOSITION_LAYER_QUAD},
                                        {XR_TYPE_COMPOSITION_LAYER_QUAD}};
-    XrCompositionLayerQuad blade_glow{XR_TYPE_COMPOSITION_LAYER_QUAD};
-    XrCompositionLayerQuad blade_core{XR_TYPE_COMPOSITION_LAYER_QUAD};
     XrCompositionLayerBaseHeader* layers[6];
     uint32_t layer_count = 0;
 
@@ -976,34 +1104,13 @@ void OpenXrProgram::EndFrame(int64_t predictedDisplayTime,
             reinterpret_cast<XrCompositionLayerBaseHeader*>(&pass);
     }
 
+    if (impl_->frame_should_render && impl_->RenderScene(frame,(XrTime)predictedDisplayTime,&projection))
+        layers[layer_count++]=reinterpret_cast<XrCompositionLayerBaseHeader*>(&projection);
+
     if (impl_->frame_should_render && impl_->hud_swapchain != XR_NULL_HANDLE) {
         impl_->ComputeHudRays(frame);   // before RenderHud: HUD draws hit markers
         impl_->RenderHud(frame);
         impl_->FillBeamOnce();
-
-        // A pair of controller-space quads forms a simple luminous blade.
-        // Its long axis maps to the right grip's local -Z hilt direction.
-        if (frame.saber_on && frame.right_grip.valid && frame.right_grip.active &&
-            impl_->beam_swapchain != XR_NULL_HANDLE && impl_->beam_filled &&
-            impl_->grip_space[1] != XR_NULL_HANDLE) {
-            const XrQuaternionf blade_orientation{-0.70710678f, 0.0f, 0.0f, 0.70710678f};
-            auto configure_blade = [&](XrCompositionLayerQuad& blade, float width) {
-                blade.layerFlags = XR_COMPOSITION_LAYER_BLEND_TEXTURE_SOURCE_ALPHA_BIT;
-                blade.space = impl_->grip_space[1];
-                blade.eyeVisibility = XR_EYE_VISIBILITY_BOTH;
-                blade.subImage.swapchain = impl_->beam_swapchain;
-                blade.subImage.imageRect.offset = {0, 0};
-                blade.subImage.imageRect.extent = {Impl::BEAM_W / 2, Impl::BEAM_H};
-                blade.subImage.imageArrayIndex = 0;
-                blade.pose.orientation = blade_orientation;
-                blade.pose.position = {0.0f, 0.0f, -0.54f};
-                blade.size = {width, 1.08f};
-            };
-            configure_blade(blade_glow, 0.060f);
-            configure_blade(blade_core, 0.025f);
-            layers[layer_count++] = reinterpret_cast<XrCompositionLayerBaseHeader*>(&blade_glow);
-            layers[layer_count++] = reinterpret_cast<XrCompositionLayerBaseHeader*>(&blade_core);
-        }
 
         // Capture a world-locked pose once: 1.2 m in front of the initial gaze,
         // yaw-only so the panel stays upright and facing the user.
@@ -1107,6 +1214,13 @@ void OpenXrProgram::Destroy() {
         impl_->pfnDestroyPassthroughFB(impl_->passthrough);
         impl_->passthrough = XR_NULL_HANDLE;
     }
+    if (impl_->scene_swapchain) { xrDestroySwapchain(impl_->scene_swapchain); impl_->scene_swapchain = XR_NULL_HANDLE; }
+    if(impl_->scene_fbo)glDeleteFramebuffers(1,&impl_->scene_fbo);
+    if(impl_->scene_vao)glDeleteVertexArrays(1,&impl_->scene_vao);
+    if(impl_->scene_depth)glDeleteRenderbuffers(1,&impl_->scene_depth);
+    if(impl_->scene_program)glDeleteProgram(impl_->scene_program);
+    if(impl_->hilt_vbo)glDeleteBuffers(1,&impl_->hilt_vbo);
+    if(impl_->blade_vbo)glDeleteBuffers(1,&impl_->blade_vbo);
     if (impl_->hud_swapchain) { xrDestroySwapchain(impl_->hud_swapchain); impl_->hud_swapchain = XR_NULL_HANDLE; }
     if (impl_->beam_swapchain) { xrDestroySwapchain(impl_->beam_swapchain); impl_->beam_swapchain = XR_NULL_HANDLE; }
     if (impl_->view_space) { xrDestroySpace(impl_->view_space); impl_->view_space = XR_NULL_HANDLE; }

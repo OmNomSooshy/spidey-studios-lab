@@ -34,3 +34,8 @@ Keep the screen awake; the app registers the gyroscope while resumed. Test on th
 ## Architecture
 
 Android `SensorManager` supplies timestamped gyroscope samples to JNI. A platform-independent C++ core filters/interprets motion and renders interleaved PCM. Android `AudioTrack` handles output. ZIP import and font configuration stay separate from the core's motion and render interfaces, so a future Quest adapter can provide controller angular velocity and consume the same PCM renderer. No Quest implementation is included.
+
+
+## Mission 003 — Quest 3 saber identity build
+
+The Quest native OpenXR build is the working Mission 002 baseline. Mission 003 extends that app with a supplied Luke ROTJ hilt mesh, a controller-aligned green cylindrical blade, a runtime profile/font selector, and manual font-supported effects. The Mission 003 source is on `work`; the GitHub Actions run and downloadable APK are pending validation. **The current Mission 002 APK is not the Mission 003 deliverable.** See [MISSION_REPORT.md](MISSION_REPORT.md) for implementation status, font provenance, limitations, and the Management Quest test procedure.

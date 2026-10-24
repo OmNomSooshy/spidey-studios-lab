@@ -13,17 +13,17 @@ target_include_directories(native_app_glue PUBLIC
     ${ANDROID_NDK}/sources/android/native_app_glue)
 
 set(LIGHTSABER_CORE ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../core)
-set(FONT_ASSET_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../assets/SmthJedi)
-file(GLOB_RECURSE FONT_ASSET_PATHS RELATIVE "${FONT_ASSET_DIR}" "${FONT_ASSET_DIR}/*")
-set(FONT_HEADER "#pragma once\nstatic constexpr const char* kFontAssetPaths[] = {\n")
-foreach(FONT_PATH ${FONT_ASSET_PATHS})
-    if(NOT IS_DIRECTORY "${FONT_ASSET_DIR}/${FONT_PATH}")
-        string(REPLACE "\\" "/" FONT_PATH "${FONT_PATH}")
-        string(APPEND FONT_HEADER "    \"${FONT_PATH}\",\n")
+set(APP_ASSET_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../assets)
+file(GLOB_RECURSE BUNDLED_ASSET_PATHS RELATIVE "${APP_ASSET_DIR}" "${APP_ASSET_DIR}/*")
+set(ASSET_HEADER "#pragma once\nstatic constexpr const char* kBundledAssetPaths[] = {\n")
+foreach(ASSET_PATH ${BUNDLED_ASSET_PATHS})
+    if(NOT IS_DIRECTORY "${APP_ASSET_DIR}/${ASSET_PATH}")
+        string(REPLACE "\\" "/" ASSET_PATH "${ASSET_PATH}")
+        string(APPEND ASSET_HEADER "    \"${ASSET_PATH}\",\n")
     endif()
 endforeach()
-string(APPEND FONT_HEADER "};\nstatic constexpr int kFontAssetPathCount = sizeof(kFontAssetPaths) / sizeof(kFontAssetPaths[0]);\n")
-file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/font_assets.h" "${FONT_HEADER}")
+string(APPEND ASSET_HEADER "};\nstatic constexpr int kBundledAssetPathCount = sizeof(kBundledAssetPaths) / sizeof(kBundledAssetPaths[0]);\n")
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/bundled_assets.h" "${ASSET_HEADER}")
 
 add_library(questxr SHARED
     main.cpp

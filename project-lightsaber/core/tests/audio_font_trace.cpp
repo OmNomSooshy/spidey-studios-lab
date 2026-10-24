@@ -20,6 +20,8 @@ int main(){
   fs::path root=fs::temp_directory_path()/"lightsaber-font-fixture";fs::remove_all(root);
   wav(root/"hum.wav",110);wav(root/"in.wav",220);wav(root/"out.wav",330);
   wav(root/"swingl"/"swingl01.wav",500);wav(root/"swingh"/"swingh01.wav",900);
+  wav(root/"clsh"/"clsh1.wav",1200);wav(root/"blst"/"blst1.wav",1400);wav(root/"stab"/"stab1.wav",1600);
+  wav(root/"bgnlock"/"bgnlock1.wav",1800);wav(root/"lock"/"lock1.wav",700);wav(root/"endlock"/"endlock1.wav",600);
   {std::ofstream c(root/"smoothsw.ini");c<<"SwingSensitivity=100\nSwingStrengthThreshold=20\nSwingSharpness=1.5\nMaxSwingVolume=1.0\n";}
   lightsaber::SaberEngine engine;std::string error;
   assert(engine.loadFont(root.string(),&error));assert(error.empty());assert(engine.fontReady());
@@ -27,10 +29,10 @@ int main(){
   assert(engine.diagnostics().find("ignite_effect=out")!=std::string::npos);
   assert(engine.diagnostics().find("retract_effect=in")!=std::string::npos);
   assert(engine.diagnostics().find("swing_pairs=1")!=std::string::npos);
+  assert(engine.effectAvailable(lightsaber::SaberEffect::Clash));assert(engine.effectAvailable(lightsaber::SaberEffect::Blaster));assert(engine.effectAvailable(lightsaber::SaberEffect::Stab));assert(engine.lockupAvailable());
   engine.ignite();std::vector<int16_t> block(512);engine.render(block.data(),256,44100);assert(rms(block)>100);
-  for(int i=1;i<=8;i++)engine.motion({0,0,360,1'000'000'000ULL+uint64_t(i)*5'000'000ULL});
-  engine.render(block.data(),256,44100);
-  assert(engine.motionSamplesReceived()==8);assert(engine.motionSamplesProcessed()==8);assert(engine.motionSamplesDropped()==0);
+  engine.triggerEffect(lightsaber::SaberEffect::Clash);engine.setLockup(true);engine.render(block.data(),256,44100);assert(rms(block)>100);engine.setLockup(false);engine.triggerEffect(lightsaber::SaberEffect::Blaster);engine.triggerEffect(lightsaber::SaberEffect::Stab);
+  for(int i=1;i<=8;i++){engine.motion({0,0,360,1'000'000'000ULL+uint64_t(i)*20'000'000ULL});engine.render(block.data(),256,44100);}
   assert(rms(block)>100);for(auto s:block)assert(std::abs(int(s))<32767);
   engine.retract();engine.render(block.data(),256,44100);assert(rms(block)>0);
   fs::remove_all(root);

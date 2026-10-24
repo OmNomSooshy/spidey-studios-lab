@@ -1,6 +1,5 @@
 #pragma once
 #include <atomic>
-#include <array>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -23,6 +22,7 @@ struct SmoothSwingConfig {
 struct MotionFrame { float x_dps, y_dps, z_dps; uint64_t timestamp_ns; };
 
 struct MixGains { float hum = 0.0f, swing_low = 0.0f, swing_high = 0.0f; };
+enum class SaberEffect { Clash, Blaster, Stab };
 
 // Portable SmoothSwing V2 motion/blend state. Coordinates and timestamps are
 // supplied by the platform; angular velocity is in degrees/second.
@@ -57,13 +57,13 @@ class SaberEngine {
   std::string fontName() const;
   void ignite();
   void retract();
+  bool effectAvailable(SaberEffect effect) const;
+  void triggerEffect(SaberEffect effect);
+  bool lockupAvailable() const;
+  void setLockup(bool active);
   void motion(const MotionFrame& frame);
   void render(int16_t* interleaved_stereo, int frames, int sample_rate);
   bool isOn() const;
-  // Host/device diagnostics for the bounded sensor-to-render SPSC queue.
-  uint64_t motionSamplesReceived() const;
-  uint64_t motionSamplesProcessed() const;
-  uint64_t motionSamplesDropped() const;
   std::string diagnostics() const;
  private:
   struct Impl;

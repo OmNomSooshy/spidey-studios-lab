@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.22.1)
+project(lightsaber LANGUAGES CXX)
+add_library(lightsaber_core STATIC ../../../../core/src/saber_engine.cpp)
+target_include_directories(lightsaber_core PUBLIC ../../../../core/include)
+target_compile_features(lightsaber_core PUBLIC cxx_std_17)
+add_library(lightsaber SHARED jni_bridge.cpp)
+target_link_libraries(lightsaber PRIVATE lightsaber_core)

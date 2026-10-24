@@ -15,13 +15,13 @@ class SaberAudioPlayback : public godot::AudioStreamPlayback {
  public:
   SaberAudioPlayback() = default;
   void set_state(std::shared_ptr<SaberSharedState> state);
- protected:
-  static void _bind_methods() {}
   int32_t _mix(godot::AudioFrame *buffer, float rate_scale, int32_t frames) override;
   void _start(double from_pos) override;
   void _stop() override;
   bool _is_playing() const override;
   double _get_playback_position() const override;
+ protected:
+  static void _bind_methods() {}
  private:
   std::shared_ptr<SaberSharedState> state_;
   bool playing_ = false;
@@ -41,9 +41,9 @@ class SaberAudioStream : public godot::AudioStream {
   godot::String diagnostics() const;
   bool is_font_ready() const;
   bool is_on() const;
+  godot::Ref<godot::AudioStreamPlayback> _instantiate_playback() const override;
  protected:
   static void _bind_methods();
-  godot::Ref<godot::AudioStreamPlayback> _instantiate_playback() const override;
  private:
   std::shared_ptr<SaberSharedState> state_;
 };

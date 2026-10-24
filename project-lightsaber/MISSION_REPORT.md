@@ -125,7 +125,7 @@ Expected first-run issues include a phone without a gyro, a non-PCM16 WAV varian
 
 # Mission 002 — Quest 3 Mixed-Reality Lightsaber (active)
 
-**Report checkpoint:** implementation and reproducible build lane established; host extension validation and first remote APK build are the immediate engineering checks. No physical Quest 3 has been available in this cloud environment, so no Quest runtime behavior or human listening result is claimed.
+**Report checkpoint:** implementation and host native-extension validation are established; the clean-checkout CI lane now builds both a Linux editor extension (needed for Godot project import) and the Quest Android arm64 extension before export. Quest Android APK build and headset testing remain. No physical Quest 3 has been available in this cloud environment, so no Quest runtime behavior or human listening result is claimed.
 
 ## Platform adapter decision
 
@@ -162,7 +162,7 @@ The action map selects `/interaction_profiles/meta/touch_controller_plus` and bi
 ## Current validation and remaining boundary
 
 - **CONFIRMED:** existing SmoothSwing trace passes; font/audio trace passes; the pinned SmthJedi archive CRC and manifest checks pass; the host font-smoke test loaded it and found eight matched swing pairs.
-- **IN PROGRESS:** compile the Quest GDExtension against pinned Godot 4.6 bindings, then load the project with Godot to validate extension registration and GDScript parsing.
+- **CONFIRMED:** portable engine host tests pass; the native GDExtension and shared engine compile against pinned Godot 4.6 C++ bindings on Linux; Godot 4.6.3 loads the native extension, project, action map, scene and GDScript without script errors. Running the scene in this cloud host reaches `_ready()` and then reports no OpenXR runtime/display; this is expected because no headset runtime is installed here, and is not evidence for Quest execution. A clean-checkout Linux extension build has been added to CI to reproduce the host import prerequisite; that workflow revision is awaiting execution.
 - **IMPLEMENTED, BUILD-VALIDATION-PENDING:** Quest Android arm64 native compilation, Android/OpenXR export, package-integrity checks, native library presence and downloadable APK.
 - **IMPLEMENTED, DEVICE-VALIDATION-PENDING:** Quest installation, passthrough, controller pose and physical blade alignment, actual font extraction/load, ignition/hum/swing/retraction, sound continuity, device mix rate, and latency.
 - **UNRESOLVED SOURCE SEMANTICS:** runtime validity/cadence of Touch Plus angular velocity and the empirical mapping from controller-local axes to the engine swing plane.

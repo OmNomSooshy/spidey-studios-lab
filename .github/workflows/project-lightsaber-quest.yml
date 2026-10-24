@@ -88,6 +88,8 @@ jobs:
       - name: Build portable engine GDExtension for Android arm64
         working-directory: project-lightsaber/quest/native
         run: |
+          scons platform=linux target=template_debug arch=x86_64 precision=single -j2
+          test -s ../bin/linux/x86_64/liblightsaber.so
           scons platform=android target=template_release arch=arm64 android_api_level=24 precision=single -j2
           test -s ../bin/android/arm64/liblightsaber.so
 

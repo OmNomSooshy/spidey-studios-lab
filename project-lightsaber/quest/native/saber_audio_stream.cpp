@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <cmath>
 #include <memory>
 #include <string>
 
@@ -32,7 +33,7 @@ int32_t SaberAudioPlayback::_mix(AudioFrame *buffer, float rate_scale, int32_t f
     std::fill(buffer, buffer + frames, AudioFrame{});
     return frames;
   }
-  const int rate = std::max(8000, AudioServer::get_singleton()->get_mix_rate());
+  const int rate = std::max(8000, static_cast<int>(std::lround(AudioServer::get_singleton()->get_mix_rate())));
   state_->sample_rate.store(rate, std::memory_order_relaxed);
   int32_t done = 0;
   while (done < frames) {

@@ -5,3 +5,4 @@ bin/
 assets/*.zip
 *.uid
 *.dblite
+*.os

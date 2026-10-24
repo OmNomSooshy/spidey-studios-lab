@@ -6,4 +6,5 @@ from SCons.Script import SConscript
 env = SConscript("../godot-cpp/SConstruct", {"api_version": "4.6"})
 env.Append(CPPPATH=["../../core/include"])
 sources = ["saber_audio_stream.cpp", "register_types.cpp", "../../core/src/saber_engine.cpp"]
-env.SharedLibrary("../bin/{}/{}/liblightsaber".format(env["platform"], env["arch"]), source=sources)
+library = env.SharedLibrary("../bin/{}/{}/liblightsaber".format(env["platform"], env["arch"]), source=sources)
+Default(library)

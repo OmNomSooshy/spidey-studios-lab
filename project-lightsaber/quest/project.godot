@@ -21,5 +21,6 @@ environment/defaults/default_clear_color=Color(0, 0, 0, 0)
 [xr]
 openxr/enabled=true
 openxr/environment_blend_mode=2
+openxr/extensions/hand_tracking=false
 openxr/extensions/meta/passthrough=true
 openxr/default_action_map="res://openxr_action_map.tres"

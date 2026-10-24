@@ -1,0 +1,146 @@
+name: Project Lightsaber Quest 3 APK
+
+on:
+  push:
+    branches: [work]
+    paths:
+      - "project-lightsaber/core/**"
+      - "project-lightsaber/font-assets/**"
+      - "project-lightsaber/quest/**"
+      - ".github/workflows/project-lightsaber-quest.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: project-lightsaber-quest-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  quest-debug-apk:
+    name: Build and publish standalone Quest 3 APK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Java 17
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+
+      - name: Install pinned Android SDK and NDK
+        run: |
+          yes | sdkmanager --licenses >/dev/null
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-36" \
+            "build-tools;36.0.0" \
+            "ndk;29.0.14206865"
+          echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/29.0.14206865" >> "$GITHUB_ENV"
+
+      - name: Install pinned Godot 4.6.3 and Android export templates
+        run: |
+          mkdir -p "$RUNNER_TEMP/godot" "$HOME/.local/share/godot/export_templates/4.6.3.stable"
+          curl -fL --retry 3 -o "$RUNNER_TEMP/godot/godot.zip" \
+            https://github.com/godotengine/godot/releases/download/4.6.3-stable/Godot_v4.6.3-stable_linux.x86_64.zip
+          unzip -q "$RUNNER_TEMP/godot/godot.zip" -d "$RUNNER_TEMP/godot"
+          chmod +x "$RUNNER_TEMP/godot/Godot_v4.6.3-stable_linux.x86_64"
+          echo "GODOT=$RUNNER_TEMP/godot/Godot_v4.6.3-stable_linux.x86_64" >> "$GITHUB_ENV"
+          curl -fL --retry 3 -o "$RUNNER_TEMP/godot/templates.tpz" \
+            https://github.com/godotengine/godot/releases/download/4.6.3-stable/Godot_v4.6.3-stable_export_templates.tpz
+          unzip -q "$RUNNER_TEMP/godot/templates.tpz" -d "$HOME/.local/share/godot/export_templates/4.6.3.stable"
+
+      - name: Download verified Godot OpenXR Vendors addon
+        run: |
+          mkdir -p project-lightsaber/quest/addons
+          curl -fL --retry 3 -o "$RUNNER_TEMP/openxr-vendors.zip" \
+            https://github.com/GodotVR/godot_openxr_vendors/releases/download/5.1.0-stable/godotopenxrvendorsaddon.zip
+          echo "6a838dbdf4115549e4511ebee0da9a5dcc8f9f6258d4cc2f2ee57a907a3e2911  $RUNNER_TEMP/openxr-vendors.zip" | sha256sum --check
+          unzip -q "$RUNNER_TEMP/openxr-vendors.zip" -d "$RUNNER_TEMP/openxr-vendors"
+          cp -a "$RUNNER_TEMP/openxr-vendors/asset/addons/godotopenxrvendors" project-lightsaber/quest/addons/
+
+      - name: Fetch pinned Godot 4.6 C++ bindings
+        run: |
+          git clone https://github.com/godotengine/godot-cpp.git project-lightsaber/quest/godot-cpp
+          git -C project-lightsaber/quest/godot-cpp checkout 8070599885b6df675fcad033dd032ce44be2b850
+          python3 -m pip install --user scons==4.8.1
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Package pinned SmthJedi font and run portable engine tests
+        working-directory: project-lightsaber
+        run: |
+          python3 font-assets/package_smthjedi.py --output quest/assets/SmthJedi-ProffieOS.zip
+          g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/smooth_swing_trace.cpp -o "$RUNNER_TEMP/smooth-trace"
+          "$RUNNER_TEMP/smooth-trace"
+          g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/audio_font_trace.cpp -o "$RUNNER_TEMP/audio-trace"
+          "$RUNNER_TEMP/audio-trace"
+          unzip -q quest/assets/SmthJedi-ProffieOS.zip -d "$RUNNER_TEMP/smthjedi"
+          g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/font_smoke.cpp -o "$RUNNER_TEMP/font-smoke"
+          "$RUNNER_TEMP/font-smoke" "$RUNNER_TEMP/smthjedi/SmthJedi"
+
+      - name: Build portable engine GDExtension for Android arm64
+        working-directory: project-lightsaber/quest/native
+        run: |
+          scons platform=android target=template_release arch=arm64 android_api_level=24 precision=single -j2
+          test -s ../bin/android/arm64/liblightsaber.so
+
+      - name: Import project and export Quest debug APK
+        working-directory: project-lightsaber/quest
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_HOME }}
+          ANDROID_SDK_ROOT: ${{ env.ANDROID_HOME }}
+          JAVA_HOME: ${{ env.JAVA_HOME }}
+        run: |
+          mkdir -p ../artifacts
+          "$GODOT" --headless --editor --path . --import
+          "$GODOT" --headless --path . --editor --quit
+          "$GODOT" --headless --path . --export-debug "Quest 3 Debug APK" ../artifacts/Project-Lightsaber-Quest3-debug.apk
+
+      - name: Verify APK package, OpenXR libraries, font, and checksum
+        id: verify
+        run: |
+          apk=project-lightsaber/artifacts/Project-Lightsaber-Quest3-debug.apk
+          test -s "$apk"
+          unzip -t "$apk"
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$apk" | grep -F "package: name='studios.spidey.lightsaber.quest'"
+          unzip -l "$apk" | grep -F 'lib/arm64-v8a/liblightsaber.so'
+          unzip -l "$apk" | grep -F 'lib/arm64-v8a/libgodotopenxrvendors.so'
+          unzip -p "$apk" AndroidManifest.xml > "$RUNNER_TEMP/quest-manifest.bin"
+          sha256sum "$apk" | tee "$RUNNER_TEMP/quest-apk.sha256"
+          cp "$apk" "$RUNNER_TEMP/Project-Lightsaber-Quest3-debug.apk"
+          echo "apk_sha256=$(sha256sum "$apk" | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload Quest APK workflow artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: Project-Lightsaber-Quest3-debug
+          path: ${{ runner.temp }}/Project-Lightsaber-Quest3-debug.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish directly downloadable Quest APK
+        env:
+          APK_SHA256: ${{ steps.verify.outputs.apk_sha256 }}
+        run: |
+          tag="lightsaber-quest-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+          printf 'Quest 3 debug APK built from %s\nAPK SHA-256: %s\n\nGodot: 4.6.3-stable\nGodot OpenXR Vendors: 5.1.0-stable\nGodot-cpp API: pinned 8070599885b6df675fcad033dd032ce44be2b850\nFont: pinned SmthJedi from the ProffieOS SoundFonts repository.\n\nPhysical Quest 3 passthrough, tracking, blade alignment, and audio remain Management validation items.\n' "$GITHUB_SHA" "$APK_SHA256" > "$RUNNER_TEMP/quest-release-notes.md"
+          gh release create "$tag" \
+            "$RUNNER_TEMP/Project-Lightsaber-Quest3-debug.apk#Project-Lightsaber-Quest3-debug.apk" \
+            --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+            --title "Project Lightsaber Quest 3 APK ${GITHUB_RUN_NUMBER}" \
+            --notes-file "$RUNNER_TEMP/quest-release-notes.md"
+          apk_url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${tag}/Project-Lightsaber-Quest3-debug.apk"
+          {
+            echo "## Project Lightsaber Quest 3 APK"
+            echo "Download: ${apk_url}"
+            echo "SHA-256: `${APK_SHA256}`"
+            echo "Built from commit: `${GITHUB_SHA}`"
+            echo "Physical headset validation is pending."
+          } >> "$GITHUB_STEP_SUMMARY"

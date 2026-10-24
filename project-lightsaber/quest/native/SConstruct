@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+from SCons.Script import SConscript
+
+# Reuse godot-cpp's actual target toolchain and link configuration so Android
+# builds use its NDK compiler/sysroot and match the pinned Godot 4.6 API.
+env = SConscript("../godot-cpp/SConstruct", {"api_version": "4.6"})
+env.Append(CPPPATH=["../../core/include"])
+sources = ["saber_audio_stream.cpp", "register_types.cpp", "../../core/src/saber_engine.cpp"]
+env.SharedLibrary("../bin/{}/{}/liblightsaber".format(env["platform"], env["arch"]), source=sources)

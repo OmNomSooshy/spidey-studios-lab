@@ -1,0 +1,7 @@
+.godot/
+godot-cpp/
+addons/
+bin/
+assets/*.zip
+*.uid
+*.dblite

@@ -1,0 +1,44 @@
+[gd_resource type="OpenXRActionMap" format=3]
+
+[sub_resource type="OpenXRAction" id="GripPose"]
+resource_name = "grip_pose"
+localized_name = "Grip pose"
+action_type = 3
+toplevel_paths = PackedStringArray("/user/hand/right")
+
+[sub_resource type="OpenXRAction" id="AButton"]
+resource_name = "ax_button"
+localized_name = "Right A button"
+action_type = 0
+toplevel_paths = PackedStringArray("/user/hand/right")
+
+[sub_resource type="OpenXRAction" id="BButton"]
+resource_name = "by_button"
+localized_name = "Right B button"
+action_type = 0
+toplevel_paths = PackedStringArray("/user/hand/right")
+
+[sub_resource type="OpenXRActionSet" id="ActionSet"]
+resource_name = "lightsaber"
+localized_name = "Lightsaber"
+actions = [SubResource("GripPose"), SubResource("AButton"), SubResource("BButton")]
+
+[sub_resource type="OpenXRIPBinding" id="GripBinding"]
+action = SubResource("GripPose")
+binding_path = "/user/hand/right/input/grip/pose"
+
+[sub_resource type="OpenXRIPBinding" id="ABinding"]
+action = SubResource("AButton")
+binding_path = "/user/hand/right/input/a/click"
+
+[sub_resource type="OpenXRIPBinding" id="BBinding"]
+action = SubResource("BButton")
+binding_path = "/user/hand/right/input/b/click"
+
+[sub_resource type="OpenXRInteractionProfile" id="TouchPlus"]
+interaction_profile_path = "/interaction_profiles/meta/touch_controller_plus"
+bindings = [SubResource("GripBinding"), SubResource("ABinding"), SubResource("BBinding")]
+
+[resource]
+action_sets = [SubResource("ActionSet")]
+interaction_profiles = [SubResource("TouchPlus")]

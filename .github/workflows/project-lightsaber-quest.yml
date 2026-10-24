@@ -1,13 +1,6 @@
-name: Project Lightsaber Quest 3 APK
+name: LEGACY Godot Quest prototype (manual only; use native OpenXR workflow)
 
 on:
-  push:
-    branches: [work]
-    paths:
-      - "project-lightsaber/core/**"
-      - "project-lightsaber/font-assets/**"
-      - "project-lightsaber/quest/**"
-      - ".github/workflows/project-lightsaber-quest.yml"
   workflow_dispatch:
 
 permissions:

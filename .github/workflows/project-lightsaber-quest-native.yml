@@ -1,3 +1,4 @@
+# Mission 003 delivery must use the native OpenXR Quest application, not the retired Godot prototype.
 name: Project Lightsaber Quest 3 APK
 
 on:

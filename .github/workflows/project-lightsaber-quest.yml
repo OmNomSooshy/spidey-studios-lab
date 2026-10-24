@@ -132,6 +132,7 @@ jobs:
       - name: Publish directly downloadable Quest APK
         env:
           APK_SHA256: ${{ steps.verify.outputs.apk_sha256 }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           tag="lightsaber-quest-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
           printf 'Quest 3 debug APK built from %s\nAPK SHA-256: %s\n\nGodot: 4.6.3-stable\nGodot OpenXR Vendors: 5.1.0-stable\nGodot-cpp API: pinned 8070599885b6df675fcad033dd032ce44be2b850\nFont: pinned SmthJedi from the ProffieOS SoundFonts repository.\n\nPhysical Quest 3 passthrough, tracking, blade alignment, and audio remain Management validation items.\n' "$GITHUB_SHA" "$APK_SHA256" > "$RUNNER_TEMP/quest-release-notes.md"

@@ -1,6 +1,6 @@
 # Mission 001 — Project Lightsaber return report
 
-**Mission status: ACTIVE.** This is a validation handoff checkpoint, not mission completion. Android build, real font import, physical-device audio, and Management's listening approval remain outstanding.
+**Mission status: ACTIVE.** The Android debug APK now builds and is downloadable. Real SmthJedi import, physical-device audio, and Management's listening approval remain outstanding, so this is not mission completion.
 
 ## Repository and source visibility
 
@@ -17,11 +17,11 @@
 
 | Requirement | Classification | Evidence and remaining work |
 |---|---|---|
-| Isolated Android project, native build, JNI and controls | **IMPLEMENTED, BUILD-VALIDATION-PENDING** | Gradle app module, CMake, JNI, Java activity, Android manifest and portable native core are in this directory. No Android build ran in this environment. |
+| Isolated Android project, native build, JNI and controls | **IMPLEMENTED, DEVICE-VALIDATION-PENDING** | GitHub Actions built and verified the debug APK, Android package ID, and both native libraries. Runtime testing on a physical Android device remains. |
 | Phone gyroscope acquisition and lifecycle | **IMPLEMENTED, DEVICE-VALIDATION-PENDING** | `SensorManager.TYPE_GYROSCOPE` at `SENSOR_DELAY_GAME`, event timestamps, rad/s to deg/s conversion and JNI delivery are wired. No physical phone was available to validate axes, event rates, or resume behavior. |
 | SmoothSwing V2 motion/blend behavior | **PARTIALLY IMPLEMENTED** | Core equations and key state semantics are compared below. Several Proffie audio/transition mechanics are adaptations, not a claim of exact equivalence. |
-| Font ZIP import and PCM discovery | **IMPLEMENTED, BUILD-VALIDATION-PENDING** | SAF ZIP selection, safe extraction, nested font discovery and native format/pair diagnostics exist. Synthetic fixtures pass; the actual SmthJedi archive has not been imported. |
-| Ignition, hum, swing and retraction audio path | **IMPLEMENTED, BUILD-VALIDATION-PENDING** | Native mixer and Android AudioTrack path are connected in source. Host synthetic PCM tests pass. Android runtime and audible output have not been verified. |
+| Font ZIP import and PCM discovery | **IMPLEMENTED, DEVICE-VALIDATION-PENDING** | SAF ZIP selection, safe extraction, nested font discovery and native format/pair diagnostics compile. Synthetic fixtures pass; the actual SmthJedi archive has not been imported on-device. |
+| Ignition, hum, swing and retraction audio path | **IMPLEMENTED, DEVICE-VALIDATION-PENDING** | Native mixer, JNI and Android AudioTrack code compile into the APK. Host synthetic PCM tests pass. Actual phone output and audible response remain unverified. |
 | Portable engine boundary for Quest reuse | **PLATFORM ADAPTER DECISION** | C++ engine accepts timestamped angular velocity and emits PCM without Android headers. Quest adapter remains out of scope. |
 | Physical experience and Management approval | **IMPLEMENTED, DEVICE-VALIDATION-PENDING** | Requires Management to build/install and judge actual audio and feel. |
 
@@ -67,8 +67,10 @@ The motion trace checks idle, swing response, source-derived mid-strength gain/d
 - JDK: 17 minimum; Android Studio bundled JBR is suitable. `compileSdk=35`, `targetSdk=35`, `minSdk=26`.
 - NDK: `27.2.12479018`; CMake: `3.22.1`; packaged ABIs: `arm64-v8a`, `x86_64`.
 - Manifest declares a required gyroscope feature. No runtime permission is needed for gyro access or SAF-based ZIP import. AudioTrack is configured for 44.1 kHz stereo PCM16, low-latency mode, with 256-frame application blocks (about 5.8 ms of app audio per block; actual end-to-end latency is unmeasured).
-- Java native declarations and JNI exports use matching `MainActivity` names/signatures. CMake includes the shared core from `core/` and links Android log. Static inspection completed; Android compile/link did not run.
-- The workspace has OpenJDK 21 runtime and host C++ tools but no `javac`, Gradle installation, Android SDK/NDK, `adb`, or connected phone. The wrapper is present, but this environment could not download Gradle dependencies/distribution. Therefore **Android build validation is pending**, not passed.
+- GitHub Actions workflow: [`project-lightsaber-android.yml`](https://github.com/OmNomSooshy/spidey-studios-lab/blob/work/.github/workflows/project-lightsaber-android.yml). It uses Ubuntu 24.04, Temurin JDK 17, Platform 35, Build Tools 35.0.0, NDK 27.2.12479018, CMake 3.22.1, the checked-in Gradle 8.9 wrapper, and AGP 8.7.3. App/core/configuration changes on `work` trigger a build; report-only edits do not.
+- Java native declarations and JNI exports match; CMake compiles and links the shared core. **Confirmed Android build:** [Actions run 3](https://github.com/OmNomSooshy/spidey-studios-lab/actions/runs/40061215614), source/workflow commit `abdc849f76790b5b4f17b2ff8f8f568745bc478e`. Gradle reported `BUILD SUCCESSFUL in 1m 2s`; `aapt` confirmed package `studios.spidey.lightsaber`, version `0.1.0`, compile SDK 35; `unzip -t` passed and confirmed `liblightsaber.so` for `arm64-v8a` and `x86_64`.
+- The 2,148,778-byte debug APK has SHA-256 `6205889732c1c6e110a4e06855f03736b1fae6e604971656d15bd9292d23fa98`. [Download the APK directly](https://github.com/OmNomSooshy/spidey-studios-lab/releases/download/lightsaber-abdc849-3-1/Project-Lightsaber-debug.apk); [release page and notes](https://github.com/OmNomSooshy/spidey-studios-lab/releases/tag/lightsaber-abdc849-3-1). The workflow artifact is [available for 30 days](https://github.com/OmNomSooshy/spidey-studios-lab/actions/runs/40061215614/artifacts/12546843482). GitHub reports the release asset uploaded and the Actions artifact unexpired.
+- The local workspace still lacks `javac`, Gradle, Android SDK/NDK, and a phone, but this no longer blocks delivery: the remote Android build completed. The first CI attempt exposed a retired `sdkmanager tools` package requested by the setup action; setting its package input to `platform-tools` fixed the workflow, and the subsequent build and verification passed.
 - Import uses Android Storage Access Framework; it traverses archive nesting up to depth four, rejects path traversal, caps expanded data at 256 MB, and writes under app-private storage. Native loading reports unsupported PCM format, missing required effects, absent/unpaired swing files, and incompatible `smoothsw.ini` Version. Synthetic fixtures validate WAV/pair logic; Java ZIP execution was not run on Android.
 
 ## Test font sourcing
@@ -83,28 +85,24 @@ The real WAV payloads were not imported here: the connected GitHub reader refuse
 
 The app displays a 250 ms diagnostic line with AudioTrack ready/off, loaded font, blade state, gyroscope sample count, filtered speed, active/idle swing state, sensitivity/sharpness, hum/effect names, `humStart`, and rendered frame count. Import and native load failures appear in status text; missing gyro, AudioTrack initialization/write errors, and font problems are surfaced. This is source-level diagnostic wiring and has not yet been observed on a phone.
 
-Expected first-run issues include a phone without a gyro, a non-PCM16 WAV variant, a font missing one side of a pair, Android Studio missing the pinned NDK/CMake packages, or device routing that does not honor low-latency mode. Speaker/headphone quality and actual latency vary by device. Only PCM16 mono/stereo WAV is supported; full ProffieOS font behavior is not claimed.
+Expected first-run issues include a phone without a gyro, a non-PCM16 WAV variant, a font missing one side of a pair, or device routing that does not honor low-latency mode. Speaker/headphone quality and actual latency vary by device. Only PCM16 mono/stereo WAV is supported; full ProffieOS font behavior is not claimed.
 
 ## Management handoff
 
-1. In Windows, install Android Studio Ladybug `2024.2.1` or newer stable. Ensure JDK 17+ is selected (the bundled Embedded JDK works).
-2. In SDK Manager install Android SDK Platform 35, NDK `27.2.12479018`, and CMake `3.22.1`.
-3. Download/clone the repository `work` branch and open `project-lightsaber/` in Android Studio. Allow the Gradle wrapper (8.9) to sync; select the `app` run configuration.
-4. Connect a gyroscope-equipped Android phone with USB debugging enabled. Run the app from Android Studio. For command-line debug build, from `project-lightsaber` run `gradlew.bat :app:assembleDebug`.
-5. Expected APK: `project-lightsaber\\app\\build\\outputs\\apk\\debug\\app-debug.apk`.
-6. Download the pinned official SmthJedi archive above. In the app tap **Load Sound Font ZIP**, choose the ZIP, then select **SmthJedi**. Confirm diagnostics report that font and `audio=ready`.
-7. Tap **Ignite**; make broad slow swings, short sharp swings, and direction changes while watching `gyro_samples`, `speed_dps`, and `swing`. Tap **Retract**. Repeat with phone speaker and headphones at a safe volume. Note gaps, clicks, clipping, hum level changes, responsiveness, and the naturalness of swing transitions.
-8. Return Android Studio build errors verbatim, or report device model/Android version plus diagnostic text and listening observations. This handoff does not close Mission 001.
+1. On the phone, download [Project-Lightsaber-debug.apk](https://github.com/OmNomSooshy/spidey-studios-lab/releases/download/lightsaber-abdc849-3-1/Project-Lightsaber-debug.apk). If Android prompts, allow the browser/files app to install unknown apps, then open the downloaded APK and install it. No Android Studio or local build setup is needed.
+2. Download the pinned official SmthJedi archive above. Open Project Lightsaber, tap **Load Sound Font ZIP**, choose the archive, then select **SmthJedi**. Confirm diagnostics show `font=SmthJedi` and `audio=ready`.
+3. Tap **Ignite**; make broad slow swings, short sharp swings, and direction changes while watching `gyro_samples`, `speed_dps`, and `swing`. Tap **Retract**. Repeat with the phone speaker and headphones at a safe volume. Listen for gaps, clicks, clipping, hum level changes, response delay, and whether swing transitions feel natural.
+4. Send the phone model, Android version, diagnostic text, and listening observations. Management's physical-device test and Human Ears approval remain required; this handoff does not close Mission 001.
 
 ## Remaining classifications and acceptance
 
-- **IMPLEMENTED AND RUNTIME-REACHABLE:** no physical Android behavior is claimed as runtime-proven yet. Host core/audio tests are reachable and pass.
-- **IMPLEMENTED, BUILD-VALIDATION-PENDING:** Android Gradle project, Java UI/import/sensor/audio adapters, JNI, CMake, native core, wrapper, and synthetic host tests.
-- **IMPLEMENTED, DEVICE-VALIDATION-PENDING:** sensor axis feel, font import on Android, AudioTrack output/latency, and actual motion-driven audio.
+- **IMPLEMENTED AND RUNTIME-REACHABLE:** host C++ engine/tests run; a debug APK containing the Android and native implementations is downloadable. No physical-device runtime behavior is claimed yet.
+- **IMPLEMENTED, BUILD-VALIDATION-PENDING:** none for the Android APK; Actions build and APK checks passed. Real-font ZIP import is still pending device execution.
+- **IMPLEMENTED, DEVICE-VALIDATION-PENDING:** sensor axis feel, actual font import, AudioTrack output/latency, and motion-driven phone audio.
 - **PARTIALLY IMPLEMENTED:** full Proffie smooth-swing/audio/font behavior; deviations are explicit above.
-- **BLOCKED:** no local Android toolchain/device in this environment; no real SmthJedi binary import performed. Continue with Management's Windows build/device test; no fundamental architectural blocker identified.
+- **BLOCKED:** no fundamental build blocker remains. This workspace cannot perform phone validation, and the real SmthJedi font has not yet been imported. Management owns the physical install/listening step.
 - **UNRESOLVED SOURCE SEMANTICS:** complete transitive Proffie dependency closure and audible equivalence of adapted loop/transition/timing behavior.
 - **PLATFORM ADAPTER DECISION:** Android gyro → timestamped degrees/second frame → portable C++ saber/mixer → JNI PCM blocks → Android AudioTrack. Future Quest controller motion can feed the same frame interface.
 - **OUT OF SCOPE:** Quest implementation, blade rendering, passthrough lighting, full clash/lockup/stab/gesture features, and complete ProffieOS feature parity.
 
-**Acceptance outstanding:** a successful Android build, actual SmthJedi import, physical phone audio driven by phone motion, and Management approval. Mission 001 remains active.
+**Acceptance outstanding:** actual SmthJedi import, physical phone audio driven by real motion, and Management approval. Mission 001 remains active.

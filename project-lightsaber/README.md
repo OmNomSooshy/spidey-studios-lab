@@ -2,18 +2,15 @@
 
 An isolated Android/native experiment in the Spidey Studios lab. Spider Byte and the repository's other projects remain untouched.
 
-## Windows Android Studio build
+## Download and install the APK
 
-Use Android Studio Ladybug (2024.2.1) or a newer stable release. The project pins Android Gradle Plugin 8.7.3 and Gradle 8.9; use JDK 17 or newer (Android Studio's bundled JBR is suitable). In **SDK Manager**, install Android SDK Platform 35, NDK `27.2.12479018`, and CMake `3.22.1`.
+Luna builds the debug APK on GitHub Actions. Open the [Project Lightsaber workflow](https://github.com/OmNomSooshy/spidey-studios-lab/actions/workflows/project-lightsaber-android.yml) to see build status; successful builds publish a downloadable APK on the [GitHub Releases page](https://github.com/OmNomSooshy/spidey-studios-lab/releases). [Download the verified APK from build 3](https://github.com/OmNomSooshy/spidey-studios-lab/releases/download/lightsaber-abdc849-3-1/Project-Lightsaber-debug.apk), or use the latest **Project Lightsaber debug APK** release for future builds. The release notes include the source commit and SHA-256 checksum. A temporary workflow artifact is also attached to each successful run.
 
-1. Download or clone the `work` branch of `OmNomSooshy/spidey-studios-lab`.
-2. In Android Studio choose **Open**, then select the `project-lightsaber` directory.
-3. Accept the Gradle wrapper prompt and allow Android Studio to sync. If it asks for a JDK, select **Embedded JDK**.
-4. Connect an Android phone with a gyroscope, enable Developer options and USB debugging, and accept the device's debugging prompt.
-5. Select the `app` run configuration and the phone, then click **Run**. Alternatively, use the included Windows wrapper from this directory: `gradlew.bat :app:assembleDebug`.
-6. The debug APK is written to `app\\build\\outputs\\apk\\debug\\app-debug.apk`.
+On your Android phone, download `Project-Lightsaber-debug.apk`, open it, and approve installation from the browser/files app if Android asks. Launch Project Lightsaber, import the official SmthJedi ZIP as described below, then ignite and swing. The app is a debug build, not a Play Store release.
 
-The Android manifest requires a gyroscope-capable device. The application requests no runtime permissions: font ZIP selection uses Android's Storage Access Framework and imported files are copied into app-private storage. Audio requests a low-latency 44.1 kHz stereo `AudioTrack`; device output latency is not yet measured. This repository's cloud workspace had no Android SDK, NDK, JDK compiler, Gradle installation, or attached phone, so Android compilation and device behavior remain unverified here.
+## Build configuration and validation
+
+GitHub Actions builds the APK on pushes to `work` that affect app, core, Gradle, or workflow files. The workflow pins Ubuntu 24.04, Temurin JDK 17, Android SDK Platform 35, Build Tools 35.0.0, NDK `27.2.12479018`, CMake `3.22.1`, Gradle 8.9, and Android Gradle Plugin 8.7.3. It verifies the APK archive, package ID, and both native ABIs before publishing. The Android manifest requires a gyroscope-capable device. The app requests no runtime permissions: ZIP selection uses Android's Storage Access Framework and imported files stay in app-private storage. Audio requests 44.1 kHz stereo low-latency `AudioTrack`; physical output latency remains device-dependent and unmeasured.
 
 ## Test font
 

@@ -17,6 +17,7 @@ window/size/resizable=false
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0, 0, 0, 0)
+textures/vram_compression/import_etc2_astc=true
 
 [xr]
 openxr/enabled=true

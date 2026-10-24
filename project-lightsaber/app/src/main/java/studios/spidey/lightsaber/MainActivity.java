@@ -14,7 +14,9 @@ import android.media.AudioTrack;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
+import android.os.Process;
 import android.provider.DocumentsContract;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipInputStream;
@@ -39,10 +42,11 @@ public final class MainActivity extends Activity implements SensorEventListener 
     static { System.loadLibrary("lightsaber"); }
     private static final int PICK_FONT = 41;
     private static final int PICK_FONT_FOLDER = 42;
-    private static final int RATE = 44100, FRAMES = 256;
+    private static final int RATE = 44100, FRAMES = 128;
     private static final long MAX_IMPORT_BYTES = 256L * 1024 * 1024;
     private SensorManager sensors;
     private Sensor gyro;
+    private HandlerThread sensorThread;
     private volatile boolean audioRunning;
     private AudioTrack track;
     private Thread audioThread;
@@ -52,6 +56,10 @@ public final class MainActivity extends Activity implements SensorEventListener 
     private File loadedFont;
     private boolean bladeOn;
     private volatile boolean audioReady;
+    private volatile int audioBufferFrames;
+    private volatile int audioUnderruns;
+    private volatile long queuedAudioFrames;
+    private final AtomicLong submittedAudioFrames = new AtomicLong();
     private final AtomicInteger audioGeneration = new AtomicInteger();
     private long lastMotionNs;
     private final Handler diagnosticsHandler = new Handler(Looper.getMainLooper());
@@ -59,7 +67,7 @@ public final class MainActivity extends Activity implements SensorEventListener 
         @Override public void run() {
             if (diagnostic != null) {
                 String state = nativeDiagnostics().replace(";", " · ");
-                diagnostic.setText("audio=" + (audioReady ? "ready" : "off") + " · " + state);
+                diagnostic.setText("audio=" + (audioReady ? "ready" : "off") + " · app_queue≈" + (queuedAudioFrames * 1000 / RATE) + "ms · buffer=" + audioBufferFrames + "f · underruns=" + audioUnderruns + " · " + state);
             }
             diagnosticsHandler.postDelayed(this, 250);
         }
@@ -278,17 +286,18 @@ public final class MainActivity extends Activity implements SensorEventListener 
         try {
             int min = AudioTrack.getMinBufferSize(RATE, AudioFormat.CHANNEL_OUT_STEREO, AudioFormat.ENCODING_PCM_16BIT);
             if (min < 0) throw new IllegalStateException("Android rejected 44.1 kHz stereo PCM output.");
-            int size = Math.max(min, FRAMES*4*4);
+            int size = Math.max(min, FRAMES*4*2);
             AudioTrack candidate = new AudioTrack.Builder().setAudioAttributes(new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_MEDIA).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build())
                     .setAudioFormat(new AudioFormat.Builder().setSampleRate(RATE).setEncoding(AudioFormat.ENCODING_PCM_16BIT).setChannelMask(AudioFormat.CHANNEL_OUT_STEREO).build())
                     .setBufferSizeInBytes(size).setTransferMode(AudioTrack.MODE_STREAM).setPerformanceMode(AudioTrack.PERFORMANCE_MODE_LOW_LATENCY).build();
             if (candidate.getState() != AudioTrack.STATE_INITIALIZED) { candidate.release(); throw new IllegalStateException("AudioTrack did not initialize."); }
-            track=candidate; track.play(); audioReady=true; audioRunning = true;
+            track=candidate; audioBufferFrames=track.getBufferSizeInFrames(); audioUnderruns=track.getUnderrunCount(); queuedAudioFrames=0; submittedAudioFrames.set(0); track.play(); audioReady=true; audioRunning = true;
             int generation=audioGeneration.incrementAndGet();
             AudioTrack output=track;
             audioThread = new Thread(() -> {
+                Process.setThreadPriority(Process.THREAD_PRIORITY_AUDIO);
                 short[] audio=new short[FRAMES*2];
-                while(audioRunning&&audioGeneration.get()==generation){ nativeRender(audio,FRAMES,RATE); int n=output.write(audio,0,audio.length,AudioTrack.WRITE_BLOCKING); if(n<0){if(audioGeneration.get()==generation){audioRunning=false;audioReady=false;runOnUiThread(()->status.setText("Audio output stopped: AudioTrack.write returned " + n));}break;} }
+                while(audioRunning&&audioGeneration.get()==generation){ nativeRender(audio,FRAMES,RATE); int n=output.write(audio,0,audio.length,AudioTrack.WRITE_BLOCKING); if(n<0){if(audioGeneration.get()==generation){audioRunning=false;audioReady=false;runOnUiThread(()->status.setText("Audio output stopped: AudioTrack.write returned " + n));}break;} submittedAudioFrames.addAndGet(n/2); long played=Integer.toUnsignedLong(output.getPlaybackHeadPosition()); queuedAudioFrames=Math.max(0,submittedAudioFrames.get()-played); audioUnderruns=output.getUnderrunCount(); }
             }, "LightsaberAudio"); audioThread.setPriority(Thread.MAX_PRIORITY); audioThread.start();
         } catch (RuntimeException e) { audioReady=false; status.setText("Audio output failed: " + e.getMessage()); }
     }
@@ -307,8 +316,8 @@ public final class MainActivity extends Activity implements SensorEventListener 
         nativeMotion(x,z,event.timestamp);
     }
     @Override public void onAccuracyChanged(Sensor sensor,int accuracy) {}
-    @Override protected void onResume(){super.onResume();lastMotionNs=0;if(gyro!=null)sensors.registerListener(this,gyro,SensorManager.SENSOR_DELAY_GAME);if(loadedFont!=null&&gyro!=null)startAudio();}
-    @Override protected void onPause(){sensors.unregisterListener(this);stopAudio();super.onPause();}
+    @Override protected void onResume(){super.onResume();lastMotionNs=0;if(gyro!=null){sensorThread=new HandlerThread("LightsaberSensors",Process.THREAD_PRIORITY_MORE_FAVORABLE);sensorThread.start();sensors.registerListener(this,gyro,5000,0,sensorThread.getLooper());}if(loadedFont!=null&&gyro!=null)startAudio();}
+    @Override protected void onPause(){sensors.unregisterListener(this);if(sensorThread!=null){sensorThread.quitSafely();try{sensorThread.join(500);}catch(InterruptedException e){Thread.currentThread().interrupt();}sensorThread=null;}stopAudio();super.onPause();}
     @Override protected void onDestroy(){diagnosticsHandler.removeCallbacks(diagnosticsTick);super.onDestroy();}
     private static void deleteTree(File f){if(!f.exists())return;File[] c=f.listFiles();if(c!=null)for(File x:c)deleteTree(x);f.delete();}
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <atomic>
+#include <array>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -59,6 +60,10 @@ class SaberEngine {
   void motion(const MotionFrame& frame);
   void render(int16_t* interleaved_stereo, int frames, int sample_rate);
   bool isOn() const;
+  // Host/device diagnostics for the bounded sensor-to-render SPSC queue.
+  uint64_t motionSamplesReceived() const;
+  uint64_t motionSamplesProcessed() const;
+  uint64_t motionSamplesDropped() const;
   std::string diagnostics() const;
  private:
   struct Impl;

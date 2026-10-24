@@ -10,7 +10,7 @@ On your Android phone, download `Project-Lightsaber-debug.apk`, open it, and app
 
 ## Build configuration and validation
 
-GitHub Actions builds the APK on pushes to `work` that affect app, core, Gradle, or workflow files. The workflow pins Ubuntu 24.04, Temurin JDK 17, Android SDK Platform 35, Build Tools 35.0.0, NDK `27.2.12479018`, CMake `3.22.1`, Gradle 8.9, and Android Gradle Plugin 8.7.3. It verifies the APK archive, package ID, and both native ABIs before publishing. The Android manifest requires a gyroscope-capable device. The app requests no runtime permissions: ZIP selection uses Android's Storage Access Framework and imported files stay in app-private storage. Audio requests 44.1 kHz stereo low-latency `AudioTrack`; physical output latency remains device-dependent and unmeasured.
+GitHub Actions builds the APK on pushes to `work` that affect app, core, Gradle, or workflow files. The workflow pins Ubuntu 24.04, Temurin JDK 17, Android SDK Platform 35, Build Tools 35.0.0, NDK `27.2.12479018`, CMake `3.22.1`, Gradle 8.9, and Android Gradle Plugin 8.7.3. It verifies the APK archive, package ID, and both native ABIs before publishing. The Android manifest requires a gyroscope-capable device. The app requests no runtime permissions: ZIP selection uses Android's Storage Access Framework and imported files stay in app-private storage. Gyro events are requested at 5 ms with zero batching and passed to the native engine through a bounded timestamped queue. Audio requests 44.1 kHz stereo low-latency `AudioTrack` with 128-frame render blocks and exposes app-queue/underrun diagnostics; actual sensor cadence and end-to-end output latency remain device-dependent and unmeasured.
 
 ## Test font
 

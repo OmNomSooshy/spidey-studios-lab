@@ -28,7 +28,9 @@ int main(){
   assert(engine.diagnostics().find("retract_effect=in")!=std::string::npos);
   assert(engine.diagnostics().find("swing_pairs=1")!=std::string::npos);
   engine.ignite();std::vector<int16_t> block(512);engine.render(block.data(),256,44100);assert(rms(block)>100);
-  for(int i=1;i<=8;i++){engine.motion({0,0,360,1'000'000'000ULL+uint64_t(i)*20'000'000ULL});engine.render(block.data(),256,44100);}
+  for(int i=1;i<=8;i++)engine.motion({0,0,360,1'000'000'000ULL+uint64_t(i)*5'000'000ULL});
+  engine.render(block.data(),256,44100);
+  assert(engine.motionSamplesReceived()==8);assert(engine.motionSamplesProcessed()==8);assert(engine.motionSamplesDropped()==0);
   assert(rms(block)>100);for(auto s:block)assert(std::abs(int(s))<32767);
   engine.retract();engine.render(block.data(),256,44100);assert(rms(block)>0);
   fs::remove_all(root);

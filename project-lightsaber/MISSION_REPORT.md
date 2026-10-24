@@ -151,7 +151,7 @@ The action map selects `/interaction_profiles/meta/touch_controller_plus` and bi
 
 ## Pins and reproducible build
 
-- Repository: `OmNomSooshy/spidey-studios-lab`, work branch (Mission 002 is added under `project-lightsaber/quest/`).
+- Repository and branch: [`OmNomSooshy/spidey-studios-lab`, `work`](https://github.com/OmNomSooshy/spidey-studios-lab/tree/work); Mission 002 implementation commit [`549480e8a20c77758792637369b644b42a376c87`](https://github.com/OmNomSooshy/spidey-studios-lab/commit/549480e8a20c77758792637369b644b42a376c87). Source: [Quest Godot project](https://github.com/OmNomSooshy/spidey-studios-lab/tree/549480e8a20c77758792637369b644b42a376c87/project-lightsaber/quest), [controller/MR/audio orchestration](https://github.com/OmNomSooshy/spidey-studios-lab/blob/549480e8a20c77758792637369b644b42a376c87/project-lightsaber/quest/main.gd), [native portable-engine audio adapter](https://github.com/OmNomSooshy/spidey-studios-lab/tree/549480e8a20c77758792637369b644b42a376c87/project-lightsaber/quest/native), [existing portable C++ core](https://github.com/OmNomSooshy/spidey-studios-lab/tree/549480e8a20c77758792637369b644b42a376c87/project-lightsaber/core), and [Quest build workflow](https://github.com/OmNomSooshy/spidey-studios-lab/blob/549480e8a20c77758792637369b644b42a376c87/.github/workflows/project-lightsaber-quest.yml).
 - Godot: `4.6.3-stable`, release tag source commit `7d41c59c4` (official editor reports `Godot v4.6.3.stable.official.7d41c59c4`).
 - Godot OpenXR Vendors: `5.1.0-stable`; release asset SHA-256 `6a838dbdf4115549e4511ebee0da9a5dcc8f9f6258d4cc2f2ee57a907a3e2911`.
 - `godot-cpp`: API 4.6, commit `8070599885b6df675fcad033dd032ce44be2b850`.

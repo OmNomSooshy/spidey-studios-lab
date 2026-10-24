@@ -1,0 +1,197 @@
+{
+  "upstream": "https://github.com/profezzorn/SoundFonts",
+  "commit": "336d26ed7eb80e39e848c1cfd19ba86628944da5",
+  "font": "SmthJedi",
+  "files": [
+    {
+      "path": "ReadMe.txt",
+      "size": 491,
+      "git_blob_sha1": "d8a6de5c08094f956ca39e018f46766664c951d2"
+    },
+    {
+      "path": "blst/blst01.wav",
+      "size": 56856,
+      "git_blob_sha1": "eeed26239b210487d158920b90059f913ec9bf2e"
+    },
+    {
+      "path": "blst/blst02.wav",
+      "size": 67996,
+      "git_blob_sha1": "3ed3014dce77ef850375cc7c09d62f7512e11bf3"
+    },
+    {
+      "path": "blst/blst03.wav",
+      "size": 60970,
+      "git_blob_sha1": "5ace731f8b6474b188cffd72c03179991c248a2a"
+    },
+    {
+      "path": "blst/blst04.wav",
+      "size": 52746,
+      "git_blob_sha1": "0e2ae5742a43ed331c04f1006838e3804a0d54e4"
+    },
+    {
+      "path": "blst/blst05.wav",
+      "size": 56856,
+      "git_blob_sha1": "0e42eef85df42b826b16cfd4686f0a97bb6b0b33"
+    },
+    {
+      "path": "blst/blst06.wav",
+      "size": 51774,
+      "git_blob_sha1": "6600a2485efdf19618aea33f1cb3b3f3c0321348"
+    },
+    {
+      "path": "boot.wav",
+      "size": 90808,
+      "git_blob_sha1": "8852e05210405a949644ab7d798e9af0b7882cb9"
+    },
+    {
+      "path": "clsh/clsh01.wav",
+      "size": 31612,
+      "git_blob_sha1": "b9586a732c22b79fd6ab1efc6f04d246b687bc49"
+    },
+    {
+      "path": "clsh/clsh02.wav",
+      "size": 33356,
+      "git_blob_sha1": "99dd10b3ad45dd560921e76d94696c1d3f9216b4"
+    },
+    {
+      "path": "clsh/clsh03.wav",
+      "size": 35244,
+      "git_blob_sha1": "c7b5d5edcef2c805f2de14613507a4391be1bc16"
+    },
+    {
+      "path": "clsh/clsh04.wav",
+      "size": 33900,
+      "git_blob_sha1": "95c3ed49daafa281948dc462a6a63eecc0160740"
+    },
+    {
+      "path": "clsh/clsh05.wav",
+      "size": 47970,
+      "git_blob_sha1": "7a2d7c19630b08b15338a3a8a5917d295a369bc7"
+    },
+    {
+      "path": "config.ini",
+      "size": 745,
+      "git_blob_sha1": "d22f8055e148acd76683290b5605c0d3b32466c6"
+    },
+    {
+      "path": "endlock.wav",
+      "size": 97184,
+      "git_blob_sha1": "5b98d69c4c1ac8b7094dc1d2924f8ea80dff1c8e"
+    },
+    {
+      "path": "font.wav",
+      "size": 123948,
+      "git_blob_sha1": "17b7e6349b1c7da035e5c46436a79d5a10ed9e7e"
+    },
+    {
+      "path": "hum.wav",
+      "size": 559164,
+      "git_blob_sha1": "f84c49b4c1203813800252cf70b07e2a074d6c14"
+    },
+    {
+      "path": "in.wav",
+      "size": 81196,
+      "git_blob_sha1": "6d49485c670b8fa6bc30f3e382c602d16230b26f"
+    },
+    {
+      "path": "license.txt",
+      "size": 719,
+      "git_blob_sha1": "925288196ec05b7a28f5a9dd375e62c876b6166c"
+    },
+    {
+      "path": "lock.wav",
+      "size": 1665292,
+      "git_blob_sha1": "29b74d49a54fc25019d8e0f1496fcb33f9d57fbc"
+    },
+    {
+      "path": "out.wav",
+      "size": 92720,
+      "git_blob_sha1": "90cd70ec9d348cf42447752df28e03291bb146dd"
+    },
+    {
+      "path": "smoothsw.ini",
+      "size": 505,
+      "git_blob_sha1": "f9de7c6f98dd94d4524289ec4b3e779fcc1ce64e"
+    },
+    {
+      "path": "swingh/swingh01.wav",
+      "size": 568620,
+      "git_blob_sha1": "8ab7041c8c852cdb20926ab85db452c4c568df3e"
+    },
+    {
+      "path": "swingh/swingh02.wav",
+      "size": 568620,
+      "git_blob_sha1": "d663bab73e096f577db77693c7db31dd524f5d99"
+    },
+    {
+      "path": "swingh/swingh03.wav",
+      "size": 568620,
+      "git_blob_sha1": "a72e2559f5e9782a97a60b58929e960a97ea4d67"
+    },
+    {
+      "path": "swingh/swingh04.wav",
+      "size": 568620,
+      "git_blob_sha1": "1dc5db4f0681309ffd355a7262335bc307d2a749"
+    },
+    {
+      "path": "swingh/swingh05.wav",
+      "size": 568620,
+      "git_blob_sha1": "1647229ea17abfeb47b07d904cd195a13440e227"
+    },
+    {
+      "path": "swingh/swingh06.wav",
+      "size": 568620,
+      "git_blob_sha1": "a46a3d9e59656f3081272d51074a738d4b8856a8"
+    },
+    {
+      "path": "swingh/swingh07.wav",
+      "size": 568620,
+      "git_blob_sha1": "fd657b8d16edc22a95a4712aa05a3fbdf9edd9c7"
+    },
+    {
+      "path": "swingh/swingh08.wav",
+      "size": 568620,
+      "git_blob_sha1": "84400c15bef77ad4d42b3119c46e245458765d82"
+    },
+    {
+      "path": "swingl/swingl01.wav",
+      "size": 568620,
+      "git_blob_sha1": "8f77804715953d45a72860a868df91dfff40ac85"
+    },
+    {
+      "path": "swingl/swingl02.wav",
+      "size": 568620,
+      "git_blob_sha1": "8d1d059474842967ab6aece898ab8e0ce16f7509"
+    },
+    {
+      "path": "swingl/swingl03.wav",
+      "size": 568620,
+      "git_blob_sha1": "372e88b379fd247b92c9724ab6c5309fa98aa612"
+    },
+    {
+      "path": "swingl/swingl04.wav",
+      "size": 568620,
+      "git_blob_sha1": "906ba82b26d6db472be8ed7d03daf1cac67b4f2c"
+    },
+    {
+      "path": "swingl/swingl05.wav",
+      "size": 568620,
+      "git_blob_sha1": "a0959dee66880a89d6963c4dae9a9edffb679f59"
+    },
+    {
+      "path": "swingl/swingl06.wav",
+      "size": 568620,
+      "git_blob_sha1": "be78130c4bdc47ac7982f9d4892d84acf4d7c811"
+    },
+    {
+      "path": "swingl/swingl07.wav",
+      "size": 568620,
+      "git_blob_sha1": "bc23814bbcdacb7884a4c7c7fadfbc4862432aca"
+    },
+    {
+      "path": "swingl/swingl08.wav",
+      "size": 568620,
+      "git_blob_sha1": "f1fae604f45aa2330377b69ff67b7b31863bbbe8"
+    }
+  ]
+}

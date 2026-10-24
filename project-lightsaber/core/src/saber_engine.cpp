@@ -131,6 +131,14 @@ struct SaberEngine::Impl {
     if(fs::exists(folder)) for(auto& e:fs::directory_iterator(folder)) if(e.is_regular_file() && lower(e.path().extension().string())==".wav" && w.load(e.path())) return true;
     return false;
   }
+  bool effectPresent(const std::string& n) const {
+    if (fs::exists(dir/(n+".wav"))) return true;
+    fs::path folder=dir/n;
+    if(!fs::is_directory(folder)) return false;
+    for(const auto& e:fs::directory_iterator(folder))
+      if(e.is_regular_file()&&lower(e.path().extension().string())==".wav") return true;
+    return false;
+  }
   void newPair() { if(lows.empty()) return;uint64_t now=timestamp.load(std::memory_order_relaxed);if(have_pair&&now>=last_pair_pick_ns&&now-last_pair_pick_ns<1'000'000'000ULL)return;std::uniform_int_distribution<size_t>d(0,lows.size()-1); std::uniform_real_distribution<float>offset(10.0f,60.0f); current=d(rng);last_pair_pick_ns=now;double start=smooth_swing_hum_start==0?now*1e-9:hum_pos/std::max(1,current_rate);low_pos=high_pos=start*std::max(1,current_rate);have_pair=true;core.resetTransition(offset(rng),(rng()&1)==0); }
   float source(const Wav& w, double& pos, int outch, int rate, bool loop) {
     if(!w.frames()) return 0;
@@ -173,24 +181,41 @@ bool SaberEngine::loadFont(const std::string& path,std::string* error) {
   if(!fs::is_directory(p.dir)){if(error)*error="Choose a Proffie sound-font ZIP or font directory.";return false;}
   p.name=p.dir.filename().string(); p.hum=Wav{};p.ignite=Wav{};p.retract=Wav{};p.postoff=Wav{};p.lows.clear();p.highs.clear();
   p.hum_name.clear();if(p.findEffect("humm",p.hum))p.hum_name="humm";else if(p.findEffect("hum",p.hum))p.hum_name="hum";
-  if(p.hum_name.empty()){if(error)*error="Missing or unsupported hum.wav/humm.wav (requires PCM 16-bit WAV).";return false;}
+  if(p.hum_name.empty()){
+    bool present=p.effectPresent("humm")||p.effectPresent("hum");
+    if(error)*error=present?"Unsupported audio encoding: hum.wav/humm.wav must be PCM 16-bit mono or stereo WAV.":"Missing required WAV files: hum.wav or humm.wav.";
+    return false;
+  }
   p.ignition_name.clear();p.retraction_name.clear();
   for(const char*n:{"out","poweron","fastout"})if(p.findEffect(n,p.ignite)){p.ignition_name=n;break;}
   if(p.findEffect("in",p.retract))p.retraction_name="in";
   if(!p.retraction_name.empty()&&p.findEffect("pstoff",p.postoff))p.retraction_name+="+pstoff";
   if(p.retraction_name.empty())for(const char*n:{"pstoff","poweroff","pwroff"})if(p.findEffect(n,p.retract)){p.retraction_name=n;break;}
-  if(p.ignition_name.empty()){if(error)*error="Missing ignition effect (expected out.wav, poweron.wav, or fastout.wav).";return false;}
-  if(p.retraction_name.empty()){if(error)*error="Missing retraction effect (expected in.wav, pstoff.wav, poweroff.wav, or pwroff.wav).";return false;}
+  if(p.ignition_name.empty()){
+    bool present=p.effectPresent("out")||p.effectPresent("poweron")||p.effectPresent("fastout");
+    if(error)*error=present?"Unsupported audio encoding: ignition WAV must be PCM 16-bit mono or stereo WAV.":"Missing required WAV files: ignition needs out.wav or a supported power-on effect.";
+    return false;
+  }
+  if(p.retraction_name.empty()){
+    bool present=p.effectPresent("in")||p.effectPresent("pstoff")||p.effectPresent("poweroff")||p.effectPresent("pwroff");
+    if(error)*error=present?"Unsupported audio encoding: retraction WAV must be PCM 16-bit mono or stereo WAV.":"Missing required WAV files: retraction needs in.wav, pstoff.wav, or a supported power-off effect.";
+    return false;
+  }
   Wav probe_l,probe_h; bool modern=p.hasSwing("swingl",0)||p.hasSwing("swingh",0)||p.hasSwing("swingl",1)||p.hasSwing("swingh",1);
   std::string low_name=modern?"swingl":"lswing", high_name=modern?"swingh":"hswing";
   int first_file=(p.hasSwing(low_name,0)||p.hasSwing(high_name,0))?0:1;
   for(int i=first_file;i<=9999;i++) {
-    Wav l,h; bool lf=p.loadSwing(low_name,i,l),hf=p.loadSwing(high_name,i,h);
-    if(lf&&hf){p.lows.push_back(std::move(l));p.highs.push_back(std::move(h));} else if(lf!=hf){if(error)*error="Paired swing file is missing or unsupported; both low and high must be PCM 16-bit mono/stereo WAV.";return false;} else break;
+    Wav l,h; bool lp=p.hasSwing(low_name,i),hp=p.hasSwing(high_name,i);
+    bool lf=p.loadSwing(low_name,i,l),hf=p.loadSwing(high_name,i,h);
+    if(lf&&hf){p.lows.push_back(std::move(l));p.highs.push_back(std::move(h));}
+    else if(lp||hp){
+      if(error)*error=(lp&&!lf)||(hp&&!hf)?"Unsupported audio encoding: swing WAVs must be PCM 16-bit mono or stereo.":"Missing required WAV files: each swing recording needs its matching low/high partner.";
+      return false;
+    } else break;
   }
   if(p.lows.empty()){
     bool files=p.hasSwing(low_name,0)||p.hasSwing(high_name,0)||p.hasSwing(low_name,1)||p.hasSwing(high_name,1);
-    if(error)*error=files?"Swing WAV encoding unsupported; use PCM 16-bit mono/stereo files.":"No paired swingl/swingh or legacy lswing/hswing recordings found.";
+    if(error)*error=files?"Unsupported audio encoding: swing WAVs must be PCM 16-bit mono or stereo.":"Missing required WAV files: no paired swingl/swingh or legacy lswing/hswing recordings found.";
     return false;
   }
   p.config=SmoothSwingConfig{};p.core=SmoothSwingCore(p.config);if(!p.loadConfig(error))return false;p.font_hum_volume=15.0f/16.0f;p.font_effect_volume=1;p.hum_start_ms=100;p.proffie_hum_delay_ms=-1;p.smooth_swing_hum_start=0;p.loadFontConfig();
@@ -204,7 +229,7 @@ void SaberEngine::ignite(){std::lock_guard<std::mutex>l(impl_->mutex);auto&p=*im
 void SaberEngine::retract(){std::lock_guard<std::mutex>l(impl_->mutex);auto&p=*impl_;if(!p.on)return;p.on=false;p.retracting=p.retract.frames()>0;p.playing_postoff=false;p.effect_pos=p.postoff_pos=0;p.target_hum=0;p.was_swinging=p.reseed_after_swing=false;}
 void SaberEngine::motion(const MotionFrame&f){impl_->gy.store(f.y_dps,std::memory_order_relaxed);impl_->gz.store(f.z_dps,std::memory_order_relaxed);impl_->timestamp.store(f.timestamp_ns,std::memory_order_relaxed);impl_->motion_samples.fetch_add(1,std::memory_order_relaxed);}
 bool SaberEngine::isOn()const{std::lock_guard<std::mutex>l(impl_->mutex);return impl_->on;}
-std::string SaberEngine::diagnostics()const{std::lock_guard<std::mutex>l(impl_->mutex);const auto&p=*impl_;std::ostringstream s;s<<"font="<<(p.ready?p.name:"none")<<";blade="<<(p.on?"on":"off")<<";gyro_samples="<<p.motion_samples.load()<<";speed_dps="<<p.reported_speed.load()<<";swing="<<(p.reported_swing.load()?"active":"idle")<<";sensitivity="<<p.config.swing_sensitivity<<";sharpness="<<p.config.swing_sharpness<<";hum="<<p.hum_name<<";ignite_effect="<<p.ignition_name<<";retract_effect="<<p.retraction_name<<";humStart_ms="<<p.hum_start_ms<<";audio_frames="<<p.rendered_frames.load();return s.str();}
+std::string SaberEngine::diagnostics()const{std::lock_guard<std::mutex>l(impl_->mutex);const auto&p=*impl_;std::ostringstream s;s<<"font="<<(p.ready?p.name:"none")<<";blade="<<(p.on?"on":"off")<<";gyro_samples="<<p.motion_samples.load()<<";speed_dps="<<p.reported_speed.load()<<";swing="<<(p.reported_swing.load()?"active":"idle")<<";sensitivity="<<p.config.swing_sensitivity<<";sharpness="<<p.config.swing_sharpness<<";hum="<<p.hum_name<<";ignite_effect="<<p.ignition_name<<";retract_effect="<<p.retraction_name<<";swing_pairs="<<p.lows.size()<<";humStart_ms="<<p.hum_start_ms<<";audio_frames="<<p.rendered_frames.load();return s.str();}
 void SaberEngine::render(int16_t*out,int frames,int rate){
   std::lock_guard<std::mutex> lock(impl_->mutex); auto&p=*impl_; if(!out||frames<=0||rate<=0)return;
   MotionFrame mf{0,p.gy.load(),p.gz.load(),p.timestamp.load()}; MixGains gains=p.core.update(mf,p.on);

@@ -6,6 +6,7 @@ on:
     paths:
       - "project-lightsaber/app/**"
       - "project-lightsaber/core/**"
+      - "project-lightsaber/font-assets/**"
       - "project-lightsaber/*.gradle.kts"
       - "project-lightsaber/gradle/**"
       - "project-lightsaber/gradlew*"
@@ -54,43 +55,70 @@ jobs:
         working-directory: project-lightsaber
         run: ./gradlew --no-daemon --stacktrace :app:assembleDebug
 
+      - name: Run host tests and package pinned SmthJedi font
+        working-directory: project-lightsaber
+        run: |
+          g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/smooth_swing_trace.cpp -o "$RUNNER_TEMP/lightsaber-trace"
+          "$RUNNER_TEMP/lightsaber-trace"
+          g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/audio_font_trace.cpp -o "$RUNNER_TEMP/lightsaber-audio-trace"
+          "$RUNNER_TEMP/lightsaber-audio-trace"
+          python3 font-assets/package_smthjedi.py --output "$RUNNER_TEMP/SmthJedi-ProffieOS.zip"
+          mkdir -p "$RUNNER_TEMP/smthjedi-import-test"
+          unzip -q "$RUNNER_TEMP/SmthJedi-ProffieOS.zip" -d "$RUNNER_TEMP/smthjedi-import-test"
+          g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/font_smoke.cpp -o "$RUNNER_TEMP/lightsaber-font-smoke"
+          "$RUNNER_TEMP/lightsaber-font-smoke" "$RUNNER_TEMP/smthjedi-import-test/SmthJedi"
+
       - name: Verify APK contents and calculate checksum
         id: verify
         run: |
           apk="project-lightsaber/app/build/outputs/apk/debug/app-debug.apk"
+          font_zip="$RUNNER_TEMP/SmthJedi-ProffieOS.zip"
           test -s "$apk"
+          test -s "$font_zip"
           unzip -t "$apk"
+          unzip -t "$font_zip"
           "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$apk" | grep -F "package: name='studios.spidey.lightsaber'"
           unzip -l "$apk" | grep -E 'lib/(arm64-v8a|x86_64)/liblightsaber\.so'
-          sha256sum "$apk" | tee "$RUNNER_TEMP/apk.sha256"
+          sha256sum "$apk" "$font_zip" | tee "$RUNNER_TEMP/deliverables.sha256"
           cp "$apk" "$RUNNER_TEMP/Project-Lightsaber-debug.apk"
-          echo "sha256=$(cut -d ' ' -f 1 "$RUNNER_TEMP/apk.sha256")" >> "$GITHUB_OUTPUT"
+          echo "apk_sha256=$(sha256sum "$apk" | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+          echo "font_sha256=$(sha256sum "$font_zip" | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
 
-      - name: Upload APK to this workflow run
+      - name: Upload APK and single-font ZIP to this workflow run
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
-          name: Project-Lightsaber-debug-apk
-          path: ${{ runner.temp }}/Project-Lightsaber-debug.apk
+          name: Project-Lightsaber-phone-test-assets
+          path: |
+            ${{ runner.temp }}/Project-Lightsaber-debug.apk
+            ${{ runner.temp }}/SmthJedi-ProffieOS.zip
           if-no-files-found: error
           retention-days: 30
 
       - name: Publish downloadable APK release
         env:
           GH_TOKEN: ${{ github.token }}
-          APK_SHA256: ${{ steps.verify.outputs.sha256 }}
+          APK_SHA256: ${{ steps.verify.outputs.apk_sha256 }}
+          FONT_SHA256: ${{ steps.verify.outputs.font_sha256 }}
         run: |
           tag="lightsaber-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
-          printf 'Debug APK built from %s\nSHA-256: %s\n' "$GITHUB_SHA" "$APK_SHA256" > "$RUNNER_TEMP/release-notes.md"
-          gh release create "$tag" "$RUNNER_TEMP/Project-Lightsaber-debug.apk#Project-Lightsaber-debug.apk" \
+          printf 'Debug APK built from %s\nAPK SHA-256: %s\n\nSmthJedi source: https://github.com/profezzorn/SoundFonts/tree/336d26ed7eb80e39e848c1cfd19ba86628944da5/SmthJedi\nFont ZIP SHA-256: %s\nThe ZIP contains only the 38 pinned SmthJedi files, including its original audio and license.\n' "$GITHUB_SHA" "$APK_SHA256" "$FONT_SHA256" > "$RUNNER_TEMP/release-notes.md"
+          gh release create "$tag" \
+            "$RUNNER_TEMP/Project-Lightsaber-debug.apk#Project-Lightsaber-debug.apk" \
+            "$RUNNER_TEMP/SmthJedi-ProffieOS.zip#SmthJedi-ProffieOS.zip" \
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "Project Lightsaber debug APK ${GITHUB_RUN_NUMBER}" \
             --notes-file "$RUNNER_TEMP/release-notes.md"
-          download_url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${tag}/Project-Lightsaber-debug.apk"
+          apk_url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${tag}/Project-Lightsaber-debug.apk"
+          font_url="https://github.com/${GITHUB_REPOSITORY}/releases/download/${tag}/SmthJedi-ProffieOS.zip"
           {
-            echo "## Project Lightsaber debug APK"
+            echo "## Project Lightsaber phone test files"
             echo ""
-            echo "Download: ${download_url}"
+            echo "APK: ${apk_url}"
             echo ""
-            echo "SHA-256: \`${APK_SHA256}\`"
+            echo "APK SHA-256: \`${APK_SHA256}\`"
+            echo ""
+            echo "SmthJedi single-font ZIP: ${font_url}"
+            echo ""
+            echo "Font ZIP SHA-256: \`${FONT_SHA256}\`"
           } >> "$GITHUB_STEP_SUMMARY"

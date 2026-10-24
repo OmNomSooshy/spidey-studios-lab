@@ -4,9 +4,9 @@ An isolated Android/native experiment in the Spidey Studios lab. Spider Byte and
 
 ## Download and install the APK
 
-Luna builds the debug APK on GitHub Actions. Open the [Project Lightsaber workflow](https://github.com/OmNomSooshy/spidey-studios-lab/actions/workflows/project-lightsaber-android.yml) to see build status; successful builds publish a downloadable APK on the [GitHub Releases page](https://github.com/OmNomSooshy/spidey-studios-lab/releases). [Download the verified APK from build 3](https://github.com/OmNomSooshy/spidey-studios-lab/releases/download/lightsaber-abdc849-3-1/Project-Lightsaber-debug.apk), or use the latest **Project Lightsaber debug APK** release for future builds. The release notes include the source commit and SHA-256 checksum. A temporary workflow artifact is also attached to each successful run.
+Luna builds the debug APK on GitHub Actions. Open the [Project Lightsaber workflow](https://github.com/OmNomSooshy/spidey-studios-lab/actions/workflows/project-lightsaber-android.yml) to see build status; successful builds publish a downloadable APK and the small test font on the [GitHub Releases page](https://github.com/OmNomSooshy/spidey-studios-lab/releases). [Download the verified APK](https://github.com/OmNomSooshy/spidey-studios-lab/releases/download/lightsaber-bdb2b56-4-1/Project-Lightsaber-debug.apk) and [download the SmthJedi-only ZIP](https://github.com/OmNomSooshy/spidey-studios-lab/releases/download/lightsaber-bdb2b56-4-1/SmthJedi-ProffieOS.zip). These are separate files; the ZIP contains no other SoundFonts repository contents. A temporary combined workflow artifact is also attached to the [successful build run](https://github.com/OmNomSooshy/spidey-studios-lab/actions/runs/40062775232) for 30 days.
 
-On your Android phone, download `Project-Lightsaber-debug.apk`, open it, and approve installation from the browser/files app if Android asks. Launch Project Lightsaber, import the official SmthJedi ZIP as described below, then ignite and swing. The app is a debug build, not a Play Store release.
+On your Android phone, download `Project-Lightsaber-debug.apk`, open it, and approve installation from the browser/files app if Android asks. Launch Project Lightsaber, import the SmthJedi ZIP below or choose an existing font folder, then ignite and swing. The app is a debug build, not a Play Store release.
 
 ## Build configuration and validation
 
@@ -16,9 +16,11 @@ GitHub Actions builds the APK on pushes to `work` that affect app, core, Gradle,
 
 Use **SmthJedi**, identified as a ProffieOS SmoothSwing font by Thexter in the upstream [SoundFonts repository](https://github.com/profezzorn/SoundFonts). Its license says the files are free to use, modify, and redistribute without attribution or other restrictions. The inspected upstream tree is pinned at `336d26ed7eb80e39e848c1cfd19ba86628944da5`.
 
-Download the official archive: [SoundFonts ZIP at the pinned revision](https://github.com/profezzorn/SoundFonts/archive/336d26ed7eb80e39e848c1cfd19ba86628944da5.zip). On the phone, open **Load Sound Font ZIP**, choose that downloaded ZIP, and select **SmthJedi** when the font list appears. The importer traverses nested repository folders (up to four levels) and retains the font in app-private storage. The app reports import or compatibility errors. The actual upstream WAVs have not yet been imported in this environment.
+Download the [verified SmthJedi-only ZIP](https://github.com/OmNomSooshy/spidey-studios-lab/releases/download/lightsaber-bdb2b56-4-1/SmthJedi-ProffieOS.zip). It contains all 38 original files under `SmthJedi/`, including all audio, `smoothsw.ini`, `config.ini`, ReadMe, and license. CI verifies every file against the pinned upstream Git blob ID, checks ZIP CRC/content, extracts it, and loads the real font through the native engine. Do not download the entire SoundFonts repository for this test.
 
-The compatibility target is PCM 16-bit mono or stereo WAV with paired low/high swing recordings and V2 `smoothsw.ini`. ZIP expanded contents are limited to 256 MB. Importer support is intentionally narrower than every format accepted by ProffieOS; details and limitations are in `MISSION_REPORT.md`.
+In the app, tap **LOAD SOUND FONT ZIP**, choose `SmthJedi-ProffieOS.zip`, and select SmthJedi if prompted. Or tap **CHOOSE SOUND FONT FOLDER** and select an existing single-font folder in Android's system folder picker; the app copies nested contents into private storage and discovers font directories. ZIP expanded data and folder copies remain capped at 256 MB. Folder picker operation is build-validated but still awaiting Management's physical-phone confirmation.
+
+The compatibility target is PCM 16-bit mono or stereo WAV with paired low/high swing recordings and V2 `smoothsw.ini`. Importer errors distinguish oversized ZIPs, unsupported structures, missing WAVs, unsupported encodings, and folder access failures. Importer support is intentionally narrower than every format accepted by ProffieOS; details and limitations are in `MISSION_REPORT.md`.
 
 ## Human Ears test
 

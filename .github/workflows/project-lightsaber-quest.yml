@@ -44,8 +44,8 @@ jobs:
             "platform-tools" \
             "platforms;android-36" \
             "build-tools;36.0.0" \
-            "ndk;29.0.14206865"
-          echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/29.0.14206865" >> "$GITHUB_ENV"
+            "ndk;28.1.13356709"
+          echo "ANDROID_NDK_ROOT=$ANDROID_HOME/ndk/28.1.13356709" >> "$GITHUB_ENV"
 
       - name: Install pinned Godot 4.6.3 and Android export templates
         run: |

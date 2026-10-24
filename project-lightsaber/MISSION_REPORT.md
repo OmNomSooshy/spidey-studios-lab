@@ -155,7 +155,7 @@ The action map selects `/interaction_profiles/meta/touch_controller_plus` and bi
 - Godot: `4.6.3-stable`, release tag source commit `7d41c59c4` (official editor reports `Godot v4.6.3.stable.official.7d41c59c4`).
 - Godot OpenXR Vendors: `5.1.0-stable`; release asset SHA-256 `6a838dbdf4115549e4511ebee0da9a5dcc8f9f6258d4cc2f2ee57a907a3e2911`.
 - `godot-cpp`: API 4.6, commit `8070599885b6df675fcad033dd032ce44be2b850`.
-- Android build lane: Ubuntu 24.04, JDK 17, SDK platform 36, Build Tools 36.0.0, NDK 29.0.14206865, Godot-matched Gradle Android templates. Godot/GDExtension uses SCons; CMake is not used for this Quest target.
+- Android build lane: Ubuntu 24.04, JDK 17, SDK platform 36, Build Tools 36.0.0, NDK 28.1.13356709 (required by the pinned Godot-cpp 4.6 Android toolchain), Godot-matched Gradle Android templates. Godot/GDExtension uses SCons; CMake is not used for this Quest target.
 - Font source: `profezzorn/SoundFonts` commit `336d26ed7eb80e39e848c1cfd19ba86628944da5`, verified per-file by the existing packager. ProffieOS behavioral authority remains revision `87bc404e3a3321c959c43cfbdc4c5699b526de81`.
 - Workflow: [project-lightsaber-quest.yml](https://github.com/OmNomSooshy/spidey-studios-lab/blob/work/.github/workflows/project-lightsaber-quest.yml). It builds the arm64 native extension, runs the three existing host engine/font tests, generates and checks the pinned font ZIP, exports a debug APK, verifies the APK and both native shared libraries, uploads a 30-day artifact, and publishes a direct GitHub release asset. The first build run and artifact hash will be appended here after the remote job completes. This report checkpoint does not assert that an APK has yet been produced.
 

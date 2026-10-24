@@ -316,7 +316,7 @@ public final class MainActivity extends Activity implements SensorEventListener 
         nativeMotion(x,z,event.timestamp);
     }
     @Override public void onAccuracyChanged(Sensor sensor,int accuracy) {}
-    @Override protected void onResume(){super.onResume();lastMotionNs=0;if(gyro!=null){sensorThread=new HandlerThread("LightsaberSensors",Process.THREAD_PRIORITY_MORE_FAVORABLE);sensorThread.start();sensors.registerListener(this,gyro,5000,0,sensorThread.getLooper());}if(loadedFont!=null&&gyro!=null)startAudio();}
+    @Override protected void onResume(){super.onResume();lastMotionNs=0;if(gyro!=null){sensorThread=new HandlerThread("LightsaberSensors",Process.THREAD_PRIORITY_MORE_FAVORABLE);sensorThread.start();sensors.registerListener(this,gyro,5000,0,new Handler(sensorThread.getLooper()));}if(loadedFont!=null&&gyro!=null)startAudio();}
     @Override protected void onPause(){sensors.unregisterListener(this);if(sensorThread!=null){sensorThread.quitSafely();try{sensorThread.join(500);}catch(InterruptedException e){Thread.currentThread().interrupt();}sensorThread=null;}stopAudio();super.onPause();}
     @Override protected void onDestroy(){diagnosticsHandler.removeCallbacks(diagnosticsTick);super.onDestroy();}
     private static void deleteTree(File f){if(!f.exists())return;File[] c=f.listFiles();if(c!=null)for(File x:c)deleteTree(x);f.delete();}

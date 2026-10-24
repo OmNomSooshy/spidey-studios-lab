@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: project-lightsaber-quest-${{ github.ref }}
@@ -117,23 +117,18 @@ jobs:
           name: Project-Lightsaber-Quest3-debug
           path: ${{ runner.temp }}/Project-Lightsaber-Quest3-debug.apk
           if-no-files-found: error
-          retention-days: 30
+          retention-days: 90
 
-      - name: Publish downloadable Quest APK
+      - name: Report downloadable Quest APK artifact
         env:
-          GH_TOKEN: ${{ github.token }}
           APK_SHA256: ${{ steps.verify.outputs.apk_sha256 }}
         run: |
-          tag="lightsaber-quest-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
-          printf 'Project Lightsaber Quest 3 debug APK\nSource commit: %s\nAPK SHA-256: %s\n\nIncludes the Luke ROTJ hilt model, green cylindrical blade, runtime selector, SmthJedi and five Ferase Jedi Survivor Proffie SmoothSwing V2 font auditions. The Ferase README and attribution are included. These audio profiles are not Luke ROTJ recordings. Standalone Quest 3; no PC connection required during play. Physical visual/audio validation is pending Management.\n' "$GITHUB_SHA" "$APK_SHA256" > "$RUNNER_TEMP/quest-release-notes.md"
-          gh release create "$tag" \
-            "$RUNNER_TEMP/Project-Lightsaber-Quest3-debug.apk#Project-Lightsaber-Quest3-debug.apk" \
-            --repo "$GITHUB_REPOSITORY" \
-            --target "$GITHUB_SHA" \
-            --title "Project Lightsaber Quest 3 ${GITHUB_RUN_NUMBER}" \
-            --notes-file "$RUNNER_TEMP/quest-release-notes.md"
+          artifact_url="https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/artifacts"
           {
-            echo "Quest APK: https://github.com/${GITHUB_REPOSITORY}/releases/download/${tag}/Project-Lightsaber-Quest3-debug.apk"
-            echo ""
-            echo "SHA-256: ${APK_SHA256}"
+            echo "## Project Lightsaber Quest 3 APK"
+            echo "Download the \`Project-Lightsaber-Quest3-debug\` workflow artifact: ${artifact_url}"
+            echo "Extract the downloaded artifact ZIP to get \`Project-Lightsaber-Quest3-debug.apk\`."
+            echo "APK SHA-256: \`${APK_SHA256}\`"
+            echo "Built from commit: \`${GITHUB_SHA}\`"
+            echo "Physical headset validation is pending."
           } >> "$GITHUB_STEP_SUMMARY"

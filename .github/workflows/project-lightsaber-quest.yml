@@ -49,7 +49,7 @@ jobs:
 
       - name: Install pinned Godot 4.6.3 and Android export templates
         run: |
-          mkdir -p "$RUNNER_TEMP/godot" "$HOME/.local/share/godot/export_templates/4.6.3.stable"
+          mkdir -p "$RUNNER_TEMP/godot" "$RUNNER_TEMP/godot/templates" "$HOME/.local/share/godot/export_templates/4.6.3.stable"
           curl -fL --retry 3 -o "$RUNNER_TEMP/godot/godot.zip" \
             https://github.com/godotengine/godot/releases/download/4.6.3-stable/Godot_v4.6.3-stable_linux.x86_64.zip
           unzip -q "$RUNNER_TEMP/godot/godot.zip" -d "$RUNNER_TEMP/godot"
@@ -57,7 +57,8 @@ jobs:
           echo "GODOT=$RUNNER_TEMP/godot/Godot_v4.6.3-stable_linux.x86_64" >> "$GITHUB_ENV"
           curl -fL --retry 3 -o "$RUNNER_TEMP/godot/templates.tpz" \
             https://github.com/godotengine/godot/releases/download/4.6.3-stable/Godot_v4.6.3-stable_export_templates.tpz
-          unzip -q "$RUNNER_TEMP/godot/templates.tpz" -d "$HOME/.local/share/godot/export_templates/4.6.3.stable"
+          unzip -q "$RUNNER_TEMP/godot/templates.tpz" -d "$RUNNER_TEMP/godot/templates"
+          cp -a "$RUNNER_TEMP/godot/templates/templates/." "$HOME/.local/share/godot/export_templates/4.6.3.stable/"
 
       - name: Download verified Godot OpenXR Vendors addon
         run: |

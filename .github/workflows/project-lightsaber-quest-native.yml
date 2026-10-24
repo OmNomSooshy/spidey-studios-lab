@@ -1,0 +1,116 @@
+name: Project Lightsaber Quest 3 APK
+
+on:
+  push:
+    branches: [work]
+    paths:
+      - "project-lightsaber/core/**"
+      - "project-lightsaber/font-assets/**"
+      - "project-lightsaber/quest-native/**"
+      - "project-lightsaber/gradlew"
+      - "project-lightsaber/gradle/**"
+      - ".github/workflows/project-lightsaber-quest-native.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: project-lightsaber-quest-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  quest-debug-apk:
+    name: Build and verify standalone Quest APK
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - name: Check out source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@cf277c60eb25467037889841efdb72551f06f6c3 # v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Android SDK command line tools
+        uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407 # v3
+        with:
+          packages: platform-tools
+
+      - name: Install pinned Android SDK, NDK, and CMake
+        run: |
+          yes | sdkmanager --licenses >/dev/null
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-34" \
+            "build-tools;35.0.0" \
+            "ndk;27.0.12077973" \
+            "cmake;3.22.1"
+
+      - name: Prepare pinned SmthJedi assets
+        working-directory: project-lightsaber
+        run: |
+          python3 font-assets/package_smthjedi.py --output "$RUNNER_TEMP/SmthJedi-ProffieOS.zip"
+          mkdir -p quest-native/app/src/main/assets
+          unzip -q "$RUNNER_TEMP/SmthJedi-ProffieOS.zip" -d quest-native/app/src/main/assets
+
+      - name: Run portable engine regression tests
+        working-directory: project-lightsaber
+        run: |
+          g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/smooth_swing_trace.cpp -o "$RUNNER_TEMP/lightsaber-trace"
+          "$RUNNER_TEMP/lightsaber-trace"
+          g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/audio_font_trace.cpp -o "$RUNNER_TEMP/lightsaber-audio-trace"
+          "$RUNNER_TEMP/lightsaber-audio-trace"
+          mkdir -p "$RUNNER_TEMP/smthjedi-import-test"
+          unzip -q "$RUNNER_TEMP/SmthJedi-ProffieOS.zip" -d "$RUNNER_TEMP/smthjedi-import-test"
+          g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/font_smoke.cpp -o "$RUNNER_TEMP/lightsaber-font-smoke"
+          "$RUNNER_TEMP/lightsaber-font-smoke" "$RUNNER_TEMP/smthjedi-import-test/SmthJedi"
+
+      - name: Build standalone Quest debug APK
+        working-directory: project-lightsaber
+        run: ./gradlew --no-daemon --stacktrace --project-dir quest-native :app:assembleDebug
+
+      - name: Verify APK package, passthrough metadata, native code, and font
+        id: verify
+        run: |
+          apk="project-lightsaber/quest-native/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$apk"
+          unzip -t "$apk"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump badging "$apk" | grep -F "package: name='studios.spidey.lightsaber.quest'"
+          "$ANDROID_HOME/build-tools/35.0.0/aapt" dump xmltree "$apk" AndroidManifest.xml | grep -F "com.oculus.feature.PASSTHROUGH"
+          unzip -l "$apk" | grep -F "lib/arm64-v8a/libquestxr.so"
+          unzip -l "$apk" | grep -F "lib/arm64-v8a/libopenxr_loader.so"
+          unzip -l "$apk" | grep -F "assets/SmthJedi/smoothsw.ini"
+          unzip -l "$apk" | grep -E 'assets/SmthJedi/.*/(swingh|swingl)[0-9]+\.wav' | head -1
+          cp "$apk" "$RUNNER_TEMP/Project-Lightsaber-Quest3-debug.apk"
+          sha256sum "$apk" | tee "$RUNNER_TEMP/quest-apk.sha256"
+          echo "apk_sha256=$(sha256sum "$apk" | cut -d ' ' -f 1)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: Project-Lightsaber-Quest3-debug
+          path: ${{ runner.temp }}/Project-Lightsaber-Quest3-debug.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish downloadable Quest APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APK_SHA256: ${{ steps.verify.outputs.apk_sha256 }}
+        run: |
+          tag="lightsaber-quest-${GITHUB_SHA::7}-${GITHUB_RUN_NUMBER}-${GITHUB_RUN_ATTEMPT}"
+          printf 'Project Lightsaber Quest 3 debug APK\nSource commit: %s\nAPK SHA-256: %s\n\nThis APK bundles the pinned SmthJedi font. Install for headset validation; no PC connection is needed after installation.\n' "$GITHUB_SHA" "$APK_SHA256" > "$RUNNER_TEMP/quest-release-notes.md"
+          gh release create "$tag" \
+            "$RUNNER_TEMP/Project-Lightsaber-Quest3-debug.apk#Project-Lightsaber-Quest3-debug.apk" \
+            --repo "$GITHUB_REPOSITORY" \
+            --target "$GITHUB_SHA" \
+            --title "Project Lightsaber Quest 3 ${GITHUB_RUN_NUMBER}" \
+            --notes-file "$RUNNER_TEMP/quest-release-notes.md"
+          {
+            echo "Quest APK: https://github.com/${GITHUB_REPOSITORY}/releases/download/${tag}/Project-Lightsaber-Quest3-debug.apk"
+            echo ""
+            echo "SHA-256: ${APK_SHA256}"
+          } >> "$GITHUB_STEP_SUMMARY"

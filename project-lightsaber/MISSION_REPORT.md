@@ -174,3 +174,23 @@ The action map selects `/interaction_profiles/meta/touch_controller_plus` and bi
 Download the [Quest 3 debug APK](https://github.com/OmNomSooshy/spidey-studios-lab/releases/download/lightsaber-quest-4b1f45d-10-1/Project-Lightsaber-Quest3-debug.apk) (98,617,598 bytes; SHA-256 `a179822043afffd93c5ce3a35f29769702d244cc2625b8d06735244d812a71c4`) and install it on Quest 3 with Meta Quest Developer Hub or SideQuest. Launch it from the headset's unknown-sources app library after the usual room/boundary setup. Passthrough should show the room. Hold the right Touch Plus controller as the hilt; press **A** to ignite, swing through slow/fast arcs and direction reversals, then press **B** to retract. The controller remains tracked as the hilt. Check whether the blade follows the grip naturally, whether audio starts and continues without gaps, whether speed and direction changes respond promptly, and whether tracking or audio diagnostics remain live. No PC connection is required during play.
 
 **Acceptance outstanding:** physical Quest 3 Human Eyes/Human Ears validation. APK generation alone does not close Mission 002.
+
+
+## Mission 002 — Black passthrough view correction checkpoint
+
+**Management device report (CONFIRMED):** the installed Quest build launches to a black VR view and Management cannot see the room or use the saber. This is a failed physical acceptance test. The underlying device-side failure is **UNRESOLVED**; a successful CI package check did not establish passthrough runtime.
+
+**Source comparison (CONFIRMED):** the preceding Quest APK was produced by the Godot workflow and configured Godot OpenXR alpha-blend mode plus its Meta passthrough extension. The working Quest Companion reference identified by Management is the `assignment-003a-native-openxr` branch at `e0bc8f18d362a439ccda16bc29331d8f20017a2c`. Its native OpenXR route explicitly enables `XR_FB_passthrough`, starts the passthrough object/layer, submits `XrCompositionLayerPassthroughFB` as the underlay, and declares `com.oculus.feature.PASSTHROUGH`. This is the selected known-working platform pattern; it does not, by itself, prove which defect caused the previous black view.
+
+**Platform adapter decision:** add an isolated native OpenXR Android app at `project-lightsaber/quest-native/` and keep the existing `project-lightsaber/core` C++ engine as the behavior/audio core. The app uses the right Touch controller grip-space angular velocity from `xrLocateSpace` (`XrSpaceVelocity`), rotates it from OpenXR's base/reference frame into grip-local coordinates, converts radians/second to degrees/second, and passes timestamped samples into the existing engine. AAudio consumes engine-generated stereo PCM independently of display cadence. Right A ignites; right B retracts. A simple controller-space quad blade and a status HUD are submitted as composition layers.
+
+The native OpenXR source is adapted from Quest Companion's native OpenXR implementation and retains its MIT notice in `quest-native/QUEST-COMPANION-LICENSE`. It is not a second SmoothSwing implementation. The passthrough setup failure path now logs the precise OpenXR error and continues the session so the HUD can identify passthrough failure instead of silently exiting. This diagnostic fallback is not considered a successful MR experience. The bundled font asset path generation was also corrected to be relative to the font root, avoiding a duplicated `SmthJedi/SmthJedi` asset path that would have prevented loading.
+
+**Engineering evidence (CONFIRMED):** portable host tests passed from this workspace after these changes:
+- `smooth_swing_trace`: source-derived gains/ducking trace passed.
+- `audio_font_trace`: font/config, swing-pair, WAV rejection, and PCM render checks passed.
+- `font_smoke`: pinned SmthJedi loaded with 8 swing pairs and generated nonzero output.
+
+**Build status:** the Quest-native Android project and CI workflow are prepared, but Android compilation, APK verification, and release publication are **BUILD-VALIDATION-PENDING** until the GitHub Actions run completes. No claim of Quest runtime functionality is made from source inspection or host tests.
+
+**Outstanding device acceptance:** install the replacement APK on Quest 3; verify that the room is visible, the HUD says passthrough/font/audio ready, A ignites the controller-aligned blade and audio, physical right-hand swings drive SmoothSwing, and B retracts. Management's black-view report remains the baseline; Mission 002 is active.

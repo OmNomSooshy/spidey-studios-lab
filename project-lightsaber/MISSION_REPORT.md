@@ -249,3 +249,42 @@ The asset preparer verifies ZIP paths, V2 settings file presence, paired low/hig
 ## Management headset test (APK artifact available)
 
 Open the [run #4 artifact link](https://github.com/OmNomSooshy/spidey-studios-lab/actions/runs/40083807122/artifacts/12555799939), download the artifact ZIP, and extract `Project-Lightsaber-Quest3-debug.apk`. Install it on Quest 3 through the established sideload path and launch standalone. First launch copies about 149 MB of selected font audio into app-private storage and may take longer than subsequent launches. Confirm the room remains visible through passthrough. Hold the right controller normally; press **A** once to ignite and again to retract. Check that the detailed Luke ROTJ hilt sits in the grip and the green round blade begins at its emitter. Press **left Y**, browse with the left stick, and select with **left X**; the selector should state the temporary audio assignment. Swing slowly, accelerate, reverse direction, and compare each font; listen for SmoothSwing transitions and response, not just ignition sounds. Try **right B** (blaster), **right trigger** (manual clash), **left trigger** (manual stab where available), and hold/release **right grip** (lockup). Send Quest OS/runtime version, selected profile, any log/HUD error, controller/hilt fit, blade attachment, passthrough behavior, audio response, and any audible discontinuity. The APK checkpoint does not close Mission 003; Human Eyes/Human Ears acceptance remains Management’s decision.
+
+---
+
+# Mission 004 — Holographic Lightsaber Workshop
+
+**Status:** implementation is ready for Quest build validation; physical Quest 3 visual, control, and persistence validation is pending. Mission 004 remains active pending Management's headset review.
+
+## Implementation
+
+- **Workshop presentation — IMPLEMENTED, BUILD-VALIDATION-PENDING:** replaced the inherited diagnostic orb/telemetry layout with a dark translucent “Kyber Archive / Saber Atelier” interface, clear equipped-profile/audio and blade-colour identity, MR/audio readiness indicators, two customization tabs, selection/focus treatment, and concise control hints. The existing floating OpenXR panel and controller-ray behavior remain in use; the native Quest runtime, passthrough setup, and tracking pipeline were not changed.
+- **Profile and sound-font selection — IMPLEMENTED, BUILD-VALIDATION-PENDING:** the existing left-Y open/close, left-stick browse, left-X apply behavior remains. Horizontal stick movement selects between “Saber + Sound” and “Blade Colour”; the profile page continues to equip the existing profile and font together. This does not add new hilt assets or claim modular hilt customization.
+- **Blade-colour selection — IMPLEMENTED, BUILD-VALIDATION-PENDING:** seven runtime options are defined in `quest-native/app/src/main/cpp/blade_palette.h`: classic green, blue, red, purple, yellow, cyan, and white. On the colour tab, vertical stick movement focuses a colour and left X applies it. The OpenXR renderer uses the selected RGB for the outer translucent cylinder and derives a bright hue-preserving inner core; the existing approved green values remain a special case. Selection is independent of font/profile and persists as `blade_color=<id>` in app-private `ProjectLightsaber/workshop_settings.ini`; writes use a temporary file then rename. Invalid/missing settings default to classic green. Physical headset application and restart persistence are not yet verified.
+- **Rounded blade tip — IMPLEMENTED, BUILD-VALIDATION-PENDING:** `MakeRoundedBladeMesh` builds a cylinder shaft joined continuously to a hemispherical terminal. The renderer uploads separate meshes sized for the existing 22 mm outer glow and 9 mm core, keeping concentric layers and the current blade transform/length. A host geometry test checks bounds, unit normals, shaft-to-tip equator, and absence of a flat terminal face. Stereo appearance, emitter continuity, and ignition animation remain subject to headset review.
+- **Protected baseline:** no edits were made to the portable SmoothSwing engine, motion/tracking path, font loading, Android phone app, or Spider Byte. Existing Quest scene, blade, and effect behavior remain connected in source. This is source/build evidence, not proof that the new APK has no device regression.
+
+## Validation and delivery
+
+- Host tests passed locally with `-Wall -Wextra -Werror`: `smooth_swing_trace` (770 timestamped events), `audio_font_trace`, and the new rounded blade geometry test. `git diff --check` passed.
+- **Quest Android build:** pending GitHub Actions validation for this Mission 004 commit. No APK or runtime success is claimed until CI builds and package verification succeeds.
+- **Physical Quest 3:** pending. Management should check workshop readability in passthrough, familiar navigation, profile/font changes, all seven colours on the actual blade, colour persistence after app restart, and roundness/alignment of both blade layers. Existing ignition/retraction/effects and SmoothSwing should also be checked for regression.
+
+## Current classifications
+
+| Requirement | Classification | Evidence / remaining check |
+|---|---|---|
+| Holographic workshop UI and diagnostic-panel replacement | **IMPLEMENTED, BUILD-VALIDATION-PENDING** | Native HUD renderer now draws the workshop; headset readability and visual quality need Management review. |
+| Existing profile/font selection and controls | **IMPLEMENTED, BUILD-VALIDATION-PENDING** | Existing profile load path retained and exposed in first tab; Quest operation after UI change pending. |
+| Runtime blade colour, both rendered layers, and selected-state indication | **IMPLEMENTED, BUILD-VALIDATION-PENDING** | Palette reaches the actual GLES blade draw calls in source; APK and device color changes pending verification. |
+| Colour persistence | **IMPLEMENTED, BUILD-VALIDATION-PENDING** | App-private settings load/save path added; restart durability needs physical-device verification. |
+| Rounded core and glow tips | **IMPLEMENTED, BUILD-VALIDATION-PENDING** | Both renderer VBOs use rounded geometry; deterministic host geometry test passes; headset appearance pending. |
+| Quest passthrough, tracking, audio, ignition/effects baseline | **PARTIALLY IMPLEMENTED** | Protected source paths are unchanged and reachable in the native app; no Mission 004 APK/device regression test yet. |
+| Android prototype / Spider Byte | **IMPLEMENTED AND RUNTIME-REACHABLE (unchanged)** | No source modifications in either project. |
+| Physical Quest 3 Human Eyes/Fingers acceptance | **BLOCKED pending Management device test** | Requires installing and using the Mission 004 APK; no headset attached to this build environment. |
+
+## Provenance
+
+- Repository: `OmNomSooshy/spidey-studios-lab`; Mission 004 work is prepared from `work` commit `157850efb7d00d19c11d545d7bc43a48e1ffc25f`. Final branch/commit and Actions artifact provenance will be recorded after publishing and CI completion.
+- Main implementation: `quest-native/app/src/main/cpp/openxr_program.cpp`, `main.cpp`, `tracking.h`; new `blade_palette.h`, `rounded_blade_mesh.h`, and `tools/rounded_blade_mesh_test.cpp`.
+- Platform decision: retain native OpenXR/GLES renderer and existing controller interaction model; no engine migration, new interaction paradigm, motion retuning, or shared audio change.

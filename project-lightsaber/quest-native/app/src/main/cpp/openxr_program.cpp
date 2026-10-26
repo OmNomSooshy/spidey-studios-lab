@@ -1,6 +1,8 @@
 #include "openxr_program.h"
+#include "blade_palette.h"
 #include "logger.h"
 #include "font8x8.h"
+#include "rounded_blade_mesh.h"
 
 #include <android_native_app_glue.h>
 
@@ -14,6 +16,7 @@
 #include <openxr/openxr_platform.h>
 
 #include <array>
+#include <algorithm>
 #include <chrono>
 #include <cmath>
 #include <cstring>
@@ -99,7 +102,7 @@ struct OpenXrProgram::Impl {
 
     bool frame_should_render = false;
 
-    // --- Debug HUD (head-locked quad layer) ---
+    // --- Holographic workshop (floating quad layer) ---
     static constexpr int32_t HUD_W = 768;
     static constexpr int32_t HUD_H = 512;
     XrSwapchain hud_swapchain = XR_NULL_HANDLE;
@@ -145,7 +148,9 @@ struct OpenXrProgram::Impl {
     std::vector<XrViewConfigurationView> view_config;
     std::vector<XrCompositionLayerProjectionView> projection_views;
     uint32_t scene_width=0,scene_height=0;
-    GLuint scene_fbo=0, scene_vao=0, scene_depth = 0, scene_program = 0, hilt_vbo = 0, blade_vbo = 0;
+    GLuint scene_fbo=0, scene_vao=0, scene_depth = 0, scene_program = 0, hilt_vbo = 0;
+    GLuint blade_vbo=0, core_blade_vbo=0;
+    GLsizei blade_vertex_count=0, core_blade_vertex_count=0;
     GLint scene_mvp = -1, scene_mv=-1, scene_color = -1, scene_unlit=-1;
     struct MeshRange { uint32_t first=0, count=0; float r=1,g=1,b=1,metal=0,rough=1; };
     std::vector<MeshRange> hilt_ranges;
@@ -681,12 +686,13 @@ bool OpenXrProgram::Impl::CreateScenePipeline(){
     GLint linked=0;glGetProgramiv(scene_program,GL_LINK_STATUS,&linked);if(!linked){char log[1024]{};glGetProgramInfoLog(scene_program,sizeof(log),nullptr,log);LOGE("Scene program link failed: %s",log);return false;}
     scene_mvp=glGetUniformLocation(scene_program,"uMvp");scene_mv=glGetUniformLocation(scene_program,"uModelView");scene_color=glGetUniformLocation(scene_program,"uColor");scene_unlit=glGetUniformLocation(scene_program,"uUnlit");
     glGenVertexArrays(1,&scene_vao);
-    std::vector<float> cylinder;constexpr int sides=24;
-    for(int i=0;i<sides;i++){float a=2*kPi*i/sides,b=2*kPi*(i+1)/sides;float ax=std::cos(a),ay=std::sin(a),bx=std::cos(b),by=std::sin(b);
-      const float z0=0,z1=-1;auto vtx=[&](float x,float y,float z){cylinder.insert(cylinder.end(),{x,y,z,x,y,0});};
-      vtx(ax,ay,z0);vtx(bx,by,z0);vtx(bx,by,z1);vtx(ax,ay,z0);vtx(bx,by,z1);vtx(ax,ay,z1);
-    }
-    glGenBuffers(1,&blade_vbo);glBindBuffer(GL_ARRAY_BUFFER,blade_vbo);glBufferData(GL_ARRAY_BUFFER,cylinder.size()*sizeof(float),cylinder.data(),GL_STATIC_DRAW);glBindBuffer(GL_ARRAY_BUFFER,0);
+    auto uploadBlade=[&](GLuint*buffer,GLsizei*count,float tipRatio){
+        const std::vector<float> mesh=MakeRoundedBladeMesh(tipRatio);*count=static_cast<GLsizei>(mesh.size()/6);
+        glGenBuffers(1,buffer);glBindBuffer(GL_ARRAY_BUFFER,*buffer);glBufferData(GL_ARRAY_BUFFER,mesh.size()*sizeof(float),mesh.data(),GL_STATIC_DRAW);
+    };
+    uploadBlade(&blade_vbo,&blade_vertex_count,0.022f/0.92f);
+    uploadBlade(&core_blade_vbo,&core_blade_vertex_count,0.009f/0.92f);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
     scene_ready=true;return true;
 }
 
@@ -741,8 +747,14 @@ bool OpenXrProgram::Impl::RenderScene(const TrackingFrame&f,XrTime time,XrCompos
         };
         if(hilt_ok)for(const auto&m:hilt_ranges)if(m.count)draw(hilt_vbo,m.first,m.count,hilt_model,m.r,m.g,m.b,1.0f,0.0f);
         if(hilt_ok&&f.blade_visible&&f.blade_extension>0.001f){
-            glDepthMask(GL_FALSE);draw(blade_vbo,0,24*6,Mul4(blade_base,Scale4(0.022f,0.022f,f.blade_length_m*f.blade_extension)),f.blade_r,f.blade_g,f.blade_b,0.28f,1.0f);
-            glDepthMask(GL_TRUE);draw(blade_vbo,0,24*6,Mul4(blade_base,Scale4(0.009f,0.009f,f.blade_length_m*f.blade_extension)),0.72f,1.0f,0.78f,1.0f,1.0f);
+            glDepthMask(GL_FALSE);
+            draw(blade_vbo,0,blade_vertex_count,Mul4(blade_base,Scale4(0.022f,0.022f,f.blade_length_m*f.blade_extension)),f.blade_r,f.blade_g,f.blade_b,0.28f,1.0f);
+            const bool classicGreen=std::fabs(f.blade_r-0.08f)<0.01f&&f.blade_g>0.98f&&std::fabs(f.blade_b-0.16f)<0.01f;
+            const float coreR=classicGreen?0.72f:(0.30f*f.blade_r+0.70f);
+            const float coreG=classicGreen?1.00f:(0.30f*f.blade_g+0.70f);
+            const float coreB=classicGreen?0.78f:(0.30f*f.blade_b+0.70f);
+            glDepthMask(GL_TRUE);
+            draw(core_blade_vbo,0,core_blade_vertex_count,Mul4(blade_base,Scale4(0.009f,0.009f,f.blade_length_m*f.blade_extension)),coreR,coreG,coreB,1.0f,1.0f);
         }
         XrCompositionLayerProjectionView&pv=projection_views[eye];pv.pose=views[eye].pose;pv.fov=views[eye].fov;pv.subImage.swapchain=scene_swapchain;pv.subImage.imageRect.offset={0,0};pv.subImage.imageRect.extent={(int32_t)scene_width,(int32_t)scene_height};pv.subImage.imageArrayIndex=eye;
     }
@@ -823,66 +835,106 @@ void OpenXrProgram::Impl::ComputeHudRays(const TrackingFrame& f) {
     }
 }
 
+namespace {
+void WorkshopRect(uint8_t* b,int w,int h,int x,int y,int rw,int rh,uint8_t r,uint8_t g,uint8_t bl,uint8_t a){
+    const int x0=std::max(0,x),y0=std::max(0,y),x1=std::min(w,x+rw),y1=std::min(h,y+rh);
+    for(int py=y0;py<y1;py++)for(int px=x0;px<x1;px++){uint8_t*p=b+(static_cast<size_t>(py)*w+px)*4;p[0]=r;p[1]=g;p[2]=bl;p[3]=a;}
+}
+void WorkshopOutline(uint8_t*b,int w,int h,int x,int y,int rw,int rh,uint8_t r,uint8_t g,uint8_t bl,uint8_t a){
+    WorkshopRect(b,w,h,x,y,rw,1,r,g,bl,a);WorkshopRect(b,w,h,x,y+rh-1,rw,1,r,g,bl,a);
+    WorkshopRect(b,w,h,x,y,1,rh,r,g,bl,a);WorkshopRect(b,w,h,x+rw-1,y,1,rh,r,g,bl,a);
+}
+void WorkshopCircle(uint8_t*b,int w,int h,int cx,int cy,int radius,uint8_t r,uint8_t g,uint8_t bl,uint8_t a,bool filled){
+    const int rr=radius*radius,inner=(radius-2)*(radius-2);
+    for(int y=std::max(0,cy-radius);y<=std::min(h-1,cy+radius);y++)for(int x=std::max(0,cx-radius);x<=std::min(w-1,cx+radius);x++){
+        const int d=(x-cx)*(x-cx)+(y-cy)*(y-cy);if(d>rr||(!filled&&d<inner))continue;
+        uint8_t*p=b+(static_cast<size_t>(y)*w+x)*4;p[0]=r;p[1]=g;p[2]=bl;p[3]=a;
+    }
+}
+void WorkshopText(uint8_t*b,int w,int h,int x,int y,const char*s,int scale,uint8_t r,uint8_t g,uint8_t bl){HudDrawText(b,w,h,x,y,s,scale,r,g,bl);}
+void WorkshopChip(uint8_t*b,int w,int h,int cx,int cy,const BladePaletteColor&c,bool focused,bool active){
+    if(focused)WorkshopCircle(b,w,h,cx,cy,22,128,242,220,210,false);
+    else WorkshopCircle(b,w,h,cx,cy,19,132,157,160,180,false);
+    const auto r=static_cast<uint8_t>(std::clamp(c.r,0.0f,1.0f)*255.0f);
+    const auto g=static_cast<uint8_t>(std::clamp(c.g,0.0f,1.0f)*255.0f);
+    const auto bl=static_cast<uint8_t>(std::clamp(c.b,0.0f,1.0f)*255.0f);
+    WorkshopCircle(b,w,h,cx,cy,14,r,g,bl,255,true);
+    if(active)WorkshopRect(b,w,h,cx-3,cy+18,6,3,240,222,179,255);
+}
+}
+
 void OpenXrProgram::Impl::FillHudPixels(const TrackingFrame& f) {
-    const int W = HUD_W, H = HUD_H;
-    uint8_t* buf = hud_pixels.data();
-    memset(buf, 0, hud_pixels.size());
+    const int W=HUD_W,H=HUD_H;uint8_t*buf=hud_pixels.data();memset(buf,0,hud_pixels.size());
+    const uint8_t goldR=235,goldG=191,goldB=126;
+    WorkshopRect(buf,W,H,20,18,728,476,7,15,20,226);
+    WorkshopRect(buf,W,H,20,18,728,2,goldR,goldG,goldB,240);
+    WorkshopOutline(buf,W,H,20,18,728,476,99,151,148,220);
+    WorkshopRect(buf,W,H,21,20,3,472,63,212,193,220);
+    WorkshopText(buf,W,H,44,35,"KYBER ARCHIVE   /   SABER WORKSHOP",1,133,219,202);
+    WorkshopText(buf,W,H,42,55,"SABER ATELIER",3,244,242,229);
+    WorkshopText(buf,W,H,44,87,"CONFIGURE YOUR HILT, SOUND AND BLADE",1,164,183,181);
 
-    // A soft cyan orb rendered on the in-headset status panel.
-    const int cx = W / 2;
-    const int cy = H / 2;
-    const float pulse = 0.88f + 0.12f * std::sin(static_cast<float>(f.t) * 1.3f);
-    for (int y = -86; y <= 86; ++y) {
-        for (int x = -86; x <= 86; ++x) {
-            const float d = std::sqrt(static_cast<float>(x * x + y * y));
-            if (d > 86.0f) continue;
-            const float glow = 1.0f - d / 86.0f;
-            uint8_t* p = buf + (static_cast<size_t>(cy + y) * W + (cx + x)) * 4;
-            p[0] = static_cast<uint8_t>(24 + 65 * glow);
-            p[1] = static_cast<uint8_t>(70 + 120 * glow);
-            p[2] = static_cast<uint8_t>(105 + 150 * glow * pulse);
-            p[3] = static_cast<uint8_t>(35 + 220 * glow);
-        }
-    }
-    // Add a bright ring to keep the orb readable against varied rooms.
-    for (int y = -66; y <= 66; ++y) {
-        for (int x = -66; x <= 66; ++x) {
-            const float d = std::sqrt(static_cast<float>(x * x + y * y));
-            if (d < 61.0f || d > 66.0f) continue;
-            uint8_t* p = buf + (static_cast<size_t>(cy + y) * W + (cx + x)) * 4;
-            p[0] = 100; p[1] = 225; p[2] = 255; p[3] = 255;
-        }
-    }
+    const int mrColor=passthrough_ready?125:255;
+    WorkshopRect(buf,W,H,550,34,88,23,19,49,45,235);WorkshopOutline(buf,W,H,550,34,88,23,69,184,160,230);
+    WorkshopText(buf,W,H,562,42,passthrough_ready?"MR LIVE":"MR OFF",1,mrColor,235,205);
+    WorkshopRect(buf,W,H,646,34,84,23,23,48,54,235);WorkshopOutline(buf,W,H,646,34,84,23,92,142,160,220);
+    WorkshopText(buf,W,H,655,42,f.audio_ready?"AUDIO ON":"AUDIO OFF",1,f.audio_ready?171:255,226,208);
 
-    const int scale = 2;
-    HudDrawText(buf, W, H, 16, 18, "PROJECT LIGHTSABER", scale, 230, 248, 255);
-    HudDrawText(buf, W, H, 16, 42, "QUEST 3 / PROFFIE-DERIVED SMOOTHSWING V2", scale, 125, 210, 255);
-    HudDrawText(buf, W, H, 16, 72, f.profile_name, scale, 115, 255, 145);
-    HudDrawText(buf, W, H, 16, 92, f.profile_note, scale, 190, 210, 225);
+    WorkshopRect(buf,W,H,42,105,684,75,13,28,34,235);WorkshopOutline(buf,W,H,42,105,684,75,51,91,87,220);
+    WorkshopText(buf,W,H,56,116,"EQUIPPED PROFILE",1,126,199,185);
+    WorkshopText(buf,W,H,56,135,f.profile_name,2,237,236,220);
+    WorkshopText(buf,W,H,56,160,f.profile_note,1,171,189,183);
+    const int activeColor=std::clamp(f.active_color_index,0,static_cast<int>(kBladePaletteCount)-1);
+    WorkshopCircle(buf,W,H,690,141,24,76,132,123,170,true);
+    WorkshopCircle(buf,W,H,690,141,17,static_cast<uint8_t>(kBladePalette[activeColor].r*255),static_cast<uint8_t>(kBladePalette[activeColor].g*255),static_cast<uint8_t>(kBladePalette[activeColor].b*255),255,true);
+    WorkshopText(buf,W,H,620,164,kBladePalette[activeColor].id,1,239,222,181);
+    WorkshopRect(buf,W,H,42,193,684,1,73,111,104,220);
+
     if(f.selector_open){
-        char choice[80];std::snprintf(choice,sizeof(choice),"SABER SELECTOR %d/%d",f.profile_index+1,f.profile_count);
-        HudDrawText(buf,W,H,16,132,choice,scale,255,220,120);
-        HudDrawText(buf,W,H,16,152,f.selector_profile_name,scale,255,240,185);
-        HudDrawText(buf,W,H,16,172,"LEFT STICK: BROWSE   X: SELECT   Y: CLOSE",scale,225,235,245);
+        const bool colorPage=f.workshop_section==1;
+        WorkshopRect(buf,W,H,43,207,315,34,colorPage?14:35,colorPage?35:51,colorPage?38:43,240);
+        WorkshopRect(buf,W,H,380,207,346,colorPage?35:14,colorPage?51:35,colorPage?43:38,240);
+        WorkshopText(buf,W,H,65,218,"SABER + SOUND",2,colorPage?151:245,colorPage?177:219,colorPage?171:153);
+        WorkshopText(buf,W,H,408,218,"BLADE COLOUR",2,colorPage?245:151,colorPage?219:177,colorPage?153:171);
+        if(colorPage){
+            const int ci=std::clamp(f.color_index,0,static_cast<int>(kBladePaletteCount)-1);
+            WorkshopText(buf,W,H,48,259,"LIVE BLADE COLOUR",1,135,213,192);
+            WorkshopText(buf,W,H,48,282,kBladePalette[ci].name,2,245,239,216);
+            WorkshopText(buf,W,H,48,309,ci==activeColor?"EQUIPPED":"X  APPLY COLOUR",1,192,205,193);
+            WorkshopCircle(buf,W,H,680,290,29,83,127,116,200,true);
+            WorkshopCircle(buf,W,H,680,290,21,static_cast<uint8_t>(kBladePalette[ci].r*255),static_cast<uint8_t>(kBladePalette[ci].g*255),static_cast<uint8_t>(kBladePalette[ci].b*255),255,true);
+            for(std::size_t i=0;i<kBladePaletteCount;i++){
+                const int cx=80+static_cast<int>(i)*96;const bool focused=static_cast<int>(i)==ci;const bool active=static_cast<int>(i)==activeColor;
+                WorkshopChip(buf,W,H,cx,370,kBladePalette[i],focused,active);
+                const int labelX=cx-static_cast<int>(std::strlen(kBladePalette[i].id))*4;
+                WorkshopText(buf,W,H,labelX,400,kBladePalette[i].id,1,focused?239:155,focused?229:178,focused?199:171);
+            }
+        } else {
+            const int pi=std::clamp(f.profile_index,0,std::max(0,f.profile_count-1));
+            WorkshopText(buf,W,H,48,259,"SOUND-FONT PROFILE",1,135,213,192);
+            WorkshopText(buf,W,H,48,282,f.selector_profile_name,2,245,239,216);
+            WorkshopText(buf,W,H,48,309,f.selector_profile_note,1,183,198,187);
+            char count[48];std::snprintf(count,sizeof(count),"PROFILE  %02d  /  %02d",pi+1,f.profile_count);
+            WorkshopText(buf,W,H,48,340,count,1,211,197,164);
+            WorkshopText(buf,W,H,48,367,pi==f.active_profile_index?"CURRENTLY EQUIPPED":"X  EQUIP PROFILE",1,pi==f.active_profile_index?139:231,pi==f.active_profile_index?218:206,pi==f.active_profile_index?183:159);
+            WorkshopText(buf,W,H,48,401,"THE HILT AND AUDIO PROFILE CHANGE TOGETHER",1,143,168,164);
+        }
+        WorkshopRect(buf,W,H,43,437,683,1,73,111,104,220);
+        WorkshopText(buf,W,H,48,450,"LEFT STICK: BROWSE / CHANGE TAB    X: APPLY    Y: CLOSE",1,229,218,190);
     } else {
-        HudDrawText(buf,W,H,16,132,"A TOGGLE   B BLASTER   RT CLASH   LT STAB",scale,210,225,238);
-        HudDrawText(buf,W,H,16,152,"HOLD RIGHT GRIP: LOCKUP   LEFT Y: SELECT SABER",scale,210,225,238);
+        WorkshopText(buf,W,H,48,218,"READY FOR IGNITION",1,136,215,193);
+        WorkshopText(buf,W,H,48,245,"Y  OPEN THE WORKSHOP",2,239,221,181);
+        WorkshopText(buf,W,H,48,286,"A  IGNITE / RETRACT       B  BLASTER",1,194,210,198);
+        WorkshopText(buf,W,H,48,309,"RT  CLASH     LT  STAB     HOLD GRIP  LOCKUP",1,194,210,198);
+        WorkshopText(buf,W,H,48,353,"PROFILE",1,132,207,188);
+        WorkshopText(buf,W,H,48,371,f.profile_name,2,230,232,214);
+        WorkshopText(buf,W,H,48,402,"BLADE COLOUR",1,132,207,188);
+        WorkshopText(buf,W,H,170,402,kBladePalette[activeColor].name,1,241,222,177);
+        if(f.status[0]&&std::strncmp(f.status,"AUDIO",5)==0)
+            WorkshopText(buf,W,H,48,440,f.status,1,255,155,130);
+        else if(!f.font_ready)
+            WorkshopText(buf,W,H,48,440,"PROFILE AUDIO UNAVAILABLE",1,255,155,130);
     }
-    HudDrawText(buf, W, H, 16, H - 94,
-                passthrough_ready ? "PASSTHROUGH ACTIVE" : "PASSTHROUGH ERROR - CHECK LOGCAT",
-                scale, passthrough_ready ? 120 : 255, 255,
-                passthrough_ready ? 175 : 100);
-    HudDrawText(buf, W, H, 16, H - 70,
-                f.font_ready ? "FONT READY" : "FONT ERROR - CHECK LOGCAT",
-                scale, f.font_ready ? 120 : 255, 255, f.font_ready ? 175 : 100);
-    HudDrawText(buf, W, H, 16, H - 46,
-                f.audio_ready ? "AUDIO READY" : "AUDIO ERROR - CHECK LOGCAT",
-                scale, f.audio_ready ? 120 : 255, 255, f.audio_ready ? 175 : 100);
-    char line[96];
-    std::snprintf(line, sizeof(line), "SABER %s  SWING %.0f DPS",
-                  f.saber_on ? "ON" : "OFF", f.swing_speed_dps);
-    HudDrawText(buf, W, H, 16, H - 22, line, scale, 200, 235, 255);
-    HudDrawText(buf, W, H, 16, H - 118, f.status, scale, 210, 235, 255);
 }
 
 void OpenXrProgram::Impl::RenderHud(const TrackingFrame& f) {
@@ -1221,6 +1273,7 @@ void OpenXrProgram::Destroy() {
     if(impl_->scene_program)glDeleteProgram(impl_->scene_program);
     if(impl_->hilt_vbo)glDeleteBuffers(1,&impl_->hilt_vbo);
     if(impl_->blade_vbo)glDeleteBuffers(1,&impl_->blade_vbo);
+    if(impl_->core_blade_vbo)glDeleteBuffers(1,&impl_->core_blade_vbo);
     if (impl_->hud_swapchain) { xrDestroySwapchain(impl_->hud_swapchain); impl_->hud_swapchain = XR_NULL_HANDLE; }
     if (impl_->beam_swapchain) { xrDestroySwapchain(impl_->beam_swapchain); impl_->beam_swapchain = XR_NULL_HANDLE; }
     if (impl_->view_space) { xrDestroySpace(impl_->view_space); impl_->view_space = XR_NULL_HANDLE; }

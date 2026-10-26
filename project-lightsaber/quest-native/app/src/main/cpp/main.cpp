@@ -5,6 +5,7 @@
 #include <android/native_activity.h>
 
 #include "bundled_assets.h"
+#include "blade_palette.h"
 #include "logger.h"
 #include "openxr_program.h"
 #include "saber_engine.h"
@@ -170,6 +171,39 @@ bool LoadProfiles(const std::string& root,std::vector<SaberProfile>* profiles,st
     if(profiles->empty()){*error="No saber profiles were found";return false;}return true;
 }
 
+int LoadBladeColor(const std::string& root) {
+    std::ifstream in(root + "/workshop_settings.ini");
+    std::string line;
+    while (std::getline(in, line)) {
+        constexpr const char* prefix = "blade_color=";
+        if (line.compare(0, std::strlen(prefix), prefix) != 0) continue;
+        const std::string id = line.substr(std::strlen(prefix));
+        for (std::size_t i = 0; i < kBladePaletteCount; ++i)
+            if (id == kBladePalette[i].id) return static_cast<int>(i);
+    }
+    return kDefaultBladeColor;
+}
+
+bool SaveBladeColor(const std::string& root, int index) {
+    if (index < 0 || static_cast<std::size_t>(index) >= kBladePaletteCount) return false;
+    const std::string path = root + "/workshop_settings.ini";
+    const std::string temporary = path + ".tmp";
+    {
+        std::ofstream out(temporary, std::ios::trunc);
+        if (!out) return false;
+        out << "blade_color=" << kBladePalette[index].id << '\n';
+        out.flush();
+        if (!out) return false;
+    }
+    std::error_code ec;
+    std::filesystem::rename(temporary, path, ec);
+    if (ec) {
+        std::filesystem::remove(temporary, ec);
+        return false;
+    }
+    return true;
+}
+
 void FillProfileFrame(const SaberProfile& p,TrackingFrame* frame,int index,int count) {
     std::snprintf(frame->profile_name,sizeof(frame->profile_name),"%s",p.name.c_str());
     std::snprintf(frame->profile_note,sizeof(frame->profile_note),"%s",p.note.c_str());
@@ -213,6 +247,8 @@ void android_main(android_app* app) {
     std::vector<SaberProfile> profiles;std::string profile_error;
     const bool profiles_ready=assets_copied&&LoadProfiles(asset_root,&profiles,&profile_error);
     size_t active_profile=0,selected_profile=0;std::string font_load_error;
+    int active_color=assets_copied?LoadBladeColor(asset_root):kDefaultBladeColor;
+    int selected_color=active_color;
     bool font_loaded=profiles_ready&&saber.loadFont(asset_root+"/"+profiles[0].font,&font_load_error);
     if(!font_loaded)LOGE("Initial sound-font load failed: %s",profiles_ready?font_load_error.c_str():(assets_copied?profile_error.c_str():asset_error.c_str()));
     else LOGI("Initial sound-font loaded: %s",saber.diagnostics().c_str());
@@ -232,7 +268,9 @@ void android_main(android_app* app) {
     bool previous_a = false, previous_b = false, previous_y = false, previous_x = false;
     bool previous_right_trigger=false,previous_left_trigger=false,was_tracking=false;
     bool selector_open=false,previous_lock=false;
-    float blade_extension=0.0f;double previous_frame_t=0;float stick_latched=0;
+    int workshop_section=0,vertical_latched=0,horizontal_latched=0;
+    float blade_extension=0.0f;double previous_frame_t=0;float color_feedback_seconds=0.0f;
+    bool color_save_failed=false;
     while (!app->destroyRequested && !state.destroy_requested) {
         for (;;) {
             int events = 0;
@@ -267,20 +305,40 @@ void android_main(android_app* app) {
         const bool a = frame.right_input.primary;
         const bool b = frame.right_input.secondary;
         const bool y=frame.left_input.secondary,x=frame.left_input.primary;
-        if(y&&!previous_y&&profiles_ready){selector_open=!selector_open;selected_profile=active_profile;}
+        if(y&&!previous_y&&profiles_ready){
+            selector_open=!selector_open;
+            if(selector_open){selected_profile=active_profile;selected_color=active_color;workshop_section=0;}
+            vertical_latched=horizontal_latched=0;
+        }
         if(selector_open){
             const float sy=frame.left_input.thumb_y;
-            if(std::fabs(sy)<0.35f)stick_latched=0;
-            if(stick_latched==0&&sy>0.65f){selected_profile=(selected_profile+profiles.size()-1)%profiles.size();stick_latched=1;}
-            else if(stick_latched==0&&sy<-.65f){selected_profile=(selected_profile+1)%profiles.size();stick_latched=-1;}
+            const float sx=frame.left_input.thumb_x;
+            if(std::fabs(sy)<0.35f)vertical_latched=0;
+            if(std::fabs(sx)<0.35f)horizontal_latched=0;
+            if(horizontal_latched==0&&sx>0.65f){workshop_section=(workshop_section+1)%2;horizontal_latched=1;vertical_latched=0;selected_profile=active_profile;selected_color=active_color;}
+            else if(horizontal_latched==0&&sx<-.65f){workshop_section=(workshop_section+1)%2;horizontal_latched=-1;vertical_latched=0;selected_profile=active_profile;selected_color=active_color;}
+            if(workshop_section==0){
+                if(vertical_latched==0&&sy>0.65f){selected_profile=(selected_profile+profiles.size()-1)%profiles.size();vertical_latched=1;}
+                else if(vertical_latched==0&&sy<-.65f){selected_profile=(selected_profile+1)%profiles.size();vertical_latched=-1;}
+            } else {
+                if(vertical_latched==0&&sy>0.65f){selected_color=(selected_color+static_cast<int>(kBladePaletteCount)-1)%static_cast<int>(kBladePaletteCount);vertical_latched=1;}
+                else if(vertical_latched==0&&sy<-.65f){selected_color=(selected_color+1)%static_cast<int>(kBladePaletteCount);vertical_latched=-1;}
+            }
             if(x&&!previous_x&&profiles_ready){
-                if(saber.isOn())saber.retract();
-                audio.Pause();
-                std::string err;
-                if(saber.loadFont(asset_root+"/"+profiles[selected_profile].font,&err)){active_profile=selected_profile;font_loaded=true;font_load_error.clear();LOGI("Selected profile %s: %s",profiles[active_profile].id.c_str(),saber.diagnostics().c_str());}
-                else {font_loaded=false;font_load_error=err;LOGE("Profile font load failed: %s",err.c_str());}
-                audio.Resume();
-                selector_open=false;
+                if(workshop_section==0){
+                    if(saber.isOn())saber.retract();
+                    audio.Pause();
+                    std::string err;
+                    if(saber.loadFont(asset_root+"/"+profiles[selected_profile].font,&err)){active_profile=selected_profile;font_loaded=true;font_load_error.clear();LOGI("Selected profile %s: %s",profiles[active_profile].id.c_str(),saber.diagnostics().c_str());}
+                    else {font_loaded=false;font_load_error=err;LOGE("Profile font load failed: %s",err.c_str());}
+                    audio.Resume();
+                    selector_open=false;
+                } else {
+                    active_color=selected_color;
+                    color_save_failed=!SaveBladeColor(asset_root,active_color);
+                    color_feedback_seconds=1.5f;
+                    LOGI("Blade colour selected: %s; saved=%s",kBladePalette[active_color].name,color_save_failed?"no":"yes");
+                }
             }
         }
         if (font_loaded && tracking && a && !previous_a) { if(saber.isOn())saber.retract();else saber.ignite(); }
@@ -299,8 +357,19 @@ void android_main(android_app* app) {
         frame.saber_on = saber.isOn();
         frame.selector_open=selector_open;
         FillProfileFrame(profiles_ready?profiles[active_profile]:SaberProfile{},&frame,(int)active_profile,(int)profiles.size());
-        if(profiles_ready)std::snprintf(frame.selector_profile_name,sizeof(frame.selector_profile_name),"%s",profiles[selector_open?selected_profile:active_profile].name.c_str());
+        frame.blade_r=kBladePalette[active_color].r;frame.blade_g=kBladePalette[active_color].g;frame.blade_b=kBladePalette[active_color].b;
+        frame.active_profile_index=(int)active_profile;
+        frame.workshop_section=workshop_section;
+        frame.active_color_index=active_color;frame.color_index=selector_open?selected_color:active_color;frame.color_count=(int)kBladePaletteCount;
+        std::snprintf(frame.color_name,sizeof(frame.color_name),"%s",kBladePalette[active_color].name);
+        std::snprintf(frame.selector_color_name,sizeof(frame.selector_color_name),"%s",kBladePalette[frame.color_index].name);
+        if(profiles_ready){
+            const SaberProfile& selected=profiles[selector_open&&workshop_section==0?selected_profile:active_profile];
+            std::snprintf(frame.selector_profile_name,sizeof(frame.selector_profile_name),"%s",selected.name.c_str());
+            std::snprintf(frame.selector_profile_note,sizeof(frame.selector_profile_note),"%s",selected.note.c_str());
+        }
         const double dt=previous_frame_t>0?std::clamp(frame.t-previous_frame_t,0.0,0.05):0.0;previous_frame_t=frame.t;
+        color_feedback_seconds=std::max(0.0f,color_feedback_seconds-static_cast<float>(dt));
         const float step=static_cast<float>(dt/0.30);
         blade_extension+=std::clamp((frame.saber_on?1.0f:0.0f)-blade_extension,-step,step);
         frame.blade_extension=blade_extension;frame.blade_visible=blade_extension>0.002f;
@@ -313,8 +382,9 @@ void android_main(android_app* app) {
         if (!font_loaded) std::snprintf(frame.status, sizeof(frame.status), "FONT ERROR — see logcat");
         else if (!audio_ready) std::snprintf(frame.status, sizeof(frame.status), "AUDIO ERROR — see logcat");
         else if (!tracking) std::snprintf(frame.status, sizeof(frame.status), "WAITING FOR RIGHT CONTROLLER");
-        else if(selector_open)std::snprintf(frame.status,sizeof(frame.status),"SELECT: LEFT STICK   CONFIRM: X");
-        else std::snprintf(frame.status, sizeof(frame.status), "A TOGGLE   B BLASTER   RT CLASH   LT STAB   GRIP LOCK   Y MENU");
+        else if(selector_open)std::snprintf(frame.status,sizeof(frame.status),"STICK: BROWSE   X: APPLY   Y: CLOSE");
+        else if(color_feedback_seconds>0.0f)std::snprintf(frame.status,sizeof(frame.status),color_save_failed?"COLOUR ACTIVE / SAVE FAILED":"COLOUR STORED");
+        else std::snprintf(frame.status, sizeof(frame.status), "A TOGGLE   B BLASTER   RT CLASH   LT STAB   GRIP LOCK   Y WORKSHOP");
 
         program.EndFrame(display_time, frame);
     }

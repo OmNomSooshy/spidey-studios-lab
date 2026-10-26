@@ -6,7 +6,7 @@
 
 struct android_app;
 
-// Native OpenXR lifecycle, passthrough underlay, and a world-locked status panel.
+// Native OpenXR lifecycle, passthrough underlay, and the holographic workshop.
 class OpenXrProgram {
 public:
     OpenXrProgram();
@@ -28,7 +28,7 @@ public:
     // Locates all devices in the LOCAL space at the given time and reads inputs.
     void Locate(TrackingFrame* out, int64_t predictedDisplayTime);
 
-    // Static info shown on the in-headset debug HUD (Wi-Fi IP + UDP target).
+    // Optional stream status retained for the companion adapter.
     void SetStatusInfo(const std::string& localIp, const std::string& destIp,
                        int destPort);
 
@@ -36,7 +36,7 @@ public:
     // has subscribed (unicast). Call whenever it may have changed.
     void SetStreamStatus(bool unicast, const std::string& destIp, int destPort);
 
-    // Ends the frame. Renders the debug HUD as a head-locked quad layer when the
+    // Ends the frame. Renders the workshop as a world-locked quad layer when the
     // compositor asks us to render; otherwise submits zero layers.
     void EndFrame(int64_t predictedDisplayTime, const TrackingFrame& frame);
 

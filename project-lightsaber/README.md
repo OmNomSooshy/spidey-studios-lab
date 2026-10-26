@@ -39,3 +39,7 @@ Android `SensorManager` supplies timestamped gyroscope samples to JNI. A platfor
 ## Mission 003 — Quest 3 saber identity build
 
 The Quest native OpenXR build is the working Mission 002 baseline. Mission 003 extends that app with the supplied Luke ROTJ hilt mesh, controller-aligned green cylindrical blade, runtime profile/font selector, and font-supported manual effects. The [verified Mission 003 APK artifact is here](https://github.com/OmNomSooshy/spidey-studios-lab/actions/runs/40083807122/artifacts/12555799939); download its ZIP and extract the APK. APK SHA-256: `07134f154af030fc33521e7656b6196b968cad9e7a7a7e442a1ebe712dffd04e`. Build validation passed; physical Quest visuals/audio and Management acceptance are pending. See [MISSION_REPORT.md](MISSION_REPORT.md) for install/test steps, font provenance, and limitations.
+
+## Mission 004 — Holographic workshop
+
+Mission 004 keeps the native OpenXR Quest app and familiar controls. Left **Y** opens/closes the workshop; the left stick browses profiles or colours, and left/right changes between **SABER + SOUND** and **BLADE COLOUR**. Left **X** equips a profile or applies a colour. Seven actual blade colours, including Luke's classic green, are persisted in app-private settings. The blade retains its concentric glow/core and now ends in rounded geometry. Build and physical Quest validation status are recorded in [MISSION_REPORT.md](MISSION_REPORT.md).

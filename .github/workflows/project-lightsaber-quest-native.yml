@@ -78,6 +78,8 @@ jobs:
           g++ -std=c++17 -Wall -Wextra -Werror -I core/include core/src/saber_engine.cpp core/tests/font_catalog_smoke.cpp -o "$RUNNER_TEMP/lightsaber-font-catalog"
           "$RUNNER_TEMP/lightsaber-font-smoke" quest-native/app/src/main/assets/fonts/smthjedi
           "$RUNNER_TEMP/lightsaber-font-catalog" quest-native/app/src/main/assets/fonts/*
+          g++ -std=c++17 -Wall -Wextra -Werror -I quest-native/app/src/main/cpp quest-native/tools/rounded_blade_mesh_test.cpp -o "$RUNNER_TEMP/lightsaber-rounded-blade-test"
+          "$RUNNER_TEMP/lightsaber-rounded-blade-test"
 
       - name: Build standalone Quest debug APK
         working-directory: project-lightsaber

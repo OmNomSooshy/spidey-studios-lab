@@ -893,7 +893,7 @@ void OpenXrProgram::Impl::FillHudPixels(const TrackingFrame& f) {
     if(f.selector_open){
         const bool colorPage=f.workshop_section==1;
         WorkshopRect(buf,W,H,43,207,315,34,colorPage?14:35,colorPage?35:51,colorPage?38:43,240);
-        WorkshopRect(buf,W,H,380,207,346,colorPage?35:14,colorPage?51:35,colorPage?43:38,240);
+        WorkshopRect(buf,W,H,380,207,346,34,colorPage?35:14,colorPage?51:35,colorPage?43:38,240);
         WorkshopText(buf,W,H,65,218,"SABER + SOUND",2,colorPage?151:245,colorPage?177:219,colorPage?171:153);
         WorkshopText(buf,W,H,408,218,"BLADE COLOUR",2,colorPage?245:151,colorPage?219:177,colorPage?153:171);
         if(colorPage){
